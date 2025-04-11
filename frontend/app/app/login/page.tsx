@@ -8,7 +8,7 @@ const Login = () => {
             <h1 className='text-4xl font-bold text-blue-500'>מי אתה בכלל?</h1>
             <p className='text-2xl text-blue-900 font-bold'>נראה שאתה עדיין לא מחובר,</p>
             <p className='text-2xl text-blue-900 font-bold'>אז איך נכניס אותך למגרש?</p>
-            <p className='text-1xl text-gray-800 font-bold mt-2'>התחבר ותוך שנייה אתה בפנים >></p>
+            <p className='text-gray-800 font-bold mt-2'>התחבר ותוך שנייה אתה בפנים >></p>
             <div className='mt-10'>
                 <form className='flex flex-col gap-2'>
                     <label className='text-right'>אימייל</label>
