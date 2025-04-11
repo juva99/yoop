@@ -17,9 +17,9 @@ const Login = () => {
                     <input type="password" placeholder='••••••••' className='border border-gray-300 p-2 rounded-md text-right' />
                     <button type="submit" className='bg-blue-500 text-white p-2 rounded-md'>התחבר</button>
                 </form>
-                <div className='flex flex-col items-right gap-2 mt-4'>
+                <div className='flex flex-col items-start gap-2 mt-4'>
                     <h1 className='text-gray-500'>או התחבר עם</h1>
-                    <div className='flex justify-right gap-4'>
+                    <div className='flex gap-4'>
                         <button className='bg-blue-600 text-white p-2 rounded-full flex items-center gap-2'>
                             <FaGoogle />
                         </button>
