@@ -1,5 +1,5 @@
 import React from "react";
-import { AiFillGoogleCircle } from "react-icons/ai";
+import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 import Image from "next/image";
 
@@ -74,17 +74,16 @@ const Registration = ({ onSubmit }) => {
         </div>
         <div className="flex flex-col items-center gap-2 mt-6">
           <h1 className="text-center text-gray-800 ">או הירשם עם</h1>
-          <div className="flex gap-4">
+          <div className="flex gap-2">
             <button type="button">
-              <AiFillGoogleCircle
-                size={32}
-                className="text-gray-400 hover:text-orange-700"
+              <FcGoogle
+                size={30}
               />
             </button>
             <button type="button">
               <FaFacebook
                 size={28}
-                className="text-gray-400 hover:text-blue-700"
+                className="text-blue-700"
               />
             </button>
           </div>
@@ -93,5 +92,5 @@ const Registration = ({ onSubmit }) => {
     </>
   );
 };
-//flex flex-col items-center gap-2 mt-4
+
 export default Registration;
