@@ -1,9 +1,16 @@
+"use client";
+
 import React from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 import Image from "next/image";
 
-const Registration = ({ onSubmit }) => {
+function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+  event.preventDefault(); // Prevent the default form submission behavior
+  console.log("form submitted");
+}
+
+const Registration = () => {
   return (
     <>
       <div className="flex items-center mb-3 ">
