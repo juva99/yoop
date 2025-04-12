@@ -14,6 +14,7 @@ export default function ImagePicker({}) {
     const file = event.target.files?.[0];
 
     if (!file?.type.startsWith("image/")) {
+      setPickedImage(null);
       alert("Please select a valid image file.");
       return;
     }
