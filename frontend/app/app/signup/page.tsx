@@ -4,8 +4,9 @@ import React from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 import Image from "next/image";
+import ImagePicker from "../components/image-picker";
 
-function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
   event.preventDefault(); // Prevent the default form submission behavior
   console.log("form submitted");
 }
@@ -39,7 +40,7 @@ const SignUp = () => {
           יאללה, תן פס - ונתקדם &gt;&gt;
         </p>
         <div>
-          <form onSubmit={onSubmit} className="flex flex-col mt-10">
+          <form onSubmit={handleSubmit} className="flex flex-col mt-10">
             <label className="mb-1 ">אימייל</label>
             <input
               type="email"
@@ -71,6 +72,8 @@ const SignUp = () => {
               required
               className="mb-4 border-b-2 border-gray-300 text-right"
             ></input>
+            <label className="mb-1">תמונת פרופיל</label>
+            <ImagePicker />
             <button
               type="submit"
               className="bg-blue-500 text-white mt-4 p-2 rounded-sm mx-10"
