@@ -10,7 +10,7 @@ function onSubmit(event: React.FormEvent<HTMLFormElement>) {
   console.log("form submitted");
 }
 
-const Registration = () => {
+const SignUp = () => {
   return (
     <>
       <div className="flex items-center mb-3 ">
@@ -100,4 +100,4 @@ const Registration = () => {
   );
 };
 
-export default Registration;
+export default SignUp;
