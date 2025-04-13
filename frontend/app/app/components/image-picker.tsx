@@ -1,6 +1,11 @@
 import { useRef, useState } from "react";
 import Image from 'next/image';
-export default function ImagePicker({}) {
+
+interface ImagePickerProps {
+  name: string;
+}
+
+export default function ImagePicker({name}: ImagePickerProps) {
   const [pickedImage, setPickedImage] = useState<string | null>();
   const imageInput = useRef<HTMLInputElement>(null);
 
@@ -45,7 +50,7 @@ export default function ImagePicker({}) {
       <input
         type="file"
         accept="image/png image/jpeg"
-        name="image"
+        name= {name}
         ref={imageInput}
         onChange={handleImageChange}
         hidden

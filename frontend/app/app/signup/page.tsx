@@ -5,11 +5,7 @@ import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 import Image from "next/image";
 import ImagePicker from "../components/image-picker";
-
-function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-  event.preventDefault(); // Prevent the default form submission behavior
-  console.log("form submitted");
-}
+import {newUserSignUp} from '../../lib/actions'
 
 const SignUp = () => {
   return (
@@ -40,10 +36,11 @@ const SignUp = () => {
           יאללה, תן פס - ונתקדם &gt;&gt;
         </p>
         <div>
-          <form onSubmit={handleSubmit} className="flex flex-col mt-10">
+          <form action={newUserSignUp} method="POST" className="flex flex-col mt-10">
             <label className="mb-1 ">אימייל</label>
             <input
               type="email"
+              name="email"
               placeholder="alex_manager@gmail.com"
               required
               className="mb-4 border-b-2 border-gray-300 text-right"
@@ -51,6 +48,7 @@ const SignUp = () => {
             <label className="mb-1">סיסמא</label>
             <input
               type="password"
+              name="password"
               placeholder="••••••••"
               required
               className="mb-4 border-b-2 border-gray-300 text-right"
@@ -58,6 +56,7 @@ const SignUp = () => {
             <label className="mb-1">מספר נייד</label>
             <input
               type="tel"
+              name="phoneNumber"
               pattern="[0-9]{10}"
               placeholder="0501234567"
               required
@@ -66,6 +65,7 @@ const SignUp = () => {
             <label className="mb-1">גיל</label>
             <input
               type="number"
+              name="age"
               min="0"
               max="100"
               placeholder="21"
@@ -73,7 +73,7 @@ const SignUp = () => {
               className="mb-4 border-b-2 border-gray-300 text-right"
             ></input>
             <label className="mb-1">תמונת פרופיל</label>
-            <ImagePicker />
+            <ImagePicker name="image" />
             <button
               type="submit"
               className="bg-blue-500 text-white mt-4 p-2 rounded-sm mx-10"
