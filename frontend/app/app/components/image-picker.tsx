@@ -49,7 +49,7 @@ export default function ImagePicker({name}: ImagePickerProps) {
       )}
       <input
         type="file"
-        accept="image/png image/jpeg"
+        accept="image/png, image/jpeg"
         name= {name}
         ref={imageInput}
         onChange={handleImageChange}
