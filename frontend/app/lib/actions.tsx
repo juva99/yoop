@@ -1,5 +1,7 @@
 'use server';
 
+import { redirect } from "next/navigation";
+
 export async function newUserSignUp(formData: FormData) {
   const newUser = {
     email: formData.get('email'),
@@ -14,5 +16,6 @@ export async function newUserSignUp(formData: FormData) {
   }
 
   console.log(newUser); 
+  redirect('/login');
   // Todo: save new user to DB 
 }
