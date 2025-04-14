@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Truculenta } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from "@/components/navbar";
 import "./globals.css";
 const isLoggedIn = true;
