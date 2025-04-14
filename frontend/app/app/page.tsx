@@ -1,7 +1,7 @@
 import React from "react";
 import GameOverview from "@/components/GameOverview";
 import Image from "next/image";
-
+import { MapView } from "@/components/MapView";
 export default function Home() {
   const sampleGame = {
     field_name: "עמק אילון 9",
@@ -26,6 +26,7 @@ export default function Home() {
         time={sampleGame.time}
         players={sampleGame.players}
       />
+      <MapView />
     </div>
   );
 }
