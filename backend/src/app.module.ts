@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
-import { FieldManagersModule } from './field-managers/field-managers.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { UsersModule } from './users/users.module';
+
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.env',
     }),
-    FieldManagersModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
@@ -19,6 +19,8 @@ import { ConfigModule } from '@nestjs/config';
       autoLoadEntities: true,
       synchronize: true
     }),
-  ]
+    UsersModule,
+  ],
+  controllers: []
 })
 export class AppModule {}
