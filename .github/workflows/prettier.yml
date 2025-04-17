@@ -31,6 +31,6 @@ jobs:
 
       - name: Run prettier for frontend
         working-directory: frontend
-        run: npx run format-check
+        run: npx prettier --check "**/*.tsx"
 
       
