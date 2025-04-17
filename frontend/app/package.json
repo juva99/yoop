@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format-check": "prettier --check \"**/*.{tsx}\""
+    "format-check": "prettier --check \"**/*.tsx\""
   },
   "dependencies": {
     "next": "15.2.4",
