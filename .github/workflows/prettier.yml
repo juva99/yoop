@@ -19,18 +19,18 @@ jobs:
 
       - name: Install backend dependencies
         working-directory: backend
-        run: npm ci
+        run: npm i
         
       - name: Install frontend dependencies
         working-directory: frontend/app
-        run: npm ci
+        run: npm i
         
       - name: Run prettier for backend
         working-directory: backend
         run: npx run format-check
 
       - name: Run prettier for frontend
-        working-directory: frontend
+        working-directory: frontend/app
         run: npx prettier --check "**/*.tsx"
 
       
