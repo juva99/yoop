@@ -22,7 +22,7 @@ jobs:
         run: npm ci
 
       - name: Run prettier on frontend
-        working-directory: frontend/app
+        working-directory: frontend
         run: npx prettier --check "**/*.{ts,tsx}"
 
       
