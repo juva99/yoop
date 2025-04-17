@@ -27,6 +27,9 @@
     "tailwindcss": "^4",
     "typescript": "^5"
   },
+  "scripts":{
+    "format-check": "prettier --check \"**/*.{tsx}\""
+  },
   "prettier": {
     "plugins": [
       "prettier-plugin-tailwindcss"
