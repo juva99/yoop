@@ -1,0 +1,28 @@
+name: frontend-prettier
+
+on: 
+  push:
+  pull_request:
+
+jobs:
+  prettier:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check code
+        uses: actions/checkout@v3
+
+      - name: setup node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Run prettier on frontend
+        working-directory: frontend
+        run: npx prettier --check "**/*.{ts,tsx}"
+
+      
