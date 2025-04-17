@@ -22,7 +22,7 @@ jobs:
         run: npm ci
         
       - name: Install frontend dependencies
-        working-directory: front/app
+        working-directory: frontend/app
         run: npm ci
         
       - name: Run prettier for backend
@@ -30,7 +30,7 @@ jobs:
         run: npx run format-check
 
       - name: Run prettier for frontend
-        working-directory: frontent/app
+        working-directory: frontend/app
         run: npx run format-check
 
       
