@@ -18,11 +18,11 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        working-directory: frontend
+        working-directory: frontend/app
         run: npm ci
 
       - name: Run prettier on frontend
-        working-directory: frontend
+        working-directory: frontend/app
         run: npx prettier --check "**/*.{ts,tsx}"
 
       
