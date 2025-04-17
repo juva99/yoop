@@ -30,7 +30,7 @@ jobs:
         run: npx run format-check
 
       - name: Run prettier for frontend
-        working-directory: frontend/app
+        working-directory: frontend
         run: npx run format-check
 
       
