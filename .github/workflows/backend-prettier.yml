@@ -1,4 +1,4 @@
-name: prettier
+name: backend prettier
 
 on: 
   push:
@@ -18,9 +18,11 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
+        working-directory: backend
         run: npm ci
 
       - name: Run prettier to format code
-        run: npx prettier --check "frontend/**/*.{ts,tsx}" "backend/**/*.{ts}"
+        working-directory: backend
+        run: npx prettier --check "**/*.{ts}"
 
       
