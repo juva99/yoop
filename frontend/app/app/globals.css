@@ -1,10 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap");
 @import "tailwindcss";
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --font-sans: 'Open Sans', Arial, Helvetica, sans-serif;
+  --font-sans: "Open Sans", Arial, Helvetica, sans-serif;
 }
 
 @theme inline {
@@ -12,6 +12,14 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
+  --color-title: #0088ed;
+  --color-subtitle: #0d2a84;
+  --color-text: #242426;
+  --color-elements: #8b8d8f;
+}
+
+.input_underscore {
+  @apply border-elements mb-4 border-b-2 text-right;
 }
 
 /* @media (prefers-color-scheme: dark) {

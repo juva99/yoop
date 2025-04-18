@@ -2,7 +2,7 @@ import React from "react";
 import GameOverview from "@/components/GameOverview";
 import FutureGames from "@/components/FutureGames";
 import Image from "next/image";
-
+import { MapView } from "@/components/MapView";
 export default function Home() {
   const sampleGame = {
     field_name: "עמק אילון 9",
@@ -43,6 +43,7 @@ export default function Home() {
         players={sampleGame.players}
         price={sampleGame.price}
       />
+      <MapView />
       <FutureGames games={[sampleGame,sampleGame2]}/>
     </div>
   );
