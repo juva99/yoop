@@ -5,6 +5,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 import { error } from 'console';
+import { hash } from 'argon2';
+
 
 @Injectable()
 export class UsersService {
@@ -19,15 +21,19 @@ export class UsersService {
     
       async create(createUserDto: CreateUserDto): Promise<User> {
         try{
-        if(createUserDto.pass != createUserDto.passConfirm)
-        {
-          throw new HttpException('Conifrm pass is not equal to password', HttpStatus.BAD_REQUEST);
+          if(createUserDto.pass != createUserDto.passConfirm)
+          {
+            throw new HttpException('Conifrm pass is not equal to password', HttpStatus.BAD_REQUEST);
+          }
+          const { pass, ...user } = this.userRepository.create(createUserDto);
+          const hashedPass = await hash(pass)
+          return await this.userRepository.save({
+            pass: hashedPass,
+            ...user
+          });
         }
-        const user = this.userRepository.create(createUserDto);
-        return await this.userRepository.save(user);
-        }
-        catch(error){
-        throw new Error(error);
+        catch (error) {
+          throw new Error(error);
         }
       }
 
