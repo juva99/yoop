@@ -1,0 +1,39 @@
+name: Prettier
+
+on: 
+  workflow_dispatch:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  prettier:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check code
+        uses: actions/checkout@v3
+
+      - name: setup node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm i
+        
+      - name: Install frontend dependencies
+        working-directory: frontend/app
+        run: npm i
+        
+      - name: Run prettier for backend
+        working-directory: backend
+        run: npx run format-check
+
+      - name: Run prettier for frontend
+        working-directory: frontend/app
+        run: npx prettier --check "**/*.tsx"
+
+      
