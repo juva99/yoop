@@ -4,9 +4,9 @@ import { FaGoogle, FaFacebookF } from "react-icons/fa";
 const Login = () => {
   return (
     <div className="mx-5 mt-20 text-right">
-      <h1 className="text-4xl font-bold text-blue-500">רגע רגע...</h1>
-      <h1 className="text-4xl font-bold text-blue-500">מי אתה בכלל?</h1>
-      <p className="text-2xl font-bold text-blue-900">
+      <h1 className="text-title text-4xl font-bold">רגע רגע...</h1>
+      <h1 className="text-title text-4xl font-bold">מי אתה בכלל?</h1>
+      <p className="text-subtitle text-2xl font-bold">
         נראה שאתה עדיין לא מחובר,
       </p>
       <p className="text-2xl font-bold text-blue-900">
@@ -19,13 +19,13 @@ const Login = () => {
           <input
             type="text"
             placeholder="alex_manager@gmail.com"
-            className="rounded-md border border-gray-300 p-2 text-right"
+            className="input_underscore"
           />
           <label className="text-right">סיסמא</label>
           <input
             type="password"
             placeholder="••••••••"
-            className="rounded-md border border-gray-300 p-2 text-right"
+            className="input_underscore"
           />
           <button
             type="submit"
