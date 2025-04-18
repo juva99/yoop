@@ -45,14 +45,14 @@ const SignUp = () => {
               type="email"
               placeholder="alex_manager@gmail.com"
               required
-              className="mb-4 border-b-2 border-gray-300 text-right"
+              className="input_underscore"
             ></input>
             <label className="mb-1">סיסמא</label>
             <input
               type="password"
               placeholder="••••••••"
               required
-              className="mb-4 border-b-2 border-gray-300 text-right"
+              className="input_underscore"
             ></input>
             <label className="mb-1">מספר נייד</label>
             <input
@@ -60,7 +60,7 @@ const SignUp = () => {
               pattern="[0-9]{10}"
               placeholder="0501234567"
               required
-              className="mb-4 border-b-2 border-gray-300 text-right"
+              className="input_underscore"
             ></input>
             <label className="mb-1">גיל</label>
             <input
@@ -69,7 +69,7 @@ const SignUp = () => {
               max="100"
               placeholder="21"
               required
-              className="mb-4 border-b-2 border-gray-300 text-right"
+              className="input_underscore"
             ></input>
             <button
               type="submit"
