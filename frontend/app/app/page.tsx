@@ -5,6 +5,7 @@ import Image from "next/image";
 import { MapView } from "@/components/MapView";
 export default function Home() {
   const sampleGame = {
+    id: 'g1',
     field_name: "עמק אילון 9",
     type: "soccer",
     date: "4.10",
@@ -19,6 +20,7 @@ export default function Home() {
     price: 30
   };
   const sampleGame2 = {
+    id: 'g2',
     field_name: "עמק  9",
     type: "soccer",
     date: "4.10",
@@ -36,15 +38,10 @@ export default function Home() {
   return (
     <div className="p-4">
       <GameOverview
-        field_name={sampleGame.field_name}
-        type={sampleGame.type}
-        date={sampleGame.date}
-        time={sampleGame.time}
-        players={sampleGame.players}
-        price={sampleGame.price}
+        game={sampleGame}
       />
       <MapView />
-      <FutureGames games={[sampleGame,sampleGame2]}/>
+      <FutureGames games={[sampleGame,sampleGame,sampleGame,sampleGame2]}/>
     </div>
   );
 }

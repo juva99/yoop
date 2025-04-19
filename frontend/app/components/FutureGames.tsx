@@ -6,44 +6,61 @@ import GameCard from "./GameCard";
 import Filter from "./Filter";
 import { GoTriangleDown } from "react-icons/go";
 import { FaLocationDot } from "react-icons/fa6";
+import { useSwipeable } from 'react-swipeable';
+
 
 type Games = {
     games: Game[];
 };
 
+
+
 const FutureGames: React.FC<Games> = ({games}) => {
     const [currentGame, setCurrentGame] = useState(0);
-    const [startY, setStartY] = useState(0);
+
+  const handlers = useSwipeable({
+    onSwipedDown: () => {downHandler();
+    },
+    onSwipedUp: () => {upHandler()}
+  });
+
+  const downHandler = () => {
+    if(currentGame == games.length-1){
+        setCurrentGame(0);
+    }else{
+      setCurrentGame(prev => prev + 1);
+    }
+  }
+
+  const upHandler = () => {
+    if(currentGame == 0){
+      setCurrentGame(games.length-1);
+  }else{
+    setCurrentGame(prev => prev - 1);
+  }
+  }
   
-    const handleTouchStart = (e: React.TouchEvent) => {
-      setStartY(e.touches[0].clientY);
-    };
-  
-    const handleTouchEnd = (e: React.TouchEvent) => {
-      const endY = e.changedTouches[0].clientY;
-      const deltaY = startY - endY;
-  
-      if (deltaY > 50 && currentGame > 0) {
-        // Swipe up → previous card
-        setCurrentGame((prev) => prev - 1);
-      } else if (deltaY < -50 && currentGame < games.length - 1) {
-        // Swipe down → next card
-        setCurrentGame((prev) => prev + 1);
-      }
-    };
     return (
-        <div className="w-full overflow-hidden flex items-center justify-between p-4 bg-white rounded-lg shadow-md">
-            <div onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}>
-            <p>משחקים רשומים</p>
-                <GameCard field_name={games[currentGame].field_name} type={games[currentGame].type} time={games[currentGame].time} date={games[currentGame].date} players={games[currentGame].players} price={games[currentGame].price}/>
-            </div>
-            <ul className="space-y-2">
+      <div
+      {...handlers}
+      className="flex justify-between relative w-full max-w-md h-[130px] overflow-hidden border-1 rounded-2xl"
+    >
+      <div
+        className="transition-transform duration-300"
+        style={{ transform: `translateY(-${currentGame * 130}px)` }}
+      >
+        {games.map((game, i) => (
+          <div key={i} className="h-[130px]">
+            <GameCard game={game} />
+          </div>
+        ))}
+      </div>
+      <div className="bullets-container flex items-center h-[130px] left-0 pl-5">
+      <ul className="space-y-2">
                  {games.map((game,i) => (<li key={i}><div className={`w-3 h-3 cursor-pointer rounded-full ${currentGame == i ? 'bg-black' : 'bg-gray-200'}`} onClick={() => setCurrentGame(i)} /></li>))}
             </ul>
-            <Filter text="מיקום" icon={<FaLocationDot color="gray"/>
-}/>
-        </div>
+      </div>
+      </div>
     )
 }
 
