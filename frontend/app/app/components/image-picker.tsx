@@ -6,7 +6,7 @@ interface ImagePickerProps {
 }
 
 export default function ImagePicker({name}: ImagePickerProps) {
-  const [pickedImage, setPickedImage] = useState<string | null>();
+  const [pickedImage, setPickedImage] = useState<string | null>(null);
   const imageInput = useRef<HTMLInputElement>(null);
 
   function handleClick() {
