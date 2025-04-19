@@ -13,14 +13,13 @@ const GameCard: React.FC<Props> = ({ game }) => {
         
         <Link href={`/game/${id}`}>
             <div className="text-right h-[130px] flex items-center pr-5">
-                
                 <div className='game-details'>
                 <span className="text-blue-400 text-[24px] font-medium flex items-center gap-3">
-                    {type.toLowerCase() === "basketball"
+                    {type.toLowerCase() === "basketball"    
                         ? <PiBasketball />
                         : type.toLowerCase() === "soccer"
                             ? <PiSoccerBall />
-                            : null}
+                            : null}     
                     {field_name}
                 </span>
                 <p className="text-gray-500">{date} | {time}  {price && '|' + price+'₪'}</p>

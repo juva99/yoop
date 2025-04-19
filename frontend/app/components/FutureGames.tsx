@@ -3,17 +3,12 @@ import React  from "react";
 import { Game } from "@/app/types/Game";
 import { useState } from "react";
 import GameCard from "./GameCard";
-import Filter from "./Filter";
-import { GoTriangleDown } from "react-icons/go";
-import { FaLocationDot } from "react-icons/fa6";
 import { useSwipeable } from 'react-swipeable';
 
 
 type Games = {
     games: Game[];
 };
-
-
 
 const FutureGames: React.FC<Games> = ({games}) => {
     const [currentGame, setCurrentGame] = useState(0);
@@ -43,7 +38,7 @@ const FutureGames: React.FC<Games> = ({games}) => {
     return (
       <div
       {...handlers}
-      className="flex justify-between relative w-full max-w-md h-[130px] overflow-hidden border-1 rounded-2xl"
+      className="flex justify-between relative w-full max-w-md h-[130px] overflow-hidden border-1 border-[var(--color-elements)] shadow rounded-2xl"
     >
       <div
         className="transition-transform duration-300"
