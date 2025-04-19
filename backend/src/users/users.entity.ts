@@ -16,7 +16,7 @@ export class User {
   pass: string;
 
   @Column({unique: true})
-  userEmail: String;
+  userEmail: string;
 
   @Column({ type: 'date', nullable: true })
   birthDay: string;

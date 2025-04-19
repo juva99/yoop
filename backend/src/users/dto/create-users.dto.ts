@@ -19,7 +19,7 @@ export class CreateUserDto {
   passConfirm: string;
 
   @IsEmail()
-  userEmail: String;
+  userEmail: string;
 
   @IsOptional()
   @IsDateString()
