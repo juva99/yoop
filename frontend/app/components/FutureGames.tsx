@@ -14,10 +14,10 @@ const FutureGames: React.FC<Games> = ({ games }) => {
 
   const handlers = useSwipeable({
     onSwipedDown: () => {
-      downHandler();
+      upHandler();
     },
     onSwipedUp: () => {
-      upHandler();
+      downHandler();
     },
   });
 
