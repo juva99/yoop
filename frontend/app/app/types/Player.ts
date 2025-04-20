@@ -1,4 +1,4 @@
 export type Player = {
-    name: string;
-    image: string;
-}
+  name: string;
+  image: string;
+};
