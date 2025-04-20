@@ -75,8 +75,8 @@ const SignupForm = () => {
       <div className="form_item">
         <HoverCard>
           <HoverCardTrigger>
-            <Label htmlFor="passwordConfirm" className="text-sm font-semibold text-gray-700 mb-1 block">הכנס שוב סיסמא</Label>
-            <Input type="password" id="passwordConfirm" placeholder="••••••••" className="input_underscore"></Input>
+            <Label htmlFor="confirmPassword" className="text-sm font-semibold text-gray-700 mb-1 block">הכנס שוב סיסמא</Label>
+            <Input type="password" id="confirmPassword" placeholder="••••••••" className="input_underscore"></Input>
           </HoverCardTrigger>
           <HoverCardContent>
             {passwordRequirements}
