@@ -1,19 +1,29 @@
-import React from 'react'
-import Link from 'next/link'
-import { PiSoccerBallFill } from "react-icons/pi";
-import { IoSearch } from "react-icons/io5";
-import { IoAddCircleOutline } from "react-icons/io5";
-import { AiFillHome } from "react-icons/ai";
+import React from "react";
+import Link from "next/link";
+import {
+  PiSoccerBall,
+  PiHouseSimple,
+  PiMagnifyingGlass,
+  PiPlusCircle,
+} from "react-icons/pi";
 
 const Navbar = () => {
-    return (
-        <nav className="fixed flex bg-gray-100 h-15 items-center justify-around bottom-0 w-full z-50">
-                <Link href={'/'}><IoAddCircleOutline size={40}/></Link>
-                <Link href={'/'}><AiFillHome size={40} /></Link>
-                <Link href={'/games'}><PiSoccerBallFill size={40} color='gray'/></Link>
-                <Link href={'/search'}><IoSearch size={40} color='gray'/></Link>
-        </nav>
-    )
-}
+  return (
+    <nav className="fixed bottom-0 z-50 flex h-15 w-full items-center justify-around bg-gray-100">
+      <Link href={"/"}>
+        <PiPlusCircle className="text-elements size-[40px]" />
+      </Link>
+      <Link href={"/"}>
+        <PiHouseSimple className="text-elements size-[40px]" />
+      </Link>
+      <Link href={"/games"}>
+        <PiSoccerBall className="text-elements size-[40px]" />
+      </Link>
+      <Link href={"/search"}>
+        <PiMagnifyingGlass className="text-elements size-[40px]" />
+      </Link>
+    </nav>
+  );
+};
 
-export default Navbar
+export default Navbar;
