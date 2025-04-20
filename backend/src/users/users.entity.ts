@@ -4,7 +4,7 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  uid: string;
+  uid: number;
 
   @Column()
   firstName: string;
@@ -15,7 +15,7 @@ export class User {
   @Column()
   pass: string;
 
-  @Column({unique: true})
+  @Column()
   userEmail: String;
 
   @Column({ type: 'date', nullable: true })

@@ -1,8 +1,8 @@
-import { IsBoolean, IsDateString, IsEmail, IsNotEmpty, IsOptional, IsString, Length } from 'class-validator';
+import { IsBoolean, IsDateString, IsEmail, IsNotEmpty, IsOptional, isString, IsString, Length } from 'class-validator';
 
 export class CreateUserDto {
-  
-  uid: string;
+  @IsNotEmpty()
+  uid: number;
 
   @IsString()
   firstName: string;
@@ -11,23 +11,21 @@ export class CreateUserDto {
   lastName: string;
 
   @IsString()
-  @Length(8)
   pass: string;
 
   @IsString()
-  @Length(8)
   passConfirm: string;
 
+  @IsString()
   @IsEmail()
   userEmail: String;
 
   @IsOptional()
   @IsDateString()
-  birthDay?: string;
+  birthDay: string;
 
-  @IsOptional()
   @IsBoolean()
-  isMale?: boolean;
+  isMale: boolean;
 
   @IsOptional()
   @IsString()

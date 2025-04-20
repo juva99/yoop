@@ -1,10 +1,8 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { User } from './users.entity';
 import { CreateUserDto } from './dto/create-users.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
-import { error } from 'console';
 
 @Injectable()
 export class UsersService {
@@ -13,36 +11,12 @@ export class UsersService {
         private userRepository: Repository<User>,
       ) {}
     
-      async findAll(): Promise<User[]> {
-        return await this.userRepository.find();
+      findAll(): Promise<User[]> {
+        return this.userRepository.find();
       }
     
-      async create(createUserDto: CreateUserDto): Promise<User> {
-        try{
-        if(createUserDto.pass != createUserDto.passConfirm)
-        {
-          throw new HttpException('Conifrm pass is not equal to password', HttpStatus.BAD_REQUEST);
-        }
+      create(createUserDto: CreateUserDto): Promise<User> {
         const user = this.userRepository.create(createUserDto);
-        return await this.userRepository.save(user);
-        }
-        catch(error){
-        throw new Error(error);
-        }
-      }
-
-      async deleteOne(uid: string): Promise<void> {
-        const results = await this.userRepository.delete(uid);
-        if(results.affected === 0){
-          throw new NotFoundException(`user with id ${uid} not found`);
-        }
-      }
-
-      async findById(uid: string): Promise<User> {
-        const user =  await this.userRepository.findOne({where: {uid}});
-        if (!user) {
-          throw new NotFoundException(`User with id ${uid} not found`);
-        }
-        return user;
+        return this.userRepository.save(user);
       }
 }
