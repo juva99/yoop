@@ -4,6 +4,8 @@ import React from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 import Image from "next/image";
+import SignupForm from "./signupForm";
+import Link from "next/link";
 
 function onSubmit(event: React.FormEvent<HTMLFormElement>) {
   event.preventDefault(); // Prevent the default form submission behavior
@@ -34,52 +36,10 @@ const SignUp = () => {
           </strong>
           ותכף תמצא את עצמך אומר: "איך חייתי בלי זה עד עכשיו?!"
         </p>
-        <p className="p-1 font-bold text-gray-800">
-          {" "}
-          יאללה, תן פס - ונתקדם &gt;&gt;
-        </p>
-        <div>
-          <form onSubmit={onSubmit} className="mt-10 flex flex-col">
-            <label className="mb-1">אימייל</label>
-            <input
-              type="email"
-              placeholder="alex_manager@gmail.com"
-              required
-              className="input_underscore"
-            ></input>
-            <label className="mb-1">סיסמא</label>
-            <input
-              type="password"
-              placeholder="••••••••"
-              required
-              className="input_underscore"
-            ></input>
-            <label className="mb-1">מספר נייד</label>
-            <input
-              type="tel"
-              pattern="[0-9]{10}"
-              placeholder="0501234567"
-              required
-              className="input_underscore"
-            ></input>
-            <label className="mb-1">גיל</label>
-            <input
-              type="number"
-              min="0"
-              max="100"
-              placeholder="21"
-              required
-              className="input_underscore"
-            ></input>
-            <button
-              type="submit"
-              className="mx-10 mt-4 rounded-sm bg-blue-500 p-2 text-white"
-            >
-              הירשם עכשיו
-            </button>
-          </form>
+        <div className="mt-5">
+          <SignupForm></SignupForm>
         </div>
-        <div className="mt-6 flex flex-col items-center gap-2">
+        <div className="mt-3 flex flex-col items-center gap-2">
           <h1 className="text-center text-gray-800">או הירשם עם</h1>
           <div className="flex gap-2">
             <button type="button">
@@ -89,6 +49,12 @@ const SignUp = () => {
               <FaFacebook size={28} className="text-blue-700" />
             </button>
           </div>
+        </div>
+        <div className="mt-4 flex items-center justify-center gap-1 text-sm">
+          <p className="text-gray-600">כבר רשום למערכת?</p>
+          <Link href={"/auth/signin"} className="font-medium text-blue-500 hover:text-blue-700">
+            התחבר עכשיו
+          </Link>
         </div>
       </div>
     </>

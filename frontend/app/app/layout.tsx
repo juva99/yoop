@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from "@/components/navbar";
 import "./globals.css";
-const isLoggedIn = true;
+const isLoggedIn = false;
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -28,8 +28,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
-        {isLoggedIn && <Navbar />}
+        <main className="pb-20">
+          {children}
+          {isLoggedIn && <Navbar />}
+        </main>
       </body>
     </html>
   );
