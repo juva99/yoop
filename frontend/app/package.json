@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format-check": "prettier --check \"**/*.tsx\""
+    "format:check": "prettier --check \"**/*.tsx\"",
+    "format:fix": "prettier --write \"**/*.tsx\""
   },
   "dependencies": {
     "@radix-ui/react-hover-card": "^1.1.10",
