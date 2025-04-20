@@ -92,6 +92,10 @@
   @apply  mb-2 mt-2;
 }
 
+.form_error {
+  @apply text-sm text-red-500;
+}
+
 /* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;

@@ -1,3 +1,7 @@
+"use client"
+
+import { useFormState } from "react-dom"
+
 import { format } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
 import { useState } from "react"
@@ -6,7 +10,6 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import SubmitButton from "@/components/ui/submitButton"
-
 import { Calendar } from "@/components/ui/calendar"
 import {
   Popover,
@@ -18,6 +21,8 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card"
+
+import { signup } from "@/lib/auth"
 
 const passwordRequirements = (
   <div className="flex flex-col gap-2 p-2">
@@ -46,47 +51,96 @@ const passwordRequirements = (
 
 const SignupForm = () => { 
   const [date, setDate] = useState<Date>()
+  const [state, action] = useFormState(signup, undefined)
 
   return (
-    <form>
+    <form action={action}>
+      {state?.message && (
+        <p className="form_error">{state.message}</p>
+      )}
+
       <div className="form_item">
-        <Label htmlFor="firstname" className="text-sm font-semibold text-gray-700 mb-1 block">שם פרטי</Label>
-        <Input type="text" id="firstname" placeholder="הכנס שם פרטי" className="input_underscore"></Input>
+        <Label htmlFor="firstName" className="text-sm font-semibold text-gray-700 mb-1 block">שם פרטי</Label>
+        <Input type="text" id="firstName" name="firstName" placeholder="הכנס שם פרטי" className="input_underscore"></Input>
       </div>
+      {state?.error?.firstName && (
+        <p className="form_error">{state.error.firstName}</p>
+      )}
+      
       <div className="form_item">
-        <Label htmlFor="lastname" className="text-sm font-semibold text-gray-700 mb-1 block">שם משפחה</Label>
-        <Input type="text" id="lastname" placeholder="הכנס שם משפחה" className="input_underscore"></Input>
+        <Label htmlFor="lastName" className="text-sm font-semibold text-gray-700 mb-1 block">שם משפחה</Label>
+        <Input type="text" id="lastName" name="lastName" placeholder="הכנס שם משפחה" className="input_underscore"></Input>
       </div>
+      {state?.error?.lastName && (
+        <p className="form_error">{state.error.lastName}</p>
+      )}
+
       <div className="form_item">
         <Label htmlFor="email" className="text-sm font-semibold text-gray-700 mb-1 block">אימייל</Label>
-        <Input type="email" id="email" placeholder="אימייל" className="input_underscore"></Input>
+        <Input type="email" id="email" name="email" placeholder="example@email.com" className="input_underscore"></Input>
       </div>
+      {state?.error?.email && (
+        <p className="form_error">{state.error.email}</p>
+      )}
+
       <div className="form_item">
         <HoverCard>
           <HoverCardTrigger>
             <Label htmlFor="password" className="text-sm font-semibold text-gray-700 mb-1 block">סיסמא</Label>
-            <Input type="password" id="password" placeholder="••••••••" className="input_underscore"></Input>
+            <Input type="password" id="password" name="password" placeholder="••••••••" className="input_underscore"></Input>
           </HoverCardTrigger>
           <HoverCardContent>
             {passwordRequirements}
           </HoverCardContent>
         </HoverCard>
       </div>
+      {state?.error?.password && (
+        <div className="form_error">
+          <p>הסיסמא חייבת להכיל:</p>
+          <ul>
+            {state.error.password.map((error) => (
+              <li key={error}>{error}</li>
+            ))}
+          </ul>
+        </div>
+ 
+      )}
+
       <div className="form_item">
         <HoverCard>
           <HoverCardTrigger>
             <Label htmlFor="confirmPassword" className="text-sm font-semibold text-gray-700 mb-1 block">הכנס שוב סיסמא</Label>
-            <Input type="password" id="confirmPassword" placeholder="••••••••" className="input_underscore"></Input>
+            <Input type="password" id="confirmPassword" name="confirmPassword" placeholder="••••••••" className="input_underscore"></Input>
           </HoverCardTrigger>
           <HoverCardContent>
             {passwordRequirements}
           </HoverCardContent>
         </HoverCard>
       </div>
+      {state?.error?.confirmPassword && (
+        <div className="form_error">
+          {state.error.confirmPassword.includes("הסיסמאות אינן מתאימות") && (
+            <p className="font-semibold">הסיסמאות אינן מתאימות</p>
+          )}
+          <p> הסיסמא חייבת להכיל:</p>
+          <ul>
+            {state.error.confirmPassword
+              .filter(error => error !== "הסיסמאות אינן מתאימות")
+              .map((error) => (
+              <li key={error}>{error}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       <div className="form_item">
         <Label htmlFor="phoneNum" className="text-sm font-semibold text-gray-700 mb-1 block">מספר טלפון</Label>
-        <Input type="tel" id="phoneNum" pattern="[0-9]{10}" placeholder="0501234567" className="input_underscore"></Input>
+        <Input type="tel" id="phoneNum" name="phoneNum"  placeholder="050-1234567" className="input_underscore"></Input>
       </div>
+      {state?.error?.phoneNum && (
+        <p className="form_error">{state.error.phoneNum}</p>
+      )}
+
       <div className="form_item">
         <Popover>
           <PopoverTrigger asChild>
@@ -110,7 +164,16 @@ const SignupForm = () => {
             />
           </PopoverContent>
         </Popover>
+        <input
+          type="hidden"
+          name="date"
+          value={date ? date.toISOString().slice(0,10):""}
+        />
       </div>
+      {state?.error?.date && (
+        <p className="form_error">{state.error.date[0]}</p>
+      )}
+
       <div className="flex justify-center w-full">
         <SubmitButton
           className="mt-3 px-5 py-5 rounded-sm bg-blue-500  text-white text-lg font-semibold"
