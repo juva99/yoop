@@ -26,10 +26,7 @@ const GameCard: React.FC<Props> = ({ game }) => {
           <p className="text-gray-500">
             {date} | {time} {price && "|" + price + "₪"}
           </p>
-          <div className="players mt-2 flex items-center justify-start gap-3">
-            <AvatarGroup players={players} />
-            {players.length > 5 && <span>+{players.length - 5}</span>}
-          </div>
+          <AvatarGroup players={players} />
         </div>
       </div>
     </Link>

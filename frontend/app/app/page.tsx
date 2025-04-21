@@ -15,6 +15,8 @@ export default function Home() {
       { name: "אלפא", image: "bla.ico" },
       { name: "סקיבידי", image: "bla.ico" },
       { name: "ריזז", image: "bla.ico" },
+      { name: "ריזז", image: "bla.ico" },
+      { name: "ריזז", image: "bla.ico" },
     ],
     price: 30,
   };
@@ -42,6 +44,8 @@ export default function Home() {
         { name: "Player 2", image: "favicon.ico" },
         { name: "Player 3", image: "favicon.ico" },
         { name: "Player 4", image: "favicon.ico" },
+        { name: "Player 5", image: "favicon.ico" },
+        { name: "Player 5", image: "favicon.ico" },
         { name: "Player 5", image: "favicon.ico" },
       ],
     },

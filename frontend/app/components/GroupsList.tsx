@@ -25,7 +25,7 @@ interface Props {
 
 const GroupsList: React.FC<Props> = ({ groups }) => {
   return (
-    <div className="w-full">
+    <div className="border-elements w-full">
       <Carousel className="w-full" opts={{ direction: "rtl", loop: true }}>
         <CarouselContent className="-ml-2 md:-ml-4">
           {groups.map((group) => (
@@ -34,22 +34,13 @@ const GroupsList: React.FC<Props> = ({ groups }) => {
               className="basis-full pl-2 md:basis-1/2 md:pl-4 lg:basis-1/3"
             >
               <Link href={`/group/${group.id}`} className="block h-full">
-                <div className="h-full rounded-lg border border-[#e5e5e6] p-6">
+                <div className="border-elements h-full rounded-lg border p-6">
                   <div className="mb-4 border-b border-gray-200 pb-2 text-center">
                     <p className="text-[20px] font-medium text-blue-400">
                       {group.name}
                     </p>
                   </div>
                   <AvatarGroup players={group.players} />
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      {group.players.length > 5 && (
-                        <span className="ml-2 text-sm font-medium">
-                          +{group.players.length - 5}
-                        </span>
-                      )}
-                    </div>
-                  </div>
                 </div>
               </Link>
             </CarouselItem>
