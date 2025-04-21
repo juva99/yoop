@@ -92,6 +92,10 @@
   @apply  mb-2 mt-2;
 }
 
+.form_label {
+  @apply mb-1 block text-sm font-semibold text-gray-700
+}
+
 .form_error {
   @apply text-sm text-red-500;
 }

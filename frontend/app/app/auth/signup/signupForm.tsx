@@ -59,7 +59,7 @@ const SignupForm = () => {
       <div className="form_item">
         <Label
           htmlFor="firstName"
-          className="mb-1 block text-sm font-semibold text-gray-700"
+          className="form_label"
         >
           שם פרטי
         </Label>
@@ -78,7 +78,7 @@ const SignupForm = () => {
       <div className="form_item">
         <Label
           htmlFor="lastName"
-          className="mb-1 block text-sm font-semibold text-gray-700"
+          className="form_label"
         >
           שם משפחה
         </Label>
@@ -97,7 +97,7 @@ const SignupForm = () => {
       <div className="form_item">
         <Label
           htmlFor="email"
-          className="mb-1 block text-sm font-semibold text-gray-700"
+          className="form_label"
         >
           אימייל
         </Label>
@@ -116,7 +116,7 @@ const SignupForm = () => {
           <HoverCardTrigger>
             <Label
               htmlFor="password"
-              className="mb-1 block text-sm font-semibold text-gray-700"
+              className="form_label"
             >
               סיסמא
             </Label>
@@ -147,7 +147,7 @@ const SignupForm = () => {
           <HoverCardTrigger>
             <Label
               htmlFor="confirmPassword"
-              className="mb-1 block text-sm font-semibold text-gray-700"
+              className="form_label"
             >
               הכנס שוב סיסמא
             </Label>
@@ -181,7 +181,7 @@ const SignupForm = () => {
       <div className="form_item">
         <Label
           htmlFor="phoneNum"
-          className="mb-1 block text-sm font-semibold text-gray-700"
+          className="form_label"
         >
           מספר טלפון
         </Label>
