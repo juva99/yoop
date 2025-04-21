@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { BACKEND_URL } from "./constants";
-import { FormState, SignupFormSchema } from "./type";
+import { FormState, LoginFormSchema, SignupFormSchema } from "./type";
 
 export async function signup(
   state: FormState,
@@ -37,6 +37,40 @@ export async function signup(
   } else {
     return {
       message: response.status === 409 ? "קיים משתמש עם כתובת האימייל שבחרת" : response.statusText
+    }
+  }
+}
+
+export async function login(
+  state: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const validationFields = LoginFormSchema.safeParse({
+    userEmail: formData.get("userEmail"),
+    pass: formData.get("pass"),
+  });
+
+  if (!validationFields.success) {
+    return {
+      error: validationFields.error.flatten().fieldErrors
+    }
+  }
+
+  const response = await fetch(`${BACKEND_URL}/auth/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(validationFields.data)
+  });
+
+  if (response.ok) {
+    //temp
+    const result = await response.json();
+    console.log(result);
+  } else {
+    return {
+      message: response.status === 401 ? "הפרטים לא נכונים" : response.statusText
     }
   }
 }

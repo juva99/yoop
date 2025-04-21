@@ -8,7 +8,6 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 export class AuthController {
   constructor(private readonly authService: AuthService) { }
   
-  // TODO: add return type
   @Post('signup')
   async registerUser(@Body() createUserDto: CreateUserDto) {
     return await this.authService.registerUser(createUserDto)
@@ -17,6 +16,7 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() req) {
+    //temp
     return req.user;
   }
 }

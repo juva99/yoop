@@ -53,11 +53,11 @@ export const SignupFormSchema = z.object({
       const cleaned = val.replace('/-', '');
       return cleaned.startsWith('+972') ? '0' + cleaned.slice(4) : cleaned;
     }),
-birthDay: z
-  .string()
-  .trim()
-  .regex(/^\d{4}-\d{2}-\d{2}$/, { message: "הכנס תאריך תקין" })
-  .refine(val => !isNaN(Date.parse(val)), { message: "בבקשה הכנס תאריך תקין" }),
+  birthDay: z
+    .string()
+    .trim()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, { message: "הכנס תאריך תקין" })
+    .refine(val => !isNaN(Date.parse(val)), { message: "בבקשה הכנס תאריך תקין" }),
 })
 .refine((data) => data.pass === data.passConfirm, {
   message: "הסיסמאות אינן מתאימות",
@@ -69,7 +69,7 @@ export const LoginFormSchema = z.object({
   userEmail: z
   .string()
   .trim()
-    .email({ message: "בבקשה הכנס כתובת מייל תקינה" }),
+  .email({ message: "בבקשה הכנס כתובת מייל תקינה" }),
   pass: z
   .string()
   .trim()
