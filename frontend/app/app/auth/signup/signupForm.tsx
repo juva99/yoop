@@ -1,6 +1,5 @@
 "use client";
 
-
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { useActionState, useState } from "react";
@@ -53,14 +52,10 @@ const SignupForm = () => {
 
   return (
     <form action={action}>
-      {state?.message &&
-        <p className="form_error">{state.message}</p>}
+      {state?.message && <p className="form_error">{state.message}</p>}
 
       <div className="form_item">
-        <Label
-          htmlFor="firstName"
-          className="form_label"
-        >
+        <Label htmlFor="firstName" className="form_label">
           שם פרטי
         </Label>
         <Input
@@ -76,10 +71,7 @@ const SignupForm = () => {
       )}
 
       <div className="form_item">
-        <Label
-          htmlFor="lastName"
-          className="form_label"
-        >
+        <Label htmlFor="lastName" className="form_label">
           שם משפחה
         </Label>
         <Input
@@ -95,10 +87,7 @@ const SignupForm = () => {
       )}
 
       <div className="form_item">
-        <Label
-          htmlFor="userEmail"
-          className="form_label"
-        >
+        <Label htmlFor="userEmail" className="form_label">
           אימייל
         </Label>
         <Input
@@ -109,15 +98,14 @@ const SignupForm = () => {
           className="input_underscore"
         ></Input>
       </div>
-      {state?.error?.userEmail && <p className="form_error">{state.error.userEmail}</p>}
+      {state?.error?.userEmail && (
+        <p className="form_error">{state.error.userEmail}</p>
+      )}
 
       <div className="form_item">
         <HoverCard>
           <HoverCardTrigger>
-            <Label
-              htmlFor="pass"
-              className="form_label"
-            >
+            <Label htmlFor="pass" className="form_label">
               סיסמא
             </Label>
             <Input
@@ -145,10 +133,7 @@ const SignupForm = () => {
       <div className="form_item">
         <HoverCard>
           <HoverCardTrigger>
-            <Label
-              htmlFor="passConfirm"
-              className="form_label"
-            >
+            <Label htmlFor="passConfirm" className="form_label">
               הכנס שוב סיסמא
             </Label>
             <Input
@@ -179,10 +164,7 @@ const SignupForm = () => {
       )}
 
       <div className="form_item">
-        <Label
-          htmlFor="phoneNum"
-          className="form_label"
-        >
+        <Label htmlFor="phoneNum" className="form_label">
           מספר טלפון
         </Label>
         <Input

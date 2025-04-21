@@ -1,25 +1,21 @@
-"use client"
+"use client";
 
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import SubmitButton from "@/components/ui/submitButton"
-import { useActionState } from "react"
-import Link from "next/link"
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import SubmitButton from "@/components/ui/submitButton";
+import { useActionState } from "react";
+import Link from "next/link";
 import { login } from "@/lib/auth";
 
 const LoginForm = () => {
-  const [state, action] = useActionState(login,undefined);
+  const [state, action] = useActionState(login, undefined);
 
   return (
     <form action={action}>
-      {state?.message &&
-        <p className="form_error">{state.message}</p>}
+      {state?.message && <p className="form_error">{state.message}</p>}
 
       <div className="form_item">
-        <Label
-          htmlFor="userEmail"
-          className="form_label"
-        >
+        <Label htmlFor="userEmail" className="form_label">
           אימייל
         </Label>
         <Input
@@ -30,14 +26,12 @@ const LoginForm = () => {
           className="input_underscore"
         ></Input>
       </div>
-      {state?.error?.userEmail &&
-        <p className="form_error">{state.error.userEmail}</p>}
+      {state?.error?.userEmail && (
+        <p className="form_error">{state.error.userEmail}</p>
+      )}
 
       <div className="form_item">
-        <Label
-          htmlFor="pass"
-          className="form_label"
-        >
+        <Label htmlFor="pass" className="form_label">
           סיסמא
         </Label>
         <Input
@@ -46,17 +40,15 @@ const LoginForm = () => {
           name="pass"
           placeholder="••••••••"
           className="input_underscore"
-        >
-        </Input>
+        ></Input>
         <Link
           href={"/auth/signup"}
-          className="font-medium underline text-sm mr-2 text-blue-500 hover:text-blue-700"
-          >
-            שכחת סיסמא?
+          className="mr-2 text-sm font-medium text-blue-500 underline hover:text-blue-700"
+        >
+          שכחת סיסמא?
         </Link>
       </div>
-      {state?.error?.pass &&
-        <p className="form_error">{state.error.pass}</p>}
+      {state?.error?.pass && <p className="form_error">{state.error.pass}</p>}
 
       <div className="flex w-full justify-center">
         <SubmitButton className="mt-3 rounded-sm bg-blue-500 px-5 py-5 text-lg font-semibold text-white">
@@ -64,7 +56,7 @@ const LoginForm = () => {
         </SubmitButton>
       </div>
     </form>
-  )
-}
+  );
+};
 
 export default LoginForm;

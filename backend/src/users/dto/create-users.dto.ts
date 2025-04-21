@@ -1,4 +1,12 @@
-import { IsBoolean, IsDateString, IsEmail, IsNotEmpty, IsOptional, IsString, Length } from 'class-validator';
+import {
+  IsBoolean,
+  IsDateString,
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Length,
+} from 'class-validator';
 
 export class CreateUserDto {
   uid: string;
@@ -42,6 +50,6 @@ export class CreateUserDto {
 
   @IsOptional()
   @IsString()
-  @Length(1,10)
+  @Length(1, 10)
   role?: string;
 }

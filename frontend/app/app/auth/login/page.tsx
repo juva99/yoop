@@ -6,20 +6,19 @@ import LoginForm from "./loginForm";
 import Image from "next/image";
 import Link from "next/link";
 
-
 const Login = () => {
   return (
-    <div >
-      <div className="flex w-full direction-ltr">
+    <div>
+      <div className="direction-ltr flex w-full">
         <Image
           src="/basketballPlayer.png"
           alt="Basketball Player Photo"
           width={120}
           height={50}
-          className=" mr-auto "
+          className="mr-auto"
         />
       </div>
-      
+
       <div className="mx-5 text-right">
         <h1 className="text-title text-4xl font-bold">רגע רגע...</h1>
         <h1 className="text-title text-4xl font-bold">מי אתה בכלל?</h1>
@@ -49,18 +48,18 @@ const Login = () => {
         <p className="text-gray-600">עדיין לא נרשמת?</p>
         <Link
           href={"/auth/signup"}
-          className="font-medium underline text-blue-500 hover:text-blue-700"
+          className="font-medium text-blue-500 underline hover:text-blue-700"
         >
           הרשם עכשיו
         </Link>
-      </div>   
+      </div>
 
       <Image
         src="/grass.png"
         alt="Grass Photo"
         width={100}
         height={100}
-        className="absolute bottom-0 left-0 w-full h-10 object-cover"
+        className="absolute bottom-0 left-0 h-10 w-full object-cover"
         style={{ zIndex: -1 }}
       />
     </div>

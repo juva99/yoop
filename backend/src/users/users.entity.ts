@@ -1,6 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -15,7 +14,7 @@ export class User {
   @Column()
   pass: string;
 
-  @Column({unique: true})
+  @Column({ unique: true })
   userEmail: string;
 
   @Column({ type: 'date', nullable: true })

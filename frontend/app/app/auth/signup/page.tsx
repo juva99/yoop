@@ -7,7 +7,6 @@ import Image from "next/image";
 import SignupForm from "./signupForm";
 import Link from "next/link";
 
-
 const SignUp = () => {
   return (
     <>
@@ -50,7 +49,7 @@ const SignUp = () => {
           <p className="text-gray-600">כבר רשום למערכת?</p>
           <Link
             href={"/auth/login"}
-            className="font-medium underline text-blue-500 hover:text-blue-700"
+            className="font-medium text-blue-500 underline hover:text-blue-700"
           >
             התחבר עכשיו
           </Link>

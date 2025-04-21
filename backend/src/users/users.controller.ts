@@ -5,25 +5,25 @@ import { User } from './users.entity';
 
 @Controller('users')
 export class UsersController {
-    constructor(private readonly userService: UsersService) {}
+  constructor(private readonly userService: UsersService) {}
 
-    @Get()
-    async getAll(): Promise<User[]> {
-      return await this.userService.findAll();
-    }
-  
-    @Get("/:id")
-    async getById(@Param('id') id: string): Promise<User>{
-      return await this.userService.findById(id);
-    }
+  @Get()
+  async getAll(): Promise<User[]> {
+    return await this.userService.findAll();
+  }
 
-    @Post()
-    async create(@Body() createUserDto: CreateUserDto): Promise<User> {
-      return await this.userService.create(createUserDto);
-    }
+  @Get('/:id')
+  async getById(@Param('id') id: string): Promise<User> {
+    return await this.userService.findById(id);
+  }
 
-    @Delete('/:id')
-    async deleteOne(@Param('id') id: string){
-      return await this.userService.deleteOne(id);
-    }
+  @Post()
+  async create(@Body() createUserDto: CreateUserDto): Promise<User> {
+    return await this.userService.create(createUserDto);
+  }
+
+  @Delete('/:id')
+  async deleteOne(@Param('id') id: string) {
+    return await this.userService.deleteOne(id);
+  }
 }
