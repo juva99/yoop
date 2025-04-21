@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { BACKEND_URL } from "./constants";
 import { FormState, LoginFormSchema, SignupFormSchema } from "./type";
+import { createSession } from "./session";
 
 export async function signup(
   state: FormState,
@@ -65,9 +66,15 @@ export async function login(
   });
 
   if (response.ok) {
-    //temp
     const result = await response.json();
-    console.log(result);
+
+    await createSession({
+      user: {
+        uid: result.uid,
+        name: result.name,
+      },
+    });
+    redirect("/");
   } else {
     return {
       message: response.status === 401 ? "הפרטים לא נכונים" : response.statusText
