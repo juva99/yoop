@@ -53,7 +53,7 @@ const SignupForm = () => {
 
   return (
     <form action={action}>
-      {state?.message && <p className="form_error">{state.message}</p>}
+      {state?.message && <p className="form_error">{state.message}!!!</p>}
 
       <div className="form_item">
         <Label

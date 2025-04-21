@@ -34,8 +34,7 @@ export async function signup(
 
   if (response.ok) {
     redirect("/auth/login")
-  }
-  else {
+  } else {
     return {
       message: response.status === 409 ? "קיים משתמש עם כתובת האימייל שבחרת" : response.statusText
     }

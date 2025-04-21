@@ -7,10 +7,6 @@ import Image from "next/image";
 import SignupForm from "./signupForm";
 import Link from "next/link";
 
-function onSubmit(event: React.FormEvent<HTMLFormElement>) {
-  event.preventDefault(); // Prevent the default form submission behavior
-  console.log("form submitted");
-}
 
 const SignUp = () => {
   return (

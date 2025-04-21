@@ -59,7 +59,19 @@ birthDay: z
   .regex(/^\d{4}-\d{2}-\d{2}$/, { message: "הכנס תאריך תקין" })
   .refine(val => !isNaN(Date.parse(val)), { message: "בבקשה הכנס תאריך תקין" }),
 })
-  .refine((data) => data.pass === data.passConfirm, {
+.refine((data) => data.pass === data.passConfirm, {
   message: "הסיסמאות אינן מתאימות",
   path: ["passConfirm"], // path of error
+});
+
+
+export const LoginFormSchema = z.object({
+  userEmail: z
+  .string()
+  .trim()
+    .email({ message: "בבקשה הכנס כתובת מייל תקינה" }),
+  pass: z
+  .string()
+  .trim()
+  .min(8, { message: "הסיסמא חייבת להכיל לפחות 8 תווים " }),
 });
