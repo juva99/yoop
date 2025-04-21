@@ -5,11 +5,11 @@ export type FormState =
     error?: {
       firstName?: string[];
       lastName?: string[];
-      email?: string[];
-      password?: string[];
-      confirmPassword?: string[];
+      userEmail?: string[];
+      pass?: string[];
+      passConfirm?: string[];
       phoneNum?: string[];
-      date?: string[];
+      birthDay?: string[];
     };
     message?: string;
   }
@@ -25,18 +25,18 @@ export const SignupFormSchema = z.object({
     .string()
     .trim()
     .min(2, { message: "שם משפחה חייב להכיל לפחות שתי אותיות" }),
-  email: z
+  userEmail: z
     .string()
     .trim()
     .email({ message: "בבקשה הכנס כתובת מייל תקינה" }),
-  password: z
+  pass: z
     .string()
     .trim()
     .min(8, { message: "לפחות 8 תווים" })
     .regex(/[a-zA-Z]/, { message: "אותיות גדולות וקטנות באנגלית" })
     .regex(/[0-9]/, { message: "לפחות מספר אחד" })
     .regex(/[^a-zA-Z0-9]/, { message: "לפחות תו מיוחד אחד" }),
-  confirmPassword: z
+  passConfirm: z
     .string()
     .trim()
     .min(8, { message: "לפחות 8 תווים" })
@@ -53,13 +53,13 @@ export const SignupFormSchema = z.object({
       const cleaned = val.replace('/-', '');
       return cleaned.startsWith('+972') ? '0' + cleaned.slice(4) : cleaned;
     }),
-  date: z
+birthDay: z
   .string()
   .trim()
   .regex(/^\d{4}-\d{2}-\d{2}$/, { message: "הכנס תאריך תקין" })
   .refine(val => !isNaN(Date.parse(val)), { message: "בבקשה הכנס תאריך תקין" }),
 })
-  .refine((data) => data.password === data.confirmPassword, {
+  .refine((data) => data.pass === data.passConfirm, {
   message: "הסיסמאות אינן מתאימות",
-  path: ["confirmPassword"], // path of error
+  path: ["passConfirm"], // path of error
 });

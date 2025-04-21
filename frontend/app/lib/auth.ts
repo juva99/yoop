@@ -11,11 +11,11 @@ export async function signup(
   const validationFields = SignupFormSchema.safeParse({
     firstName: formData.get("firstName"),
     lastName: formData.get("lastName"),
-    email: formData.get("email"),
-    password: formData.get("password"),
-    confirmPassword: formData.get("confirmPassword"),
+    userEmail: formData.get("userEmail"),
+    pass: formData.get("pass"),
+    passConfirm: formData.get("passConfirm"),
     phoneNum: formData.get("phoneNum"),
-    date: formData.get("date")
+    birthDay: formData.get("birthDay")
   });
 
   if (!validationFields.success) {
@@ -23,7 +23,7 @@ export async function signup(
       error: validationFields.error.flatten().fieldErrors
     }
   }
-
+  
   const response = await fetch(`${BACKEND_URL}/auth/signup`, {
     method: "POST",
     headers: {
@@ -37,8 +37,7 @@ export async function signup(
   }
   else {
     return {
-      message: response.status === 409 ? "User with this email is already exist" : response.statusText
+      message: response.status === 409 ? "קיים משתמש עם כתובת האימייל שבחרת" : response.statusText
     }
   }
-
 }

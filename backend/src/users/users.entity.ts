@@ -33,6 +33,6 @@ export class User {
   @Column({ nullable: true })
   phoneNum?: string;
 
-  @Column()
-  role: string;
+  @Column({ nullable: true })
+  role?: string;
 }

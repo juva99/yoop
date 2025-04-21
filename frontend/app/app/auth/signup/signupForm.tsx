@@ -1,10 +1,9 @@
 "use client";
 
-import { useFormState } from "react-dom";
 
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
-import { useState } from "react";
+import { useActionState, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -49,8 +48,8 @@ const passwordRequirements = (
 );
 
 const SignupForm = () => {
-  const [date, setDate] = useState<Date>();
-  const [state, action] = useFormState(signup, undefined);
+  const [birthDay, setBirthDay] = useState<Date>();
+  const [state, action] = useActionState(signup, undefined);
 
   return (
     <form action={action}>
@@ -96,34 +95,34 @@ const SignupForm = () => {
 
       <div className="form_item">
         <Label
-          htmlFor="email"
+          htmlFor="userEmail"
           className="form_label"
         >
           אימייל
         </Label>
         <Input
           type="email"
-          id="email"
-          name="email"
+          id="userEmail"
+          name="userEmail"
           placeholder="example@email.com"
           className="input_underscore"
         ></Input>
       </div>
-      {state?.error?.email && <p className="form_error">{state.error.email}</p>}
+      {state?.error?.userEmail && <p className="form_error">{state.error.userEmail}</p>}
 
       <div className="form_item">
         <HoverCard>
           <HoverCardTrigger>
             <Label
-              htmlFor="password"
+              htmlFor="pass"
               className="form_label"
             >
               סיסמא
             </Label>
             <Input
               type="password"
-              id="password"
-              name="password"
+              id="pass"
+              name="pass"
               placeholder="••••••••"
               className="input_underscore"
             ></Input>
@@ -131,11 +130,11 @@ const SignupForm = () => {
           <HoverCardContent>{passwordRequirements}</HoverCardContent>
         </HoverCard>
       </div>
-      {state?.error?.password && (
+      {state?.error?.pass && (
         <div className="form_error">
           <p>הסיסמא חייבת להכיל:</p>
           <ul>
-            {state.error.password.map((error) => (
+            {state.error.pass.map((error) => (
               <li key={error}>{error}</li>
             ))}
           </ul>
@@ -146,15 +145,15 @@ const SignupForm = () => {
         <HoverCard>
           <HoverCardTrigger>
             <Label
-              htmlFor="confirmPassword"
+              htmlFor="passConfirm"
               className="form_label"
             >
               הכנס שוב סיסמא
             </Label>
             <Input
               type="password"
-              id="confirmPassword"
-              name="confirmPassword"
+              id="passConfirm"
+              name="passConfirm"
               placeholder="••••••••"
               className="input_underscore"
             ></Input>
@@ -162,14 +161,14 @@ const SignupForm = () => {
           <HoverCardContent>{passwordRequirements}</HoverCardContent>
         </HoverCard>
       </div>
-      {state?.error?.confirmPassword && (
+      {state?.error?.passConfirm && (
         <div className="form_error">
-          {state.error.confirmPassword.includes("הסיסמאות אינן מתאימות") && (
+          {state.error.passConfirm.includes("הסיסמאות אינן מתאימות") && (
             <p className="font-semibold">הסיסמאות אינן מתאימות</p>
           )}
           <p> הסיסמא חייבת להכיל:</p>
           <ul>
-            {state.error.confirmPassword
+            {state.error.passConfirm
               .filter((error) => error !== "הסיסמאות אינן מתאימות")
               .map((error) => (
                 <li key={error}>{error}</li>
@@ -205,30 +204,30 @@ const SignupForm = () => {
               className={cn(
                 "mt-3 w-full justify-start text-left font-normal",
                 "input_underscore",
-                !date && "text-muted-foreground",
+                !birthDay && "text-muted-foreground",
               )}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {date ? format(date, "PPP") : <span>בחר תאריך לידה</span>}
+              {birthDay ? format(birthDay, "PPP") : <span>בחר תאריך לידה</span>}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0">
             <Calendar
               mode="single"
-              selected={date}
-              onSelect={setDate}
+              selected={birthDay}
+              onSelect={setBirthDay}
               initialFocus
             />
           </PopoverContent>
         </Popover>
         <input
           type="hidden"
-          name="date"
-          value={date ? date.toISOString().slice(0, 10) : ""}
+          name="birthDay"
+          value={birthDay ? birthDay.toISOString().slice(0, 10) : ""}
         />
       </div>
-      {state?.error?.date && (
-        <p className="form_error">{state.error.date[0]}</p>
+      {state?.error?.birthDay && (
+        <p className="form_error">{state.error.birthDay[0]}</p>
       )}
 
       <div className="flex w-full justify-center">
