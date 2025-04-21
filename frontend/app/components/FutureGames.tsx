@@ -13,12 +13,15 @@ const FutureGames: React.FC<Games> = ({ games }) => {
   const [currentGame, setCurrentGame] = useState(0);
 
   const handlers = useSwipeable({
-    onSwipedDown: () => {
+    onSwipedDown: (eventData) => {
       upHandler();
     },
-    onSwipedUp: () => {
+    onSwipedUp: (eventData) => {
       downHandler();
     },
+    preventScrollOnSwipe: true,
+    trackMouse: false,
+    trackTouch: true,
   });
 
   const downHandler = () => {
