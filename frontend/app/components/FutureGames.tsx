@@ -57,7 +57,7 @@ const FutureGames: React.FC<Games> = ({ games }) => {
       </div>
       <div className="bullets-container left-0 flex h-[130px] items-center pl-5">
         <ul className="space-y-2">
-          {games.map((game, i) => (
+          {games.slice(0, 5).map((game, i) => (
             <li key={i}>
               <div
                 className={`h-3 w-3 cursor-pointer rounded-full ${currentGame == i ? "bg-black" : "bg-gray-200"}`}
