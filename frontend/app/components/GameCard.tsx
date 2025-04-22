@@ -1,7 +1,9 @@
 import React from "react";
-import { PiBasketball, PiPlus, PiSoccerBall } from "react-icons/pi";
+import { PiBasketball, PiSoccerBall } from "react-icons/pi";
 import { Game } from "@/app/types/Game";
 import Link from "next/link";
+import AvatarGroup from "./AvatarGroup";
+
 type Props = {
   game: Game;
 };
@@ -24,20 +26,7 @@ const GameCard: React.FC<Props> = ({ game }) => {
           <p className="text-gray-500">
             {date} | {time} {price && "|" + price + "₪"}
           </p>
-          <div className="players mt-2 flex items-center justify-end gap-3">
-            <div className="flex gap-x-1">
-              {players.slice(0, 4).map((player, index) => (
-                <img
-                  key={index}
-                  src={player.image}
-                  alt={player.name}
-                  className="h-8 w-8 rounded-full border-2 border-white"
-                />
-              ))}
-            </div>
-
-            {players.length > 4 && <span>+{players.length - 4}</span>}
-          </div>
+          <AvatarGroup players={players} />
         </div>
       </div>
     </Link>
