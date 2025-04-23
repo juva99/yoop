@@ -73,6 +73,7 @@ export async function login(
         uid: result.uid,
         name: result.name,
       },
+      accessToken: result.accessToken
     });
     redirect("/");
   } else {

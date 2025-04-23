@@ -3,6 +3,7 @@ import GroupsList from "@/components/GroupsList";
 import { MapView } from "@/components/MapView";
 
 export default function Home() {
+
   const sampleGame = {
     id: "g1",
     field_name: "עמק אילון 9",
