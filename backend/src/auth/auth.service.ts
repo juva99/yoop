@@ -21,18 +21,33 @@ export class AuthService {
     return this.usersService.create(createUserDto);
   }
 
+
   async validateLocalUser(email, password) {
-    const user = await this.usersService.findByEmail(email);
-    if (!user) {
-      throw new UnauthorizedException('הפרטים שהוכנסו אינם נכונים');
+    try {
+      const user = await this.usersService.findByEmail(email);
+
+      if (!user) {
+        throw new UnauthorizedException('פרטי ההתחברות שגויים');
+      }
+
+      const isPasswordMatched = await verify(user.pass, password);
+    
+      if (!isPasswordMatched) {
+        throw new UnauthorizedException('פרטי ההתחברות שגויים');
+      }
+
+      return {
+        uid: user.uid,
+        name: user.firstName + ' ' + user.lastName,
+      }   
+      
+    } catch (error) {
+      console.error('Auth error:', error);
+
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      } 
+      throw new UnauthorizedException('אירעה שגיאה, אנא נסה שוב מאוחר יותר');
     }
-    const isPasswordMatched = await verify(user.pass, password);
-    if (!isPasswordMatched) {
-      throw new UnauthorizedException('הסיסמא אינה נכונה');
-    }
-    return {
-      uid: user.uid,
-      name: user.firstName + ' ' + user.lastName,
-    };
   }
 }
