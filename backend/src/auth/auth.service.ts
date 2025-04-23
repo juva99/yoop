@@ -12,8 +12,9 @@ import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly usersService: UsersService,
-    private readonly jwtService: JwtService
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
   ) {}
 
   async registerUser(createUserDto: CreateUserDto) {
@@ -26,7 +27,6 @@ export class AuthService {
     return this.usersService.create(createUserDto);
   }
 
-
   async validateLocalUser(email, password) {
     try {
       const user = await this.usersService.findByEmail(email);
@@ -36,7 +36,7 @@ export class AuthService {
       }
 
       const isPasswordMatched = await verify(user.pass, password);
-    
+
       if (!isPasswordMatched) {
         throw new UnauthorizedException('פרטי ההתחברות שגויים');
       }
@@ -44,44 +44,42 @@ export class AuthService {
       return {
         uid: user.uid,
         name: user.firstName + ' ' + user.lastName,
-      }   
-
+      };
     } catch (error) {
       console.error('Auth error:', error);
 
       if (error instanceof UnauthorizedException) {
         throw error;
-      } 
+      }
       throw new UnauthorizedException('אירעה שגיאה, אנא נסה שוב מאוחר יותר');
     }
   }
-
 
   async login(userId: string, name?: string) {
     const { accessToken } = await this.generateTokens(userId);
     return {
       uid: userId,
       name: name,
-      accessToken
-    }
+      accessToken,
+    };
   }
-
 
   async generateTokens(userId: string) {
     const payload: AuthJwtPayload = { sub: userId };
     const [accessToken] = await Promise.all([
-      this.jwtService.signAsync(payload)])
-    
+      this.jwtService.signAsync(payload),
+    ]);
+
     return {
-      accessToken
-    }
+      accessToken,
+    };
   }
 
   async validateJwtUser(userId: string) {
     const user = await this.usersService.findById(userId);
 
     if (!user) {
-      throw new UnauthorizedException("המשתמש לא נמצא!");
+      throw new UnauthorizedException('המשתמש לא נמצא!');
     }
 
     const currentUser = { uid: user.uid };
@@ -89,4 +87,3 @@ export class AuthService {
     return currentUser;
   }
 }
-

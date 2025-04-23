@@ -21,7 +21,7 @@ import { AuthModule } from './auth/auth.module';
     }),
     UsersModule,
     AuthModule,
-    ConfigModule.forRoot({isGlobal: true})
+    ConfigModule.forRoot({ isGlobal: true }),
   ],
   controllers: [],
 })

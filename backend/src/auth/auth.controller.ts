@@ -1,4 +1,11 @@
-import { Controller, Post, Body, UseGuards, Request, Get } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Request,
+  Get,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/users/dto/create-users.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
@@ -20,10 +27,10 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get("protected")
+  @Get('protected')
   getAll(@Request() req) {
     return {
-      message: `Permission granted for this protected API. Your ID: ${req.user.uid}`
-    }
+      message: `Permission granted for this protected API. Your ID: ${req.user.uid}`,
+    };
   }
 }
