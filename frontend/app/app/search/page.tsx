@@ -12,9 +12,8 @@ const page: React.FC<Props> = () => {
   return (
     <div className="p-10">
       <SearchGame />
-      <div className="mt-4 h-70 w-[100%] border-1">
+      <div className="mt-4 h-70 w-[100%]">
         <FilteredGames games={filteredGames} />
-        games components will be rendered here
       </div>
     </div>
   );

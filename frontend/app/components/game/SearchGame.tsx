@@ -44,7 +44,7 @@ const SearchGame: React.FC<Props> = ({}) => {
       <div className="search-game__filters mt-2 mb-2 flex gap-2">
         <Filter
           text="איזה משחק?"
-          icon={<PiSoccerBall />}
+          icon={<></>}
           options={typeOptions}
           value={filters.type}
           onChange={(newType) => setFilters({ ...filters, type: newType })}
