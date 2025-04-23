@@ -56,3 +56,9 @@ export async function getSession() {
     redirect("/auth/login");
   }
 }
+
+// needed later for signout
+export async function deleteSession() {
+  const cookieStore = await cookies();
+  cookieStore.delete("session");
+}
