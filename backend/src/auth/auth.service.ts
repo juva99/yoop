@@ -26,7 +26,7 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException('הפרטים שהוכנסו אינם נכונים');
     }
-    const isPasswordMatched = verify(user.pass, password);
+    const isPasswordMatched = await verify(user.pass, password);
     if (!isPasswordMatched) {
       throw new UnauthorizedException('הסיסמא אינה נכונה');
     }
