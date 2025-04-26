@@ -10,7 +10,7 @@ export type Session = {
     name: string,
   };
   accessToken: string;
-  // refreshToken: string;
+  refreshToken: string;
 } 
 
 const secretKey = process.env.SESSION_SECRET_KEY!;
@@ -38,9 +38,7 @@ export async function createSession(payload: Session) {
 
 export async function getSession() {
   const cookieStore = await cookies(); 
-  
   const cookie = cookieStore.get("session")?.value;
-
   if (!cookie)
     return null;
   
@@ -61,4 +59,37 @@ export async function getSession() {
 export async function deleteSession() {
   const cookieStore = await cookies();
   cookieStore.delete("session");
+}
+
+export async function updateTokens({accessToken, refreshToken}: {
+  accessToken: string;
+  refreshToken: string;
+}) { 
+  const cookieStore = await cookies(); 
+  const cookie = cookieStore.get("session")?.value;
+  if (!cookie)
+    return null;
+  
+  try {
+    const { payload } = await jwtVerify(cookie, encodedKey);
+
+    if (!payload)
+      throw new Error("Session not found");
+
+    const newPayload: Session = {
+      user: {
+        uid: (payload.user as Session['user']).uid,
+        name: (payload.user as Session['user']).name,
+      },
+      accessToken,
+      refreshToken
+    }
+
+    await createSession(newPayload);
+  }
+  catch (error) {
+    console.error("Failed to update the tokens", error);
+    redirect("/auth/login");
+  }
+  
 }

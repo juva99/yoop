@@ -1,7 +1,7 @@
 import {
   ConflictException,
+  Inject,
   Injectable,
-  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { verify } from 'argon2';
@@ -9,12 +9,16 @@ import { CreateUserDto } from 'src/users/dto/create-users.dto';
 import { UsersService } from 'src/users/users.service';
 import { AuthJwtPayload } from './types/auth-jwtPayload';
 import { JwtService } from '@nestjs/jwt';
+import refreshConfig from './config/refresh.config';
+import { ConfigType } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
+    @Inject(refreshConfig.KEY)
+    private refreshTokenConfig: ConfigType<typeof refreshConfig>,
   ) {}
 
   async registerUser(createUserDto: CreateUserDto) {
@@ -56,22 +60,26 @@ export class AuthService {
   }
 
   async login(userId: string, name?: string) {
-    const { accessToken } = await this.generateTokens(userId);
+    const { accessToken, refreshToken } = await this.generateTokens(userId);
     return {
       uid: userId,
       name: name,
       accessToken,
+      refreshToken
     };
   }
 
   async generateTokens(userId: string) {
     const payload: AuthJwtPayload = { sub: userId };
-    const [accessToken] = await Promise.all([
+
+    const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload),
+      this.jwtService.signAsync(payload, this.refreshTokenConfig),
     ]);
 
     return {
       accessToken,
+      refreshToken
     };
   }
 
@@ -83,7 +91,27 @@ export class AuthService {
     }
 
     const currentUser = { uid: user.uid };
-
     return currentUser;
+  }
+
+  async validateRefreshToken(userId: string) {
+    const user = await this.usersService.findById(userId);
+
+    if (!user) {
+      throw new UnauthorizedException('המשתמש לא נמצא!');
+    }
+
+    const currentUser = { uid: user.uid };
+    return currentUser;
+  }
+
+  async refreshToken(userId: string, name?: string) {
+    const { accessToken, refreshToken } = await this.generateTokens(userId);
+    return {
+      uid: userId,
+      name: name,
+      accessToken,
+      refreshToken
+    };
   }
 }
