@@ -85,7 +85,7 @@
 }
 
 .input_underscore {
-  @apply mb-6 border-b-1 border-[#e2e4e5] text-right focus:outline-none;
+  @apply mb-5 border-b-1 border-[#e2e4e5] text-right focus:outline-none;
 }
 
 /* @media (prefers-color-scheme: dark) {
