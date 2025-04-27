@@ -1,7 +1,6 @@
 import FutureGames from "@/components/FutureGames";
 import GroupsList from "@/components/GroupsList";
 import { MapView } from "@/components/MapView";
-import SearchGame from "../components/game/SearchGame";
 
 export default function Home() {
   const sampleGame = {
@@ -81,7 +80,6 @@ export default function Home() {
       <div>
         <p className="text-subtitle text-xl font-bold">הקבוצות שלך</p>
         <GroupsList groups={groups} />
-        <SearchGame />
       </div>
     </div>
   );

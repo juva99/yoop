@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { Slider } from "primereact/slider";
 import { useState } from "react";
 type Props = {
-  // your props here
+  onFilterChange: (key: string, value: any) => void;
 };
 
 const formatTime = (value: number): string => {
@@ -13,8 +13,12 @@ const formatTime = (value: number): string => {
   return `${hours}:${paddedMinutes}`;
 };
 
-const TimeSlider: React.FC<Props> = ({}) => {
+const TimeSlider: React.FC<Props> = ({ onFilterChange }) => {
   const [timeRange, setTimeRange] = useState<[number, number]>([8, 22]);
+
+  useEffect(() => {
+    onFilterChange("time", timeRange);
+  }, [timeRange]);
 
   return (
     <div>

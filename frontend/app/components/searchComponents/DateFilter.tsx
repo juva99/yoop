@@ -12,12 +12,12 @@ import "primeicons/primeicons.css";
 
 type Props = {
   value: Date | null;
-  onChange: (date: Date) => void;
+  onFilterChange: (key: string, value: any) => void;
 };
 
-const FilterDate: React.FC<Props> = ({ value, onChange }) => {
+const DateFilter: React.FC<Props> = ({ onFilterChange }) => {
+  const [date, setDate] = useState<Date>(new Date()); /// here
   const op = useRef<OverlayPanel>(null);
-
   const formatDate = (date: Date | null): string =>
     date ? date.toLocaleDateString("he-IL") : "תאריך";
 
@@ -60,6 +60,10 @@ const FilterDate: React.FC<Props> = ({ value, onChange }) => {
     });
   }, []);
 
+  const dateHandler = (date: Date) => {
+    setDate(date);
+    onFilterChange("date", date);
+  };
   return (
     <div className="relative">
       <div
@@ -67,14 +71,14 @@ const FilterDate: React.FC<Props> = ({ value, onChange }) => {
         onClick={(e) => op.current?.toggle(e)}
       >
         <PiCalendarDuotone />
-        <span>{formatDate(value)}</span>
+        <span>{formatDate(date)}</span>
       </div>
 
       <OverlayPanel ref={op} dismissable className="z-20">
         <Calendar
           locale="he"
-          value={value}
-          onChange={(e) => onChange(e.value as Date)}
+          value={date}
+          onChange={(e) => dateHandler(e.value as Date)}
           inline
           showIcon={false}
         />
@@ -83,4 +87,4 @@ const FilterDate: React.FC<Props> = ({ value, onChange }) => {
   );
 };
 
-export default FilterDate;
+export default DateFilter;
