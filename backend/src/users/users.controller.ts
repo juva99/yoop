@@ -18,8 +18,12 @@ export class UsersController {
     }
 
     @Post()
-    async create(@Body() createUserDto: CreateUserDto): Promise<User> {
-      return await this.userService.create(createUserDto);
+    async create(@Body() createUserDto: CreateUserDto){
+      try {
+        await this.userService.create(createUserDto);}
+        catch(err){
+          console.log(err.code);
+        }
     }
 
     @Delete('/:id')
