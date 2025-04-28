@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import {
   PiSoccerBall,
@@ -9,27 +10,30 @@ import {
 } from "react-icons/pi";
 
 const Navbar = () => {
-  const [activePage, setActivePage] = useState<string>("home");
+  const pathname = usePathname();
+
+  const isActive = (path: string) => pathname === path;
+
   return (
     <nav className="fixed bottom-0 z-50 flex h-15 w-full items-center justify-around bg-gray-100">
       <Link href={"/"}>
         <PiHouseFill
-          className={`${activePage === "home" ? "font-black" : "text-elements"} size-[30px]`}
+          className={`${isActive("/") ? "font-black" : "text-elements"} size-[30px]`}
         />
       </Link>
-      <Link href={"/"}>
+      <Link href={"/create"}>
         <PiPlusCircle
-          className={`${activePage === "create" ? "font-black" : "text-elements"} size-[30px]`}
+          className={`${isActive("/create") ? "font-black" : "text-elements"} size-[30px]`}
         />
       </Link>
       <Link href={"/games"}>
         <PiSoccerBall
-          className={`${activePage === "" ? "font-black" : "text-elements"} size-[30px]`}
+          className={`${isActive("/games") ? "font-black" : "text-elements"} size-[30px]`}
         />
       </Link>
       <Link href={"/search"}>
         <PiMagnifyingGlass
-          className={`${activePage === "search" ? "font-black" : "text-elements"} size-[30px]`}
+          className={`${isActive("/search") ? "font-black" : "text-elements"} size-[30px]`}
         />
       </Link>
     </nav>
