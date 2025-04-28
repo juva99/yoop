@@ -2,7 +2,6 @@
 
 import React from "react";
 import { FcGoogle } from "react-icons/fc";
-import { FaFacebook } from "react-icons/fa";
 import Image from "next/image";
 import SignupForm from "./signupForm";
 import Link from "next/link";
@@ -39,9 +38,6 @@ const SignUp = () => {
           <div className="flex gap-2">
             <button type="button">
               <FcGoogle size={30} />
-            </button>
-            <button type="button">
-              <FaFacebook size={28} className="text-blue-700" />
             </button>
           </div>
         </div>
