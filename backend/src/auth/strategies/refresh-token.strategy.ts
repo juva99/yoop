@@ -9,7 +9,7 @@ import refreshConfig from '../config/refresh.config';
 import { Request } from 'express';
 
 @Injectable()
-export class RefreshStrategy extends PassportStrategy(Strategy,"refresh-jwt") {
+export class RefreshStrategy extends PassportStrategy(Strategy, 'refresh-jwt') {
   constructor(
     @Inject(refreshConfig.KEY)
     private refreshTokenCongif: ConfigType<typeof refreshConfig>,
@@ -23,11 +23,14 @@ export class RefreshStrategy extends PassportStrategy(Strategy,"refresh-jwt") {
       jwtFromRequest: ExtractJwt.fromBodyField('refresh'),
       secretOrKey: refreshTokenCongif.secret,
       ignoreExpiration: false,
-      passReqToCallback: true
+      passReqToCallback: true,
     });
   }
 
-  async validate(req: Request, payload: AuthJwtPayload): Promise<{ uid: string }> {
+  async validate(
+    req: Request,
+    payload: AuthJwtPayload,
+  ): Promise<{ uid: string }> {
     const userId = payload.sub;
     const refreshToken = req.body.refresh;
 

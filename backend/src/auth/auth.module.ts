@@ -20,7 +20,12 @@ import { RefreshStrategy } from './strategies/refresh-token.strategy';
     ConfigModule.forFeature(refreshConfig),
   ],
   controllers: [AuthController],
-  providers: [AuthService, UsersService, LocalStrategy, JwtStrategy, RefreshStrategy],
+  providers: [
+    AuthService,
+    UsersService,
+    LocalStrategy,
+    JwtStrategy,
+    RefreshStrategy,
+  ],
 })
-
 export class AuthModule {}

@@ -9,7 +9,7 @@ import { hash, verify } from 'argon2';
 import { CreateUserDto } from 'src/users/dto/create-users.dto';
 import { UsersService } from 'src/users/users.service';
 import { AuthJwtPayload } from './types/auth-jwtPayload';
-import { tokens } from './types/tokens'
+import { tokens } from './types/tokens';
 import { JwtService } from '@nestjs/jwt';
 import refreshConfig from './config/refresh.config';
 import { ConfigType } from '@nestjs/config';
@@ -34,7 +34,10 @@ export class AuthService {
     return this.usersService.create(createUserDto);
   }
 
-  async validateLocalUser(email, password): Promise<{ uid: string; name: string }> {
+  async validateLocalUser(
+    email,
+    password,
+  ): Promise<{ uid: string; name: string }> {
     try {
       const user = await this.usersService.findByEmail(email);
 
@@ -70,7 +73,7 @@ export class AuthService {
       uid: userId,
       name: name,
       accessToken,
-      refreshToken
+      refreshToken,
     };
   }
 
@@ -84,7 +87,7 @@ export class AuthService {
 
     return {
       accessToken,
-      refreshToken
+      refreshToken,
     };
   }
 
@@ -99,7 +102,10 @@ export class AuthService {
     return currentUser;
   }
 
-  async validateRefreshToken(userId: string, refreshToken: string): Promise<{ uid: string }> {
+  async validateRefreshToken(
+    userId: string,
+    refreshToken: string,
+  ): Promise<{ uid: string }> {
     const user = await this.usersService.findById(userId);
 
     if (!user) {
@@ -107,11 +113,16 @@ export class AuthService {
     }
 
     if (!user.hashedRefreshToken) {
-      throw new UnauthorizedException('Invalid refresh token or user not logged in')
+      throw new UnauthorizedException(
+        'Invalid refresh token or user not logged in',
+      );
     }
 
-    const refreshTokenMatched = await verify(user.hashedRefreshToken, refreshToken)
-    if (!refreshTokenMatched) { 
+    const refreshTokenMatched = await verify(
+      user.hashedRefreshToken,
+      refreshToken,
+    );
+    if (!refreshTokenMatched) {
       throw new UnauthorizedException('Invalid Refresh Token!');
     }
 
@@ -119,7 +130,10 @@ export class AuthService {
     return currentUser;
   }
 
-  async refreshToken(userId: string, name?: string): Promise<authenticatedUser> {
+  async refreshToken(
+    userId: string,
+    name?: string,
+  ): Promise<authenticatedUser> {
     const { accessToken, refreshToken } = await this.generateTokens(userId);
     const hashedRefreshToken = await hash(refreshToken);
     await this.usersService.updateRefreshToken(userId, hashedRefreshToken);
@@ -127,11 +141,11 @@ export class AuthService {
       uid: userId,
       name: name,
       accessToken,
-      refreshToken
+      refreshToken,
     };
   }
 
   async signOut(uid: string): Promise<void> {
-    return await this.usersService.updateRefreshToken(uid, "null");
+    return await this.usersService.updateRefreshToken(uid, 'null');
   }
 }

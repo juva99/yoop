@@ -14,8 +14,6 @@ import { RefreshAuthGuard } from './guards/refresh-auth/refresh-auth.guard';
 import { User } from '../users/users.entity';
 import { authenticatedUser } from './types/authenticatedUser';
 
-
-
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -48,6 +46,6 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Post('signout')
   async signOut(@Request() req): Promise<void> {
-    return this.authService.signOut(req.user.uid)
+    return this.authService.signOut(req.user.uid);
   }
 }

@@ -62,10 +62,13 @@ export class UsersService {
   }
 
   // test if it works without null
-  async updateRefreshToken(uid: string, hashedRefreshToken: string): Promise<void> {
+  async updateRefreshToken(
+    uid: string,
+    hashedRefreshToken: string,
+  ): Promise<void> {
     await this.userRepository.update(
       { uid },
-      { hashedRefreshToken: hashedRefreshToken }
+      { hashedRefreshToken: hashedRefreshToken },
     );
   }
 }
