@@ -18,8 +18,8 @@ const FilteredGames: React.FC<Props> = ({ games }) => {
         <span className="text-subtitle">{availables.length} פנוים להרשמה</span>
       </p>
       <div className="filtered-games__list max-h-100 overflow-y-auto">
-        {filteredGames.map((g) => (
-          <div className="border-1">
+        {games.map((g, i) => (
+          <div key={i} className="border-1">
             <GameCard game={g} />
           </div>
         ))}
