@@ -5,10 +5,11 @@ import TimeSlider from "./TimeSlider";
 import RadiusSlider from "./RadiusSlider";
 import DateFilter from "./DateFilter";
 import TypeFilter from "./TypeFilter";
-import { MapView } from "../MapView";
 import "primeicons/primeicons.css";
 import "primereact/resources/themes/lara-light-blue/theme.css";
 import "primereact/resources/primereact.min.css";
+import MapView from "../MapView";
+import { Button } from "../ui/button";
 
 type Props = {
   updateFilters: (filters: Filters) => void;
@@ -27,17 +28,13 @@ const SearchGame: React.FC<Props> = ({ updateFilters }) => {
     date: null as Date | null,
     type: null,
     time: null,
-    location: "tel-aviv",
+    location: "tel-aviv", //use user session
     radius: 5,
   });
 
   const onFilterChange = (key: string, value: any) => {
     setFilters({ ...filters, [key]: value });
   };
-
-  useEffect(() => {
-    updateFilters(filters);
-  }, [filters]);
 
   return (
     <div className="search-game">
@@ -50,7 +47,14 @@ const SearchGame: React.FC<Props> = ({ updateFilters }) => {
       </div>
       <TimeSlider onFilterChange={onFilterChange} />
       <RadiusSlider onFilterChange={onFilterChange} />
-      <MapView />
+      <Button
+        className="bg-title my-5 w-[100%]"
+        onClick={() => {
+          updateFilters(filters);
+        }}
+      >
+        חפש
+      </Button>
     </div>
   );
 };
