@@ -40,7 +40,7 @@ const FutureGames: React.FC<Games> = ({ games }) => {
   return (
     <div
       {...handlers}
-      className="relative flex h-[130px] w-full max-w-md justify-between overflow-hidden rounded-2xl border-1 border-[var(--color-elements)] shadow"
+      className="border-elements relative flex h-[130px] w-full max-w-md justify-between overflow-hidden rounded-2xl border-1 shadow"
     >
       <div
         className="transition-transform duration-300"
