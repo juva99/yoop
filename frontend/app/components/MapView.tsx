@@ -6,9 +6,6 @@ import testData from "../data/testdata.json";
 import { Game } from "@/app/types/Game";
 import GameCard from "./GameCard";
 
-// Tel Aviv coordinates
-// const TEL_AVIV: [number, number] = [32.0853, 34.7818];
-
 const DEFAULT_RADIUS_KM = 30; // Default radius in kilometers
 
 // Calculate distance between two points using Haversine formula
@@ -67,15 +64,6 @@ const MapView: React.FC<Props> = ({ defaultLocation, games }) => {
     // Filter markers by initial radius
     filterMarkersByDistance(defaultLocation.lat, defaultLocation.lng, radius);
   }, [radius]);
-
-  // const handleMarkerClick = (stadium: any) => {
-  //   setSelectedMarker({
-  //     name: stadium.name,
-  //     lat: stadium.latitude,
-  //     lng: stadium.longitude,
-  //   });
-  //   console.log("Stadium clicked:", stadium.name);
-  // };
 
   const handleMarkerClick = (game: any) => {
     setSelectedMarker(game);

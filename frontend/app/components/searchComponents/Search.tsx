@@ -61,8 +61,6 @@ const Search: React.FC<Props> = () => {
   });
 
   const filtersHandler = (filters: Filters) => {
-    console.log(filters);
-
     setFilters(filters);
     // get req by filters
   };
