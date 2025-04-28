@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { BACKEND_URL } from "../../../../lib/constants";
 
 
-export async function GET(req: NextRequest) {
+export async function GET(req: NextRequest): Promise<NextResponse> {
   const response = await authFetch(
     `${BACKEND_URL}/auth/signout`,
     {

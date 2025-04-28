@@ -2,11 +2,13 @@
 
 import { authFetch } from "./authFetch";
 import { BACKEND_URL } from "./constants";
-import { getSession } from "./session"
 
+type ProtectedResponse = {
+  message: string;
+};
 
 //temp - only for testing
-export const getProfile = async () => {
+export const getProfile = async (): Promise<ProtectedResponse> => {
   const response = await authFetch(`${BACKEND_URL}/auth/protected`);
 
   const result = await response.json();

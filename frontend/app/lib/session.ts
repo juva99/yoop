@@ -16,7 +16,7 @@ export type Session = {
 const secretKey = process.env.SESSION_SECRET_KEY!;
 const encodedKey = new TextEncoder().encode(secretKey)
 
-export async function createSession(payload: Session) {
+export async function createSession(payload: Session): Promise<void> {
   const expiredAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
   const session = await new SignJWT(payload)
@@ -36,7 +36,7 @@ export async function createSession(payload: Session) {
   });
 }
 
-export async function getSession() {
+export async function getSession(): Promise<Session | null> {
   const cookieStore = await cookies(); 
   const cookie = cookieStore.get("session")?.value;
   if (!cookie)
@@ -55,8 +55,8 @@ export async function getSession() {
   }
 }
 
-// needed later for signout
-export async function deleteSession() {
+
+export async function deleteSession(): Promise<void> {
   const cookieStore = await cookies();
   cookieStore.delete("session");
 }
@@ -64,7 +64,7 @@ export async function deleteSession() {
 export async function updateTokens({accessToken, refreshToken}: {
   accessToken: string;
   refreshToken: string;
-}) { 
+}): Promise<void | null> { 
   const cookieStore = await cookies(); 
   const cookie = cookieStore.get("session")?.value;
   if (!cookie)

@@ -1,7 +1,7 @@
 import { updateTokens } from "@/lib/session";
 import { NextRequest } from "next/server";
 
-export async function POST(req: NextRequest) {
+export async function POST(req: NextRequest): Promise<Response> {
   const body = await req.json();
   const { accessToken, refreshToken } = body;
   

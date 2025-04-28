@@ -84,7 +84,7 @@ export async function login(
   }
 }
 
-export const refreshToken = async (oldRefreshToken: string) => {
+export const refreshToken = async (oldRefreshToken: string): Promise<string | null> => {
   try {
     const response = await fetch(`${BACKEND_URL}/auth/refresh`, {
       method: "POST",

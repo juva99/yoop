@@ -23,7 +23,7 @@ export class UsersController {
   }
 
   @Delete('/:id')
-  async deleteOne(@Param('id') id: string) {
+  async deleteOne(@Param('id') id: string): Promise<void> {
     return await this.userService.deleteOne(id);
   }
 }

@@ -15,7 +15,6 @@ export type FormState =
   }
   | undefined;
 
-// need to test date
 export const SignupFormSchema = z.object({
   firstName: z
     .string()

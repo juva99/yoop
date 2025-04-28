@@ -4,13 +4,16 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+import { User } from '../users/users.entity';
 import { hash, verify } from 'argon2';
 import { CreateUserDto } from 'src/users/dto/create-users.dto';
 import { UsersService } from 'src/users/users.service';
 import { AuthJwtPayload } from './types/auth-jwtPayload';
+import { tokens } from './types/tokens'
 import { JwtService } from '@nestjs/jwt';
 import refreshConfig from './config/refresh.config';
 import { ConfigType } from '@nestjs/config';
+import { authenticatedUser } from './types/authenticatedUser';
 
 @Injectable()
 export class AuthService {
@@ -21,7 +24,7 @@ export class AuthService {
     private refreshTokenConfig: ConfigType<typeof refreshConfig>,
   ) {}
 
-  async registerUser(createUserDto: CreateUserDto) {
+  async registerUser(createUserDto: CreateUserDto): Promise<User> {
     const existingUser = await this.usersService.findByEmail(
       createUserDto.userEmail,
     );
@@ -31,7 +34,7 @@ export class AuthService {
     return this.usersService.create(createUserDto);
   }
 
-  async validateLocalUser(email, password) {
+  async validateLocalUser(email, password): Promise<{ uid: string; name: string }> {
     try {
       const user = await this.usersService.findByEmail(email);
 
@@ -59,7 +62,7 @@ export class AuthService {
     }
   }
 
-  async login(userId: string, name?: string) {
+  async login(userId: string, name?: string): Promise<authenticatedUser> {
     const { accessToken, refreshToken } = await this.generateTokens(userId);
     const hashedRefreshToken = await hash(refreshToken);
     await this.usersService.updateRefreshToken(userId, hashedRefreshToken);
@@ -71,7 +74,7 @@ export class AuthService {
     };
   }
 
-  async generateTokens(userId: string) {
+  async generateTokens(userId: string): Promise<tokens> {
     const payload: AuthJwtPayload = { sub: userId };
 
     const [accessToken, refreshToken] = await Promise.all([
@@ -85,7 +88,7 @@ export class AuthService {
     };
   }
 
-  async validateJwtUser(userId: string) {
+  async validateJwtUser(userId: string): Promise<{ uid: string }> {
     const user = await this.usersService.findById(userId);
 
     if (!user) {
@@ -96,7 +99,7 @@ export class AuthService {
     return currentUser;
   }
 
-  async validateRefreshToken(userId: string, refreshToken: string) {
+  async validateRefreshToken(userId: string, refreshToken: string): Promise<{ uid: string }> {
     const user = await this.usersService.findById(userId);
 
     if (!user) {
@@ -116,7 +119,7 @@ export class AuthService {
     return currentUser;
   }
 
-  async refreshToken(userId: string, name?: string) {
+  async refreshToken(userId: string, name?: string): Promise<authenticatedUser> {
     const { accessToken, refreshToken } = await this.generateTokens(userId);
     const hashedRefreshToken = await hash(refreshToken);
     await this.usersService.updateRefreshToken(userId, hashedRefreshToken);
@@ -128,7 +131,7 @@ export class AuthService {
     };
   }
 
-  async signOut(uid: string) {
+  async signOut(uid: string): Promise<void> {
     return await this.usersService.updateRefreshToken(uid, "null");
   }
 }

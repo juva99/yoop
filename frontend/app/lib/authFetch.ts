@@ -8,7 +8,7 @@ export interface FetchOptions extends RequestInit {
 export const authFetch = async (
   url: string | URL,
   options: FetchOptions = {}
-) => { 
+): Promise<Response> => { 
   const session = await getSession();
   
   options.headers = {
