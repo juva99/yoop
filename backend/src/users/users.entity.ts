@@ -34,4 +34,7 @@ export class User {
 
   @Column({ nullable: true })
   role?: string;
+
+  @Column({ nullable: true })
+  hashedRefreshToken?: string;
 }

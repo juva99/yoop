@@ -4,7 +4,7 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { verify } from 'argon2';
+import { hash, verify } from 'argon2';
 import { CreateUserDto } from 'src/users/dto/create-users.dto';
 import { UsersService } from 'src/users/users.service';
 import { AuthJwtPayload } from './types/auth-jwtPayload';
@@ -61,6 +61,8 @@ export class AuthService {
 
   async login(userId: string, name?: string) {
     const { accessToken, refreshToken } = await this.generateTokens(userId);
+    const hashedRefreshToken = await hash(refreshToken);
+    await this.usersService.updateRefreshToken(userId, hashedRefreshToken);
     return {
       uid: userId,
       name: name,
@@ -94,11 +96,20 @@ export class AuthService {
     return currentUser;
   }
 
-  async validateRefreshToken(userId: string) {
+  async validateRefreshToken(userId: string, refreshToken: string) {
     const user = await this.usersService.findById(userId);
 
     if (!user) {
       throw new UnauthorizedException('המשתמש לא נמצא!');
+    }
+
+    if (!user.hashedRefreshToken) {
+      throw new UnauthorizedException('Invalid refresh token or user not logged in')
+    }
+
+    const refreshTokenMatched = await verify(user.hashedRefreshToken, refreshToken)
+    if (!refreshTokenMatched) { 
+      throw new UnauthorizedException('Invalid Refresh Token!');
     }
 
     const currentUser = { uid: user.uid };
@@ -107,11 +118,17 @@ export class AuthService {
 
   async refreshToken(userId: string, name?: string) {
     const { accessToken, refreshToken } = await this.generateTokens(userId);
+    const hashedRefreshToken = await hash(refreshToken);
+    await this.usersService.updateRefreshToken(userId, hashedRefreshToken);
     return {
       uid: userId,
       name: name,
       accessToken,
       refreshToken
     };
+  }
+
+  async signOut(uid: string) {
+    return await this.usersService.updateRefreshToken(uid, "null");
   }
 }

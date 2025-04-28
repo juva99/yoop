@@ -60,4 +60,12 @@ export class UsersService {
       where: { userEmail: email },
     });
   }
+
+  // test if it works without null
+  async updateRefreshToken(uid: string, hashedRefreshToken: string): Promise<void> {
+    await this.userRepository.update(
+      { uid },
+      { hashedRefreshToken: hashedRefreshToken }
+    );
+  }
 }
