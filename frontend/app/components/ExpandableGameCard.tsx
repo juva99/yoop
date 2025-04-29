@@ -26,7 +26,7 @@ const GameCard: React.FC<Props> = ({ game }) => {
     >
       <div >
       <CollapsibleTrigger className="absolute left-2 top-2 z-10">
-        {!isOpen && <IoIosArrowDown className="w-full"/>}
+        {!isOpen && <IoIosArrowDown />}
         {isOpen && <IoIosArrowUp />}
       </CollapsibleTrigger>
       <div className="flex items-center pr-5 text-right">
@@ -46,7 +46,7 @@ const GameCard: React.FC<Props> = ({ game }) => {
         </div>
         </div>
       </div>
-      <CollapsibleContent>
+      <CollapsibleContent className="max-h-[200px] overflow-y-auto">
         <PlayersList players={players}/>
       </CollapsibleContent>
     </Collapsible>
