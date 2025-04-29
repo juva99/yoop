@@ -74,10 +74,6 @@ export default function Home() {
           games={[sampleGame, sampleGame, sampleGame, sampleGame2]}
         />
       </div>
-      <div>
-        <p className="text-subtitle text-xl font-bold">משחקים בעיר</p>
-        <MapView />
-      </div>
       <Search />
     </div>
   );
