@@ -85,7 +85,19 @@
 }
 
 .input_underscore {
-  @apply mb-5 border-b-1 border-[#e2e4e5] text-right focus:outline-none;
+  @apply border-elements border-b-2 text-right;
+}
+
+.form_item {
+  @apply mt-2 mb-2;
+}
+
+.form_label {
+  @apply mb-1 block text-sm font-semibold text-gray-700;
+}
+
+.form_error {
+  @apply text-sm text-red-500;
 }
 
 /* @media (prefers-color-scheme: dark) {
