@@ -16,7 +16,7 @@ type Filters = {
 
 const sampleGame = {
   id: "g1",
-  field: { name: "עמק אילון 9", lng: 34.79, lat: 32.13 },
+  field: { name: "עמק אילון 9, תל אביב", lng: 34.79, lat: 32.13 },
   type: "soccer",
   date: "4.10",
   time: "16:00",

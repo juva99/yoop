@@ -14,18 +14,22 @@ const PlayersList: React.FC<Props> = ({ players }) => {
   };
 
   return (
-    <div className="players mt-2 pr-4 flex flex-col items-start gap-2">
-      <div className="flex flex-col space-y-1">
+    <div className="players pr-4 flex flex-col items-start gap-2">
+      <div className="flex flex-col space-y-1 w-full">
         {players.map((player, index) => (
-          <div key={index} className="flex items-center space-x-2">
-            <Avatar className="h-8 w-8 rounded-full border-2 border-white">
-              <AvatarImage src={player.image} alt={player.name} />
-              <AvatarFallback>{player.name.charAt(0)}</AvatarFallback>
-            </Avatar>
-            <span className="text-sm">{player.name}</span>
+          <div key={index} className="flex items-center justify-between w-full">
+            <div className="flex items-center gap-2">
+              <Avatar className="h-8 w-8 rounded-full border-2 border-white">
+                <AvatarImage src={player.image} alt={player.name} />
+                <AvatarFallback>{player.name.charAt(0)}</AvatarFallback>
+              </Avatar>
+              <span className="text-sm">{player.name}</span>
+            </div>
             <a 
-              href={`https://wa.me/${formatPhoneNumber(player.phoneNum)}`}              target="_blank"
+              href={`https://wa.me/${formatPhoneNumber(player.phoneNum)}`}
+              target="_blank"
               rel="noopener noreferrer"  
+              className="pl-4"  
             >
               <FaWhatsapp className="text-[#25D366]"/>
             </a>
