@@ -1,6 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -15,8 +14,8 @@ export class User {
   @Column()
   pass: string;
 
-  @Column({unique: true})
-  userEmail: String;
+  @Column({ unique: true })
+  userEmail: string;
 
   @Column({ type: 'date', nullable: true })
   birthDay: string;
@@ -33,6 +32,9 @@ export class User {
   @Column({ nullable: true })
   phoneNum?: string;
 
-  @Column()
-  role: string;
+  @Column({ nullable: true })
+  role?: string;
+
+  @Column({ nullable: true })
+  hashedRefreshToken?: string;
 }
