@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
+import { FieldsModule } from './fields/fields.module';
+import { GamesModule } from './games/games.module';
 
 
 @Module({
@@ -20,6 +22,8 @@ import { UsersModule } from './users/users.module';
       synchronize: true
     }),
     UsersModule,
+    FieldsModule,
+    GamesModule,
   ],
   controllers: []
 })
