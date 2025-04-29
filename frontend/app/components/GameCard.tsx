@@ -9,7 +9,7 @@ type Props = {
 };
 
 const GameCard: React.FC<Props> = ({ game }) => {
-  const { id, field_name, type, date, time, players, price } = game;
+  const { id, field, type, date, time, players, price } = game;
 
   return (
     <Link href={`/game/${id}`}>
@@ -21,7 +21,7 @@ const GameCard: React.FC<Props> = ({ game }) => {
             ) : type.toLowerCase() === "soccer" ? (
               <PiSoccerBall />
             ) : null}
-            {field_name}
+            {field.name}
           </span>
           <p className="text-gray-500">
             {date} | {time} {price && "|" + price + "₪"}

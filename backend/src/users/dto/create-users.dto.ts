@@ -1,4 +1,12 @@
-import { IsBoolean, IsDateString, IsEmail, IsNotEmpty, IsOptional, IsString, Length } from 'class-validator';
+import {
+  IsBoolean,
+  IsDateString,
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Length,
+} from 'class-validator';
 
 export class CreateUserDto {
   
@@ -39,7 +47,8 @@ export class CreateUserDto {
   @IsString()
   phoneNum?: string;
 
+  @IsOptional()
   @IsString()
-  @Length(1,10)
-  role: string;
+  @Length(1, 10)
+  role?: string;
 }

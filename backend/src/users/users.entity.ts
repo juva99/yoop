@@ -36,32 +36,4 @@ export class User {
 
   @Column()
   role: string;
-
-  //field managers
-  @OneToMany(() => Field, field => field.manager)
-  fieldsManage: Field[];
-
-  //firend list
-  @ManyToMany(() => User)
-  @JoinTable({
-    name: "friend_list",
-    joinColumn: {
-      name: "user1",
-      referencedColumnName: "uid"
-    },
-    inverseJoinColumn: {
-      name: "user2",
-      referencedColumnName: "uid"
-    }
-  })
-  friendList: User[];
-
-  // game participants
-  @ManyToMany(() => Game, (game) => game.participants)
-  participatingGames: Game[];
-  
-  //created games
-  @OneToMany(() => Game, (createdGames) => createdGames.creator)
-  createdGames: Game[];
-
 }
