@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Between, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 import { Game } from './games.entity';
 import { NotFoundException } from '@nestjs/common';
 import { CreateGameDto } from './dto/create-game.dto';
@@ -8,6 +8,7 @@ import { Field } from 'src/fields/fields.entity';
 import { User } from 'src/users/users.entity';
 import { FieldsService } from 'src/fields/fields.service';
 import { GameStatus } from 'src/enums/game-status.enum';
+import { QueryGameDto } from './dto/query-game.dto';
 
 @Injectable()
 export class GamesService {
@@ -70,6 +71,32 @@ export class GamesService {
             status: GameStatus.AVAILABLE,
           });
           return await this.gameRepository.save(game);
+        }
+
+        async queryGames(queryDto: QueryGameDto): Promise<Game[]> {
+          const { gameType, startDate, endDate, city } = queryDto;
+          const query = this.gameRepository.createQueryBuilder('game')
+            .leftJoinAndSelect('game.field', 'field')
+            .leftJoinAndSelect('game.creator', 'creator')
+            .leftJoinAndSelect('game.participants', 'participants');
+      
+          if (gameType) {
+            query.andWhere('game.gameType = :gameType', { gameType });
+          }
+      
+          if (startDate) {
+            query.andWhere('game.startDate >= :startDate', { startDate });
+          }
+      
+          if (endDate) {
+            query.andWhere('game.endDate <= :endDate', { endDate });
+          }
+      
+          if (city) {
+            query.andWhere('field.city = :city', { city });
+          }
+      
+          return await query.getMany();
         }
         
 }
