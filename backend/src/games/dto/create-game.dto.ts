@@ -1,20 +1,22 @@
-import { IsBoolean, IsDate, IsDateString, IsEmail, IsNotEmpty, IsNumber, IsOptional, isString, IsString, Length } from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsBoolean, IsDate, IsDateString, IsEmail, IsEnum, IsNotEmpty, IsNumber, IsOptional, isString, IsString, Length } from 'class-validator';
+import { GameType } from 'src/enums/game-type.enum';
 
 export class CreateGameDto {
  
-  @IsNumber()
-  gameType: number;
 
-  @IsString()
-  fieldId: string;
+  @IsEnum(GameType, {each: true})
+  gameType: GameType;
 
-  @IsString()
-  mid: string;
+  @IsDateString()
+  startDate: Date;
 
-  @IsDate()
-  date: Date;
+  @IsDateString()
+  endDate: Date;
 
   @IsNumber()
   maxParticipants: number;
+
+  @IsString()
+  field: string;
 
 }

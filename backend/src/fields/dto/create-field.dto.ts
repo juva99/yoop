@@ -1,22 +1,31 @@
-import { IsBoolean, IsDateString, IsEmail, IsNotEmpty, IsNumber, IsOptional, isString, IsString, Length } from 'class-validator';
-
+import { IsBoolean, IsArray, ArrayNotEmpty, IsEnum, IsString, Length, IsOptional } from 'class-validator';
+import { GameType } from 'src/enums/game-type.enum';
 export class CreateFieldDto {
  
-    @IsNumber()
-    gametype: number;
+    @IsArray()
+    @ArrayNotEmpty()
+    @IsEnum(GameType, {each: true})
+    gameTypes: GameType[];
    
+    @IsString()
+    fieldName: string;
+    
     @IsBoolean()
     isManaged: boolean;
  
+    @IsOptional()
     @IsString()
     fieldPhoto?: string;
  
+    @IsOptional()
     @IsString()
     fieldlat?: string;
  
+    @IsOptional()
     @IsString()
     fieldlng?: string;
  
+    @IsOptional()
     @IsString()
     fieldAddress?: string;
    

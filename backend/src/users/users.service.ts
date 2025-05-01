@@ -56,9 +56,10 @@ export class UsersService {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return await this.userRepository.findOne({
-      where: { userEmail: email },
-    });
+    return await this.userRepository.createQueryBuilder('user').addSelect(['user.pass', 'user.hashedRefreshToken']).where('user.userEmail = :email', {email}).getOne();
+    // .findOne({
+    //   where: { userEmail: email },
+    // });
   }
 
   // test if it works without null

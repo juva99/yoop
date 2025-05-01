@@ -17,11 +17,11 @@ export class FieldsService {
       }
 
       async findById(fieldId: string): Promise<Field> {
-                const user =  await this.fieldRepository.findOne({where: {fieldId}});
-                if (!user) {
+                const field =  await this.fieldRepository.findOne({where: {fieldId}});
+                if (!field) {
                   throw new NotFoundException(`field with id ${fieldId} not found`);
                 }
-                return user;
+                return field;
       }
 
       async deleteOne(fieldId: string): Promise<void> {
@@ -31,9 +31,9 @@ export class FieldsService {
         }
       }
 
-        async create(createFieldDto: CreateFieldDto): Promise<Field> {
-            const field = this.fieldRepository.create(createFieldDto);
-            return await this.fieldRepository.save(field);
-        }
+      async create(createFieldDto: CreateFieldDto): Promise<Field> {
+          const field = this.fieldRepository.create(createFieldDto);
+          return await this.fieldRepository.save(field);
+      }
           
 }

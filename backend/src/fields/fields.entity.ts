@@ -1,14 +1,18 @@
 import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { User } from 'src/users/users.entity';
 import { Game } from 'src/games/games.entity';
+import { GameType } from 'src/enums/game-type.enum';
 
 @Entity('fields')
 export class Field {
   @PrimaryGeneratedColumn('uuid')
   fieldId: string;
 
-  @Column({ nullable: true })
-  gametype: number;
+  @Column()
+  fieldName: string;
+
+  @Column("enum", {enum: GameType, array: true})
+  gameTypes: GameType[];
 
   @Column({ default: false })
   isManaged: boolean;
@@ -28,9 +32,6 @@ export class Field {
   @Column()
   city: string;
   
-  // @Column()
-  // mid: string;
-
   //field manager
   @ManyToOne(() => User, manager => manager.fieldsManage)
   manager: User;

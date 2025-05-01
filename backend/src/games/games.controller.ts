@@ -1,4 +1,42 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, UseGuards } from '@nestjs/common';
+import { GamesService } from './games.service';
+import { Game } from './games.entity';
+import { User } from 'src/users/users.entity';
+import { GetUser } from 'src/auth/get-user.decorator';
+import { CreateGameDto } from './dto/create-game.dto';
+import { Field } from 'src/fields/fields.entity';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
 
 @Controller('games')
-export class GamesController {}
+export class GamesController {
+
+    constructor(private readonly gameService: GamesService) {}
+
+        @Get()
+        async getAll(): Promise<Game[]> {
+          return await this.gameService.findAll();
+        }
+
+        @UseGuards(JwtAuthGuard)
+        @Get("/mygames")
+        async getAllMine(@GetUser() user: User): Promise<Game[]> {
+            return await this.gameService.findAllMine(user);
+        }
+
+        @Get("/byid/:id")
+        async getById(@Param('id') id: string): Promise<Game>{
+            return await this.gameService.findById(id);
+        }
+
+        @Get("/fieldId/:id")
+        async getByFieldId(@Param('id') id: string): Promise<Game[]>{
+            return await this.gameService.findByFieldId(id);
+        }
+
+        @UseGuards(JwtAuthGuard)
+        @Post()
+        async create(@Body() createGameDto: CreateGameDto, @GetUser() user: User): Promise<Game> {
+            return await this.gameService.create(createGameDto, user);
+        }
+
+}

@@ -1,29 +1,31 @@
 import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, ManyToOne, ManyToMany, JoinTable } from 'typeorm';
 import { User } from 'src/users/users.entity';
 import { Field } from 'src/fields/fields.entity';
+import { GameType } from 'src/enums/game-type.enum';
+import { GameStatus } from 'src/enums/game-status.enum';
 
 @Entity('games')
 export class Game {
   @PrimaryGeneratedColumn('uuid')
   gameId: string;
 
-  @Column({ nullable: true })
-  gameType: number;
-
-  @Column({nullable: true })
-  fieldId: string;
+  @Column("enum", {enum: GameType})
+  gameType: GameType;
 
   @Column()
-  mid: string;
+  startDate: Date;
 
   @Column()
-  date: Date;
+  endDate: Date;
 
   @Column()
   maxParticipants: number;
 
+  @Column("enum", {enum: GameStatus})
+  status: GameStatus;
+
   //game participants
-  @ManyToMany(game => User)
+  @ManyToMany(game => User, { eager: true })
   @JoinTable({
     name: "participating_games",
     joinColumn: {
@@ -38,7 +40,7 @@ export class Game {
   participants: User[];
 
   //game creator
-  @ManyToOne(() => User, creator => creator.createdGames)
+  @ManyToOne(() => User, creator => creator.createdGames, { eager: true })
   creator: User;
 
   //field where game happens
