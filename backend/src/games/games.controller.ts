@@ -7,6 +7,7 @@ import { CreateGameDto } from './dto/create-game.dto';
 import { Field } from 'src/fields/fields.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
 import { QueryGameDto } from './dto/query-game.dto';
+import { GameParticipant } from 'src/game-participants/game-participants.entity';
 
 @Controller('games')
 export class GamesController {
@@ -44,5 +45,15 @@ export class GamesController {
         async create(@Body() createGameDto: CreateGameDto, @GetUser() user: User): Promise<Game> {
             return await this.gameService.create(createGameDto, user);
         }
+
+        @UseGuards(JwtAuthGuard)
+        @Post('/:gameId/join')
+        async joinGame(
+          @Param('gameId') gameId: string,
+          @GetUser() user: User,
+        ): Promise<GameParticipant> {
+          return await this.gameService.joinGame(gameId, user);
+        }
+
 
 }

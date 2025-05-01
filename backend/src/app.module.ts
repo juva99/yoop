@@ -5,6 +5,7 @@ import { UsersModule } from './users/users.module';
 import { FieldsModule } from './fields/fields.module';
 import { GamesModule } from './games/games.module';
 import { AuthModule } from './auth/auth.module';
+import { GameParticipantsModule } from './game-participants/game-participants.module'; // Import the new module
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { AuthModule } from './auth/auth.module';
     FieldsModule,
     GamesModule,
     AuthModule,
+    GameParticipantsModule, // Add the new module here
     ConfigModule.forRoot({ isGlobal: true }),
   ],
   controllers: [],

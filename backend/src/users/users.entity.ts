@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, ManyToMany, JoinTable, OneToMany } from 'typeorm';
 import { Field } from 'src/fields/fields.entity';
 import { Game } from 'src/games/games.entity';
+import { GameParticipant } from 'src/game-participants/game-participants.entity'; // Import the new entity
 
 @Entity('users')
 export class User {
@@ -57,8 +58,8 @@ export class User {
     friendList: User[];
   
     // game participants
-    @ManyToMany(() => Game, (game) => game.participants)
-    participatingGames: Game[];
+    @OneToMany(() => GameParticipant, gameParticipant => gameParticipant.user)
+    gameParticipations: GameParticipant[];
     
     //created games
     @OneToMany(() => Game, (createdGames) => createdGames.creator)

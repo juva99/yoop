@@ -1,8 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, ManyToOne, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { User } from 'src/users/users.entity';
 import { Field } from 'src/fields/fields.entity';
 import { GameType } from 'src/enums/game-type.enum';
 import { GameStatus } from 'src/enums/game-status.enum';
+import { GameParticipant } from 'src/game-participants/game-participants.entity'; // Import the new entity
 
 @Entity('games')
 export class Game {
@@ -25,19 +26,8 @@ export class Game {
   status: GameStatus;
 
   //game participants
-  @ManyToMany(game => User, { eager: true })
-  @JoinTable({
-    name: "participating_games",
-    joinColumn: {
-      name: "game",
-      referencedColumnName:"gameId"
-    },
-    inverseJoinColumn: {
-      name: "user",
-      referencedColumnName: "uid"
-    }
-  })
-  participants: User[];
+  @OneToMany(() => GameParticipant, gameParticipant => gameParticipant.game, { eager: true, cascade: true })
+  gameParticipants: GameParticipant[];
 
   //game creator
   @ManyToOne(() => User, creator => creator.createdGames, { eager: true })
