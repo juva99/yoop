@@ -3,9 +3,9 @@ import { getSession } from "./lib/session";
 
 export default async function middleware(req: NextRequest) {
   const session = await getSession(); 
-  if (!session || !session.user) {
-    return NextResponse.redirect(new URL("/auth/login", req.nextUrl));
-  }
+  // if (!session || !session.user) {
+  //   return NextResponse.redirect(new URL("/auth/login", req.nextUrl));
+  // }
 
   NextResponse.next();
 }
