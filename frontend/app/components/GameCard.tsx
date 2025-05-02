@@ -22,6 +22,8 @@ const GameCard: React.FC<Props> = ({ game }) => {
     price,
   } = game;
 
+  const users = gameParticipants.map(participant => participant.user);
+
   return (
     <Link href={`/game/${gameId}`}>
       <div className="flex h-[130px] items-center pr-5 text-right">
@@ -38,7 +40,7 @@ const GameCard: React.FC<Props> = ({ game }) => {
             {startDate.getDay()} | {startDate.getHours()}{" "}
             {price && "|" + price + "₪"}
           </p>
-          <AvatarGroup players={gameParticipants} />
+          <AvatarGroup players={users} />
         </div>
       </div>
     </Link>

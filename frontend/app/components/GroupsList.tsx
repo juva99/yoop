@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { Player } from "@/app/types/Player";
+import { User } from "@/app/types/User";
 import AvatarGroup from "./AvatarGroup";
 import {
   Carousel,
@@ -14,7 +14,7 @@ import {
 type Group = {
   id: string;
   name: string;
-  players: Player[];
+  players: User[];
   maxPlayers?: number; // Optional maximum number of players
   remainingTime?: string; // Optional countdown time (HH:MM:SS format)
 };

@@ -15,4 +15,4 @@ export type Game = {
   creator: User;
   field: Field;
   price?: number;
-}
+};

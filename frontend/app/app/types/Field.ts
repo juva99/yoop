@@ -8,8 +8,8 @@ export type Field = {
   gameTypes: GameType[];
   isManaged: boolean;
   fieldPhoto?: string;
-  fieldLat?: number;
-  fieldLng?: number;
+  fieldLat: number;
+  fieldLng: number;
   fieldAddress?: string;
   city: string;
   manager: User;
