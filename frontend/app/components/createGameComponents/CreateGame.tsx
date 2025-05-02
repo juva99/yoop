@@ -3,12 +3,8 @@ import React, { useState } from "react";
 import TimeSlider from "./TimeSlider";
 import DateFilter from "./DateFilter";
 import TypeFilter from "./TypeFilter";
-import  {MapView} from "../MapView";
+import MapView from "../MapView"; // Ensure the path and component name are correct
 import GetWeather from "./GetWeather";
-
-import "primeicons/primeicons.css";
-import "primereact/resources/themes/lara-light-blue/theme.css";
-import "primereact/resources/primereact.min.css";
 
 type Filters = {
   type: string | null;
@@ -148,9 +144,9 @@ const CreateGame: React.FC<{ updateFilters: (filters: Filters) => void }> = ({ u
         />
         {error && <p className="mt-2 text-red-500 text-sm">{error}</p>}
 
-        <div className="relative mt-6">
-          <MapView center={mapCenter} searchedMarker={searchedMarker} />
-        </div>
+        {/* <div className="relative mt-6">
+          <MapView/>
+        </div> */}
 
         {searchedMarker && (
           <div className="mt-3">
