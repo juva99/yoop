@@ -9,24 +9,24 @@ type Props = {
 };
 
 const GameCard: React.FC<Props> = ({ game }) => {
-  const { id, field, type, date, time, players, price } = game;
+  const { gameId, gameType, startDate, endDate, maxParticipants, status, gameParticipants, creator, field, price } = game;
 
   return (
-    <Link href={`/game/${id}`}>
+    <Link href={`/game/${gameId}`}>
       <div className="flex h-[130px] items-center pr-5 text-right">
         <div className="game-details">
           <span className="flex items-center gap-3 text-[24px] font-medium text-blue-400">
-            {type.toLowerCase() === "basketball" ? (
+            {gameType.toLowerCase() === "basketball" ? (
               <PiBasketball />
-            ) : type.toLowerCase() === "soccer" ? (
+            ) : gameType.toLowerCase() === "soccer" ? (
               <PiSoccerBall />
             ) : null}
-            {field.name}
+            {field.fieldName}
           </span>
           <p className="text-gray-500">
-            {date} | {time} {price && "|" + price + "₪"}
+            {startDate.getDay()} | {startDate.getHours()} {price && "|" + price + "₪"}
           </p>
-          <AvatarGroup players={players} />
+          <AvatarGroup players={gameParticipants} />
         </div>
       </div>
     </Link>
