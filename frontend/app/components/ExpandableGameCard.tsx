@@ -15,9 +15,22 @@ type Props = {
   game: Game;
 };
 
-const GameCard: React.FC<Props> = ({ game }) => {
+const ExpandableGameCard: React.FC<Props> = ({ game }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { id, field, type, date, time, players, price } = game;
+  const {
+    gameId,
+    gameType,
+    startDate,
+    endDate,
+    maxParticipants,
+    status,
+    gameParticipants,
+    creator,
+    field,
+    price,
+  } = game;
+
+  const users = gameParticipants.map((participant) => participant.user);
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen} className="relative">
@@ -32,27 +45,28 @@ const GameCard: React.FC<Props> = ({ game }) => {
         <div className="flex items-start pr-5 text-right">
           <div className="game-details">
             <span className="flex items-center gap-3 text-[20px] font-medium text-blue-400">
-              {type.toLowerCase() === "basketball" ? (
+              {gameType.toLowerCase() === "basketball" ? (
                 <PiBasketball />
-              ) : type.toLowerCase() === "soccer" ? (
+              ) : gameType.toLowerCase() === "football" ? (
                 <PiSoccerBall />
               ) : null}
               <span className={`max-w-[150px] ${!isOpen ? "truncate" : ""}`}>
-                {field.name}
+                {field.fieldName}
               </span>
             </span>
             <p className="text-gray-500">
-              {date} | {time} {price && "|" + price + "₪"}
+              {startDate.getDate()} | {startDate.getTime()}{" "}
+              {price && "|" + price + "₪"}
             </p>
-            {!isOpen && <AvatarGroup players={players} />}
+            {!isOpen && <AvatarGroup players={users} />}
           </div>
         </div>
       </div>
       <CollapsibleContent className="mt-2 max-h-[200px] overflow-y-auto">
-        <PlayersList players={players} />
+        <PlayersList players={users} />
       </CollapsibleContent>
     </Collapsible>
   );
 };
 
-export default GameCard;
+export default ExpandableGameCard;
