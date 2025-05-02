@@ -30,7 +30,7 @@ const ExpandableGameCard: React.FC<Props> = ({ game }) => {
     price,
   } = game;
 
-  const users = gameParticipants.map(participant => participant.user);
+  const users = gameParticipants.map((participant) => participant.user);
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen} className="relative">
@@ -55,7 +55,8 @@ const ExpandableGameCard: React.FC<Props> = ({ game }) => {
               </span>
             </span>
             <p className="text-gray-500">
-              {startDate.getDate()} | {startDate.getTime()} {price && "|" + price + "₪"}
+              {startDate.getDate()} | {startDate.getTime()}{" "}
+              {price && "|" + price + "₪"}
             </p>
             {!isOpen && <AvatarGroup players={users} />}
           </div>

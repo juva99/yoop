@@ -22,7 +22,7 @@ const GameCard: React.FC<Props> = ({ game }) => {
     price,
   } = game;
 
-  const users = gameParticipants.map(participant => participant.user);
+  const users = gameParticipants.map((participant) => participant.user);
 
   return (
     <Link href={`/game/${gameId}`}>
