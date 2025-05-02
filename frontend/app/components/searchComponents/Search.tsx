@@ -9,6 +9,8 @@ type Props = {};
 type Filters = {
   type?: any;
   date?: any;
+  startDate?: Date,
+  endDate?: Date,
   time?: any;
   location?: any;
   radius?: any;
@@ -17,7 +19,7 @@ type Filters = {
 const sampleGame = {
   id: "g1",
   field: { name: "עמק אילון 9", lng: 34.79, lat: 32.13 },
-  type: "soccer",
+  gameType: "soccer",
   date: "4.10",
   time: "16:00",
   players: [
@@ -34,7 +36,7 @@ const sampleGame = {
 const sampleGame2 = {
   id: "g2",
   field: { name: "עמק יזרעאל 9", lng: 34.81, lat: 32.15 },
-  type: "soccer",
+  gameType: "soccer",
   date: "4.10",
   time: "16:00",
   players: [
@@ -48,17 +50,39 @@ const sampleGame2 = {
 };
 const Search: React.FC<Props> = () => {
   const [filteredGames, setFilteredGames] = useState<Game[]>([
-    sampleGame,
-    sampleGame2,
+
   ]);
 
   const [filters, setFilters] = useState<Filters>({
     date: null as Date | null,
     type: null,
     time: null,
+    startDate: new Date(),
+    endDate: new Date(),
     location: "tel-aviv",
-    radius: 10,
+    radius: 10, 
   });
+
+  const fetchGames = async () => {
+    const params = {gameType: filters.type, startDate: filters.startDate, endDate: filters.endDate, city: filters.location}
+    const queyParams = new URLSearchParams(params.toString());
+    const response = await fetch(`http://localhost:3001/games/query?${queyParams}`, {
+       method: "GET"
+     });
+     try{
+       const data = await response.json();
+       console.log(data);
+       
+       setFilteredGames(data)
+     }catch(e){
+      console.log(e);
+     }
+  }
+
+
+  useEffect(() => {
+   fetchGames();
+  },[filters]);
 
   const filtersHandler = (filters: Filters) => {
     setFilters(filters);

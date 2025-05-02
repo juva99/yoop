@@ -16,8 +16,10 @@ type Props = {
 };
 
 type Filters = {
-  type?: any;
+  gameType?: any;
   date?: any;
+  startDate?: Date,
+  endDate?: Date,
   time?: any;
   location?: any;
   radius?: any;
@@ -26,15 +28,30 @@ type Filters = {
 const SearchGame: React.FC<Props> = ({ updateFilters }) => {
   const [filters, setFilters] = useState<Filters>({
     date: null as Date | null,
-    type: null,
+    gameType: null,
     time: null,
     location: "tel-aviv", //use user session
     radius: 5,
+    startDate: new Date() ,
+    endDate: new Date(),
   });
 
   const onFilterChange = (key: string, value: any) => {
-    setFilters({ ...filters, [key]: value });
+    if(key === 'time'){
+      setFilters({...filters, time: key, startDate: getDateWithTime(filters.date,value[0]), endDate: getDateWithTime(filters.date,value[1]) })
+    }else{
+      setFilters({ ...filters, [key]: value });
+    }
   };
+
+  const getDateWithTime = (baseDate: Date, hourDecimal: number): Date => {
+    const date = new Date(baseDate);
+    const hours = Math.floor(hourDecimal);
+    const minutes = Math.round((hourDecimal - hours) * 60);
+    date.setHours(hours, minutes, 0, 0);
+    return date;
+  };
+  
 
   return (
     <div className="search-game">
