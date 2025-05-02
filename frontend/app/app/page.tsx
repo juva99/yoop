@@ -5,38 +5,6 @@ import Search from "@/components/searchComponents/Search";
 import SearchGame from "@/components/searchComponents/SearchGame";
 
 export default function Home() {
-  const sampleGame = {
-    id: "g1",
-    field: { name: "עמק אילון 9", lng: 34.79, lat: 32.13 },
-    type: "soccer",
-    date: "4.10",
-    time: "16:00",
-    players: [
-      { name: "אלכס", image: "bla.ico", phoneNum: "0527345050" },
-      { name: "גיימס", image: "bla.ico", phoneNum: "0527345050" },
-      { name: "אלפא", image: "bla.ico", phoneNum: "0527345050" },
-      { name: "סקיבידי", image: "bla.ico", phoneNum: "0527345050" },
-      { name: "ריזז", image: "bla.ico", phoneNum: "0527345050" },
-      { name: "ריזז", image: "bla.ico", phoneNum: "0527345050" },
-      { name: "ריזז", image: "bla.ico", phoneNum: "0527345050" },
-    ],
-    price: 30,
-  };
-  const sampleGame2 = {
-    id: "g2",
-    field: { name: "עמק יזרעאל 9", lng: 34.81, lat: 32.15 },
-    type: "soccer",
-    date: "4.10",
-    time: "16:00",
-    players: [
-      { name: "Player 1", image: "favicon.ico", phoneNum: "0527345050" },
-      { name: "Player 2", image: "favicon.ico", phoneNum: "0527345050" },
-      { name: "Player 3", image: "favicon.ico", phoneNum: "0527345050" },
-      { name: "Player 4", image: "favicon.ico", phoneNum: "0527345050" },
-      { name: "Player 5", image: "favicon.ico", phoneNum: "0527345050" },
-    ],
-    price: 30,
-  };
   const groups = [
     {
       id: "g1",
