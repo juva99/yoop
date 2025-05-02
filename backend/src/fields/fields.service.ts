@@ -24,6 +24,14 @@ export class FieldsService {
                 return field;
       }
 
+      async findByCity(city: string): Promise<Field[]> {
+        const fields = await this.fieldRepository.find({ where: { city } });
+        if (!fields || fields.length === 0) {
+          throw new NotFoundException(`No fields found in city ${city}`);
+        }
+        return fields;
+      }
+
       async deleteOne(fieldId: string): Promise<void> {
         const results = await this.fieldRepository.delete(fieldId);
         if(results.affected === 0){

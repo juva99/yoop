@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Delete, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Delete, Param, Query } from '@nestjs/common';
 import { FieldsService } from './fields.service';
 import { Field } from './fields.entity';
 import { CreateFieldDto } from './dto/create-field.dto';
@@ -13,6 +13,11 @@ export class FieldsController {
       return await this.fieldService.findAll();
     }
   
+    @Get('/by-city')
+    async getByCity(@Query('city') city: string): Promise<Field[]> {
+      return await this.fieldService.findByCity(city);
+    }
+
     @Get("/:id")
     async getById(@Param('id') id: string): Promise<Field>{
       return await this.fieldService.findById(id);
