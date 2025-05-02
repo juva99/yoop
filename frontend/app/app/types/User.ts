@@ -17,5 +17,4 @@ export type User = {
   friendList?: User[];
   gameParticipations: GameParticipant[];
   createdGames: Game[];
-  hashedRefreshToken?: string;
 }
