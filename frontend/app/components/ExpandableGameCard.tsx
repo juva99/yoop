@@ -47,7 +47,7 @@ const ExpandableGameCard: React.FC<Props> = ({ game }) => {
             <span className="flex items-center gap-3 text-[20px] font-medium text-blue-400">
               {gameType.toLowerCase() === "basketball" ? (
                 <PiBasketball />
-              ) : gameType.toLowerCase() === "soccer" ? (
+              ) : gameType.toLowerCase() === "football" ? (
                 <PiSoccerBall />
               ) : null}
               <span className={`max-w-[150px] ${!isOpen ? "truncate" : ""}`}>
