@@ -44,6 +44,6 @@ export class Game {
   creator: User;
 
   //field where game happens
-  @ManyToOne(() => Field, (field) => field.gamesInField)
+  @ManyToOne(() => Field, (field) => field.gamesInField, { eager: true })
   field: Field;
 }
