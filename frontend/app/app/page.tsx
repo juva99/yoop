@@ -1,11 +1,13 @@
 import FutureGames from "@/components/FutureGames";
 import GroupsList from "@/components/GroupsList";
-import { MapView } from "@/components/MapView";
+import MapView from "@/components/MapView";
+import Search from "@/components/searchComponents/Search";
+import SearchGame from "@/components/searchComponents/SearchGame";
 
 export default function Home() {
   const sampleGame = {
     id: "g1",
-    field_name: "עמק אילון 9",
+    field: { name: "עמק אילון 9", lng: 34.79, lat: 32.13 },
     type: "soccer",
     date: "4.10",
     time: "16:00",
@@ -22,7 +24,7 @@ export default function Home() {
   };
   const sampleGame2 = {
     id: "g2",
-    field_name: "עמק  9",
+    field: { name: "עמק יזרעאל 9", lng: 34.81, lat: 32.15 },
     type: "soccer",
     date: "4.10",
     time: "16:00",
@@ -74,13 +76,12 @@ export default function Home() {
       </div>
       <div>
         <p className="text-subtitle text-xl font-bold">משחקים בעיר</p>
-        <MapView />
+        <MapView
+          defaultLocation={{ lng: 34.79, lat: 32.13 }}
+          games={[sampleGame, sampleGame2]}
+        />
       </div>
-
-      <div>
-        <p className="text-subtitle text-xl font-bold">הקבוצות שלך</p>
-        <GroupsList groups={groups} />
-      </div>
+      <Search />
     </div>
   );
 }

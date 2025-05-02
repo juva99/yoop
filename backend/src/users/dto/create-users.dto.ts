@@ -1,9 +1,15 @@
-import { IsBoolean, IsDateString, IsEmail, IsNotEmpty, IsOptional, IsString, Length } from 'class-validator';
+import {
+  IsBoolean,
+  IsDateString,
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Length,
+  Matches,
+} from 'class-validator';
 
 export class CreateUserDto {
-  
-  uid: string;
-
   @IsString()
   firstName: string;
 
@@ -11,15 +17,20 @@ export class CreateUserDto {
   lastName: string;
 
   @IsString()
-  @Length(8)
+  @Length(8, 36)
+  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
+    message:
+      'Password must contain an uppercase, a lowercase and number or special character',
+  })
   pass: string;
 
   @IsString()
   @Length(8)
   passConfirm: string;
 
+  @IsString()
   @IsEmail()
-  userEmail: String;
+  userEmail: string;
 
   @IsOptional()
   @IsDateString()
@@ -41,7 +52,8 @@ export class CreateUserDto {
   @IsString()
   phoneNum?: string;
 
+  @IsOptional()
   @IsString()
-  @Length(1,10)
-  role: string;
+  @Length(1, 10)
+  role?: string;
 }

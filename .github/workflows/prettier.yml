@@ -1,6 +1,6 @@
 name: Prettier
 
-on: 
+on:
   workflow_dispatch:
   push:
     branches: [main, dev]
@@ -23,11 +23,11 @@ jobs:
       - name: Install backend dependencies
         working-directory: backend
         run: npm i
-        
+
       - name: Install frontend dependencies
         working-directory: frontend/app
-        run: npm i
-        
+        run: npm install --legacy-peer-deps
+
       - name: Run prettier for backend
         working-directory: backend
         run: npx run format-check
@@ -35,5 +35,3 @@ jobs:
       - name: Run prettier for frontend
         working-directory: frontend/app
         run: npx prettier --check "**/*.tsx"
-
-      

@@ -3,9 +3,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Map, Marker } from "pigeon-maps";
 import testData from "../data/testdata.json";
+import { Game } from "@/app/types/Game";
+import GameCard from "./GameCard";
 
-// Tel Aviv coordinates
-const TEL_AVIV: [number, number] = [32.0853, 34.7818];
 const DEFAULT_RADIUS_KM = 30; // Default radius in kilometers
 
 // Calculate distance between two points using Haversine formula
@@ -33,14 +33,19 @@ function deg2rad(deg: number): number {
   return deg * (Math.PI / 180);
 }
 
-export function MapView() {
-  const [selectedMarker, setSelectedMarker] = useState<{
-    name: string;
-    lat: number;
-    lng: number;
-  } | null>(null);
+type Props = {
+  defaultLocation: { lng: number; lat: number };
+  games: Game[];
+};
 
-  const [mapCenter, setMapCenter] = useState<[number, number]>(TEL_AVIV);
+const MapView: React.FC<Props> = ({ defaultLocation, games }) => {
+  const [selectedMarker, setSelectedMarker] = useState<Game | null>(null);
+  const [gamesList, setGamesList] = useState<Game[]>(games);
+
+  const [mapCenter, setMapCenter] = useState<[number, number]>([
+    defaultLocation.lat,
+    defaultLocation.lng,
+  ]);
   const [zoom, setZoom] = useState<number>(12);
   const [radius, setRadius] = useState<number>(DEFAULT_RADIUS_KM);
   const allMarkersRef = useRef<any[]>([]);
@@ -57,16 +62,12 @@ export function MapView() {
     setStats((prev) => ({ ...prev, total: validStadiums.length }));
 
     // Filter markers by initial radius
-    filterMarkersByDistance(TEL_AVIV[0], TEL_AVIV[1], radius);
+    filterMarkersByDistance(defaultLocation.lat, defaultLocation.lng, radius);
   }, [radius]);
 
-  const handleMarkerClick = (stadium: any) => {
-    setSelectedMarker({
-      name: stadium.name,
-      lat: stadium.latitude,
-      lng: stadium.longitude,
-    });
-    console.log("Stadium clicked:", stadium.name);
+  const handleMarkerClick = (game: any) => {
+    setSelectedMarker(game);
+    console.log("Game clicked:", game);
   };
 
   // Clear selected marker when clicking on the map (not on a marker)
@@ -136,29 +137,22 @@ export function MapView() {
         onClick={handleMapClick}
         ref={mapRef}
       >
-        {visibleMarkers.map((stadium) => (
+        {gamesList.map((game) => (
           <Marker
-            key={stadium.osm_id}
+            key={game.id}
             width={30}
-            anchor={[stadium.latitude, stadium.longitude]}
-            onClick={() => handleMarkerClick(stadium)}
+            anchor={[game.field.lat, game.field.lng]}
+            onClick={() => handleMarkerClick(game)}
           />
         ))}
       </Map>
-
       {selectedMarker && (
         <div className="absolute start-4 bottom-4 rounded-md bg-white p-3 shadow-md">
-          <h3 className="font-bold">
-            {selectedMarker.name === "Unnamed Field/Stadium"
-              ? "מגרש ללא שם"
-              : selectedMarker.name}
-          </h3>
-          <p className="text-sm">
-            Coordinates: {selectedMarker.lat.toFixed(4)},{" "}
-            {selectedMarker.lng.toFixed(4)}
-          </p>
+          <GameCard game={selectedMarker} />
         </div>
       )}
     </div>
   );
-}
+};
+
+export default MapView;

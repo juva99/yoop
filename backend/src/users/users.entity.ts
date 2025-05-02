@@ -1,5 +1,15 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
-
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  ManyToMany,
+  JoinTable,
+  OneToMany,
+} from 'typeorm';
+import { Field } from 'src/fields/fields.entity';
+import { Game } from 'src/games/games.entity';
+import { GameParticipant } from 'src/game-participants/game-participants.entity';
 
 @Entity('users')
 export class User {
@@ -12,11 +22,11 @@ export class User {
   @Column()
   lastName: string;
 
-  @Column()
+  @Column({ select: false })
   pass: string;
 
-  @Column({unique: true})
-  userEmail: String;
+  @Column({ unique: true })
+  userEmail: string;
 
   @Column({ type: 'date', nullable: true })
   birthDay: string;
@@ -35,4 +45,35 @@ export class User {
 
   @Column()
   role: string;
+
+  //field managers
+  @OneToMany(() => Field, (field) => field.manager)
+  fieldsManage: Field[];
+
+  //firend list
+  @ManyToMany(() => User)
+  @JoinTable({
+    name: 'friend_list',
+    joinColumn: {
+      name: 'user1',
+      referencedColumnName: 'uid',
+    },
+    inverseJoinColumn: {
+      name: 'user2',
+      referencedColumnName: 'uid',
+    },
+  })
+  friendList: User[];
+
+  // game participants
+  @OneToMany(() => GameParticipant, (gameParticipant) => gameParticipant.user)
+  gameParticipations: GameParticipant[];
+
+  //created games
+  @OneToMany(() => Game, (createdGames) => createdGames.creator)
+  createdGames: Game[];
+
+  //refresh token
+  @Column({ nullable: true, select: false })
+  hashedRefreshToken?: string;
 }

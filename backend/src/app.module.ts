@@ -2,7 +2,10 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
-
+import { FieldsModule } from './fields/fields.module';
+import { GamesModule } from './games/games.module';
+import { AuthModule } from './auth/auth.module';
+import { GameParticipantsModule } from './game-participants/game-participants.module';
 
 @Module({
   imports: [
@@ -17,10 +20,15 @@ import { UsersModule } from './users/users.module';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       autoLoadEntities: true,
-      synchronize: true
+      synchronize: true,
     }),
     UsersModule,
+    FieldsModule,
+    GamesModule,
+    AuthModule,
+    GameParticipantsModule,
+    ConfigModule.forRoot({ isGlobal: true }),
   ],
-  controllers: []
+  controllers: [],
 })
 export class AppModule {}
