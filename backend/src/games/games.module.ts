@@ -4,10 +4,10 @@ import { GamesService } from './games.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Game } from './games.entity';
 import { Field } from 'src/fields/fields.entity';
-import { GameParticipant } from 'src/game-participants/game-participants.entity'; // Import the new entity
+import { GameParticipant } from 'src/game-participants/game-participants.entity'; 
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Game, Field, GameParticipant])], // Add GameParticipant here
+  imports: [TypeOrmModule.forFeature([Game, Field, GameParticipant])], 
   controllers: [GamesController],
   providers: [GamesService]
 })

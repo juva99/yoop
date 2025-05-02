@@ -14,38 +14,45 @@ export class GamesController {
 
     constructor(private readonly gameService: GamesService) {}
 
+        //get all games
         @Get()
         async getAll(): Promise<Game[]> {
           return await this.gameService.findAll();
         }
-
+        
+        //get games by query
         @Get('/query')
         async queryGames(@Query() queryDto: QueryGameDto): Promise<Game[]> {
           return await this.gameService.queryGames(queryDto);
         }
 
+        //get all games connected user is participating in
         @UseGuards(JwtAuthGuard)
         @Get("/mygames")
         async getAllMine(@GetUser() user: User): Promise<Game[]> {
             return await this.gameService.findAllMine(user);
         }
 
+        //get game by id
         @Get("/byid/:id")
         async getById(@Param('id') id: string): Promise<Game> {
             return await this.gameService.findById(id);
         }
 
+        //get all games in selected field
         @Get("/fieldId/:id")
         async getByFieldId(@Param('id') id: string): Promise<Game[]> {
             return await this.gameService.findByFieldId(id);
         }
 
+        //create new game and set user as creator
         @UseGuards(JwtAuthGuard)
         @Post()
         async create(@Body() createGameDto: CreateGameDto, @GetUser() user: User): Promise<Game> {
             return await this.gameService.create(createGameDto, user);
         }
 
+        //join game by id and add user to pending list
         @UseGuards(JwtAuthGuard)
         @Post('/:gameId/join')
         async joinGame(

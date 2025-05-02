@@ -9,11 +9,11 @@ export class GameParticipant {
   id: string;
 
   @ManyToOne(() => Game, game => game.gameParticipants)
-  @JoinColumn({ name: 'gameId' })
+  // @JoinColumn({ name: 'gameId' })
   game: Game;
 
   @ManyToOne(() => User, user => user.gameParticipations)
-  @JoinColumn({ name: 'userId' })
+  // @JoinColumn({ name: 'userId' })
   user: User;
 
   @Column("enum", { enum: ParticipationStatus, default: ParticipationStatus.PENDING })
