@@ -1,11 +1,18 @@
-import { Player } from "./Player";
+import { GameStatus } from "../enums/game-status.enum";
+import { GameType } from "../enums/game-type.enum";
+import { Field } from "./Field";
+import { GameParticipant } from "./GameParticipant";
+import { User } from "./User";
 
 export type Game = {
-  id: string;
-  field: { name: string; lat: any; lng: any };
-  type: string;
-  date: string;
-  time: string;
-  players: Player[];
+  gameId: string;
+  gameType: GameType;
+  startDate: Date;
+  endDate: Date;
+  maxParticipants: number;
+  status: GameStatus;
+  gameParticipants: GameParticipant[];
+  creator: User;
+  field: Field;
   price?: number;
-};
+}
