@@ -6,11 +6,10 @@ import {
   IsOptional,
   IsString,
   Length,
+  Matches,
 } from 'class-validator';
 
 export class CreateUserDto {
-  uid: string;
-
   @IsString()
   firstName: string;
 
@@ -18,13 +17,18 @@ export class CreateUserDto {
   lastName: string;
 
   @IsString()
-  @Length(8)
+  @Length(8, 36)
+  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
+    message:
+      'Password must contain an uppercase, a lowercase and number or special character',
+  })
   pass: string;
 
   @IsString()
   @Length(8)
   passConfirm: string;
 
+  @IsString()
   @IsEmail()
   userEmail: string;
 

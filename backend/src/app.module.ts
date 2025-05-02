@@ -2,7 +2,10 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
+import { FieldsModule } from './fields/fields.module';
+import { GamesModule } from './games/games.module';
 import { AuthModule } from './auth/auth.module';
+import { GameParticipantsModule } from './game-participants/game-participants.module';
 
 @Module({
   imports: [
@@ -20,7 +23,10 @@ import { AuthModule } from './auth/auth.module';
       synchronize: true,
     }),
     UsersModule,
+    FieldsModule,
+    GamesModule,
     AuthModule,
+    GameParticipantsModule,
     ConfigModule.forRoot({ isGlobal: true }),
   ],
   controllers: [],
