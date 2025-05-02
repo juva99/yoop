@@ -26,10 +26,10 @@ export class CreateFieldDto {
   fieldPhoto?: string;
 
   @IsNumber()
-  fieldlat?: number;
+  fieldLat: number; 
 
   @IsNumber()
-  fieldlng?: number;
+  fieldLng: number;
 
   @IsOptional()
   @IsString()
