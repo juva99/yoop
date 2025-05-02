@@ -28,10 +28,10 @@ export class Field {
   fieldPhoto?: string;
 
   @Column({ nullable: true })
-  fieldlat?: string;
+  fieldLat?: number;
 
   @Column({ nullable: true })
-  fieldlng?: string;
+  fieldLng?: number;
 
   @Column({ nullable: true })
   fieldAddress?: string;
