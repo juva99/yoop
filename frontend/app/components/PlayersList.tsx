@@ -3,7 +3,6 @@ import { Player } from "@/app/types/Player";
 import React from "react";
 import { FaWhatsapp } from "react-icons/fa";
 
-
 interface Props {
   players: Player[];
 }
@@ -14,10 +13,10 @@ const PlayersList: React.FC<Props> = ({ players }) => {
   };
 
   return (
-    <div className="players pr-4 flex flex-col items-start gap-2">
-      <div className="flex flex-col space-y-1 w-full">
+    <div className="players flex flex-col items-start gap-2 pr-4">
+      <div className="flex w-full flex-col space-y-1">
         {players.map((player, index) => (
-          <div key={index} className="flex items-center justify-between w-full">
+          <div key={index} className="flex w-full items-center justify-between">
             <div className="flex items-center gap-2">
               <Avatar className="h-8 w-8 rounded-full border-2 border-white">
                 <AvatarImage src={player.image} alt={player.name} />
@@ -25,19 +24,19 @@ const PlayersList: React.FC<Props> = ({ players }) => {
               </Avatar>
               <span className="text-sm">{player.name}</span>
             </div>
-            <a 
+            <a
               href={`https://wa.me/${formatPhoneNumber(player.phoneNum)}`}
               target="_blank"
-              rel="noopener noreferrer"  
-              className="pl-4"  
+              rel="noopener noreferrer"
+              className="pl-4"
             >
-              <FaWhatsapp className="text-[#25D366]"/>
+              <FaWhatsapp className="text-[#25D366]" />
             </a>
           </div>
         ))}
       </div>
     </div>
-);
+  );
 };
 
 export default PlayersList;
