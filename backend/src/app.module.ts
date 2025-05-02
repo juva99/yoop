@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { FieldsModule } from './fields/fields.module';
 import { GamesModule } from './games/games.module';
@@ -11,23 +11,32 @@ import { GameParticipantsModule } from './game-participants/game-participants.mo
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.env',
+      isGlobal: true,
     }),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.DB_HOST,
-      port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 54322,
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      autoLoadEntities: true,
-      synchronize: true,
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        const sslOptions = true;
+
+        return {
+          type: 'postgres',
+          host: configService.get<string>('DB_HOST'),
+          port: configService.get<number>('DB_PORT', 5432),
+          username: configService.get<string>('DB_USERNAME'),
+          password: configService.get<string>('DB_PASSWORD'),
+          database: configService.get<string>('DB_NAME'),
+          ssl: sslOptions,
+          autoLoadEntities: true,
+          synchronize: configService.get<string>('NODE_ENV') !== 'production',
+        };
+      },
     }),
     UsersModule,
     FieldsModule,
     GamesModule,
     AuthModule,
     GameParticipantsModule,
-    ConfigModule.forRoot({ isGlobal: true }),
   ],
   controllers: [],
 })
