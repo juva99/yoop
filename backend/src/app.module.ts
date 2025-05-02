@@ -17,7 +17,7 @@ import { GameParticipantsModule } from './game-participants/game-participants.mo
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
-        const sslOptions = true;
+        const sslOptions = configService.get<boolean>('SSL', false);
 
         return {
           type: 'postgres',
