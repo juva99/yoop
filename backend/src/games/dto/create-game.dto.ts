@@ -1,10 +1,22 @@
-import { ArrayNotEmpty, IsArray, IsBoolean, IsDate, IsDateString, IsEmail, IsEnum, IsNotEmpty, IsNumber, IsOptional, isString, IsString, Length } from 'class-validator';
+import {
+  ArrayNotEmpty,
+  IsArray,
+  IsBoolean,
+  IsDate,
+  IsDateString,
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  isString,
+  IsString,
+  Length,
+} from 'class-validator';
 import { GameType } from 'src/enums/game-type.enum';
 
 export class CreateGameDto {
- 
-
-  @IsEnum(GameType, {each: true})
+  @IsEnum(GameType, { each: true })
   gameType: GameType;
 
   @IsDateString()
@@ -18,5 +30,4 @@ export class CreateGameDto {
 
   @IsString()
   field: string;
-
 }

@@ -5,10 +5,14 @@ import { GameParticipant } from './game-participants.entity';
 
 @Controller('game-participants')
 export class GameParticipantsController {
-    constructor(private readonly gameParticipantsService: GameParticipantsService) {}
+  constructor(
+    private readonly gameParticipantsService: GameParticipantsService,
+  ) {}
 
-    @Patch('/set-status')
-    async setStatus(@Body() setStatusDto: SetStatusDto): Promise<GameParticipant>{
-        return await this.gameParticipantsService.setStatus(setStatusDto);
-    }
+  @Patch('/set-status')
+  async setStatus(
+    @Body() setStatusDto: SetStatusDto,
+  ): Promise<GameParticipant> {
+    return await this.gameParticipantsService.setStatus(setStatusDto);
+  }
 }

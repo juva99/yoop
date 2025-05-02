@@ -1,15 +1,13 @@
-import { IsEnum, IsString } from "class-validator";
-import { ParticipationStatus } from "src/enums/participation-status.enum";
+import { IsEnum, IsString } from 'class-validator';
+import { ParticipationStatus } from 'src/enums/participation-status.enum';
 
-export class SetStatusDto{
+export class SetStatusDto {
+  @IsString()
+  uid: string;
 
-    @IsString()
-    uid: string;
+  @IsString()
+  gameId: string;
 
-    @IsString()
-    gameId: string;
-
-    @IsEnum(ParticipationStatus)
-    newStatus: ParticipationStatus;
-
+  @IsEnum(ParticipationStatus)
+  newStatus: ParticipationStatus;
 }

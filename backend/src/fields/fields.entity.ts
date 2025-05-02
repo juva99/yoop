@@ -1,4 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { User } from 'src/users/users.entity';
 import { Game } from 'src/games/games.entity';
 import { GameType } from 'src/enums/game-type.enum';
@@ -11,32 +18,32 @@ export class Field {
   @Column()
   fieldName: string;
 
-  @Column("enum", {enum: GameType, array: true})
+  @Column('enum', { enum: GameType, array: true })
   gameTypes: GameType[];
 
   @Column({ default: false })
   isManaged: boolean;
 
-  @Column({nullable: true })
+  @Column({ nullable: true })
   fieldPhoto?: string;
 
-  @Column({nullable: true })
+  @Column({ nullable: true })
   fieldlat?: string;
 
-  @Column({nullable: true })
+  @Column({ nullable: true })
   fieldlng?: string;
 
-  @Column({nullable: true })
+  @Column({ nullable: true })
   fieldAddress?: string;
 
   @Column()
   city: string;
-  
+
   //field manager
-  @ManyToOne(() => User, manager => manager.fieldsManage)
+  @ManyToOne(() => User, (manager) => manager.fieldsManage)
   manager: User;
-  
+
   //games played in this field
-  @OneToMany(() => Game, game => game.field)
+  @OneToMany(() => Game, (game) => game.field)
   gamesInField: Game[];
 }

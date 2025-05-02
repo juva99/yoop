@@ -9,35 +9,36 @@ import { use } from 'passport';
 import { SetStatusDto } from './dto/set-status.dto';
 @Injectable()
 export class GameParticipantsService {
-    constructor(
-        @InjectRepository(Game)
-        private gameRepository: Repository<Game>,
-        @InjectRepository(GameParticipant)
-        private gameParticipantRepository: Repository<GameParticipant>,
-        @InjectRepository(User)
-        private userRepository: Repository<User>,
-      ) {}
+  constructor(
+    @InjectRepository(Game)
+    private gameRepository: Repository<Game>,
+    @InjectRepository(GameParticipant)
+    private gameParticipantRepository: Repository<GameParticipant>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
+  ) {}
 
-      async setStatus(setStatusDto: SetStatusDto): Promise<GameParticipant>{
-        const {uid, gameId, newStatus} = setStatusDto;
-        let participant = await this.gameParticipantRepository.findOne({where: {user: {uid} , game: {gameId}}, relations:['user', 'game']});
+  async setStatus(setStatusDto: SetStatusDto): Promise<GameParticipant> {
+    const { uid, gameId, newStatus } = setStatusDto;
+    let participant = await this.gameParticipantRepository.findOne({
+      where: { user: { uid }, game: { gameId } },
+      relations: ['user', 'game'],
+    });
 
-        if(!participant){
-            const game = await this.gameRepository.findOne({where: {gameId}});
-            const user = await this.userRepository.findOne({where: {uid}});
-            if(user && game){
-            participant = this.gameParticipantRepository.create({
-                user: user,
-                game: game,
-                status: newStatus
-            })}
-            else throw new NotFoundException('no user or game with id found');
-        }
-        else{
-        participant.status = newStatus;
-        }
+    if (!participant) {
+      const game = await this.gameRepository.findOne({ where: { gameId } });
+      const user = await this.userRepository.findOne({ where: { uid } });
+      if (user && game) {
+        participant = this.gameParticipantRepository.create({
+          user: user,
+          game: game,
+          status: newStatus,
+        });
+      } else throw new NotFoundException('no user or game with id found');
+    } else {
+      participant.status = newStatus;
+    }
 
-        return this.gameParticipantRepository.save(participant);
-  
-      }
+    return this.gameParticipantRepository.save(participant);
+  }
 }

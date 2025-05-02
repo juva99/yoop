@@ -56,7 +56,11 @@ export class UsersService {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return await this.userRepository.createQueryBuilder('user').addSelect(['user.pass', 'user.hashedRefreshToken']).where('user.userEmail = :email', {email}).getOne();
+    return await this.userRepository
+      .createQueryBuilder('user')
+      .addSelect(['user.pass', 'user.hashedRefreshToken'])
+      .where('user.userEmail = :email', { email })
+      .getOne();
     // .findOne({
     //   where: { userEmail: email },
     // });

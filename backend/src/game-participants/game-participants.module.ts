@@ -10,6 +10,6 @@ import { Game } from 'src/games/games.entity';
   imports: [TypeOrmModule.forFeature([GameParticipant, Game, User])],
   exports: [TypeOrmModule],
   controllers: [GameParticipantsController],
-  providers: [GameParticipantsService] 
+  providers: [GameParticipantsService],
 })
 export class GameParticipantsModule {}

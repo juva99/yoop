@@ -1,5 +1,5 @@
-export enum GameType{
-    FootBall= 'football',
-    BasketBall= 'basketball',
-    Tennis= 'tennis',
+export enum GameType {
+  FootBall = 'football',
+  BasketBall = 'basketball',
+  Tennis = 'tennis',
 }
