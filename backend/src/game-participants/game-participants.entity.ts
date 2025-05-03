@@ -18,7 +18,7 @@ export class GameParticipant {
   // @JoinColumn({ name: 'gameId' })
   game: Game;
 
-  @ManyToOne(() => User, (user) => user.gameParticipations)
+  @ManyToOne(() => User, (user) => user.gameParticipations, { eager: true })
   // @JoinColumn({ name: 'userId' })
   user: User;
 

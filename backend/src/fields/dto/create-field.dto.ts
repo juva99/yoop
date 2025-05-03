@@ -6,6 +6,7 @@ import {
   IsString,
   Length,
   IsOptional,
+  IsNumber,
 } from 'class-validator';
 import { GameType } from 'src/enums/game-type.enum';
 export class CreateFieldDto {
@@ -24,13 +25,11 @@ export class CreateFieldDto {
   @IsString()
   fieldPhoto?: string;
 
-  @IsOptional()
-  @IsString()
-  fieldlat?: string;
+  @IsNumber()
+  fieldlat?: number;
 
-  @IsOptional()
-  @IsString()
-  fieldlng?: string;
+  @IsNumber()
+  fieldlng?: number;
 
   @IsOptional()
   @IsString()

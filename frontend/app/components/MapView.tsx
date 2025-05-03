@@ -139,9 +139,9 @@ const MapView: React.FC<Props> = ({ defaultLocation, games }) => {
       >
         {gamesList.map((game) => (
           <Marker
-            key={game.id}
+            key={game.gameId}
             width={30}
-            anchor={[game.field.lat, game.field.lng]}
+            anchor={[game.field.fieldLat, game.field.fieldLng]}
             onClick={() => handleMarkerClick(game)}
           />
         ))}
