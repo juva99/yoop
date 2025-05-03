@@ -4,13 +4,14 @@ import FilteredGames from "@/components/searchComponents/FilteredGames";
 import SearchGame from "@/components/searchComponents/SearchGame";
 import React, { useEffect, useState } from "react";
 import MapView from "../MapView";
+import { BACKEND_URL } from "@/lib/constants";
 
 type Props = {};
 type Filters = {
   gameType?: any;
   date?: any;
-  startDate?: Date,
-  endDate?: Date,
+  startDate?: Date;
+  endDate?: Date;
   time?: any;
   location?: any;
   radius?: any;
@@ -34,44 +35,55 @@ const Search: React.FC<Props> = () => {
     startDate: new Date(),
     endDate: new Date(),
     location: "tel aviv",
-    radius: 10, 
+    radius: 10,
   });
+
   const fetchGames = async () => {
+    if (!filters.date || !filters.time) {
+      console.log("Date or time filter not set, skipping fetch.");
+      setFilteredGames([]);
+      return;
+    }
+
     const startDate = getDateWithTime(filters.date, filters.time[0]);
     const endDate = getDateWithTime(filters.date, filters.time[1]);
-  
+
     const params = new URLSearchParams({
       gameType: filters.gameType || "",
       startDate: startDate.toISOString(),
       endDate: endDate.toISOString(),
       city: filters.location || "",
     });
-    
+
     try {
-      const response = await fetch(`http://localhost:3001/games/query?${params.toString()}`, {
-        method: "GET",
-      });
-  
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/query?${params.toString()}`,
+        {
+          method: "GET",
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
-      console.log(data);
       setFilteredGames(data);
     } catch (e) {
       console.error("Failed to fetch games", e);
+      setFilteredGames([]);
     }
   };
-  
-
 
   useEffect(() => {
-   fetchGames();
-  },[filters]);
+    if (filters.date && filters.time) {
+      fetchGames();
+    }
+  }, [filters]);
 
-  const filtersHandler = (filters: Filters) => {
-    setFilters(filters);
-    // get req by filters
+  const filtersHandler = (newFilters: Filters) => {
+    setFilters(newFilters);
   };
-
-  // fetch filtered games from server
 
   return (
     <div className="p-5">

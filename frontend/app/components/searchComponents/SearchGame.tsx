@@ -19,8 +19,8 @@ type Props = {
 type Filters = {
   gameType?: any;
   date?: any;
-  startDate?: Date,
-  endDate?: Date,
+  startDate?: Date;
+  endDate?: Date;
   time?: any;
   location?: any;
   radius?: any;
@@ -33,15 +33,13 @@ const SearchGame: React.FC<Props> = ({ updateFilters }) => {
     time: null,
     location: "tel aviv", //use user session
     radius: 5,
-    startDate: new Date() ,
+    startDate: new Date(),
     endDate: new Date(),
   });
 
   const onFilterChange = (key: string, value: any) => {
-      setFilters({ ...filters, [key]: value });
+    setFilters({ ...filters, [key]: value });
   };
-
-  
 
   return (
     <div className="search-game">
@@ -57,9 +55,7 @@ const SearchGame: React.FC<Props> = ({ updateFilters }) => {
       <Button
         className="bg-title my-5 w-[100%]"
         onClick={() => {
-            console.log(filters.gameType);
-            updateFilters(filters);
-          
+          updateFilters(filters);
         }}
       >
         חפש
