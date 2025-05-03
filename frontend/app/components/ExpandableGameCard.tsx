@@ -38,9 +38,27 @@ const ExpandableGameCard: React.FC<Props> = ({ game }) => {
     typeof startDate === "string" ? new Date(startDate) : startDate;
 
   const users = gameParticipants.map((participant) => participant.user);
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const formattedDate = start.toLocaleDateString("he-IL", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+  const formattedTime = start.toLocaleTimeString("he-IL", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: "UTC",
+  });
 
-  // Define a consistent locale for formatting
-  const locale = "he-IL"; // Use Hebrew (Israel) locale
+  const formattedEndTime = end.toLocaleTimeString("he-IL", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: "UTC",
+  });
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen} className="relative">
@@ -65,17 +83,7 @@ const ExpandableGameCard: React.FC<Props> = ({ game }) => {
               </span>
             </span>
             <p className="text-gray-500">
-              {dateObject.toLocaleDateString(locale, {
-                month: "numeric",
-                day: "numeric",
-              })}{" "}
-              |{" "}
-              {dateObject.toLocaleTimeString(locale, {
-                hour: "numeric",
-                minute: "2-digit",
-                hour12: false,
-              })}{" "}
-              {price && `| ${price}₪`}
+              {formattedDate} | {formattedTime} {price && "|" + price + "₪"}
             </p>
             {!isOpen && <AvatarGroup players={users} />}
           </div>

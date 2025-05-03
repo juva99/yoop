@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { GameType } from "@/app/enums/game-type.enum";
 
 import Filter from "@/components/Filter";
 import { PiSoccerBall } from "react-icons/pi";
@@ -8,17 +9,18 @@ type Props = {
 };
 
 const typeOptions = [
-  { label: "כדורסל", value: "basketball", icon: <PiBasketball /> },
-  { label: "כדורגל", value: "soccer", icon: <PiSoccerBall /> },
+  { label: "כדורסל", value: GameType.BasketBall, icon: <PiBasketball /> },
+  { label: "כדורגל", value: GameType.FootBall, icon: <PiSoccerBall /> },
 ];
 
 const TypeFilter: React.FC<Props> = ({ onFilterChange }) => {
-  const [type, setType] = useState<string>("");
+  const [type, setType] = useState<GameType | "">("");
 
-  const typeHandler = (type: string) => {
+  const typeHandler = (type: GameType) => {
     setType(type);
-    onFilterChange("type", type);
+    onFilterChange("gameType", type);
   };
+
   return (
     <div>
       {" "}
