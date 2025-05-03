@@ -66,7 +66,6 @@ export default async function Page({
 
   const users = gameParticipants.map((participant) => participant.user);
 
-  console.log(start);
   const formattedDate = start.toLocaleDateString("he-IL", {
     day: "2-digit",
     month: "2-digit",
