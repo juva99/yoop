@@ -2,7 +2,7 @@
 
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
-import { useActionState, useState } from "react";
+import { useActionState, useState, ChangeEvent } from "react";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/hover-card";
 
 import { signup } from "@/lib/auth";
+import { he } from "date-fns/locale";
 
 const passwordRequirements = (
   <div className="flex flex-col gap-2 p-2">
@@ -48,7 +49,24 @@ const passwordRequirements = (
 
 const SignupForm = () => {
   const [birthDay, setBirthDay] = useState<Date>();
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [userEmail, setUserEmail] = useState("");
+  const [pass, setPass] = useState("");
+  const [passConfirm, setPassConfirm] = useState("");
+  const [phoneNum, setPhoneNum] = useState("");
+
   const [state, action] = useActionState(signup, undefined);
+
+  const handleInputChange =
+    (setter: React.Dispatch<React.SetStateAction<string>>) =>
+    (e: ChangeEvent<HTMLInputElement>) =>
+      setter(e.target.value);
+
+  // Define year range for the dropdowns
+  const currentYear = new Date().getFullYear();
+  const fromYear = currentYear - 100;
+  const toYear = currentYear;
 
   return (
     <form action={action}>
@@ -64,6 +82,8 @@ const SignupForm = () => {
           name="firstName"
           placeholder="הכנס שם פרטי"
           className="input_underscore"
+          value={firstName}
+          onChange={handleInputChange(setFirstName)}
         ></Input>
       </div>
       {state?.error?.firstName && (
@@ -80,6 +100,8 @@ const SignupForm = () => {
           name="lastName"
           placeholder="הכנס שם משפחה"
           className="input_underscore"
+          value={lastName}
+          onChange={handleInputChange(setLastName)}
         ></Input>
       </div>
       {state?.error?.lastName && (
@@ -96,6 +118,8 @@ const SignupForm = () => {
           name="userEmail"
           placeholder="example@email.com"
           className="input_underscore"
+          value={userEmail}
+          onChange={handleInputChange(setUserEmail)}
         ></Input>
       </div>
       {state?.error?.userEmail && (
@@ -114,6 +138,8 @@ const SignupForm = () => {
               name="pass"
               placeholder="••••••••"
               className="input_underscore"
+              value={pass}
+              onChange={handleInputChange(setPass)}
             ></Input>
           </HoverCardTrigger>
           <HoverCardContent>{passwordRequirements}</HoverCardContent>
@@ -142,6 +168,8 @@ const SignupForm = () => {
               name="passConfirm"
               placeholder="••••••••"
               className="input_underscore"
+              value={passConfirm}
+              onChange={handleInputChange(setPassConfirm)}
             ></Input>
           </HoverCardTrigger>
           <HoverCardContent>{passwordRequirements}</HoverCardContent>
@@ -173,6 +201,8 @@ const SignupForm = () => {
           name="phoneNum"
           placeholder="050-1234567"
           className="input_underscore"
+          value={phoneNum}
+          onChange={handleInputChange(setPhoneNum)}
         ></Input>
       </div>
       {state?.error?.phoneNum && (
@@ -199,7 +229,11 @@ const SignupForm = () => {
               mode="single"
               selected={birthDay}
               onSelect={setBirthDay}
-              initialFocus
+              locale={he}
+              captionLayout="dropdown-buttons"
+              fromYear={fromYear}
+              toYear={toYear}
+              disabled={(date) => date > new Date()}
             />
           </PopoverContent>
         </Popover>
