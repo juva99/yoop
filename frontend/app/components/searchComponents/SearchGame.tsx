@@ -11,6 +11,7 @@ import "primereact/resources/primereact.min.css";
 import MapView from "../MapView";
 import { Button } from "../ui/button";
 import { GameType } from "@/app/enums/game-type.enum";
+import {CityFilter} from "./CityFilter";
 
 type Props = {
   updateFilters: (filters: Filters) => void;
@@ -46,6 +47,7 @@ const SearchGame: React.FC<Props> = ({ updateFilters }) => {
       <p className="search-game__title text-subtitle mt-5 text-2xl font-medium">
         חיפוש משחק
       </p>
+      <CityFilter onFilterChange={onFilterChange} />
       <div className="search-game__filters mt-2 mb-2 flex gap-2">
         <DateFilter value={filters.date} onFilterChange={onFilterChange} />
         <TypeFilter onFilterChange={onFilterChange} />

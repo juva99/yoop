@@ -44,7 +44,7 @@ const Search: React.FC<Props> = () => {
       setFilteredGames([]);
       return;
     }
-
+    
     const startDate = getDateWithTime(filters.date, filters.time[0]);
     const endDate = getDateWithTime(filters.date, filters.time[1]);
 
@@ -54,7 +54,8 @@ const Search: React.FC<Props> = () => {
       endDate: endDate.toISOString(),
       city: filters.location || "",
     });
-
+    console.log(filters);
+    
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/query?${params.toString()}`,
@@ -88,10 +89,10 @@ const Search: React.FC<Props> = () => {
   return (
     <div className="p-5">
       <SearchGame updateFilters={filtersHandler} />
-      <MapView
+      {filteredGames.length ?  <MapView
         defaultLocation={{ lng: 34.79, lat: 32.13 }}
         games={filteredGames}
-      />
+      /> : ''}
       <FilteredGames games={filteredGames} />
     </div>
   );
