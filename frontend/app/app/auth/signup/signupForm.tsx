@@ -62,6 +62,11 @@ const SignupForm = () => {
     (e: ChangeEvent<HTMLInputElement>) =>
       setter(e.target.value);
 
+  // Define year range for the dropdowns
+  const currentYear = new Date().getFullYear();
+  const fromYear = currentYear - 100;
+  const toYear = currentYear;
+
   return (
     <form action={action}>
       {state?.message && <p className="form_error">{state.message}</p>}
@@ -223,7 +228,11 @@ const SignupForm = () => {
               mode="single"
               selected={birthDay}
               onSelect={setBirthDay}
-              initialFocus
+              locale={he}
+              captionLayout="dropdown-buttons"
+              fromYear={fromYear}
+              toYear={toYear}
+              disabled={(date) => date > new Date()}
             />
           </PopoverContent>
         </Popover>
