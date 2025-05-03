@@ -14,55 +14,49 @@ export default async function MyGames() {
   const currUserUID = session.user.uid;
 
   return (
-    <div className="max-w-3xl mx-auto py-8 px-4">
+    <div className="mx-auto max-w-3xl px-4 py-8">
       <div className="mb-10">
-        <p className="text-2xl font-bold mb-4 text-right">משחקים בניהולך</p>
+        <p className="mb-4 text-right text-2xl font-bold">משחקים בניהולך</p>
         <div className="space-y-4">
           {games
-            .filter(game =>
-              game.creator.uid === currUserUID
-            )
+            .filter((game) => game.creator.uid === currUserUID)
             .map((game, index) => (
               <ExpandableGameCard key={index} game={game} />
-            ))
-          }
+            ))}
         </div>
       </div>
       <div className="mb-10">
-        <p className="text-2xl font-bold mb-4 text-right">המשחקים שלי</p>
+        <p className="mb-4 text-right text-2xl font-bold">המשחקים שלי</p>
         <div className="space-y-4">
           {games
-            .filter(game =>
+            .filter((game) =>
               game.gameParticipants.some(
-                gp =>
+                (gp) =>
                   gp.user.uid === currUserUID &&
-                  gp.status === ParticipationStatus.APPROVED
-              )
+                  gp.status === ParticipationStatus.APPROVED,
+              ),
             )
             .map((game, index) => (
               <ExpandableGameCard key={index} game={game} />
-            ))
-          }
+            ))}
         </div>
       </div>
       <div>
-        <p className="text-2xl font-bold mb-4 text-right">משחקים בהמתנה</p>
+        <p className="mb-4 text-right text-2xl font-bold">משחקים בהמתנה</p>
         <div className="space-y-4">
           {games
-            .filter(game =>
+            .filter((game) =>
               game.gameParticipants.some(
-                gp =>
+                (gp) =>
                   gp.user.uid === currUserUID &&
-                  gp.status === ParticipationStatus.PENDING
-              )
+                  gp.status === ParticipationStatus.PENDING,
+              ),
             )
             .map((game, index) => (
               <ExpandableGameCard key={index} game={game} />
-            ))
-          }
+            ))}
         </div>
       </div>
     </div>
-  )
-
+  );
 }
