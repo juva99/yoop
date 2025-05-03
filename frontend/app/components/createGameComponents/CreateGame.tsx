@@ -8,6 +8,8 @@ import { Field } from "@/app/types/Field";
 import { CityFilter } from "../searchComponents/CityFilter";
 import { GameType } from "@/app/enums/game-type.enum";
 import { DropDownInput } from "../searchComponents/DropDownInput";
+import { getSession } from "@/lib/session";
+import MaxParticipants from "./MaxParticipants";
 
 type GameDetails = {
   gameType?: GameType,
@@ -15,6 +17,7 @@ type GameDetails = {
   startTime?: any,
   endTime?: any,
   maxParticipants: number,
+  field?: any, 
   date: Date
 }
 
@@ -39,37 +42,37 @@ const CreateGame: React.FC = () => {
   const [searchedMarker, setSearchedMarker] = useState<[number, number] | null>(
     null,
   );
-  const [fields, setFields] = useState<Field[]>([]);
-  const [selectedFieldId, setSelectedFieldId] = useState<string | null>(null);
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [joinLink, setJoinLink] = useState<string | null>(null);
-  const [inputs, setInputs] = useState<GameDetails>({date: new Date(), maxParticipants: 10}) 
+  const [inputs, setInputs] = useState<GameDetails>({date: new Date(), maxParticipants: 10, startTime: '12', endTime: '16'}) 
   const [filedList, setFieldList] = useState<Option[]>([]);
-  
-  useEffect(() => {
-    //map to strings for dropdown picker
-  },[fields])
+  const [formFilled, setFormFilled] = useState(false);
+
+
   const onInputChange = (key: string, value: any) => {
     setInputs({ ...inputs, [key]: value });
-    if(key === 'maxParticipants' && value >= 30){
+    if(key === 'maxParticipants'){
+      if(value >= 30)
       setError('playerNum');
     }else{
-
-
-      console.log(inputs);
+      setError('');
     }
-    
   };
 
   useEffect(() => {
     if (inputs.location) {
-      console.log('fetch fields');
-      
       fetchFields();
     }
   }, [inputs.location]);
 
+  useEffect(() => {
+   console.log(inputs);
+   if(inputs.date &&  (inputs.field!=null) && inputs.endTime && inputs.gameType && inputs.location && inputs.maxParticipants && inputs.startTime){
+    setFormFilled(true);
+   }
+   console.log(formFilled);
+  }, [inputs]);
 
   const fetchFields = async () => {
     try {
@@ -83,13 +86,11 @@ const CreateGame: React.FC = () => {
   value: field.fieldId,
   label: field.fieldName,
   } ));
-
-      
       setFieldList(dropdownOptions);
     } catch (err) {
       setFieldList([])
+      setInputs({...inputs, 'field': null})
       console.error("שגיאה בטעינת מגרשים לעיר:", err);
-      setError("לא ניתן לטעון מגרשים לעיר זו");
     }
   }
 
@@ -109,18 +110,6 @@ const CreateGame: React.FC = () => {
           const lat = parseFloat(location.lat);
           const lon = parseFloat(location.lon);
           setSearchedMarker([lat, lon]);
-
-          try {
-            const fieldsResponse = await authFetch(
-              `${process.env.NEXT_PUBLIC_BACKEND_URL}/fields/by-city?city=${encodeURIComponent(address)}`,
-              { method: "GET" },
-            );
-            const fieldsData = await fieldsResponse.json();
-            setFields(fieldsData);
-          } catch (err) {
-            console.error("שגיאה בטעינת מגרשים לעיר:", err);
-            setError("לא ניתן לטעון מגרשים לעיר זו");
-          }
         } else {
           console.warn("לא נמצאה תוצאה מתאימה");
           setError("לא נמצאה תוצאה מתאימה לעיר שהוזנה");
@@ -132,71 +121,74 @@ const CreateGame: React.FC = () => {
     }
   };
 
-  const isFormFilled = () :boolean => {
-    return (inputs.location && inputs.date && inputs.endTime && inputs.gameType && inputs.maxParticipants && inputs.startTime && (error != ''))
-  }
 
-  // const handleSubmit = async () => {
-  //   if (!isFormFilled()) {
-  //     alert("חובה למלא את כל הפרטים");
-  //     return;
-  //   }
 
-  //   setIsLoading(true);
-  //   setJoinLink(null);
+  const handleSubmit = async () => {
+    console.log(formFilled);
+    
+    if (!formFilled) {
+      alert("חובה למלא את כל הפרטים");
+      return;
+    }
+  console.log('test');
 
-  //   const date = inputs.date!;
-  //   const time = inputs.time!;
-  //   const startDate = new Date(date);
-  //   startDate.setHours(time.hour);
-  //   startDate.setMinutes(time.minute);
-  //   const endDate = new Date(startDate.getTime() + 4 * 60 * 60 * 1000);
+    setIsLoading(true);
+    setJoinLink(null);
+    const startDate = new Date(inputs.date);
+    const endDate = new Date(inputs.date);
 
-  //   try {
-  //     const response = await fetch("/api/games", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({
-  //         gameType: inputs.type,
-  //         startDate: startDate.toISOString(),
-  //         endDate: endDate.toISOString(),
-  //         maxParticipants,
-  //         field: selectedFieldId,
-  //       }),
-  //     });
+    startDate.setHours(inputs.startTime);
+    endDate.setHours(inputs.endTime);
+    try {
+      const session = await getSession();
+      const token = session?.accessToken;
+      console.log(token);
+      
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/games`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+                body: JSON.stringify({
+          gameType: inputs.gameType,
+          startDate,
+          endDate,
+          maxParticipants: inputs.maxParticipants,
+          field: inputs.field,
+        }),
+      });
 
-  //     const result = await response.json();
-
-  //     if (response.ok && result.id) {
-  //       setJoinLink(`/joinGame?id=${result.id}`);
-  //       setinputs({
-  //         date: null,
-  //         type: null,
-  //         time: null,
-  //         location: "tel-aviv",
-  //         radius: 5,
-  //       });
-  //       setSearchedMarker(null);
-  //       setAddress("");
-  //       setSelectedFieldId(null);
-  //     } else {
-  //       alert("לא ניתן היה ליצור את המשחק. נסה שוב.");
-  //     }
-  //   } catch (err) {
-  //     console.error("שגיאה בשליחה לשרת:", err);
-  //     alert("אירעה שגיאה בשליחה לשרת.");
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
+      const result = await response.json();
+      if (response.ok && result.gameId) {
+        setJoinLink(`/joinGame?id=${result.gameId}`);
+        setInputs({
+          date: new Date(), maxParticipants: 10
+        });
+        setSearchedMarker(null);
+        setAddress("");
+      } else {
+        alert("לא ניתן היה ליצור את המשחק. נסה שוב.");
+      }
+    } catch (err) {
+      console.error("שגיאה בשליחה לשרת:", err);
+      alert("אירעה שגיאה בשליחה לשרת.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="search-game p-5 text-black">
       <p className="mt-5 text-2xl font-medium text-blue-500">יצירת משחק</p>
         <DateFilter value={inputs.date} onFilterChange={onInputChange} />
         <TypeFilter onFilterChange={onInputChange} />
-        <DropDownInput values={cities} type="עיר" onFilterChange={onInputChange}/>
-        <DropDownInput values={filedList} type="מגרש" onFilterChange={onInputChange}/>
+        <DropDownInput values={cities} placeholder="עיר" filterKey="location" onFilterChange={onInputChange}/>
+        <DropDownInput values={filedList} placeholder="מגרש" filterKey="field" onFilterChange={onInputChange}/>
+        <DropDownInput values={[]} placeholder="שעת התחלה" filterKey="startTime" onFilterChange={onInputChange}/>
+        <DropDownInput values={[]} placeholder="שעת סיום" filterKey="endTime" onFilterChange={onInputChange}/>
+        <MaxParticipants onFilterChange={onInputChange}/>
+{/* 
 <div>
         <label>מספר משתתפים:</label>
         <input
@@ -208,7 +200,7 @@ const CreateGame: React.FC = () => {
           className={`rounded-md bg-white text-center px-2 ${error === 'playerNum' ? 'text-red-400' : ''}`}
           />   
           {error === 'playerNum' ? <span className="text-red-500 text-sm mr-2">מספר משתתפים לא תקין</span> : ''}
-</div>
+</div> */}
         
       <div className="my-4 flex flex-col justify-center gap-4">
         {searchedMarker && (
@@ -230,16 +222,16 @@ const CreateGame: React.FC = () => {
 
       <div className="mt-6 flex justify-center">
         <button
-          onClick={() => console.log(inputs)
+          onClick={() => {handleSubmit()}
           }
-          disabled={!isFormFilled() || isLoading}
+          disabled={!formFilled || isLoading}
           className={`rounded-full px-10 py-4 text-lg tracking-wider shadow-lg ${
-            isFormFilled() && !isLoading
-              ? "bg-gray-900"
+           (formFilled && !isLoading)
+              ? "bg-green-400"
               : "cursor-not-allowed bg-gray-400"
           }`}
         >
-          {isLoading ? "שולח..." : "הזמנת מגרש"}
+          {isLoading ? "מחכה לאישור" : "הזמנת מגרש"}  
         </button>
       </div>
     </div>

@@ -26,10 +26,11 @@ type Option = {
 type Props = {
   onFilterChange: (key: string, value: string) => void;
   values: Option[];
-  type: string;
+  filterKey: string; 
+  placeholder?: string;
 };
 
-export function DropDownInput({ onFilterChange, type, values }: Props) {
+export function DropDownInput({ onFilterChange, filterKey, values, placeholder }: Props) {
   const [open, setOpen] = React.useState(false);
   const [selectedOption, setSelectedOption] = React.useState<Option | null>(null);
 
@@ -38,7 +39,6 @@ export function DropDownInput({ onFilterChange, type, values }: Props) {
     if (!selected) return;
 
     setSelectedOption(selected);
-    const filterKey = type === "עיר" ? "location" : "field";
     onFilterChange(filterKey, selected.value);
     setOpen(false);
   };
@@ -52,13 +52,15 @@ export function DropDownInput({ onFilterChange, type, values }: Props) {
           className="flex w-[180px] text-black items-center justify-between gap-2 rounded-4xl border border-gray-300 pt-1 pr-3 pb-1 pl-3 text-right"
           onClick={() => setOpen(!open)}
         >
-          {selectedOption ? selectedOption.label : `בחר ${type}`}
+          {selectedOption ? selectedOption.label : `בחר ${placeholder ?? "אפשרות"}`}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[180px] p-0 text-right">
         <Command>
-          <CommandInput placeholder={`בחר ${type}`} className="text-right" />
+        {!(filterKey === 'startTime' || filterKey === 'endTime') && (
+  <CommandInput placeholder={`בחר ${placeholder ?? "אפשרות"}`} className="text-right" />
+)}
           <CommandEmpty>אין תוצאות</CommandEmpty>
           <CommandGroup>
             {values.map((option) => (
