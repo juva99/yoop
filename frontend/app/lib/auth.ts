@@ -1,4 +1,4 @@
-"use server"
+"use server";
 
 import { redirect } from "next/navigation";
 import { BACKEND_URL } from "./constants";
@@ -7,7 +7,7 @@ import { createSession, updateTokens } from "./session";
 
 export async function signup(
   state: FormState,
-  formData: FormData
+  formData: FormData,
 ): Promise<FormState> {
   const validationFields = SignupFormSchema.safeParse({
     firstName: formData.get("firstName"),
@@ -16,35 +16,39 @@ export async function signup(
     pass: formData.get("pass"),
     passConfirm: formData.get("passConfirm"),
     phoneNum: formData.get("phoneNum"),
-    birthDay: formData.get("birthDay")
+    birthDay: formData.get("birthDay"),
+    role: "player",
   });
 
   if (!validationFields.success) {
     return {
-      error: validationFields.error.flatten().fieldErrors
-    }
+      error: validationFields.error.flatten().fieldErrors,
+    };
   }
-  
+  console.log(JSON.stringify(validationFields.data));
   const response = await fetch(`${BACKEND_URL}/auth/signup`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(validationFields.data)
+    body: JSON.stringify(validationFields.data),
   });
 
   if (response.ok) {
-    redirect("/auth/login")
+    redirect("/auth/login");
   } else {
     return {
-      message: response.status === 409 ? "קיים משתמש עם כתובת האימייל שבחרת" : response.statusText
-    }
+      message:
+        response.status === 409
+          ? "קיים משתמש עם כתובת האימייל שבחרת"
+          : response.statusText,
+    };
   }
 }
 
 export async function login(
   state: FormState,
-  formData: FormData
+  formData: FormData,
 ): Promise<FormState> {
   const validationFields = LoginFormSchema.safeParse({
     userEmail: formData.get("userEmail"),
@@ -53,16 +57,16 @@ export async function login(
 
   if (!validationFields.success) {
     return {
-      error: validationFields.error.flatten().fieldErrors
-    }
+      error: validationFields.error.flatten().fieldErrors,
+    };
   }
 
   const response = await fetch(`${BACKEND_URL}/auth/login`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(validationFields.data)
+    body: JSON.stringify(validationFields.data),
   });
 
   if (response.ok) {
@@ -74,17 +78,20 @@ export async function login(
         name: result.name,
       },
       accessToken: result.accessToken,
-      refreshToken: result.refreshToken
+      refreshToken: result.refreshToken,
     });
     redirect("/");
   } else {
     return {
-      message: response.status === 401 ? "הפרטים לא נכונים" : response.statusText
-    }
+      message:
+        response.status === 401 ? "הפרטים לא נכונים" : response.statusText,
+    };
   }
 }
 
-export const refreshToken = async (oldRefreshToken: string): Promise<string | null> => {
+export const refreshToken = async (
+  oldRefreshToken: string,
+): Promise<string | null> => {
   try {
     const response = await fetch(`${BACKEND_URL}/auth/refresh`, {
       method: "POST",
@@ -92,9 +99,9 @@ export const refreshToken = async (oldRefreshToken: string): Promise<string | nu
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        refresh: oldRefreshToken
-      })
-    })
+        refresh: oldRefreshToken,
+      }),
+    });
 
     if (!response.ok) {
       throw new Error("Failed to refresh token" + response.statusText);
@@ -103,19 +110,18 @@ export const refreshToken = async (oldRefreshToken: string): Promise<string | nu
     const { accessToken, refreshToken } = await response.json();
 
     const updateRes = await fetch("http://localhost:3000/api/auth/update", {
-      method:"POST",
+      method: "POST",
       body: JSON.stringify({
         accessToken,
-        refreshToken
-      })
-    })
+        refreshToken,
+      }),
+    });
 
-    if (!updateRes.ok)
-      throw new Error("Failed to update the tokens")
+    if (!updateRes.ok) throw new Error("Failed to update the tokens");
 
     return accessToken;
   } catch (error) {
     console.error("Refresh token failed:", error);
     return null;
   }
-}
+};
