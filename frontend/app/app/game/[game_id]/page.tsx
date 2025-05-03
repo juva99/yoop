@@ -69,7 +69,6 @@ export default async function Page({
   const start = new Date(startDate);
   const end = new Date(endDate);
 
-  console.log(start);
   const formattedDate = start.toLocaleDateString("he-IL", {
     day: "2-digit",
     month: "2-digit",
