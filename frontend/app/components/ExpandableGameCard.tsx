@@ -53,7 +53,6 @@ const ExpandableGameCard: React.FC<Props> = ({ game }) => {
     timeZone: "UTC",
   });
 
-
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen} className="relative">
       <div>
@@ -77,8 +76,7 @@ const ExpandableGameCard: React.FC<Props> = ({ game }) => {
               </span>
             </span>
             <p className="text-gray-500">
-              {formattedDate} | {formattedTime}{" "}
-              {price && "|" + price + "₪"}
+              {formattedDate} | {formattedTime} {price && "|" + price + "₪"}
             </p>
             {!isOpen && <AvatarGroup players={users} />}
           </div>

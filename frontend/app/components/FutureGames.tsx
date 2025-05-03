@@ -12,7 +12,7 @@ type Props = {
   games: Game[];
 };
 
-const FutureGames: React.FC<Props> = ({games}) => {
+const FutureGames: React.FC<Props> = ({ games }) => {
   const [currentGame, setCurrentGame] = useState(0);
 
   const handlers = useSwipeable({

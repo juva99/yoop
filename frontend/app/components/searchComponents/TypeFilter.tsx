@@ -13,7 +13,6 @@ const typeOptions = [
   { label: "כדורגל", value: GameType.FootBall, icon: <PiSoccerBall /> },
 ];
 
-
 const TypeFilter: React.FC<Props> = ({ onFilterChange }) => {
   const [type, setType] = useState<GameType | "">("");
 
@@ -21,7 +20,7 @@ const TypeFilter: React.FC<Props> = ({ onFilterChange }) => {
     setType(type);
     onFilterChange("gameType", type);
   };
-  
+
   return (
     <div>
       {" "}

@@ -11,7 +11,7 @@ import "primereact/resources/primereact.min.css";
 import MapView from "../MapView";
 import { Button } from "../ui/button";
 import { GameType } from "@/app/enums/game-type.enum";
-import {CityFilter} from "./CityFilter";
+import { CityFilter } from "./CityFilter";
 
 type Props = {
   updateFilters: (filters: Filters) => void;

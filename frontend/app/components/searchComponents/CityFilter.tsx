@@ -21,10 +21,10 @@ import { getSession } from "@/lib/session";
 import { redirect } from "next/navigation";
 
 const session = await getSession();
-  if (!session?.user?.uid) {
-    console.error("Invalid session or user credentials");
-    redirect("/auth/login");
-  }
+if (!session?.user?.uid) {
+  console.error("Invalid session or user credentials");
+  redirect("/auth/login");
+}
 
 const cities = [
   "תל אביב",
@@ -48,7 +48,7 @@ export function CityFilter({ onFilterChange }: Props) {
 
   const handleSelect = (city: string) => {
     setSelectedCity(city);
-    onFilterChange('location', city);
+    onFilterChange("location", city);
     setOpen(false);
   };
 
@@ -58,7 +58,7 @@ export function CityFilter({ onFilterChange }: Props) {
         <Button
           variant="outline"
           role="combobox"
-          className="w-[130px] justify-between text-right flex items-center gap-2 rounded-4xl border border-gray-300 pt-1 pr-3 pb-1 pl-3"
+          className="flex w-[130px] items-center justify-between gap-2 rounded-4xl border border-gray-300 pt-1 pr-3 pb-1 pl-3 text-right"
           onClick={() => setOpen(!open)}
         >
           {selectedCity ? selectedCity : "בחר עיר"}
@@ -80,7 +80,7 @@ export function CityFilter({ onFilterChange }: Props) {
                 <Check
                   className={cn(
                     "ml-2 h-4 w-4",
-                    selectedCity === city ? "opacity-100" : "opacity-0"
+                    selectedCity === city ? "opacity-100" : "opacity-0",
                   )}
                 />
                 {city}
