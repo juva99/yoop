@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import DateFilter from "./DateFilter";
-import TypeFilter from "./TypeFilter";
+import DateFilter from "../searchComponents/DateFilter";
+import TypeFilter from "../searchComponents/TypeFilter";
 import GetWeather from "./GetWeather";
 import { authFetch } from "@/lib/authFetch";
 import { Field } from "@/app/types/Field";
