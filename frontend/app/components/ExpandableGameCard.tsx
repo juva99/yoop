@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useState } from "react";
 import { PiBasketball, PiSoccerBall } from "react-icons/pi";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
@@ -10,6 +12,8 @@ import {
 } from "@/components/ui/collapsible";
 import PlayersList from "./PlayersList";
 import { Button } from "./ui/button";
+import { ParticipationStatus } from "@/app/enums/participation-status.enum";
+
 
 type Props = {
   game: Game;
@@ -30,7 +34,15 @@ const ExpandableGameCard: React.FC<Props> = ({ game }) => {
     price,
   } = game;
 
+  // Ensure startDate is a Date object
+  const dateObject =
+    typeof startDate === "string" ? new Date(startDate) : startDate;
+
   const users = gameParticipants.map((participant) => participant.user);
+
+  // Define a consistent locale for formatting
+  const locale = "he-IL"; // Use Hebrew (Israel) locale
+
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen} className="relative">
@@ -55,15 +67,32 @@ const ExpandableGameCard: React.FC<Props> = ({ game }) => {
               </span>
             </span>
             <p className="text-gray-500">
-              {startDate.getDate()} | {startDate.getTime()}{" "}
-              {price && "|" + price + "₪"}
-            </p>
+            {dateObject.toLocaleDateString(locale, {
+              month: "numeric",
+              day: "numeric",
+            })}{" "}
+            |{" "}
+            {dateObject.toLocaleTimeString(locale, {
+              hour: "numeric",
+              minute: "2-digit",
+              hour12: false,
+            })}{" "}
+            {price && `| ${price}₪`}
+          </p>
             {!isOpen && <AvatarGroup players={users} />}
           </div>
         </div>
       </div>
       <CollapsibleContent className="mt-2 max-h-[200px] overflow-y-auto">
-        <PlayersList players={users} />
+      {/* <PlayersList
+          gameId={gameId}
+          creatorUID={creator.uid}
+          gameParticipants={gameParticipants}
+          status={ParticipationStatus.APPROVED}
+          deleteEnable={false}
+        />
+        ///// waiting for pr to merge //////
+        */}
       </CollapsibleContent>
     </Collapsible>
   );
