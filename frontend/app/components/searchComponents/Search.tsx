@@ -7,7 +7,7 @@ import MapView from "../MapView";
 
 type Props = {};
 type Filters = {
-  type?: any;
+  gameType?: any;
   date?: any;
   startDate?: Date,
   endDate?: Date,
@@ -16,34 +16,50 @@ type Filters = {
   radius?: any;
 };
 
+const getDateWithTime = (baseDate: Date, hourDecimal: number): Date => {
+  const date = new Date(baseDate);
+  const hours = Math.floor(hourDecimal);
+  const minutes = Math.round((hourDecimal - hours) * 60);
+  date.setHours(hours, minutes, 0, 0);
+  return date;
+};
+
 const Search: React.FC<Props> = () => {
   const [filteredGames, setFilteredGames] = useState<Game[]>([]);
 
   const [filters, setFilters] = useState<Filters>({
     date: null as Date | null,
-    type: null,
+    gameType: null,
     time: null,
     startDate: new Date(),
     endDate: new Date(),
-    location: "tel-aviv",
+    location: "tel aviv",
     radius: 10, 
   });
-
   const fetchGames = async () => {
-    const params = {gameType: filters.type, startDate: filters.startDate, endDate: filters.endDate, city: filters.location}
-    const queyParams = new URLSearchParams(params.toString());
-    const response = await fetch(`http://localhost:3001/games/query?${queyParams}`, {
-       method: "GET"
-     });
-     try{
-       const data = await response.json();
-       console.log(data);
-       
-       setFilteredGames(data)
-     }catch(e){
-      console.log(e);
-     }
-  }
+    const startDate = getDateWithTime(filters.date, filters.time[0]);
+    const endDate = getDateWithTime(filters.date, filters.time[1]);
+  
+    const params = new URLSearchParams({
+      gameType: filters.gameType || "",
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString(),
+      city: filters.location || "",
+    });
+    
+    try {
+      const response = await fetch(`http://localhost:3001/games/query?${params.toString()}`, {
+        method: "GET",
+      });
+  
+      const data = await response.json();
+      console.log(data);
+      setFilteredGames(data);
+    } catch (e) {
+      console.error("Failed to fetch games", e);
+    }
+  };
+  
 
 
   useEffect(() => {

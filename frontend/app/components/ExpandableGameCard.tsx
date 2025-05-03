@@ -31,6 +31,28 @@ const ExpandableGameCard: React.FC<Props> = ({ game }) => {
   } = game;
 
   const users = gameParticipants.map((participant) => participant.user);
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const formattedDate = start.toLocaleDateString("he-IL", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+  const formattedTime = start.toLocaleTimeString("he-IL", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: "UTC",
+  });
+
+  const formattedEndTime = end.toLocaleTimeString("he-IL", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: "UTC",
+  });
+
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen} className="relative">
@@ -55,7 +77,7 @@ const ExpandableGameCard: React.FC<Props> = ({ game }) => {
               </span>
             </span>
             <p className="text-gray-500">
-              {startDate.getDate()} | {startDate.getTime()}{" "}
+              {formattedDate} | {formattedTime}{" "}
               {price && "|" + price + "₪"}
             </p>
             {!isOpen && <AvatarGroup players={users} />}

@@ -10,6 +10,7 @@ import "primereact/resources/themes/lara-light-blue/theme.css";
 import "primereact/resources/primereact.min.css";
 import MapView from "../MapView";
 import { Button } from "../ui/button";
+import { GameType } from "@/app/enums/game-type.enum";
 
 type Props = {
   updateFilters: (filters: Filters) => void;
@@ -30,27 +31,16 @@ const SearchGame: React.FC<Props> = ({ updateFilters }) => {
     date: null as Date | null,
     gameType: null,
     time: null,
-    location: "tel-aviv", //use user session
+    location: "tel aviv", //use user session
     radius: 5,
     startDate: new Date() ,
     endDate: new Date(),
   });
 
   const onFilterChange = (key: string, value: any) => {
-    if(key === 'time'){
-      setFilters({...filters, time: key, startDate: getDateWithTime(filters.date,value[0]), endDate: getDateWithTime(filters.date,value[1]) })
-    }else{
       setFilters({ ...filters, [key]: value });
-    }
   };
 
-  const getDateWithTime = (baseDate: Date, hourDecimal: number): Date => {
-    const date = new Date(baseDate);
-    const hours = Math.floor(hourDecimal);
-    const minutes = Math.round((hourDecimal - hours) * 60);
-    date.setHours(hours, minutes, 0, 0);
-    return date;
-  };
   
 
   return (
@@ -67,7 +57,9 @@ const SearchGame: React.FC<Props> = ({ updateFilters }) => {
       <Button
         className="bg-title my-5 w-[100%]"
         onClick={() => {
-          updateFilters(filters);
+            console.log(filters.gameType);
+            updateFilters(filters);
+          
         }}
       >
         חפש
