@@ -38,16 +38,11 @@ export default function Home() {
         <p className="text-title text-2xl font-bold">היי יובל, </p>
       </section>
       <div className="rounded-2xl shadow-xl">
-        <FutureGames
-          games={[]}
-        />
+        <FutureGames games={[]} />
       </div>
       <div>
         <p className="text-subtitle text-xl font-bold">משחקים בעיר</p>
-        <MapView
-          defaultLocation={{ lng: 34.79, lat: 32.13 }}
-          games={[]}
-        />
+        <MapView defaultLocation={{ lng: 34.79, lat: 32.13 }} games={[]} />
       </div>
       <Search />
     </div>
