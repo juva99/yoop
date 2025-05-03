@@ -11,6 +11,11 @@ import PlayersList from "@/components/PlayersList";
 import MapView from "@/components/MapView";
 import { notFound } from "next/navigation"; // Import notFound
 import { GameType } from "@/app/enums/game-type.enum";
+import { getSession } from "@/lib/session";
+import { redirect } from "next/navigation";
+import { joinGame } from "@/lib/actions";
+import JoinGameButton from "@/components/JoinGameButton";
+import { ParticipationStatus } from "@/app/enums/participation-status.enum";
 
 async function getGame(gameId: string): Promise<Game | null> {
   try {
@@ -64,8 +69,6 @@ export default async function Page({
   const start = new Date(startDate);
   const end = new Date(endDate);
 
-  const users = gameParticipants.map((participant) => participant.user);
-
   console.log(start);
   const formattedDate = start.toLocaleDateString("he-IL", {
     day: "2-digit",
@@ -86,6 +89,14 @@ export default async function Page({
     hour12: false,
     timeZone: "UTC",
   });
+
+  const session = await getSession();
+  if (!session?.user?.uid) {
+    console.error("Invalid session or user credentials");
+    redirect("/auth/login");
+  }
+
+  const currUserUID = session.user.uid;
 
   return (
     <div className="container mx-auto flex flex-col gap-6 p-4">
@@ -130,7 +141,25 @@ export default async function Page({
         <h2 className="mb-2 text-xl font-semibold">
           משתתפים ({gameParticipants.length}/{maxParticipants})
         </h2>
-        <PlayersList players={users} />
+        <PlayersList
+          gameId={gameId}
+          creatorUID={creator.uid}
+          currUserUID={currUserUID}
+          gameParticipants={gameParticipants}
+          status={ParticipationStatus.APPROVED}
+          deleteEnable={true}
+        />
+      </div>
+      <div>
+        <h2 className="mb-2 text-xl font-semibold">רשימת המתנה</h2>
+        <PlayersList
+          gameId={gameId}
+          creatorUID={creator.uid}
+          currUserUID={currUserUID}
+          gameParticipants={gameParticipants}
+          status={ParticipationStatus.PENDING}
+          deleteEnable={true}
+        />
       </div>
       <div>
         <h2 className="mb-2 text-xl font-semibold">מיקום</h2>
@@ -140,10 +169,7 @@ export default async function Page({
         />
       </div>
       <div className="mt-4 flex justify-center gap-4">
-        {" "}
-        <button className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700">
-          הצטרף למשחק
-        </button>
+        <JoinGameButton gameId={gameId} />
       </div>
     </div>
   );

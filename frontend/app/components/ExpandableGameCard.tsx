@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/collapsible";
 import PlayersList from "./PlayersList";
 import { Button } from "./ui/button";
+import { ParticipationStatus } from "@/app/enums/participation-status.enum";
 
 type Props = {
   game: Game;
@@ -63,7 +64,13 @@ const ExpandableGameCard: React.FC<Props> = ({ game }) => {
         </div>
       </div>
       <CollapsibleContent className="mt-2 max-h-[200px] overflow-y-auto">
-        <PlayersList players={users} />
+        <PlayersList
+          gameId={gameId}
+          creatorUID={creator.uid}
+          gameParticipants={gameParticipants}
+          status={ParticipationStatus.APPROVED}
+          deleteEnable={false}
+        />
       </CollapsibleContent>
     </Collapsible>
   );

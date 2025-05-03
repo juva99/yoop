@@ -39,14 +39,14 @@ export default function Home() {
       </section>
       <div className="rounded-2xl shadow-xl">
         <FutureGames
-          games={[sampleGame, sampleGame, sampleGame, sampleGame2]}
+          games={[]}
         />
       </div>
       <div>
         <p className="text-subtitle text-xl font-bold">משחקים בעיר</p>
         <MapView
           defaultLocation={{ lng: 34.79, lat: 32.13 }}
-          games={[sampleGame, sampleGame2]}
+          games={[]}
         />
       </div>
       <Search />

@@ -43,7 +43,7 @@ export class User {
   @Column({ nullable: true })
   phoneNum?: string;
 
-  @Column()
+  @Column({ default: 'user' })
   role: string;
 
   //field managers
