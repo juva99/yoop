@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/hover-card";
 
 import { signup } from "@/lib/auth";
+import { he } from "date-fns/locale";
 
 const passwordRequirements = (
   <div className="flex flex-col gap-2 p-2">
