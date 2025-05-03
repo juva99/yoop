@@ -4,7 +4,7 @@ import DateFilter from "./DateFilter";
 import TypeFilter from "./TypeFilter";
 import GetWeather from "./GetWeather";
 import { authFetch } from "@/lib/authFetch";
-import  MapView  from "@/components/MapView";
+import { Field } from "@/app/types/Field";
 
 type Filters = {
   type: string | null;
@@ -14,7 +14,9 @@ type Filters = {
   radius: number;
 };
 
-const CreateGame: React.FC<{ updateFilters: (filters: Filters) => void }> = ({ updateFilters }) => {
+const CreateGame: React.FC<{ updateFilters: (filters: Filters) => void }> = ({
+  updateFilters,
+}) => {
   const [filters, setFilters] = useState<Filters>({
     date: null,
     type: null,
@@ -24,8 +26,10 @@ const CreateGame: React.FC<{ updateFilters: (filters: Filters) => void }> = ({ u
   });
 
   const [address, setAddress] = useState("");
-  const [searchedMarker, setSearchedMarker] = useState<[number, number] | null>(null);
-  const [fields, setFields] = useState<{ id: string; name: string }[]>([]);
+  const [searchedMarker, setSearchedMarker] = useState<[number, number] | null>(
+    null,
+  );
+  const [fields, setFields] = useState<Field[]>([]);
   const [selectedFieldId, setSelectedFieldId] = useState<string | null>(null);
   const [maxParticipants, setMaxParticipants] = useState<number>(10);
   const [error, setError] = useState("");
@@ -45,20 +49,20 @@ const CreateGame: React.FC<{ updateFilters: (filters: Filters) => void }> = ({ u
 
       try {
         const res = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&addressdetails=1&limit=1&countrycodes=IL`
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&addressdetails=1&limit=1&countrycodes=IL`,
         );
         const data = await res.json();
 
         if (data.length > 0) {
           const location = data[0];
           const lat = parseFloat(location.lat);
-          const lon = parseFloat(location.lon); 
+          const lon = parseFloat(location.lon);
           setSearchedMarker([lat, lon]);
 
           try {
             const fieldsResponse = await authFetch(
               `${process.env.NEXT_PUBLIC_BACKEND_URL}/fields/by-city?city=${encodeURIComponent(address)}`,
-              { method: "GET" }
+              { method: "GET" },
             );
             const fieldsData = await fieldsResponse.json();
             setFields(fieldsData);
@@ -78,6 +82,11 @@ const CreateGame: React.FC<{ updateFilters: (filters: Filters) => void }> = ({ u
   };
 
   const isFormFilled = () => {
+    console.log("isFormFilled", {
+      filters,
+      selectedFieldId,
+      maxParticipants,
+    });
     return (
       filters.date &&
       filters.type &&
@@ -121,11 +130,16 @@ const CreateGame: React.FC<{ updateFilters: (filters: Filters) => void }> = ({ u
 
       if (response.ok && result.id) {
         setJoinLink(`/joinGame?id=${result.id}`);
-        setFilters({ date: null, type: null, time: null, location: "tel-aviv", radius: 5 });
+        setFilters({
+          date: null,
+          type: null,
+          time: null,
+          location: "tel-aviv",
+          radius: 5,
+        });
         setSearchedMarker(null);
         setAddress("");
         setSelectedFieldId(null);
-        
       } else {
         alert("לא ניתן היה ליצור את המשחק. נסה שוב.");
       }
@@ -137,16 +151,9 @@ const CreateGame: React.FC<{ updateFilters: (filters: Filters) => void }> = ({ u
     }
   };
 
-
-
-
-
-
-
-  
   return (
     <div className="search-game p-5">
-      <p className="text-blue-500 mt-5 text-2xl font-medium">יצירת משחק</p>
+      <p className="mt-5 text-2xl font-medium text-blue-500">יצירת משחק</p>
 
       <div className="mt-2 mb-2 flex gap-2 text-white">
         <DateFilter value={filters.date} onFilterChange={onFilterChange} />
@@ -154,38 +161,36 @@ const CreateGame: React.FC<{ updateFilters: (filters: Filters) => void }> = ({ u
       </div>
 
       <div className="my-4 flex flex-col justify-center gap-4">
-        <input
-          type="text"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="הכנס עיר ולחץ אנטר"
-          className="w-[300px] p-2 border rounded-md"
-        />
+        <div>
+          <label className="text-white">בחר עיר:</label>
+          <input
+            type="text"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="הכנס עיר ולחץ אנטר"
+            className="w-[300px] rounded-md border p-2"
+          />
+        </div>
 
         {error && (
-          <div className="text-red-500 text-sm font-medium">{error}</div>
+          <div className="text-sm font-medium text-red-500">{error}</div>
         )}
 
-        
-
-        {fields.length > 0 && (
+        {fields && (
           <select
-            className="w-[300px] p-2 border rounded-md"
+            className="w-[300px] rounded-md border p-2"
             value={selectedFieldId || ""}
             onChange={(e) => setSelectedFieldId(e.target.value)}
           >
             <option value="">בחר מגרש</option>
             {fields.map((field) => (
-              <option key={field.id} value={field.id}>
-                {field.name}
+              <option key={field.fieldId} value={field.fieldId}>
+                {field.fieldName}
               </option>
             ))}
           </select>
         )}
-
-
-        
 
         <label className="text-white">מספר משתתפים:</label>
         <input
@@ -194,30 +199,19 @@ const CreateGame: React.FC<{ updateFilters: (filters: Filters) => void }> = ({ u
           max={50}
           value={maxParticipants}
           onChange={(e) => setMaxParticipants(Number(e.target.value))}
-          className="w-[150px] p-2 border rounded-md"
+          className="w-[150px] rounded-md border p-2"
         />
-
-
-        {/*קוד זמני סתם לראות את המפה */}
         {searchedMarker && (
           <>
             <GetWeather lat={searchedMarker[0]} lon={searchedMarker[1]} />
-            <MapView
-              key={`${searchedMarker[0]}-${searchedMarker[1]}`}
-              defaultLocation={{ lat: searchedMarker[0], lng: searchedMarker[1] }}
-              games={[]}
-            />
           </>
         )}
-
-
-        
 
         {joinLink && (
           <div className="mt-4 text-center">
             <a
               href={joinLink}
-              className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-full shadow-lg text-lg"
+              className="rounded-full bg-green-600 px-6 py-2 text-lg text-white shadow-lg hover:bg-green-700"
             >
               לצפייה במשחק
             </a>
@@ -225,14 +219,14 @@ const CreateGame: React.FC<{ updateFilters: (filters: Filters) => void }> = ({ u
         )}
       </div>
 
-      <div className="flex justify-center mt-6">
+      <div className="mt-6 flex justify-center">
         <button
           onClick={handleSubmit}
           disabled={!isFormFilled() || isLoading}
-          className={`px-10 py-4 rounded-full shadow-lg text-lg tracking-wider ${
+          className={`rounded-full px-10 py-4 text-lg tracking-wider shadow-lg ${
             isFormFilled() && !isLoading
               ? "bg-gray-900 text-white"
-              : "bg-gray-400 text-gray-100 cursor-not-allowed"
+              : "cursor-not-allowed bg-gray-400 text-gray-100"
           }`}
         >
           {isLoading ? "שולח..." : "הזמנת מגרש"}
