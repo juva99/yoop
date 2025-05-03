@@ -22,7 +22,14 @@ const GameCard: React.FC<Props> = ({ game }) => {
     price,
   } = game;
 
+  // Ensure startDate is a Date object
+  const dateObject =
+    typeof startDate === "string" ? new Date(startDate) : startDate;
+
   const users = gameParticipants.map((participant) => participant.user);
+
+  // Define a consistent locale for formatting
+  const locale = "he-IL"; // Use Hebrew (Israel) locale
 
   return (
     <Link href={`/game/${gameId}`}>
@@ -37,8 +44,17 @@ const GameCard: React.FC<Props> = ({ game }) => {
             {field.fieldName}
           </span>
           <p className="text-gray-500">
-            {startDate.getDay()} | {startDate.getHours()}{" "}
-            {price && "|" + price + "₪"}
+            {dateObject.toLocaleDateString(locale, {
+              month: "numeric",
+              day: "numeric",
+            })}{" "}
+            |{" "}
+            {dateObject.toLocaleTimeString(locale, {
+              hour: "numeric",
+              minute: "2-digit",
+              hour12: false,
+            })}{" "}
+            {price && `| ${price}₪`}
           </p>
           <AvatarGroup players={users} />
         </div>
