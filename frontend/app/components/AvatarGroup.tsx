@@ -1,9 +1,9 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Player } from "@/app/types/Player";
+import { User } from "@/app/types/User";
 import React from "react";
 
 interface Props {
-  players: Player[];
+  players: User[];
 }
 
 const AvatarGroup: React.FC<Props> = ({ players }) => {
@@ -15,8 +15,8 @@ const AvatarGroup: React.FC<Props> = ({ players }) => {
             key={index}
             className="h-8 w-8 rounded-full border-2 border-white"
           >
-            <AvatarImage src={player.image} alt={player.name} />
-            <AvatarFallback>{player.name.charAt(0)}</AvatarFallback>
+            <AvatarImage src={player.profilePic} alt={player.firstName} />
+            <AvatarFallback>{player.firstName.charAt(0)}</AvatarFallback>
           </Avatar>
         ))}
       </div>
