@@ -3,7 +3,7 @@
 import FilteredGames from "@/components/searchComponents/FilteredGames";
 import CreateGame from "@/components/createGameComponents/CreateGame";
 import React, { useEffect, useState } from "react";
-import { Game } from "../types/Game";
+import { Game } from "../../types/Game";
 
 // Props type for future use
 type Props = {};
@@ -17,7 +17,7 @@ type Filters = {
   radius?: any;
 };
 
-const page: React.FC<Props> = () => {  
+const page: React.FC<Props> = () => {
   // State to store selected filters
   const [filters, setFilters] = useState<Filters>({
     date: null as Date | null,
@@ -35,13 +35,11 @@ const page: React.FC<Props> = () => {
 
   return (
     <div
-      className="min-h-screen bg-cover bg-no-repeat bg-bottom text-white overflow-hidden"
+      className="min-h-screen overflow-hidden bg-cover bg-bottom bg-no-repeat text-white"
       style={{ backgroundImage: "url('/bg-full-waves.png')" }} // ✅ Make sure the image exists in /public
     >
       <div className="relative z-10 p-5">
         <CreateGame updateFilters={filtersHandler} />
-
-        
       </div>
     </div>
   );
