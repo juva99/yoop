@@ -10,7 +10,6 @@ export default async function Home() {
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/mygames`,
   );
   const data = await res.json();
-
   return (
     <div className="mb-10 flex flex-col gap-6 p-4 pb-6">
       <section>
@@ -19,10 +18,7 @@ export default async function Home() {
       <div className="rounded-2xl shadow-xl">
         <FutureGames games={data} />
       </div>
-      <div>
-        <p className="text-subtitle text-xl font-bold">משחקים בעיר</p>
-        <MapView defaultLocation={{ lng: 34.79, lat: 32.13 }} games={[]} />
-      </div>
+
       <Search />
     </div>
   );

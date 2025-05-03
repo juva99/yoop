@@ -1,46 +1,97 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DateFilter from "../searchComponents/DateFilter";
 import TypeFilter from "../searchComponents/TypeFilter";
 import GetWeather from "./GetWeather";
 import { authFetch } from "@/lib/authFetch";
 import { Field } from "@/app/types/Field";
+import { CityFilter } from "../searchComponents/CityFilter";
+import { GameType } from "@/app/enums/game-type.enum";
+import { DropDownInput } from "../searchComponents/DropDownInput";
 
-type Filters = {
-  type: string | null;
-  date: Date | null;
-  time: { hour: number; minute: number } | null;
-  location: string;
-  radius: number;
+type GameDetails = {
+  gameType?: GameType,
+  location?: string,
+  startTime?: any,
+  endTime?: any,
+  maxParticipants: number,
+  date: Date
+}
+
+type Option = {
+  label: string;
+  value: string;
 };
+const cities = [
+  { label: "תל אביב", value: "תל אביב" },
+  { label: "ירושלים", value: "jerusalem" },
+  { label: "חיפה", value: "haifa" },
+  { label: "באר שבע", value: "beer-sheva" },
+  { label: "נתניה", value: "netanya" },
+  { label: "אשדוד", value: "ashdod" },
+  { label: "רמת גן", value: "ramat-gan" },
+  { label: "פתח תקווה", value: "petah-tikva" },
+  { label: "הרצליה", value: "herzliya" },
+];
 
-const CreateGame: React.FC<{ updateFilters: (filters: Filters) => void }> = ({
-  updateFilters,
-}) => {
-  const [filters, setFilters] = useState<Filters>({
-    date: null,
-    type: null,
-    time: null,
-    location: "tel-aviv",
-    radius: 5,
-  });
-
+const CreateGame: React.FC = () => {
   const [address, setAddress] = useState("");
   const [searchedMarker, setSearchedMarker] = useState<[number, number] | null>(
     null,
   );
   const [fields, setFields] = useState<Field[]>([]);
   const [selectedFieldId, setSelectedFieldId] = useState<string | null>(null);
-  const [maxParticipants, setMaxParticipants] = useState<number>(10);
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [joinLink, setJoinLink] = useState<string | null>(null);
+  const [inputs, setInputs] = useState<GameDetails>({date: new Date(), maxParticipants: 10}) 
+  const [filedList, setFieldList] = useState<Option[]>([]);
+  
+  useEffect(() => {
+    //map to strings for dropdown picker
+  },[fields])
+  const onInputChange = (key: string, value: any) => {
+    setInputs({ ...inputs, [key]: value });
+    if(key === 'maxParticipants' && value >= 30){
+      setError('playerNum');
+    }else{
 
-  const onFilterChange = (key: string, value: any) => {
-    const updated = { ...filters, [key]: value };
-    setFilters(updated);
-    updateFilters(updated);
+
+      console.log(inputs);
+    }
+    
   };
+
+  useEffect(() => {
+    if (inputs.location) {
+      console.log('fetch fields');
+      
+      fetchFields();
+    }
+  }, [inputs.location]);
+
+
+  const fetchFields = async () => {
+    try {
+      const fieldsResponse = await authFetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/fields/by-city?city=${inputs.location}`,
+        { method: "GET" },
+      );
+      const fieldsData: { fieldId: string; fieldName: string }[] = await fieldsResponse.json();
+
+    const dropdownOptions = fieldsData.map((field) => ({
+  value: field.fieldId,
+  label: field.fieldName,
+  } ));
+
+      
+      setFieldList(dropdownOptions);
+    } catch (err) {
+      setFieldList([])
+      console.error("שגיאה בטעינת מגרשים לעיר:", err);
+      setError("לא ניתן לטעון מגרשים לעיר זו");
+    }
+  }
 
   const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && address.length >= 3) {
@@ -81,132 +132,90 @@ const CreateGame: React.FC<{ updateFilters: (filters: Filters) => void }> = ({
     }
   };
 
-  const isFormFilled = () => {
-    console.log("isFormFilled", {
-      filters,
-      selectedFieldId,
-      maxParticipants,
-    });
-    return (
-      filters.date &&
-      filters.type &&
-      filters.time &&
-      filters.location &&
-      selectedFieldId &&
-      maxParticipants > 1
-    );
-  };
+  const isFormFilled = () :boolean => {
+    return (inputs.location && inputs.date && inputs.endTime && inputs.gameType && inputs.maxParticipants && inputs.startTime && (error != ''))
+  }
 
-  const handleSubmit = async () => {
-    if (!isFormFilled()) {
-      alert("חובה למלא את כל הפרטים");
-      return;
-    }
+  // const handleSubmit = async () => {
+  //   if (!isFormFilled()) {
+  //     alert("חובה למלא את כל הפרטים");
+  //     return;
+  //   }
 
-    setIsLoading(true);
-    setJoinLink(null);
+  //   setIsLoading(true);
+  //   setJoinLink(null);
 
-    const date = filters.date!;
-    const time = filters.time!;
-    const startDate = new Date(date);
-    startDate.setHours(time.hour);
-    startDate.setMinutes(time.minute);
-    const endDate = new Date(startDate.getTime() + 4 * 60 * 60 * 1000);
+  //   const date = inputs.date!;
+  //   const time = inputs.time!;
+  //   const startDate = new Date(date);
+  //   startDate.setHours(time.hour);
+  //   startDate.setMinutes(time.minute);
+  //   const endDate = new Date(startDate.getTime() + 4 * 60 * 60 * 1000);
 
-    try {
-      const response = await fetch("/api/games", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          gameType: filters.type,
-          startDate: startDate.toISOString(),
-          endDate: endDate.toISOString(),
-          maxParticipants,
-          field: selectedFieldId,
-        }),
-      });
+  //   try {
+  //     const response = await fetch("/api/games", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({
+  //         gameType: inputs.type,
+  //         startDate: startDate.toISOString(),
+  //         endDate: endDate.toISOString(),
+  //         maxParticipants,
+  //         field: selectedFieldId,
+  //       }),
+  //     });
 
-      const result = await response.json();
+  //     const result = await response.json();
 
-      if (response.ok && result.id) {
-        setJoinLink(`/joinGame?id=${result.id}`);
-        setFilters({
-          date: null,
-          type: null,
-          time: null,
-          location: "tel-aviv",
-          radius: 5,
-        });
-        setSearchedMarker(null);
-        setAddress("");
-        setSelectedFieldId(null);
-      } else {
-        alert("לא ניתן היה ליצור את המשחק. נסה שוב.");
-      }
-    } catch (err) {
-      console.error("שגיאה בשליחה לשרת:", err);
-      alert("אירעה שגיאה בשליחה לשרת.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //     if (response.ok && result.id) {
+  //       setJoinLink(`/joinGame?id=${result.id}`);
+  //       setinputs({
+  //         date: null,
+  //         type: null,
+  //         time: null,
+  //         location: "tel-aviv",
+  //         radius: 5,
+  //       });
+  //       setSearchedMarker(null);
+  //       setAddress("");
+  //       setSelectedFieldId(null);
+  //     } else {
+  //       alert("לא ניתן היה ליצור את המשחק. נסה שוב.");
+  //     }
+  //   } catch (err) {
+  //     console.error("שגיאה בשליחה לשרת:", err);
+  //     alert("אירעה שגיאה בשליחה לשרת.");
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   return (
-    <div className="search-game p-5">
+    <div className="search-game p-5 text-black">
       <p className="mt-5 text-2xl font-medium text-blue-500">יצירת משחק</p>
-
-      <div className="mt-2 mb-2 flex gap-2 text-white">
-        <DateFilter value={filters.date} onFilterChange={onFilterChange} />
-        <TypeFilter onFilterChange={onFilterChange} />
-      </div>
-
-      <div className="my-4 flex flex-col justify-center gap-4">
-        <div>
-          <label className="text-white">בחר עיר:</label>
-          <input
-            type="text"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="הכנס עיר ולחץ אנטר"
-            className="w-[300px] rounded-md border p-2"
-          />
-        </div>
-
-        {error && (
-          <div className="text-sm font-medium text-red-500">{error}</div>
-        )}
-
-        {fields && (
-          <select
-            className="w-[300px] rounded-md border p-2"
-            value={selectedFieldId || ""}
-            onChange={(e) => setSelectedFieldId(e.target.value)}
-          >
-            <option value="">בחר מגרש</option>
-            {fields.map((field) => (
-              <option key={field.fieldId} value={field.fieldId}>
-                {field.fieldName}
-              </option>
-            ))}
-          </select>
-        )}
-
-        <label className="text-white">מספר משתתפים:</label>
+        <DateFilter value={inputs.date} onFilterChange={onInputChange} />
+        <TypeFilter onFilterChange={onInputChange} />
+        <DropDownInput values={cities} type="עיר" onFilterChange={onInputChange}/>
+        <DropDownInput values={filedList} type="מגרש" onFilterChange={onInputChange}/>
+<div>
+        <label>מספר משתתפים:</label>
         <input
           type="number"
           min={2}
           max={50}
-          value={maxParticipants}
-          onChange={(e) => setMaxParticipants(Number(e.target.value))}
-          className="w-[150px] rounded-md border p-2"
-        />
+          value={inputs.maxParticipants}
+          onChange={(e) => onInputChange('maxParticipants', Number(e.target.value))}
+          className={`rounded-md bg-white text-center px-2 ${error === 'playerNum' ? 'text-red-400' : ''}`}
+          />   
+          {error === 'playerNum' ? <span className="text-red-500 text-sm mr-2">מספר משתתפים לא תקין</span> : ''}
+</div>
+        
+      <div className="my-4 flex flex-col justify-center gap-4">
         {searchedMarker && (
           <>
             <GetWeather lat={searchedMarker[0]} lon={searchedMarker[1]} />
           </>
         )}
-
         {joinLink && (
           <div className="mt-4 text-center">
             <a
@@ -217,16 +226,17 @@ const CreateGame: React.FC<{ updateFilters: (filters: Filters) => void }> = ({
             </a>
           </div>
         )}
-      </div>
+      </div> 
 
       <div className="mt-6 flex justify-center">
         <button
-          onClick={handleSubmit}
+          onClick={() => console.log(inputs)
+          }
           disabled={!isFormFilled() || isLoading}
           className={`rounded-full px-10 py-4 text-lg tracking-wider shadow-lg ${
             isFormFilled() && !isLoading
-              ? "bg-gray-900 text-white"
-              : "cursor-not-allowed bg-gray-400 text-gray-100"
+              ? "bg-gray-900"
+              : "cursor-not-allowed bg-gray-400"
           }`}
         >
           {isLoading ? "שולח..." : "הזמנת מגרש"}

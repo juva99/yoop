@@ -39,7 +39,7 @@ const page: React.FC<Props> = () => {
       style={{ backgroundImage: "url('/bg-full-waves.png')" }} // ✅ Make sure the image exists in /public
     >
       <div className="relative z-10 p-5">
-        <CreateGame updateFilters={filtersHandler} />
+        <CreateGame />
       </div>
     </div>
   );
