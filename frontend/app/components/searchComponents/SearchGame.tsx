@@ -53,7 +53,7 @@ const SearchGame: React.FC<Props> = ({ updateFilters }) => {
         <TypeFilter onFilterChange={onFilterChange} />
       </div>
       <TimeSlider onFilterChange={onFilterChange} />
-      <RadiusSlider onFilterChange={onFilterChange} />
+      {/* <RadiusSlider onFilterChange={onFilterChange} /> */}
       <Button
         className="bg-title my-5 w-[100%]"
         onClick={() => {

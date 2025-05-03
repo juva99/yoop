@@ -6,47 +6,14 @@ import { useSwipeable } from "react-swipeable";
 import { getSession } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { authFetch } from "@/lib/authFetch";
+import { Game } from "@/app/types/Game";
 
-// type Games = {
-//   games: Game[];
-// };
+type Props = {
+  games: Game[];
+};
 
-const FutureGames: React.FC = () => {
-  const [games, setGames] = useState([]);
+const FutureGames: React.FC<Props> = ({games}) => {
   const [currentGame, setCurrentGame] = useState(0);
-  
-  const fetchGames = async () => {
-    const session = await getSession();
-    if (!session?.user?.uid) {
-      console.error("Invalid session or user credentials");
-      redirect("/auth/login");
-    }
-    console.log(session.user.uid);
-    
-    try {
-      const response = await authFetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/mygames`,
-        {
-          method: "GET",
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setGames(data);
-    } catch (e) {
-      console.error("Failed to fetch games", e);
-      setGames([]);
-    }
-  };
-
-
-  useEffect (() => {
-    fetchGames()
-  },[]);
 
   const handlers = useSwipeable({
     onSwipedDown: (eventData) => {
