@@ -27,12 +27,12 @@ export default function LeaveGameButton({ gameId }: Props) {
       <button
         onClick={() => clickedLeave(gameId)}
         className="rounded bg-red-500 px-4 py-2 font-bold text-white hover:bg-red-700"
-        >
+      >
         עזוב משחק
       </button>
-      {error && 
-          <p className="text-sm text-red-500 mt-2 text-center">{error}</p>
-      }
+      {error && (
+        <p className="mt-2 text-center text-sm text-red-500">{error}</p>
+      )}
     </div>
   );
 }
