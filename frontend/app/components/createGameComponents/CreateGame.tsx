@@ -187,7 +187,7 @@ const CreateGame: React.FC = () => {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/available-slots/${inputs.field}?date=${dateString}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/available-slots/${inputs.field}?date=${dateString}&timezone=${date.getTimezoneOffset() / -60}`,
         { method: "GET" },
       );
       if (!response.ok) {
