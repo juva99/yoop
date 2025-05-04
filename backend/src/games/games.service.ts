@@ -169,7 +169,7 @@ export class GamesService {
     });
 
     if (!existingParticipation) {
-      throw new ConflictException('User is not participating in this game');
+      throw new ConflictException('המשתמש אינו משתתף במשחק הזה');
     }
 
     if (game.creator.uid === user.uid) {
