@@ -30,14 +30,14 @@ const Login = () => {
 
       <LoginForm />
 
-      <div className="mt-3 flex flex-col items-center gap-2">
+      {/* <div className="mt-3 flex flex-col items-center gap-2">
         <h1 className="text-center text-gray-800">או התחבר עם</h1>
         <div className="flex gap-4">
           <button type="button">
             <FcGoogle size={35} />
           </button>
         </div>
-      </div>
+      </div> */}
 
       <div className="mt-4 flex items-center justify-center gap-1 text-sm">
         <p className="text-gray-600">עדיין לא נרשמת?</p>
