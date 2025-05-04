@@ -97,6 +97,8 @@ export default async function Page({
 
   const currUserUID = session.user.uid;
 
+  const approvedCount = gameParticipants.filter(gp => gp.status === ParticipationStatus.APPROVED).length
+
   return (
     <div className="container mx-auto flex flex-col gap-6 p-4">
       {" "}
@@ -138,7 +140,7 @@ export default async function Page({
       </div>
       <div>
         <h2 className="mb-2 text-xl font-semibold">
-          משתתפים ({gameParticipants.length}/{maxParticipants})
+          משתתפים ({approvedCount}/{maxParticipants})
         </h2>
         <PlayersList
           gameId={gameId}
