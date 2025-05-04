@@ -52,9 +52,6 @@ export const changeParticipationStatus = async (
   }
 };
 
-}
-
-
 export const getMyGames = async (): Promise<Game[]> => {
   const response = await authFetch(
     `${BACKEND_URL}/games/mygames`,

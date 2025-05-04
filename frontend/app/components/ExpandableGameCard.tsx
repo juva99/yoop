@@ -36,8 +36,7 @@ const ExpandableGameCard: React.FC<Props> = ({ game }) => {
   // Ensure startDate is a Date object
   const dateObject =
     typeof startDate === "string" ? new Date(startDate) : startDate;
-
-  const users = gameParticipants.map((participant) => participant.user);
+  const users = gameParticipants.filter((gp) => gp.status === ParticipationStatus.APPROVED).map((participant) => participant.user);
   const start = new Date(startDate);
   const end = new Date(endDate);
   const formattedDate = start.toLocaleDateString("he-IL", {
