@@ -7,6 +7,7 @@ import {
   UseGuards,
   Query,
   ParseUUIDPipe,
+  Delete
 } from '@nestjs/common';
 import { GamesService } from './games.service';
 import { Game } from './games.entity';
@@ -84,5 +85,15 @@ export class GamesController {
     @GetUser() user: User,
   ): Promise<GameParticipant> {
     return await this.gameService.joinGame(gameId, user);
+  }
+
+  //join game by id and add user to pending list
+  @UseGuards(JwtAuthGuard)
+  @Delete('/:gameId/leave')
+  async leaveGame(
+    @Param('gameId') gameId: string,
+    @GetUser() user: User,
+  ): Promise<void> {
+    return await this.gameService.leaveGame(gameId, user);
   }
 }
