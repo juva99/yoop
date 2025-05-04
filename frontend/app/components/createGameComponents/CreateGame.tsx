@@ -53,6 +53,7 @@ function getConsecutiveEndTimes(start: string, available: string[]): string[] {
 
   const endTimes: string[] = [];
   let currentIndex = startIndex;
+  endTimes.push(sortedAvailable[startIndex]);
 
   while (currentIndex + 1 < sortedAvailable.length) {
     const currentSlot = sortedAvailable[currentIndex];
@@ -66,6 +67,16 @@ function getConsecutiveEndTimes(start: string, available: string[]): string[] {
     }
   }
   return endTimes;
+}
+
+function add30Minutes(timeStr: string): string {
+  if (timeStr === "23:30") return "24:00";
+  const [hours, minutes] = timeStr.split(":").map(Number);
+  const date = new Date(0, 0, 0, hours, minutes);
+  date.setMinutes(date.getMinutes() + 30);
+  const newHours = date.getHours().toString().padStart(2, "0");
+  const newMinutes = date.getMinutes().toString().padStart(2, "0");
+  return `${newHours}:${newMinutes}`;
 }
 
 const CreateGame: React.FC = () => {
@@ -134,14 +145,25 @@ const CreateGame: React.FC = () => {
 
   useEffect(() => {
     if (inputs.startTime && availableSlots.length > 0) {
+      // consecutiveEndTimes contains the start times of the slots *after* the selected start time
       const consecutiveEndTimes = getConsecutiveEndTimes(
         inputs.startTime,
         availableSlots,
       );
-      setEndTimeOptions(
-        consecutiveEndTimes.map((t) => ({ label: t, value: t })),
-      );
-      if (inputs.endTime && !consecutiveEndTimes.includes(inputs.endTime)) {
+
+      // Map these start times to the actual end time (30 mins later) for the dropdown options
+      const newEndTimeOptions = consecutiveEndTimes.map((t) => {
+        const actualEndTime = add30Minutes(t); // Calculate the time 30 mins after the start of the last slot
+        return { label: actualEndTime, value: actualEndTime }; // Use the actual end time for both label and value
+      });
+
+      setEndTimeOptions(newEndTimeOptions);
+
+      // Check if the currently selected endTime is still valid within the new options
+      if (
+        inputs.endTime &&
+        !newEndTimeOptions.some((opt) => opt.value === inputs.endTime)
+      ) {
         setInputs((prev) => ({ ...prev, endTime: undefined }));
       }
     } else {
