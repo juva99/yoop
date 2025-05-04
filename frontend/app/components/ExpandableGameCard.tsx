@@ -13,6 +13,7 @@ import {
 import PlayersList from "./PlayersList";
 import { Button } from "./ui/button";
 import { ParticipationStatus } from "@/app/enums/participation-status.enum";
+import { useRouter } from "next/navigation";
 
 type Props = {
   game: Game;
@@ -21,6 +22,7 @@ type Props = {
 
 const ExpandableGameCard: React.FC<Props> = ({ game, buttonTitle }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
   const {
     gameId,
     gameType,
@@ -67,7 +69,9 @@ const ExpandableGameCard: React.FC<Props> = ({ game, buttonTitle }) => {
           {!isOpen && <IoIosArrowDown />}
           {isOpen && <IoIosArrowUp />}
         </CollapsibleTrigger>
-        <Button className="absolute top-2 left-10 z-10 h-auto min-h-0 rounded-sm bg-blue-500 px-2.5 py-1.5 text-[12px] leading-none font-semibold text-white">
+        <Button
+          onClick={() => router.push(`/game/${gameId}`)}
+          className="absolute top-2 left-10 z-10 h-auto min-h-0 rounded-sm bg-blue-500 px-2.5 py-1.5 text-[12px] leading-none font-semibold text-white">
           {buttonTitle}
         </Button>
         <div className="flex items-start pr-5 text-right">
