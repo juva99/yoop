@@ -22,11 +22,12 @@ export default async function Home() {
 
   const userName = session.user.name;
 
-
   return (
     <div className="mb-10 flex flex-col gap-6 p-4 pb-6">
       <div className="mb-2 flex flex-row items-center">
-        <p className="text-title text-2xl font-bold">היי {userName.split(' ')[0]}, </p>
+        <p className="text-title text-2xl font-bold">
+          היי {userName.split(" ")[0]},{" "}
+        </p>
         <Link
           href={"/api/auth/signout"}
           className="mr-auto rounded bg-red-500 px-4 py-2 font-bold text-white transition-colors hover:bg-red-600"
