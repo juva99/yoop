@@ -16,9 +16,10 @@ import { ParticipationStatus } from "@/app/enums/participation-status.enum";
 
 type Props = {
   game: Game;
+  buttonTitle: string;
 };
 
-const ExpandableGameCard: React.FC<Props> = ({ game }) => {
+const ExpandableGameCard: React.FC<Props> = ({ game, buttonTitle }) => {
   const [isOpen, setIsOpen] = useState(false);
   const {
     gameId,
@@ -67,7 +68,7 @@ const ExpandableGameCard: React.FC<Props> = ({ game }) => {
           {isOpen && <IoIosArrowUp />}
         </CollapsibleTrigger>
         <Button className="absolute top-2 left-10 z-10 h-auto min-h-0 rounded-sm bg-blue-500 px-2.5 py-1.5 text-[12px] leading-none font-semibold text-white">
-          הצטרף
+          {buttonTitle}
         </Button>
         <div className="flex items-start pr-5 text-right">
           <div className="game-details">
