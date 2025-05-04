@@ -15,4 +15,7 @@ export type Game = {
   creator: User;
   field: Field;
   price?: number;
+  weatherTemp?: number;
+  weatherCondition?: string;
+  weatherIcon?: string;
 }

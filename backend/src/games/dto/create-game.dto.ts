@@ -30,4 +30,7 @@ export class CreateGameDto {
 
   @IsString()
   field: string;
+
+  @IsOptional()
+  price?: number;
 }
