@@ -67,8 +67,8 @@ export function DropDownInput({ onFilterChange, filterKey, values, placeholder }
   <CommandGroup>
     {values.map((option) => (
       <CommandItem
-        key={option.value}
-        value={option.value}
+      key={`${filterKey}-${option.value}`}
+      value={option.value}
         disabled={option.disabled}
         onSelect={() => {
           if (!option.disabled) handleSelect(option.value);
