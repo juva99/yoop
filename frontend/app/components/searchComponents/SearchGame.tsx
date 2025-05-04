@@ -10,14 +10,18 @@ import "primereact/resources/themes/lara-light-blue/theme.css";
 import "primereact/resources/primereact.min.css";
 import MapView from "../MapView";
 import { Button } from "../ui/button";
+import { GameType } from "@/app/enums/game-type.enum";
+import { CityFilter } from "./CityFilter";
 
 type Props = {
   updateFilters: (filters: Filters) => void;
 };
 
 type Filters = {
-  type?: any;
+  gameType?: any;
   date?: any;
+  startDate?: Date;
+  endDate?: Date;
   time?: any;
   location?: any;
   radius?: any;
@@ -26,10 +30,12 @@ type Filters = {
 const SearchGame: React.FC<Props> = ({ updateFilters }) => {
   const [filters, setFilters] = useState<Filters>({
     date: null as Date | null,
-    type: null,
+    gameType: null,
     time: null,
-    location: "tel-aviv", //use user session
+    location: "tel aviv", //use user session
     radius: 5,
+    startDate: new Date(),
+    endDate: new Date(),
   });
 
   const onFilterChange = (key: string, value: any) => {
@@ -41,12 +47,13 @@ const SearchGame: React.FC<Props> = ({ updateFilters }) => {
       <p className="search-game__title text-subtitle mt-5 text-2xl font-medium">
         חיפוש משחק
       </p>
+      <CityFilter onFilterChange={onFilterChange} />
       <div className="search-game__filters mt-2 mb-2 flex gap-2">
         <DateFilter value={filters.date} onFilterChange={onFilterChange} />
         <TypeFilter onFilterChange={onFilterChange} />
       </div>
       <TimeSlider onFilterChange={onFilterChange} />
-      <RadiusSlider onFilterChange={onFilterChange} />
+      {/* <RadiusSlider onFilterChange={onFilterChange} /> */}
       <Button
         className="bg-title my-5 w-[100%]"
         onClick={() => {

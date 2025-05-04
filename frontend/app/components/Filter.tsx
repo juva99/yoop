@@ -13,7 +13,7 @@ type Props = {
   icon: ReactNode;
   options: Option[];
   value: string;
-  onChange: (value: string) => void;
+  onChange: (value: any) => void;
 };
 
 const Filter: React.FC<Props> = ({ text, icon, options, value, onChange }) => {

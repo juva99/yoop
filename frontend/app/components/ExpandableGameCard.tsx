@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/collapsible";
 import PlayersList from "./PlayersList";
 import { Button } from "./ui/button";
+import { ParticipationStatus } from "@/app/enums/participation-status.enum";
 
 type Props = {
   game: Game;
@@ -31,6 +32,27 @@ const ExpandableGameCard: React.FC<Props> = ({ game }) => {
   } = game;
 
   const users = gameParticipants.map((participant) => participant.user);
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const formattedDate = start.toLocaleDateString("he-IL", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+  const formattedTime = start.toLocaleTimeString("he-IL", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: "UTC",
+  });
+
+  const formattedEndTime = end.toLocaleTimeString("he-IL", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: "UTC",
+  });
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen} className="relative">
@@ -55,15 +77,20 @@ const ExpandableGameCard: React.FC<Props> = ({ game }) => {
               </span>
             </span>
             <p className="text-gray-500">
-              {startDate.getDate()} | {startDate.getTime()}{" "}
-              {price && "|" + price + "₪"}
+              {formattedDate} | {formattedTime} {price && "|" + price + "₪"}
             </p>
             {!isOpen && <AvatarGroup players={users} />}
           </div>
         </div>
       </div>
       <CollapsibleContent className="mt-2 max-h-[200px] overflow-y-auto">
-        <PlayersList players={users} />
+        <PlayersList
+          gameId={gameId}
+          creatorUID={creator.uid}
+          gameParticipants={gameParticipants}
+          status={ParticipationStatus.APPROVED}
+          deleteEnable={false}
+        />
       </CollapsibleContent>
     </Collapsible>
   );
