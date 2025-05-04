@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 type Option = {
   label: string;
   value: string;
+  disabled?: boolean
 };
 
 type Props = {
@@ -62,24 +63,33 @@ export function DropDownInput({ onFilterChange, filterKey, values, placeholder }
   <CommandInput placeholder={`בחר ${placeholder ?? "אפשרות"}`} className="text-right" />
 )}
           <CommandEmpty>אין תוצאות</CommandEmpty>
-          <CommandGroup>
-            {values.map((option) => (
-              <CommandItem
-                key={option.value}
-                value={option.value}
-                onSelect={() => handleSelect(option.value)}
-                className="cursor-pointer justify-end"
-              >
-                <Check
-                  className={cn(
-                    "ml-2 h-4 w-4",
-                    selectedOption?.value === option.value ? "opacity-100" : "opacity-0"
-                  )}
-                />
-                {option.label}
-              </CommandItem>
-            ))}
-          </CommandGroup>
+          <div className="max-h-60 overflow-y-auto">
+  <CommandGroup>
+    {values.map((option) => (
+      <CommandItem
+        key={option.value}
+        value={option.value}
+        disabled={option.disabled}
+        onSelect={() => {
+          if (!option.disabled) handleSelect(option.value);
+        }}
+        className={cn(
+          "cursor-pointer justify-end",
+          option.disabled && "opacity-50 cursor-not-allowed"
+        )}
+      >
+        <Check
+          className={cn(
+            "ml-2 h-4 w-4",
+            selectedOption?.value === option.value ? "opacity-100" : "opacity-0"
+          )}
+        />
+        {option.label}
+      </CommandItem>
+    ))}
+  </CommandGroup>
+</div>
+
         </Command>
       </PopoverContent>
     </Popover>
