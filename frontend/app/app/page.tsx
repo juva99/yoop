@@ -18,7 +18,6 @@ export default async function Home() {
       <div className="rounded-2xl shadow-xl">
         <FutureGames games={data} />
       </div>
-
       <Search />
     </div>
   );

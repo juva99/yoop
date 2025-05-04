@@ -21,7 +21,7 @@ const FilteredGames: React.FC<Props> = ({ games }) => {
       <div className="filtered-games__list max-h-100 overflow-y-auto">
         {games.map((g, i) => (
           <div key={i} className="border-1">
-            <ExpandableGameCard game={g} />
+            <ExpandableGameCard game={g} buttonTitle="הצטרף" />
           </div>
         ))}
       </div>

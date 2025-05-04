@@ -151,6 +151,34 @@ export class GamesService {
     return await this.gameParticipantRepository.save(newParticipation);
   }
 
+  async leaveGame(gameId: string, user: User): Promise<void> {
+    const game = await this.gameRepository.findOne({
+      where: { gameId },
+      relations: ['gameParticipants'],
+    });
+
+    if (!game) {
+      throw new NotFoundException(`Game with id ${gameId} not found`);
+    }
+
+    const existingParticipation = await this.gameParticipantRepository.findOne({
+      where: {
+        game: { gameId: gameId },
+        user: { uid: user.uid },
+      },
+    });
+
+    if (!existingParticipation) {
+      throw new ConflictException('המשתמש אינו משתתף במשחק הזה');
+    }
+
+    if (game.creator.uid === user.uid) {
+      throw new ConflictException('המנהל אינו יכול לעזוב את המשחק');
+    }
+
+    await this.gameParticipantRepository.delete(existingParticipation.id);
+  }
+
   async queryGames(queryDto: QueryGameDto): Promise<Game[]> {
     const { gameType, startDate, endDate, city } = queryDto;
     const query = this.gameRepository
