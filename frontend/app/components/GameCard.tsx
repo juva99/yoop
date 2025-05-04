@@ -3,6 +3,7 @@ import { PiBasketball, PiSoccerBall } from "react-icons/pi";
 import { Game } from "@/app/types/Game";
 import Link from "next/link";
 import AvatarGroup from "./AvatarGroup";
+import { ParticipationStatus } from "@/app/enums/participation-status.enum";
 
 type Props = {
   game: Game;
@@ -26,8 +27,8 @@ const GameCard: React.FC<Props> = ({ game }) => {
   const dateObject =
     typeof startDate === "string" ? new Date(startDate) : startDate;
 
-  const users = gameParticipants.map((participant) => participant.user);
-
+  const users = gameParticipants.filter((gp) => gp.status === ParticipationStatus.APPROVED).map((participant) => participant.user);
+  
   // Define a consistent locale for formatting
   const locale = "he-IL"; // Use Hebrew (Israel) locale
 
