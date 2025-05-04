@@ -7,7 +7,7 @@ import {
   UseGuards,
   Query,
   ParseUUIDPipe,
-  Delete
+  Delete,
 } from '@nestjs/common';
 import { GamesService } from './games.service';
 import { Game } from './games.entity';

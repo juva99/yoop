@@ -102,7 +102,10 @@ export default async function Page({
     (gp) => gp.status === ParticipationStatus.APPROVED,
   ).length;
 
-  const isJoined = gameParticipants.some(gp => gp.user.uid === currUserUID && gp.status !== ParticipationStatus.REJECTED);
+  const isJoined = gameParticipants.some(
+    (gp) =>
+      gp.user.uid === currUserUID && gp.status !== ParticipationStatus.REJECTED,
+  );
 
   return (
     <div className="container mx-auto flex flex-col gap-6 p-4">
@@ -174,15 +177,15 @@ export default async function Page({
           games={[game]}
         />
       </div>
-      {!isJoined ?
+      {!isJoined ? (
         <div className="mt-4 flex justify-center gap-4">
           <JoinGameButton gameId={gameId} />
         </div>
-        :
+      ) : (
         <div className="mt-4 flex justify-center gap-4">
           <LeaveGameButton gameId={gameId} />
         </div>
-      }
+      )}
     </div>
   );
 }

@@ -151,7 +151,6 @@ export class GamesService {
     return await this.gameParticipantRepository.save(newParticipation);
   }
 
-
   async leaveGame(gameId: string, user: User): Promise<void> {
     const game = await this.gameRepository.findOne({
       where: { gameId },
