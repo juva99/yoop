@@ -16,6 +16,7 @@ import { redirect } from "next/navigation";
 import { joinGame } from "@/lib/actions";
 import JoinGameButton from "@/components/JoinGameButton";
 import { ParticipationStatus } from "@/app/enums/participation-status.enum";
+import LeaveGameButton from "@/components/LeaveGameButton";
 
 async function getGame(gameId: string): Promise<Game | null> {
   try {
@@ -101,6 +102,8 @@ export default async function Page({
     (gp) => gp.status === ParticipationStatus.APPROVED,
   ).length;
 
+  const isJoined = gameParticipants.some(gp => gp.user.uid === currUserUID && gp.status !== ParticipationStatus.REJECTED);
+
   return (
     <div className="container mx-auto flex flex-col gap-6 p-4">
       {" "}
@@ -171,9 +174,15 @@ export default async function Page({
           games={[game]}
         />
       </div>
-      <div className="mt-4 flex justify-center gap-4">
-        <JoinGameButton gameId={gameId} />
-      </div>
+      {!isJoined ?
+        <div className="mt-4 flex justify-center gap-4">
+          <JoinGameButton gameId={gameId} />
+        </div>
+        :
+        <div className="mt-4 flex justify-center gap-4">
+          <LeaveGameButton gameId={gameId} />
+        </div>
+      }
     </div>
   );
 }

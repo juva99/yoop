@@ -27,6 +27,23 @@ export const joinGame = async (gameId: string) => {
   }
 };
 
+export const leaveGame = async (gameId: string) => {
+  const response = await authFetch(`${BACKEND_URL}/games/${gameId}/leave`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    let errorMessage = "Failed to leave game";
+    try {
+      const errorJson = await response.json();
+      errorMessage = errorJson.message || errorMessage;
+    } catch (error) {
+      console.error("Failed to parse error message: " + error)
+    }
+    console.error(errorMessage);
+  }
+}
+
 export const changeParticipationStatus = async (
   gameId: string,
   uid: string,
