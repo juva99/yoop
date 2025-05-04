@@ -63,6 +63,7 @@ export class GamesController {
     return await this.gameService.calculateAvailableSlots(
       fieldId,
       queryDto.date,
+      queryDto.timezone,
     );
   }
 

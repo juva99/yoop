@@ -21,7 +21,6 @@ import { GameStatus } from 'src/enums/game-status.enum';
 import { QueryGameDto } from './dto/query-game.dto';
 import { GameParticipant } from 'src/game-participants/game-participants.entity';
 import { ParticipationStatus } from 'src/enums/participation-status.enum';
-import { QueryAvailableSlotsDto } from './dto/query-available-slots.dto';
 
 @Injectable()
 export class GamesService {
@@ -209,6 +208,7 @@ export class GamesService {
   async calculateAvailableSlots(
     fieldId: string,
     dateString: string,
+    timezone: number,
   ): Promise<string[]> {
     const games = await this.findGamesByFieldAndDate(fieldId, dateString);
     const availableHalfHours: string[] = [];
@@ -225,6 +225,7 @@ export class GamesService {
         0,
       ),
     );
+    dayStart.setHours(dayStart.getHours() - timezone);
     const dayEnd = new Date(dayStart);
     dayEnd.setUTCDate(dayStart.getUTCDate() + 1);
 
