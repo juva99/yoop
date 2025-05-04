@@ -174,7 +174,7 @@ export class GamesService {
     }
 
     if (game.creator.uid === user.uid) {
-      throw new ConflictException('Creator can\'t leave it\'s own game');
+      throw new ConflictException('המנהל אינו יכול לעזוב את המשחק');
     }
 
     await this.gameParticipantRepository.delete(existingParticipation.id);

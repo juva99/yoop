@@ -40,7 +40,7 @@ export const leaveGame = async (gameId: string) => {
     } catch (error) {
       console.error("Failed to parse error message: " + error)
     }
-    console.error(errorMessage);
+    throw new Error(errorMessage);
   }
 }
 
