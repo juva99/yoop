@@ -31,15 +31,15 @@ const SignUp = () => {
           ותכף תמצא את עצמך אומר: "איך חייתי בלי זה עד עכשיו?!"
         </p>
         <div className="mt-5">
-          <SignupForm></SignupForm>
+          <SignupForm />
         </div>
         <div className="mt-3 flex flex-col items-center gap-2">
-          <h1 className="text-center text-gray-800">או הירשם עם</h1>
+          {/* <h1 className="text-center text-gray-800">או הירשם עם</h1>
           <div className="flex gap-2">
             <button type="button">
               <FcGoogle size={30} />
             </button>
-          </div>
+          </div> */}
         </div>
         <div className="mt-4 flex items-center justify-center gap-1 text-sm">
           <p className="text-gray-600">כבר רשום למערכת?</p>
