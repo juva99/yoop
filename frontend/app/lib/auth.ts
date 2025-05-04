@@ -35,7 +35,7 @@ export async function signup(
   });
 
   if (response.ok) {
-    redirect("/auth/login");
+    await login(state, formData);
   } else {
     return {
       message:
