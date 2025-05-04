@@ -35,7 +35,7 @@ const page: React.FC<Props> = () => {
 
   return (
     <div
-      className="min-h-screen overflow-hidden bg-cover bg-bottom bg-no-repeat text-white"
+      className=" overflow-hidden bg-cover bg-bottom bg-no-repeat text-white"
       style={{ backgroundImage: "url('/bg-full-waves.png')" }} // ✅ Make sure the image exists in /public
     >
       <div className="relative z-10 p-5">

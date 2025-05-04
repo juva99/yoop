@@ -64,10 +64,6 @@ function getAvailableEndTimes(start: string, available: string[]): string[] {
 }
 
 const CreateGame: React.FC = () => {
-  const [address, setAddress] = useState("");
-  const [searchedMarker, setSearchedMarker] = useState<[number, number] | null>(
-    null,
-  );
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [joinLink, setJoinLink] = useState<string | null>(null);
@@ -147,7 +143,10 @@ const CreateGame: React.FC = () => {
 
   const fetchAvailableSlots = async () => {
     const date = new Date(inputs.date);
-    date.setHours(date.getHours() + 3);
+    console.log(date.toISOString());
+    date.setHours(date.getHours() - date.getTimezoneOffset()/60);
+    console.log(date.toISOString());
+    
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/available-slots/${inputs.field}/?date=${date.toISOString().split('T')[0]}`,
@@ -194,33 +193,6 @@ const CreateGame: React.FC = () => {
     }
   }
 
-  const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && address.length >= 3) {
-      e.preventDefault();
-      setError("");
-
-      try {
-        const res = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&addressdetails=1&limit=1&countrycodes=IL`,
-        );
-        const data = await res.json();
-
-        if (data.length > 0) {
-          const location = data[0];
-          const lat = parseFloat(location.lat);
-          const lon = parseFloat(location.lon);
-          setSearchedMarker([lat, lon]);
-        } else {
-          console.warn("לא נמצאה תוצאה מתאימה");
-          setError("לא נמצאה תוצאה מתאימה לעיר שהוזנה");
-        }
-      } catch (err) {
-        console.error("שגיאה בשליפת מיקום מה־API:", err);
-        setError("שגיאה בחיבור ל־API");
-      }
-    }
-  };
-
   const handleSubmit = async () => {
     console.log(formFilled);
     
@@ -266,8 +238,6 @@ const CreateGame: React.FC = () => {
       if (response.ok && result.gameId) {
         setJoinLink(`/joinGame?id=${result.gameId}`);
         setInputs({ date: new Date(), maxParticipants: 10 });
-        setSearchedMarker(null);
-        setAddress("");
       } else {
         alert("לא ניתן היה ליצור את המשחק. נסה שוב.");
       }
@@ -287,8 +257,6 @@ const CreateGame: React.FC = () => {
         <TypeFilter onFilterChange={onInputChange} />
         <DropDownInput values={cities} placeholder="עיר" filterKey="location" onFilterChange={onInputChange}/>
         <DropDownInput values={filedList} placeholder="מגרש" filterKey="field" onFilterChange={onInputChange}/>
-        {/* <DropDownInput values={slots} placeholder="שעת התחלה" filterKey="startTime" onFilterChange={onInputChange}/>
-        <DropDownInput values={[]} placeholder="שעת סיום" filterKey="endTime" onFilterChange={onInputChange}/> */}
         <DropDownInput
   values={slots}
   placeholder="שעת התחלה"
@@ -304,23 +272,6 @@ const CreateGame: React.FC = () => {
 
         <MaxParticipants onFilterChange={onInputChange}/>
         
-      <div className="my-4 flex flex-col justify-center gap-4">
-        {searchedMarker && (
-          <>
-            <GetWeather lat={searchedMarker[0]} lon={searchedMarker[1]} />
-          </>
-        )}
-        {joinLink && (
-          <div className="mt-4 text-center">
-            <a
-              href={joinLink}
-              className="rounded-full bg-green-600 px-6 py-2 text-lg text-white shadow-lg hover:bg-green-700"
-            >
-              לצפייה במשחק
-            </a>
-          </div>
-        )}
-      </div> 
 
       <div className="mt-6 flex justify-center">
         <button
