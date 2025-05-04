@@ -12,10 +12,10 @@ import { useRouter } from "next/navigation";
 export type GameDetails = {
   gameType?: GameType;
   location?: string;
-  startTime?: any;
-  endTime?: any;
+  startTime?: string;
+  endTime?: string;
   maxParticipants: number;
-  field?: any;
+  field?: string;
   date: Date;
 };
 
@@ -36,29 +36,35 @@ export const cities = [
   { label: "הרצליה", value: "herzliya" },
 ];
 
-function getAvailableEndTimes(start: string, available: string[]): string[] {
-  const format = (time: string) => {
-    const [h, m] = time.split(":").map(Number);
-    return new Date(0, 0, 0, h, m);
-  };
+function areConsecutive(time1: string, time2: string): boolean {
+  const [h1, m1] = time1.split(":").map(Number);
+  const [h2, m2] = time2.split(":").map(Number);
+  const date1 = new Date(0, 0, 0, h1, m1);
+  const date2 = new Date(0, 0, 0, h2, m2);
+  return date2.getTime() - date1.getTime() === 30 * 60 * 1000;
+}
 
-  const sorted = available
-    .map(format)
-    .sort((a, b) => a.getTime() - b.getTime());
+function getConsecutiveEndTimes(start: string, available: string[]): string[] {
+  if (!start || !available.includes(start)) return [];
 
-  const startTime = format(start);
+  const sortedAvailable = [...available].sort();
+  const startIndex = sortedAvailable.indexOf(start);
+  if (startIndex === -1) return [];
+
   const endTimes: string[] = [];
+  let currentIndex = startIndex;
 
-  let current = startTime;
-  while (true) {
-    const next = new Date(current.getTime() + 30 * 60000);
-    const nextStr = next.toTimeString().slice(0, 5);
-    if (available.includes(nextStr)) {
-      endTimes.push(nextStr);
-      current = next;
-    } else break;
+  while (currentIndex + 1 < sortedAvailable.length) {
+    const currentSlot = sortedAvailable[currentIndex];
+    const nextSlot = sortedAvailable[currentIndex + 1];
+
+    if (areConsecutive(currentSlot, nextSlot)) {
+      endTimes.push(nextSlot);
+      currentIndex++;
+    } else {
+      break;
+    }
   }
-
   return endTimes;
 }
 
@@ -68,122 +74,149 @@ const CreateGame: React.FC = () => {
   const [inputs, setInputs] = useState<GameDetails>({
     date: new Date(),
     maxParticipants: 10,
+    gameType: undefined,
+    location: undefined,
+    field: undefined,
+    startTime: undefined,
+    endTime: undefined,
   });
-  const [filedList, setFieldList] = useState<Option[]>([]);
+  const [fieldList, setFieldList] = useState<Option[]>([]);
   const [formFilled, setFormFilled] = useState(false);
   const [availableSlots, setAvailableSlots] = useState<string[]>([]);
-  const [slots, setSlots] = useState<Option[]>([]);
+  const [startTimeOptions, setStartTimeOptions] = useState<Option[]>([]);
   const [endTimeOptions, setEndTimeOptions] = useState<Option[]>([]);
   const router = useRouter();
 
   useEffect(() => {
-    const { endTime, ...rest } = inputs;
-    setInputs(rest);
-    if (!inputs.startTime || availableSlots.length === 0) {
-      setEndTimeOptions([]);
-      return;
-    }
-
-    const startIndex = availableSlots.indexOf(inputs.startTime);
-    if (startIndex === -1) return;
-
-    // נמצא את כל השעות הרצופות מהשעה שנבחרה
-    const options: Option[] = [];
-    for (let i = startIndex + 1; i < availableSlots.length; i++) {
-      // אם לא רציף – עצור
-      const prev = availableSlots[i - 1];
-      const current = availableSlots[i];
-
-      const [prevHour, prevMin] = prev.split(":").map(Number);
-      const [currHour, currMin] = current.split(":").map(Number);
-      const diff = currHour * 60 + currMin - (prevHour * 60 + prevMin);
-
-      if (diff !== 30) break;
-
-      options.push({
-        label: availableSlots[i],
-        value: availableSlots[i],
-      });
-    }
-
-    setEndTimeOptions(options);
-  }, [inputs.startTime, availableSlots]);
+    const isFilled = !!(
+      inputs.date &&
+      inputs.gameType &&
+      inputs.location &&
+      inputs.field &&
+      inputs.startTime &&
+      inputs.endTime &&
+      inputs.maxParticipants >= 2
+    );
+    setFormFilled(isFilled);
+  }, [inputs]);
 
   useEffect(() => {
     if (inputs.location) {
       fetchFields();
+    } else {
+      setFieldList([]);
+      setInputs((prev) => ({
+        ...prev,
+        field: undefined,
+        startTime: undefined,
+        endTime: undefined,
+      }));
+      setAvailableSlots([]);
+      setStartTimeOptions([]);
+      setEndTimeOptions([]);
     }
   }, [inputs.location]);
 
   useEffect(() => {
-    console.log(inputs);
-    if (
-      inputs.date &&
-      inputs.field != null &&
-      inputs.endTime &&
-      inputs.gameType &&
-      inputs.location &&
-      inputs.maxParticipants &&
-      inputs.startTime
-    ) {
-      setFormFilled(true);
-    }
-    console.log(formFilled);
-  }, [inputs]);
-
-  useEffect(() => {
-    if (inputs.field) {
+    if (inputs.field && inputs.date) {
       fetchAvailableSlots();
+    } else {
+      setAvailableSlots([]);
+      setStartTimeOptions([]);
+      setEndTimeOptions([]);
+      setInputs((prev) => ({
+        ...prev,
+        startTime: undefined,
+        endTime: undefined,
+      }));
     }
   }, [inputs.field, inputs.date]);
 
-  const onInputChange = (key: string, value: any) => {
-    if (key === "startTime") {
-      const endTimes = getAvailableEndTimes(value, availableSlots);
-      setInputs({ ...inputs, startTime: value, endTime: undefined }); // אפס endTime
-      setEndTimeOptions(endTimes.map((t) => ({ label: t, value: t })));
+  useEffect(() => {
+    if (inputs.startTime && availableSlots.length > 0) {
+      const consecutiveEndTimes = getConsecutiveEndTimes(
+        inputs.startTime,
+        availableSlots,
+      );
+      setEndTimeOptions(
+        consecutiveEndTimes.map((t) => ({ label: t, value: t })),
+      );
+      if (inputs.endTime && !consecutiveEndTimes.includes(inputs.endTime)) {
+        setInputs((prev) => ({ ...prev, endTime: undefined }));
+      }
     } else {
-      setInputs({ ...inputs, [key]: value });
+      setEndTimeOptions([]);
+      if (!inputs.startTime) {
+        setInputs((prev) => ({ ...prev, endTime: undefined }));
+      }
     }
+  }, [inputs.startTime, availableSlots]);
+
+  const onInputChange = (key: string, value: any) => {
+    setInputs((prevInputs) => {
+      const newInputs = { ...prevInputs, [key]: value };
+
+      if (key === "location") {
+        newInputs.field = undefined;
+        newInputs.startTime = undefined;
+        newInputs.endTime = undefined;
+        setFieldList([]);
+        setAvailableSlots([]);
+        setStartTimeOptions([]);
+        setEndTimeOptions([]);
+      } else if (key === "field" || key === "date") {
+        newInputs.startTime = undefined;
+        newInputs.endTime = undefined;
+        setAvailableSlots([]);
+        setStartTimeOptions([]);
+        setEndTimeOptions([]);
+      } else if (key === "startTime") {
+        newInputs.endTime = undefined;
+      }
+
+      return newInputs;
+    });
   };
 
   const fetchAvailableSlots = async () => {
+    if (!inputs.field || !inputs.date) return;
+
     const date = new Date(inputs.date);
-    console.log(date.toISOString());
     date.setHours(date.getHours() - date.getTimezoneOffset() / 60);
-    console.log(date.toISOString());
+    const dateString = date.toISOString().split("T")[0];
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/available-slots/${inputs.field}/?date=${date.toISOString().split("T")[0]}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/available-slots/${inputs.field}?date=${dateString}`,
         { method: "GET" },
       );
+      if (!response.ok) {
+        throw new Error(`Failed to fetch slots: ${response.statusText}`);
+      }
       const data: string[] = await response.json();
-      setAvailableSlots(data);
-      const allSlots: Option[] = Array.from({ length: 48 }, (_, i) => {
-        const hour = Math.floor(i / 2)
-          .toString()
-          .padStart(2, "0");
-        const minute = i % 2 === 0 ? "00" : "30";
-        const label = `${hour}:${minute}`;
-        return {
-          label,
-          value: label,
-          disabled: !availableSlots.includes(label), // תפוס = true
-        };
-      });
-      setSlots(allSlots);
+      const sortedData = data.sort();
+      setAvailableSlots(sortedData);
+      setStartTimeOptions(
+        sortedData.map((slot) => ({ label: slot, value: slot })),
+      );
     } catch (err) {
-      console.error(err);
+      console.error("Error fetching available slots:", err);
+      setAvailableSlots([]);
+      setStartTimeOptions([]);
+      setEndTimeOptions([]);
     }
   };
 
   const fetchFields = async () => {
+    if (!inputs.location) return;
     try {
-      const fieldsResponse = await authFetch(
+      const fieldsResponse = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/fields/by-city?city=${inputs.location}`,
         { method: "GET" },
       );
+      if (!fieldsResponse.ok) {
+        throw new Error(`Failed to fetch fields: ${fieldsResponse.statusText}`);
+      }
       const fieldsData: { fieldId: string; fieldName: string }[] =
         await fieldsResponse.json();
 
@@ -193,35 +226,54 @@ const CreateGame: React.FC = () => {
       }));
       setFieldList(dropdownOptions);
     } catch (err) {
+      console.error("Error fetching fields:", err);
       setFieldList([]);
-      setInputs({ ...inputs, field: null });
-      console.error("שגיאה בטעינת מגרשים לעיר:", err);
+      setInputs({
+        ...inputs,
+        field: undefined,
+        startTime: undefined,
+        endTime: undefined,
+      });
+      setAvailableSlots([]);
+      setStartTimeOptions([]);
+      setEndTimeOptions([]);
     }
   };
 
   const submitHandler = async () => {
     if (!formFilled) {
-      alert("חובה למלא את כל הפרטים");
+      alert("Please fill in all required fields.");
+      return;
+    }
+    if (
+      inputs.startTime &&
+      inputs.endTime &&
+      inputs.startTime >= inputs.endTime
+    ) {
+      alert("End time must be after start time.");
       return;
     }
 
     setIsLoading(true);
     setJoinLink(null);
 
-    // יצירת עותקים של תאריך
-    const startDate = new Date(inputs.date);
-    const endDate = new Date(inputs.date);
+    const baseDate = new Date(inputs.date);
+    const [startHour, startMinute] = inputs.startTime!.split(":").map(Number);
+    const [endHour, endMinute] = inputs.endTime!.split(":").map(Number);
 
-    // נניח שinputs.startTime = "10:30"
-    const [startHour, startMinute] = inputs.startTime.split(":").map(Number);
-    const [endHour, endMinute] = inputs.endTime.split(":").map(Number);
-
-    startDate.setHours(startHour, startMinute, 0, 0);
-    endDate.setHours(endHour, endMinute, 0, 0);
+    const startDate = new Date(baseDate);
+    startDate.setHours(startHour);
+    startDate.setMinutes(startMinute);
+    const endDate = new Date(baseDate);
+    endDate.setHours(endHour);
+    endDate.setMinutes(endMinute);
 
     try {
       const session = await getSession();
       const token = session?.accessToken;
+      if (!token) {
+        throw new Error("Authentication token not found.");
+      }
 
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/games`,
@@ -233,8 +285,8 @@ const CreateGame: React.FC = () => {
           },
           body: JSON.stringify({
             gameType: inputs.gameType,
-            startDate,
-            endDate,
+            startDate: startDate.toISOString(),
+            endDate: endDate.toISOString(),
             maxParticipants: inputs.maxParticipants,
             field: inputs.field,
           }),
@@ -242,63 +294,92 @@ const CreateGame: React.FC = () => {
       );
 
       const result = await response.json();
+
       if (response.ok && result.gameId) {
         setJoinLink(`/game/${result.gameId}`);
-        setInputs({ date: new Date(), maxParticipants: 10 });
+        setInputs({
+          date: new Date(),
+          maxParticipants: 10,
+          gameType: undefined,
+          location: undefined,
+          field: undefined,
+          startTime: undefined,
+          endTime: undefined,
+        });
+        setFieldList([]);
+        setAvailableSlots([]);
+        setStartTimeOptions([]);
+        setEndTimeOptions([]);
+        setFormFilled(false);
       } else {
-        alert("לא ניתן היה ליצור את המשחק. נסה שוב.");
+        const errorMsg =
+          result.message || "Could not create the game. Please try again.";
+        alert(`Error: ${errorMsg}`);
       }
-    } catch (err) {
-      console.error("שגיאה בשליחה לשרת:", err);
-      alert("אירעה שגיאה בשליחה לשרת.");
+    } catch (err: any) {
+      console.error("Error submitting game:", err);
+      alert(
+        `An error occurred: ${err.message || "Please check your connection and try again."}`,
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="search-game p-5 text-black">
-      <p className="mt-5 text-2xl font-medium text-blue-500">יצירת משחק</p>
-      <DateFilter value={inputs.date} onFilterChange={onInputChange} />
-      <TypeFilter onFilterChange={onInputChange} />
-      <DropDownInput
-        values={cities}
-        placeholder="עיר"
-        filterKey="location"
-        onFilterChange={onInputChange}
-      />
-      <DropDownInput
-        values={filedList}
-        placeholder="מגרש"
-        filterKey="field"
-        onFilterChange={onInputChange}
-      />
-      <DropDownInput
-        values={slots}
-        placeholder="שעת התחלה"
-        filterKey="startTime"
-        onFilterChange={onInputChange}
-      />
-      <DropDownInput
-        values={endTimeOptions}
-        placeholder="שעת סיום"
-        filterKey="endTime"
-        onFilterChange={onInputChange}
-      />
+    <div className="search-game flex flex-col gap-4 p-5 text-black">
+      <p className="mt-5 text-2xl font-medium text-blue-500">Create Game</p>
+
+      <div className="flex flex-wrap gap-4">
+        <DateFilter value={inputs.date} onFilterChange={onInputChange} />
+        <TypeFilter onFilterChange={onInputChange} />
+        <DropDownInput
+          values={cities}
+          placeholder="City"
+          filterKey="location"
+          onFilterChange={onInputChange}
+        />
+      </div>
+
+      {inputs.location && (
+        <DropDownInput
+          values={fieldList}
+          placeholder="Field"
+          filterKey="field"
+          onFilterChange={onInputChange}
+        />
+      )}
+
+      {inputs.field && inputs.date && (
+        <div className="flex flex-wrap gap-4">
+          <DropDownInput
+            values={startTimeOptions}
+            placeholder="Start Time"
+            filterKey="startTime"
+            onFilterChange={onInputChange}
+          />
+          <DropDownInput
+            values={endTimeOptions}
+            placeholder="End Time"
+            filterKey="endTime"
+            onFilterChange={onInputChange}
+          />
+        </div>
+      )}
+
       <MaxParticipants onFilterChange={onInputChange} />
+
       {!joinLink && (
         <button
-          onClick={() => {
-            submitHandler();
-          }}
+          onClick={submitHandler}
           disabled={!formFilled || isLoading}
-          className={`rounded-full px-10 py-4 text-lg tracking-wider shadow-lg ${
+          className={`mt-4 w-full rounded-full px-10 py-4 text-lg tracking-wider shadow-lg transition-colors duration-200 ${
             formFilled && !isLoading
-              ? "bg-green-400"
-              : "cursor-not-allowed bg-gray-400"
+              ? "bg-green-500 text-white hover:bg-green-600"
+              : "cursor-not-allowed bg-gray-400 text-gray-700"
           }`}
         >
-          {isLoading ? "מחכה לאישור" : "הזמנת מגרש"}
+          {isLoading ? "Creating Game..." : "Create Game"}
         </button>
       )}
 
@@ -309,14 +390,9 @@ const CreateGame: React.FC = () => {
               router.push(joinLink);
             }
           }}
-          disabled={!formFilled || isLoading}
-          className={`rounded-full px-10 py-4 text-lg tracking-wider shadow-lg ${
-            formFilled && !isLoading
-              ? "bg-green-400"
-              : "cursor-not-allowed bg-gray-400"
-          }`}
+          className="mt-4 w-full rounded-full bg-blue-500 px-10 py-4 text-lg tracking-wider text-white shadow-lg transition-colors duration-200 hover:bg-blue-600"
         >
-          לעמוד המשחק
+          Go to Game Page
         </button>
       )}
     </div>
