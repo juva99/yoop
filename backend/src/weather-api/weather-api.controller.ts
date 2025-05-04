@@ -6,7 +6,7 @@ import { GetWeatherDto } from './dto/get-weather.dto';
 export class WeatherApiController {
     constructor(private readonly weatherApiService: WeatherApiService) {}
 
-    @Get('/:city/:dt/:hour')
+    @Get('/:lat/:lon/:dt/:hour')
     async getWeather(@Param() getWeatherDto: GetWeatherDto) {
         return await this.weatherApiService.getWeather(getWeatherDto);
       }
