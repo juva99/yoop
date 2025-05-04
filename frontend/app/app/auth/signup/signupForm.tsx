@@ -222,24 +222,6 @@ const SignupForm = () => {
       )}
 
       <div className="form_item">
-        <Label htmlFor="city" className="form_label">
-          עיר מגורים
-        </Label>
-        <Input
-          type="tel"
-          id="phoneNum"
-          name="phoneNum"
-          placeholder="050-1234567"
-          className="input_underscore"
-          value={phoneNum}
-          onChange={handleInputChange(setPhoneNum)}
-        ></Input>
-      </div>
-      {state?.error?.phoneNum && (
-        <p className="form_error">{state.error.phoneNum}</p>
-      )}
-
-      <div className="form_item">
         <Popover>
           <PopoverTrigger asChild>
             <Button
