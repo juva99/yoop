@@ -27,8 +27,10 @@ const GameCard: React.FC<Props> = ({ game }) => {
   const dateObject =
     typeof startDate === "string" ? new Date(startDate) : startDate;
 
-  const users = gameParticipants.filter((gp) => gp.status === ParticipationStatus.APPROVED).map((participant) => participant.user);
-  
+  const users = gameParticipants
+    .filter((gp) => gp.status === ParticipationStatus.APPROVED)
+    .map((participant) => participant.user);
+
   // Define a consistent locale for formatting
   const locale = "he-IL"; // Use Hebrew (Israel) locale
 

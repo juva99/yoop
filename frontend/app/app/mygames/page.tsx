@@ -21,7 +21,11 @@ export default async function MyGames() {
           {games
             .filter((game) => game.creator.uid === currUserUID)
             .map((game, index) => (
-              <ExpandableGameCard key={index} game={game} buttonTitle="לעמוד המשחק" />
+              <ExpandableGameCard
+                key={index}
+                game={game}
+                buttonTitle="לעמוד המשחק"
+              />
             ))}
         </div>
       </div>
@@ -37,7 +41,11 @@ export default async function MyGames() {
               ),
             )
             .map((game, index) => (
-              <ExpandableGameCard key={index} game={game} buttonTitle="לעמוד המשחק" />
+              <ExpandableGameCard
+                key={index}
+                game={game}
+                buttonTitle="לעמוד המשחק"
+              />
             ))}
         </div>
       </div>
@@ -53,7 +61,11 @@ export default async function MyGames() {
               ),
             )
             .map((game, index) => (
-              <ExpandableGameCard key={index} game={game} buttonTitle="לעמוד המשחק" />
+              <ExpandableGameCard
+                key={index}
+                game={game}
+                buttonTitle="לעמוד המשחק"
+              />
             ))}
         </div>
       </div>
