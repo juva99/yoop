@@ -38,6 +38,7 @@ export class Field {
 
   @Column()
   city: string;
+  
 
   //field manager
   @ManyToOne(() => User, (manager) => manager.fieldsManage)

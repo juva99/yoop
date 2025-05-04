@@ -40,8 +40,5 @@ export class FieldsController {
     return await this.fieldService.deleteOne(id);
   }
 
-  @Get('/weather/:city')
-  async getWeather(@Param("city") city: string){
-    return await this.fieldService.getWeather(city);
-  }
+
 }

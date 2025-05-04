@@ -31,6 +31,15 @@ export class Game {
 
   @Column('enum', { enum: GameStatus })
   status: GameStatus;
+  
+  @Column()
+  weatherTemp: number;
+
+  @Column()
+  weatherCondition: string;
+
+  @Column()
+  weatherIcon: string;
 
   //game participants
   @OneToMany(() => GameParticipant, (gameParticipant) => gameParticipant.game, {

@@ -4,14 +4,13 @@ import { Repository } from 'typeorm';
 import { Field } from './fields.entity';
 import { NotFoundException } from '@nestjs/common';
 import { CreateFieldDto } from './dto/create-field.dto';
-import { WeatherApiService } from 'src/weather-api/weather-api.service';
+
 
 @Injectable()
 export class FieldsService {
   constructor(
     @InjectRepository(Field)
-    private fieldRepository: Repository<Field>,
-    private readonly weatherApiService: WeatherApiService) {}
+    private fieldRepository: Repository<Field>) {}
 
   async findAll(): Promise<Field[]> {
     return await this.fieldRepository.find();
@@ -44,9 +43,5 @@ export class FieldsService {
     const field = this.fieldRepository.create(createFieldDto);
     return await this.fieldRepository.save(field);
   }
-
-  async getWeather(city: string){
-    return await this.weatherApiService.getWeather(city);
-  } 
 
 }

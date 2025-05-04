@@ -21,7 +21,8 @@ import { GameStatus } from 'src/enums/game-status.enum';
 import { QueryGameDto } from './dto/query-game.dto';
 import { GameParticipant } from 'src/game-participants/game-participants.entity';
 import { ParticipationStatus } from 'src/enums/participation-status.enum';
-import { QueryAvailableSlotsDto } from './dto/query-available-slots.dto';
+import { WeatherApiService } from 'src/weather-api/weather-api.service';
+
 
 @Injectable()
 export class GamesService {
@@ -34,6 +35,7 @@ export class GamesService {
 
     @InjectRepository(GameParticipant)
     private gameParticipantRepository: Repository<GameParticipant>,
+    private readonly weatherApiService: WeatherApiService,
   ) {}
 
   async findAllMine(user: User): Promise<Game[]> {
@@ -87,12 +89,28 @@ export class GamesService {
   async create(createGameDto: CreateGameDto, user: User): Promise<Game> {
     const { gameType, startDate, endDate, maxParticipants, field } =
       createGameDto;
+
+    // Check if the field exists
     const fieldd = await this.fieldRepository.findOne({
       where: { fieldId: field },
     });
     if (!fieldd) {
       throw new NotFoundException(`field with id ${field} not found`);
     }
+
+    //Add weather data to game
+    const parsedStartDate = new Date(startDate);
+    const dt = parsedStartDate.toISOString().split('T')[0];
+    const hour = parseInt(parsedStartDate.toISOString().split('T')[1].split(':')[0]);
+    const lat = fieldd.fieldLat ? fieldd.fieldLat : 0;
+    const lon = fieldd.fieldLng ? fieldd.fieldLng : 0;
+    const getWeatherDto = {
+      lat,
+      lon,
+      dt,
+      hour,
+    };
+    const weatherData = await this.weatherApiService.getWeather(getWeatherDto);
 
     const game = this.gameRepository.create({
       gameType,
@@ -103,8 +121,12 @@ export class GamesService {
       field: fieldd,
       status: GameStatus.AVAILABLE,
       gameParticipants: [],
+      weatherTemp: parseInt(weatherData.temp_c),
+      weatherCondition: weatherData.condition.text,
+      weatherIcon: weatherData.condition.icon,
     });
 
+    //create game participant for the creator
     const creatorParticipation = this.gameParticipantRepository.create({
       game: game,
       user: user,
