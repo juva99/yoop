@@ -90,15 +90,13 @@ const ExpandableGameCard: React.FC<Props> = ({ game }) => {
         </div>
       </div>
       <CollapsibleContent className="mt-2 max-h-[200px] overflow-y-auto">
-        {/* <PlayersList
+        <PlayersList
           gameId={gameId}
           creatorUID={creator.uid}
           gameParticipants={gameParticipants}
           status={ParticipationStatus.APPROVED}
           deleteEnable={false}
         />
-        ///// waiting for pr to merge //////
-        */}
       </CollapsibleContent>
     </Collapsible>
   );
