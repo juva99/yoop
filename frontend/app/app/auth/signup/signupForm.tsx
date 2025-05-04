@@ -87,7 +87,13 @@ const SignupForm = () => {
         ></Input>
       </div>
       {state?.error?.firstName && (
-        <p className="form_error">{state.error.firstName}</p>
+        <div className="form_error">
+          <ul>
+            {state.error.firstName.map((error) => (
+              <li key={error}>{error}</li>
+            ))}
+          </ul>
+        </div>
       )}
 
       <div className="form_item">
@@ -105,7 +111,13 @@ const SignupForm = () => {
         ></Input>
       </div>
       {state?.error?.lastName && (
-        <p className="form_error">{state.error.lastName}</p>
+        <div className="form_error">
+          <ul>
+            {state.error.lastName.map((error) => (
+              <li key={error}>{error}</li>
+            ))}
+          </ul>
+        </div>
       )}
 
       <div className="form_item">
