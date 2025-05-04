@@ -55,5 +55,5 @@ export class CreateUserDto {
   @IsOptional()
   @IsString()
   @Length(1, 10)
-  role?: string;
+  role: string;
 }
