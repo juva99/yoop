@@ -21,10 +21,8 @@ export const joinGame = async (gameId: string) => {
     method: "POST",
   });
 
-  if (response.ok) {
-    console.log("joined");
-  } else {
-    console.log("error");
+  if (!response.ok) {
+    console.error("Failed to join game");
   }
 };
 
@@ -47,10 +45,8 @@ export const changeParticipationStatus = async (
       }),
     },
   );
-  
-  if (response.ok) {
-    console.log("joined");
-  } else {
-    console.log("error");
+
+  if (!response.ok) {
+    console.error("Failed to join game");
   }
 };
