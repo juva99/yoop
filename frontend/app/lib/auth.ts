@@ -17,6 +17,7 @@ export async function signup(
     passConfirm: formData.get("passConfirm"),
     phoneNum: formData.get("phoneNum"),
     birthDay: formData.get("birthDay"),
+    address: formData.get("address"),
     role: "player",
   });
 

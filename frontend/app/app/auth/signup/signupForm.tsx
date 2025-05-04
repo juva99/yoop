@@ -1,7 +1,7 @@
 "use client";
 
 import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
 import { useActionState, useState, ChangeEvent } from "react";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
@@ -9,6 +9,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import SubmitButton from "@/components/ui/submitButton";
 import { Calendar } from "@/components/ui/calendar";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
@@ -47,6 +55,15 @@ const passwordRequirements = (
   </div>
 );
 
+// still need to make a final list of cities
+const cities = [
+  { value: "תל אביב", label: "תל אביב" },
+  { value: "ירושלים", label: "ירושלים" },
+  { value: "חיפה", label: "חיפה" },
+  { value: "באר שבע", label: "באר שבע" },
+  { value: "ראשון לציון", label: "ראשון לציון" },
+];
+
 const SignupForm = () => {
   const [birthDay, setBirthDay] = useState<Date>();
   const [firstName, setFirstName] = useState("");
@@ -55,6 +72,8 @@ const SignupForm = () => {
   const [pass, setPass] = useState("");
   const [passConfirm, setPassConfirm] = useState("");
   const [phoneNum, setPhoneNum] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
+  const [openCombobox, setOpenCombobox] = useState(false);
 
   const [state, action] = useActionState(signup, undefined);
 
@@ -220,6 +239,61 @@ const SignupForm = () => {
       {state?.error?.phoneNum && (
         <p className="form_error">{state.error.phoneNum}</p>
       )}
+
+      <div className="form_item">
+        <Label htmlFor="address" className="form_label">
+          עיר מגורים
+        </Label>
+        <Popover open={openCombobox} onOpenChange={setOpenCombobox}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              role="combobox"
+              aria-expanded={openCombobox}
+              className="input_underscore w-full justify-between"
+              id="address"
+            >
+              {selectedCity
+                ? cities.find((city) => city.value === selectedCity)?.label
+                : "בחר עיר..."}
+              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+            <Command>
+              <CommandInput placeholder="חיפוש עיר..." />
+              <CommandList>
+                <CommandEmpty>לא נמצאה עיר.</CommandEmpty>
+                <CommandGroup>
+                  {cities.map((city) => (
+                    <CommandItem
+                      key={city.value}
+                      value={city.value}
+                      onSelect={(currentValue) => {
+                        setSelectedCity(
+                          currentValue === selectedCity ? "" : currentValue,
+                        );
+                        setOpenCombobox(false);
+                      }}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          selectedCity === city.value
+                            ? "opacity-100"
+                            : "opacity-0",
+                        )}
+                      />
+                      {city.label}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+        <input type="hidden" name="address" value={selectedCity} />
+      </div>
 
       <div className="form_item">
         <Popover>

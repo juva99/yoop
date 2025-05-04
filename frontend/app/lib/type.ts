@@ -58,6 +58,7 @@ export const SignupFormSchema = z
         const cleaned = val.replace("/-", "");
         return cleaned.startsWith("+972") ? "0" + cleaned.slice(4) : cleaned;
       }),
+    address: z.string(),
     birthDay: z
       .string()
       .trim()
