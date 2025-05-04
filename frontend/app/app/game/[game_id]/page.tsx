@@ -97,7 +97,9 @@ export default async function Page({
 
   const currUserUID = session.user.uid;
 
-  const approvedCount = gameParticipants.filter(gp => gp.status === ParticipationStatus.APPROVED).length
+  const approvedCount = gameParticipants.filter(
+    (gp) => gp.status === ParticipationStatus.APPROVED,
+  ).length;
 
   return (
     <div className="container mx-auto flex flex-col gap-6 p-4">
