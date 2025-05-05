@@ -38,10 +38,8 @@ export class Field {
   @Column({ nullable: true })
   fieldAddress?: string;
 
-  
   @Column('enum', { enum: City })
   city: City;
-  
 
   //field manager
   @ManyToOne(() => User, (manager) => manager.fieldsManage)

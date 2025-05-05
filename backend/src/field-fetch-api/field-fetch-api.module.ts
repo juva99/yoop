@@ -8,6 +8,6 @@ import { FieldsModule } from 'src/fields/fields.module';
 @Module({
   imports: [HttpModule, FieldsModule],
   controllers: [FieldFetchApiController],
-  providers: [FieldFetchApiService, convertXYService]
+  providers: [FieldFetchApiService, convertXYService],
 })
 export class FieldFetchApiModule {}

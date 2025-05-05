@@ -229,7 +229,6 @@ const CreateGame: React.FC = () => {
   const fetchFields = async () => {
     if (!inputs.location) return;
     try {
-      
       const fieldsResponse = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/fields/by-city?city=${inputs.location}`,
         { method: "GET" },

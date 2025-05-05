@@ -23,7 +23,6 @@ import { GameParticipant } from 'src/game-participants/game-participants.entity'
 import { ParticipationStatus } from 'src/enums/participation-status.enum';
 import { WeatherApiService } from 'src/weather-api/weather-api.service';
 
-
 @Injectable()
 export class GamesService {
   constructor(
@@ -101,7 +100,9 @@ export class GamesService {
     //Add weather data to game
     const parsedStartDate = new Date(startDate);
     const dt = parsedStartDate.toISOString().split('T')[0];
-    const hour = parseInt(parsedStartDate.toISOString().split('T')[1].split(':')[0]);
+    const hour = parseInt(
+      parsedStartDate.toISOString().split('T')[1].split(':')[0],
+    );
     const lat = fieldd.fieldLat ? fieldd.fieldLat : 0;
     const lon = fieldd.fieldLng ? fieldd.fieldLng : 0;
     const getWeatherDto = {

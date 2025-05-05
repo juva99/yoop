@@ -4,10 +4,10 @@ import { GetWeatherDto } from './dto/get-weather.dto';
 
 @Controller('weather-api')
 export class WeatherApiController {
-    constructor(private readonly weatherApiService: WeatherApiService) {}
+  constructor(private readonly weatherApiService: WeatherApiService) {}
 
-    @Get('/:lat/:lon/:dt/:hour')
-    async getWeather(@Param() getWeatherDto: GetWeatherDto) {
-        return await this.weatherApiService.getWeather(getWeatherDto);
-      }
+  @Get('/:lat/:lon/:dt/:hour')
+  async getWeather(@Param() getWeatherDto: GetWeatherDto) {
+    return await this.weatherApiService.getWeather(getWeatherDto);
+  }
 }

@@ -4,7 +4,7 @@ export class QueryAvailableSlotsDto {
   @IsNotEmpty()
   @IsDateString()
   date: string;
-  
+
   @IsNotEmpty()
   timezone: number;
 }
