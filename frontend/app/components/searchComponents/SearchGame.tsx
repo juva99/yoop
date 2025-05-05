@@ -43,10 +43,9 @@ const SearchGame: React.FC<Props> = ({ updateFilters }) => {
 
   const onFilterChange = (key: string, value: any) => {
     console.log("changing " + key + " to " + value);
-    if (key === "location")
-    {
+    if (key === "location") {
       const cityKey = Object.keys(City).find(
-        (k) => City[k as keyof typeof City] === value
+        (k) => City[k as keyof typeof City] === value,
       );
       console.log("key found is: " + cityKey);
       setFilters({ ...filters, [key]: cityKey });
