@@ -59,7 +59,7 @@ const SearchGame: React.FC<Props> = ({ updateFilters }) => {
       </p>
       <DropDownInput
         values={cities}
-        placeholder="City"
+        placeholder="עיר"
         filterKey="location"
         onFilterChange={onFilterChange}
       />
