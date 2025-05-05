@@ -30,6 +30,7 @@ import {
 
 import { signup } from "@/lib/auth";
 import { he } from "date-fns/locale";
+import { City } from "@/app/enums/city.enum";
 
 const passwordRequirements = (
   <div className="flex flex-col gap-2 p-2">
@@ -55,14 +56,24 @@ const passwordRequirements = (
   </div>
 );
 
-// still need to make a final list of cities
-const cities = [
-  { value: "תל אביב", label: "תל אביב" },
-  { value: "ירושלים", label: "ירושלים" },
-  { value: "חיפה", label: "חיפה" },
-  { value: "באר שבע", label: "באר שבע" },
-  { value: "ראשון לציון", label: "ראשון לציון" },
-];
+// // still need to make a final list of cities
+// const cities = [
+//   { value: "תל אביב", label: "תל אביב" },
+//   { value: "ירושלים", label: "ירושלים" },
+//   { value: "חיפה", label: "חיפה" },
+//   { value: "באר שבע", label: "באר שבע" },
+//   { value: "ראשון לציון", label: "ראשון לציון" },
+// ];
+
+export type CityIns = {
+  value: string;
+  label: string;
+}
+
+export const cities: CityIns[] = Object.entries(City).map(([enumLabel, cityName]) => ({
+  label: cityName,
+  value: enumLabel,
+}));
 
 const SignupForm = () => {
   const [birthDay, setBirthDay] = useState<Date>();
