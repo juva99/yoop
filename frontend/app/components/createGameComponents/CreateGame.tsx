@@ -26,10 +26,12 @@ export type Option = {
   disabled?: boolean;
 };
 
-export const cities: Option[] = Object.entries(City).map(([enumLabel, cityName]) => ({
-  label: cityName,
-  value: enumLabel,
-}));
+export const cities: Option[] = Object.entries(City).map(
+  ([enumLabel, cityName]) => ({
+    label: cityName,
+    value: enumLabel,
+  }),
+);
 
 function areConsecutive(time1: string, time2: string): boolean {
   const [h1, m1] = time1.split(":").map(Number);
