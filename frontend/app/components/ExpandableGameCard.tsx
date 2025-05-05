@@ -34,6 +34,9 @@ const ExpandableGameCard: React.FC<Props> = ({ game, buttonTitle }) => {
     creator,
     field,
     price,
+    weatherTemp,
+    weatherCondition,
+    weatherIcon,
   } = game;
 
   // Ensure startDate is a Date object
@@ -91,6 +94,10 @@ const ExpandableGameCard: React.FC<Props> = ({ game, buttonTitle }) => {
             </span>
             <p className="text-gray-500">
               {formattedDate} | {formattedTime} {price && "|" + price + "₪"}
+              <span className="flex items-center gap-1">
+                {weatherTemp + "°"}
+                <img src={weatherIcon} alt="Weather Icon" className="h-6 w-6" />
+              </span>
             </p>
             {!isOpen && <AvatarGroup players={users} />}
           </div>
