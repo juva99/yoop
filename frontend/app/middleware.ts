@@ -11,5 +11,5 @@ export default async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/"]
+  matcher: ["/", "/mygames", "/game/create", "/games/create", "/search"]
 }
