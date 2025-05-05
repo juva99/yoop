@@ -5,8 +5,12 @@ import { FieldFetchApiService } from './field-fetch-api.service';
 export class FieldFetchApiController {
         constructor(private readonly fieldFetchApiService: FieldFetchApiService) {}
     
-        @Get()
-        async getWeather() {
+        @Get('')
+        async getFields() {
             return await this.fieldFetchApiService.getFields();
+          }
+          @Get('/cities')
+          async getCities(){
+            return await this.fieldFetchApiService.getCities();
           }
 }

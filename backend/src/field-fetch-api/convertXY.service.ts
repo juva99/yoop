@@ -9,7 +9,6 @@ export class convertXYService {
   convertXYtoLatLon(x: number, y: number): [number, number] {
     if(!isNaN(x) && !isNaN(y)){
     const [lon, lat] = proj4(this.fromProjection, this.toProjection, [x, y]);
-    console.log(`Converted [${x}, ${y}] → [${lat}, ${lon}]`);
     return [lat, lon];
     }
     else throw new InternalServerErrorException(`${x}, ${y} not valid`);

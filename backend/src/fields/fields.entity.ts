@@ -29,10 +29,10 @@ export class Field {
   @Column({ nullable: true })
   fieldPhoto?: string;
 
-  @Column()
+  @Column({ type: 'float' })
   fieldLat?: number;
 
-  @Column()
+  @Column({ type: 'float' })
   fieldLng?: number;
 
   @Column({ nullable: true })

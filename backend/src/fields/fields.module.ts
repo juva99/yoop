@@ -8,5 +8,6 @@ import { Field } from './fields.entity';
   imports: [TypeOrmModule.forFeature([Field])],
   providers: [FieldsService],
   controllers: [FieldsController],
+  exports: [FieldsService],
 })
 export class FieldsModule {}
