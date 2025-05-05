@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Field } from './fields.entity';
 import { NotFoundException } from '@nestjs/common';
 import { CreateFieldDto } from './dto/create-field.dto';
+import { City } from 'src/enums/cities.enum';
 
 
 @Injectable()
@@ -24,10 +25,10 @@ export class FieldsService {
     return field;
   }
 
-  async findByCity(city: string): Promise<Field[]> {
-    const fields = await this.fieldRepository.find({ where: { city } });
+  async findByCity(citystr: string): Promise<Field[]> {
+    const fields = await this.fieldRepository.find({ where: { city: City[citystr] } });
     if (!fields || fields.length === 0) {
-      throw new NotFoundException(`No fields found in city ${city}`);
+      throw new NotFoundException(`No fields found in city ${citystr}`);
     }
     return fields;
   }
@@ -44,4 +45,8 @@ export class FieldsService {
     return await this.fieldRepository.save(field);
   }
 
+  async createMany(createFieldDtos: CreateFieldDto[]): Promise<Field[]> {
+    const fields = this.fieldRepository.create(createFieldDtos);
+    return await this.fieldRepository.save(fields);
+  }
 }
