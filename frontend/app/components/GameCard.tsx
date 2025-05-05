@@ -63,9 +63,8 @@ const GameCard: React.FC<Props> = ({ game }) => {
               hour12: false,
             })}{" "}
             {price && `| ${price}₪`}
-
-                {weatherTemp + "°"}
-                <img src={weatherIcon} alt="Weather Icon" className="w-7 h-7" />
+            {weatherTemp + "°"}
+            <img src={weatherIcon} alt="Weather Icon" className="w-7 h-7" />
             </span>
           </p>
           </span>

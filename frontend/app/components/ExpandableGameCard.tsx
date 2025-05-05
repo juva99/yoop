@@ -94,10 +94,10 @@ const ExpandableGameCard: React.FC<Props> = ({ game, buttonTitle }) => {
             </span>
             <p className="text-gray-500">
               {formattedDate} | {formattedTime} {price && "|" + price + "₪"}   
-                <span className="flex items-center gap-1">
-                {weatherTemp + "°"}
-                <img src={weatherIcon} alt="Weather Icon" className="w-6 h-6" />
-                </span>
+              <span className="flex items-center gap-1">
+              {weatherTemp + "°"}
+              <img src={weatherIcon} alt="Weather Icon" className="w-6 h-6" />
+              </span>
             </p>
             {!isOpen && <AvatarGroup players={users} />}
           </div>
