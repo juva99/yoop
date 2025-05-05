@@ -2,12 +2,14 @@ import {
   IsBoolean,
   IsDateString,
   IsEmail,
+  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
   Length,
   Matches,
 } from 'class-validator';
+import { City } from 'src/enums/city.enum';
 
 export class CreateUserDto {
   @IsString()
@@ -40,9 +42,8 @@ export class CreateUserDto {
   @IsBoolean()
   isMale?: boolean;
 
-  @IsOptional()
-  @IsString()
-  address?: string;
+  @IsEnum(City)
+  city: City;
 
   @IsOptional()
   @IsString()

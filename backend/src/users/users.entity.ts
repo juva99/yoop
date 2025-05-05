@@ -11,6 +11,7 @@ import { Field } from 'src/fields/fields.entity';
 import { Game } from 'src/games/games.entity';
 import { GameParticipant } from 'src/game-participants/game-participants.entity';
 import { UserRole } from 'src/enums/user-role.enum';
+import { City } from 'src/enums/city.enum';
 
 @Entity('users')
 export class User {
@@ -35,8 +36,8 @@ export class User {
   @Column({ nullable: true })
   isMale: boolean;
 
-  @Column({ nullable: true })
-  address?: string;
+  @Column()
+  city: City;
 
   @Column({ nullable: true })
   profilePic?: string;
