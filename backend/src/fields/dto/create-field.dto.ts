@@ -8,6 +8,7 @@ import {
   IsOptional,
   IsNumber,
 } from 'class-validator';
+import { City } from 'src/enums/cities.enum';
 import { GameType } from 'src/enums/game-type.enum';
 export class CreateFieldDto {
   @IsArray()
@@ -35,6 +36,6 @@ export class CreateFieldDto {
   @IsString()
   fieldAddress?: string;
 
-  @IsString()
-  city: string;
+  @IsEnum(City)
+  city: City;
 }
