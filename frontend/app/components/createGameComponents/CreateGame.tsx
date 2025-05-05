@@ -8,6 +8,7 @@ import { DropDownInput } from "../searchComponents/DropDownInput";
 import { getSession } from "@/lib/session";
 import MaxParticipants from "./MaxParticipants";
 import { useRouter } from "next/navigation";
+import { City } from "@/app/enums/city.enum";
 
 export type GameDetails = {
   gameType?: GameType;
@@ -24,17 +25,11 @@ export type Option = {
   value: string;
   disabled?: boolean;
 };
-export const cities = [
-  { label: "תל אביב", value: "תל אביב" },
-  { label: "ירושלים", value: "jerusalem" },
-  { label: "חיפה", value: "haifa" },
-  { label: "באר שבע", value: "beer-sheva" },
-  { label: "נתניה", value: "netanya" },
-  { label: "אשדוד", value: "ashdod" },
-  { label: "רמת גן", value: "ramat-gan" },
-  { label: "פתח תקווה", value: "petah-tikva" },
-  { label: "הרצליה", value: "herzliya" },
-];
+
+export const cities: Option[] = Object.entries(City).map(([enumLabel, cityName]) => ({
+  label: cityName,
+  value: enumLabel,
+}));
 
 function areConsecutive(time1: string, time2: string): boolean {
   const [h1, m1] = time1.split(":").map(Number);
