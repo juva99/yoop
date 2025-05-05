@@ -36,6 +36,7 @@ export default async function Home() {
         </Link>
       </div>
       <div className="rounded-2xl shadow-xl">
+        <span className="text-subtitle mb-2 text-2xl">משחקים עתידיים</span>
         <FutureGames games={data} />
       </div>
       <Search />

@@ -48,6 +48,11 @@ const FutureGames: React.FC<Props> = ({ games }) => {
       {...handlers}
       className="border-elements relative flex h-[130px] w-full max-w-md justify-between overflow-hidden rounded-2xl border-1 shadow"
     >
+      {games.length === 0 ? (
+        <p className="text-title mt-2 mr-3">אין משחקים עתידיים</p>
+      ) : (
+        ""
+      )}
       <div
         className="transition-transform duration-300"
         style={{ transform: `translateY(-${currentGame * 130}px)` }}

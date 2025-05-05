@@ -9,14 +9,17 @@ type Props = {
 };
 
 const FilteredGames: React.FC<Props> = ({ games }) => {
-  const [filteredGames, setFilteredGames] = useState<Game[]>(games);
-  const [availables, setAvailables] = useState<Game[]>([]);
-
+  let availables = 0;
+  games.forEach((game) => {
+    if (game.maxParticipants > game.gameParticipants.length) {
+      availables++;
+    }
+  });
   return (
     <div className="mt-4 w-[100%] items-center overflow-hidden">
       <p>
         <span className="text-title ml-2 text-xl">{games.length} נמצאו</span>
-        <span className="text-subtitle">{availables.length} פנוים להרשמה</span>
+        <span className="text-subtitle">{availables} פנוים להרשמה</span>
       </p>
       <div className="filtered-games__list max-h-100 overflow-y-auto">
         {games.map((g, i) => (
