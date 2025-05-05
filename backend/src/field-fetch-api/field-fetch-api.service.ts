@@ -33,11 +33,11 @@ export class FieldFetchApiService {
              `מגרש ספורט במידות אחרות – לא תקני"`];
             
              const footballTypes = [`מגרש ספורט משולב – 43X32 מ'`,
- `מגרש כדורגל – 45X90 מ'`,
- `מגרש שחבק דשא סינטטי`,
-  'מגרש כדורגל - לא תקני',
-`אצטדיון כדורגל – 105X70 מ'`,
-`מגרש ספורט במידות אחרות – לא תקני`];
+                  `מגרש כדורגל – 45X90 מ'`,
+                  `מגרש שחבק דשא סינטטי`,
+                    'מגרש כדורגל - לא תקני',
+                  `אצטדיון כדורגל – 105X70 מ'`,
+                  `מגרש ספורט במידות אחרות – לא תקני`];
 
            const response = await firstValueFrom(
                      this.httpService.get(`https://data.gov.il/api/3/action/datastore_search`, {
@@ -51,7 +51,11 @@ export class FieldFetchApiService {
                    records.forEach(record => {
                      if (openingHours.some((openingHours => openingHours === record['פנוי לפעילות']))) {
 
-                      const cityKey = record['רשות מקומית']?.trim(); 
+                      let cityKey;
+                      if(record['ישוב'])
+                        cityKey = record['ישוב']?.trim();
+                      else
+                        cityKey = record['רשות מקומית']?.trim(); 
                       if(record['ציר X'] && record['ציר X'] && !Number.isNaN(Number(record['ציר X'])) && !Number.isNaN(Number(record['ציר Y']))){
                       [lat, lon] = this.convertXYService.convertXYtoLatLon(parseFloat(record['ציר X']), parseFloat(record['ציר Y']));
                       
@@ -72,7 +76,7 @@ export class FieldFetchApiService {
                           isManaged: false,
                           fieldLat: lat,
                           fieldLng: lon,
-                          city: record['רשות מקומית'],
+                          city: cityKey,
                           fieldAddress: `${record['רחוב']} ${record['מספר בית']}`
                         })
                         gameTypes.length = 0;
