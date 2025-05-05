@@ -229,6 +229,7 @@ const CreateGame: React.FC = () => {
   const fetchFields = async () => {
     if (!inputs.location) return;
     try {
+      
       const fieldsResponse = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/fields/by-city?city=${inputs.location}`,
         { method: "GET" },
@@ -238,7 +239,6 @@ const CreateGame: React.FC = () => {
       }
       const fieldsData: { fieldId: string; fieldName: string }[] =
         await fieldsResponse.json();
-
       const dropdownOptions = fieldsData.map((field) => ({
         value: field.fieldId,
         label: field.fieldName,

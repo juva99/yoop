@@ -9,8 +9,6 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export default async function Home() {
-  const session = await getSession();
-
   const res = await authFetch(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/mygames`,
   );

@@ -4,7 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import { CreateFieldDto } from 'src/fields/dto/create-field.dto';
 import { convertXYService } from './convertXY.service';
 import { GameType } from 'src/enums/game-type.enum';
-import { City } from 'src/enums/cities.enum';
+import { City } from 'src/enums/city.enum';
 import { FieldsService } from 'src/fields/fields.service';
 
 @Injectable()
