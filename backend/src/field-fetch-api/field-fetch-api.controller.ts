@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param, Post } from '@nestjs/common';
 import { FieldFetchApiService } from './field-fetch-api.service';
 
 @Controller('field-fetch-api')
@@ -8,9 +8,5 @@ export class FieldFetchApiController {
         @Get('')
         async getFields() {
             return await this.fieldFetchApiService.getFields();
-          }
-          @Get('/cities')
-          async getCities(){
-            return await this.fieldFetchApiService.getCities();
           }
 }

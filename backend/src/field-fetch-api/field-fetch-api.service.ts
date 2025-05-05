@@ -50,7 +50,7 @@ export class FieldFetchApiService {
                    const records = response.data.result.records;
                    records.forEach(record => {
                      if (openingHours.some((openingHours => openingHours === record['פנוי לפעילות']))) {
-                      console.log('ציר X:', record['ציר X'], 'ציר Y:', record['ציר Y']);
+
                       const cityKey = record['רשות מקומית']?.trim(); 
                       if(record['ציר X'] && record['ציר X'] && !Number.isNaN(Number(record['ציר X'])) && !Number.isNaN(Number(record['ציר Y']))){
                       [lat, lon] = this.convertXYService.convertXYtoLatLon(parseFloat(record['ציר X']), parseFloat(record['ציר Y']));
@@ -119,5 +119,12 @@ export class FieldFetchApiService {
               uniqueValues.add(authority);
           }
           return [...uniqueValues];
+        }
+
+        async convert(x: number, y: number): Promise<any>{
+          let lat;
+          let lon;
+          [lat, lon] = this.convertXYService.convertXYtoLatLon(x,y);
+          console.log(`lat ${lat} lon ${lon}`);
         }
 }
