@@ -54,7 +54,6 @@ const Search: React.FC<Props> = () => {
       endDate: endDate.toISOString(),
       city: filters.location || "",
     });
-    console.log(filters);
 
     try {
       const response = await fetch(
