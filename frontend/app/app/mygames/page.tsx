@@ -13,61 +13,78 @@ export default async function MyGames() {
   }
   const currUserUID = session.user.uid;
 
+  const managedGames = games.filter((game) => game.creator.uid === currUserUID);
+  const approvedGames = games.filter((game) =>
+    game.gameParticipants.some(
+      (gp) =>
+        gp.user.uid === currUserUID &&
+        gp.status === ParticipationStatus.APPROVED,
+    ),
+  );
+
+  const pendingGames = games.filter((game) =>
+    game.gameParticipants.some(
+      (gp) =>
+        gp.user.uid === currUserUID &&
+        gp.status === ParticipationStatus.PENDING,
+    ),
+  );
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
       <div className="mb-10">
         <p className="mb-4 text-right text-2xl font-bold">משחקים בניהולך</p>
-        <div className="space-y-4">
-          {games
-            .filter((game) => game.creator.uid === currUserUID)
-            .map((game, index) => (
+        {managedGames.length === 0 ? (
+          <p className="rounded border bg-gray-50 py-8 text-center text-lg text-gray-500 shadow-sm">
+            אין משחקים בניהולך
+          </p>
+        ) : (
+          <div className="space-y-4">
+            {managedGames.map((game, index) => (
               <ExpandableGameCard
                 key={index}
                 game={game}
                 buttonTitle="לעמוד המשחק"
               />
             ))}
-        </div>
+          </div>
+        )}
       </div>
       <div className="mb-10">
         <p className="mb-4 text-right text-2xl font-bold">המשחקים שלי</p>
-        <div className="space-y-4">
-          {games
-            .filter((game) =>
-              game.gameParticipants.some(
-                (gp) =>
-                  gp.user.uid === currUserUID &&
-                  gp.status === ParticipationStatus.APPROVED,
-              ),
-            )
-            .map((game, index) => (
+        {managedGames.length === 0 ? (
+          <p className="rounded border bg-gray-50 py-8 text-center text-lg text-gray-500 shadow-sm">
+            אין משחקים עתידיים
+          </p>
+        ) : (
+          <div className="space-y-4">
+            {approvedGames.map((game, index) => (
               <ExpandableGameCard
                 key={index}
                 game={game}
                 buttonTitle="לעמוד המשחק"
               />
             ))}
-        </div>
+          </div>
+        )}
       </div>
       <div>
         <p className="mb-4 text-right text-2xl font-bold">משחקים בהמתנה</p>
-        <div className="space-y-4">
-          {games
-            .filter((game) =>
-              game.gameParticipants.some(
-                (gp) =>
-                  gp.user.uid === currUserUID &&
-                  gp.status === ParticipationStatus.PENDING,
-              ),
-            )
-            .map((game, index) => (
+        {pendingGames.length === 0 ? (
+          <p className="rounded border bg-gray-50 py-8 text-center text-lg text-gray-500 shadow-sm">
+            אין משחקים בהמתנה
+          </p>
+        ) : (
+          <div className="space-y-4">
+            {pendingGames.map((game, index) => (
               <ExpandableGameCard
                 key={index}
                 game={game}
                 buttonTitle="לעמוד המשחק"
               />
             ))}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );
