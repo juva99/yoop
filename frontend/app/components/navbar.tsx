@@ -2,10 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import {
-  PiSoccerBall,
-  PiMagnifyingGlass,
-} from "react-icons/pi";
+import { PiSoccerBall, PiMagnifyingGlass } from "react-icons/pi";
 import { FaHouse } from "react-icons/fa6";
 import { IoCreateSharp } from "react-icons/io5";
 import { MdAssignmentAdd } from "react-icons/md";
@@ -15,8 +12,7 @@ const HIDDEN_PATHS = ["/auth/login", "/auth/signup"];
 
 const Navbar = () => {
   const pathname = usePathname();
-  if (HIDDEN_PATHS.includes(pathname))
-    return null;
+  if (HIDDEN_PATHS.includes(pathname)) return null;
 
   return (
     <nav className="fixed bottom-0 z-50 flex h-15 w-full items-center justify-around border-t-2 border-[#0D2A84] bg-gray-100">
