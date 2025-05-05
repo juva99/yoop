@@ -353,7 +353,7 @@ const CreateGame: React.FC = () => {
         <TypeFilter onFilterChange={onInputChange} />
         <DropDownInput
           values={cities}
-          placeholder="City"
+          placeholder="עיר"
           filterKey="location"
           onFilterChange={onInputChange}
         />
@@ -362,7 +362,7 @@ const CreateGame: React.FC = () => {
       {inputs.location && (
         <DropDownInput
           values={fieldList}
-          placeholder="Field"
+          placeholder="מגרש"
           filterKey="field"
           onFilterChange={onInputChange}
         />
