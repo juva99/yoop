@@ -9,7 +9,7 @@ import {
 import { User } from 'src/users/users.entity';
 import { Game } from 'src/games/games.entity';
 import { GameType } from 'src/enums/game-type.enum';
-import { City } from 'src/enums/cities.enum';
+import { City } from 'src/enums/city.enum';
 import { IsEnum } from 'class-validator';
 
 @Entity('fields')
@@ -38,10 +38,8 @@ export class Field {
   @Column({ nullable: true })
   fieldAddress?: string;
 
-  
   @Column('enum', { enum: City })
   city: City;
-  
 
   //field manager
   @ManyToOne(() => User, (manager) => manager.fieldsManage)

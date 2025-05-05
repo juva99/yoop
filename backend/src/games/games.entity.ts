@@ -31,19 +31,19 @@ export class Game {
 
   @Column('enum', { enum: GameStatus })
   status: GameStatus;
-  
-  @Column({nullable: true})
+
+  @Column({ nullable: true })
   weatherTemp?: number;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   weatherCondition?: string;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   weatherIcon?: string;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   price?: number;
-  
+
   //game participants
   @OneToMany(() => GameParticipant, (gameParticipant) => gameParticipant.game, {
     eager: true,

@@ -8,7 +8,7 @@ import {
   IsOptional,
   IsNumber,
 } from 'class-validator';
-import { City } from 'src/enums/cities.enum';
+import { City } from 'src/enums/city.enum';
 import { GameType } from 'src/enums/game-type.enum';
 export class CreateFieldDto {
   @IsArray()
