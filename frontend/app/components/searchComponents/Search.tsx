@@ -40,7 +40,7 @@ const Search: React.FC<Props> = () => {
 
   const fetchGames = async () => {
     if (!filters.date || !filters.time) {
-      console.log("Date or time filter not set, skipping fetch.");
+      console.error("Date or time filter not set, skipping fetch.");
       setFilteredGames([]);
       return;
     }
