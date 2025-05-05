@@ -39,4 +39,6 @@ export class FieldsController {
   async deleteOne(@Param('id') id: string) {
     return await this.fieldService.deleteOne(id);
   }
+
+
 }

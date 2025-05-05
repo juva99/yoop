@@ -6,6 +6,7 @@ import { FieldsModule } from './fields/fields.module';
 import { GamesModule } from './games/games.module';
 import { AuthModule } from './auth/auth.module';
 import { GameParticipantsModule } from './game-participants/game-participants.module';
+import { WeatherApiModule } from './weather-api/weather-api.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { GameParticipantsModule } from './game-participants/game-participants.mo
     GamesModule,
     AuthModule,
     GameParticipantsModule,
+    WeatherApiModule,
   ],
   controllers: [],
 })

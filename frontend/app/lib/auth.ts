@@ -17,6 +17,7 @@ export async function signup(
     passConfirm: formData.get("passConfirm"),
     phoneNum: formData.get("phoneNum"),
     birthDay: formData.get("birthDay"),
+    address: formData.get("address"),
     role: "player",
   });
 
@@ -35,7 +36,7 @@ export async function signup(
   });
 
   if (response.ok) {
-    redirect("/auth/login");
+    await login(state, formData);
   } else {
     return {
       message:

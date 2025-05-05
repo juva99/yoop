@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import { PiBasketball, PiSoccerBall } from "react-icons/pi";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
@@ -11,13 +13,16 @@ import {
 import PlayersList from "./PlayersList";
 import { Button } from "./ui/button";
 import { ParticipationStatus } from "@/app/enums/participation-status.enum";
+import { useRouter } from "next/navigation";
 
 type Props = {
   game: Game;
+  buttonTitle: string;
 };
 
-const ExpandableGameCard: React.FC<Props> = ({ game }) => {
+const ExpandableGameCard: React.FC<Props> = ({ game, buttonTitle }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
   const {
     gameId,
     gameType,
@@ -31,7 +36,12 @@ const ExpandableGameCard: React.FC<Props> = ({ game }) => {
     price,
   } = game;
 
-  const users = gameParticipants.map((participant) => participant.user);
+  // Ensure startDate is a Date object
+  const dateObject =
+    typeof startDate === "string" ? new Date(startDate) : startDate;
+  const users = gameParticipants
+    .filter((gp) => gp.status === ParticipationStatus.APPROVED)
+    .map((participant) => participant.user);
   const start = new Date(startDate);
   const end = new Date(endDate);
   const formattedDate = start.toLocaleDateString("he-IL", {
@@ -61,8 +71,11 @@ const ExpandableGameCard: React.FC<Props> = ({ game }) => {
           {!isOpen && <IoIosArrowDown />}
           {isOpen && <IoIosArrowUp />}
         </CollapsibleTrigger>
-        <Button className="absolute top-2 left-10 z-10 h-auto min-h-0 rounded-sm bg-blue-500 px-2.5 py-1.5 text-[12px] leading-none font-semibold text-white">
-          הצטרף
+        <Button
+          onClick={() => router.push(`/game/${gameId}`)}
+          className="absolute top-2 left-10 z-10 h-auto min-h-0 rounded-sm bg-blue-500 px-2.5 py-1.5 text-[12px] leading-none font-semibold text-white"
+        >
+          {buttonTitle}
         </Button>
         <div className="flex items-start pr-5 text-right">
           <div className="game-details">

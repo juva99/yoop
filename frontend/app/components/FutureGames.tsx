@@ -52,7 +52,7 @@ const FutureGames: React.FC<Props> = ({ games }) => {
         className="transition-transform duration-300"
         style={{ transform: `translateY(-${currentGame * 130}px)` }}
       >
-        {games.map((game, i) => (
+        {games.slice(0, 5).map((game, i) => (
           <div key={i} className="h-[130px]">
             <GameCard game={game} />
           </div>
