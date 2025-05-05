@@ -142,7 +142,7 @@ export default async function Page({
         {price !== undefined && (
           <div className="flex items-center gap-2">
             <PiCoins className="text-gray-600" />
-            <p>{price === 0 ? "חינם" : `${price} ₪`}</p>{" "}
+            <p>{price === null ? "חינם" : `${price} ₪`}</p>{" "}
           </div>
         )}
       </div>
