@@ -20,12 +20,6 @@ import { Button } from "@/components/ui/button";
 import { getSession } from "@/lib/session";
 import { redirect } from "next/navigation";
 
-const session = await getSession();
-if (!session?.user?.uid) {
-  console.error("Invalid session or user credentials");
-  redirect("/auth/login");
-}
-
 const cities = [
   "תל אביב",
   "ירושלים",
