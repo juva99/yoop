@@ -8,6 +8,7 @@ import {
 } from "react-icons/pi";
 import { FaHouse } from "react-icons/fa6";
 import { IoCreateSharp } from "react-icons/io5";
+import { MdAssignmentAdd } from "react-icons/md";
 import { usePathname } from "next/navigation";
 
 const HIDDEN_PATHS = ["/auth/login", "/auth/signup"];
@@ -18,25 +19,25 @@ const Navbar = () => {
     return null;
 
   return (
-    <nav className="fixed bottom-0 z-50 flex h-15 w-full items-center justify-around border-t-3 border-blue-700 bg-gray-100">
+    <nav className="fixed bottom-0 z-50 flex h-15 w-full items-center justify-around border-t-2 border-[#0D2A84] bg-gray-100">
       <Link href={"/"}>
         <FaHouse
-          className={`size-[40px] ${pathname === "/" ? "text-neutral-900" : "text-elements"}`}
+          className={`size-[30px] ${pathname === "/" ? "text-neutral-900" : "text-elements"}`}
         />
       </Link>
       <Link href={"/mygames"}>
         <PiSoccerBall
-          className={`size-[40px] ${pathname === "/mygames" ? "text-neutral-900" : "text-elements"}`}
+          className={`size-[30px] ${pathname === "/mygames" ? "text-neutral-900" : "text-elements"}`}
         />
       </Link>
       <Link href={"/search"}>
         <PiMagnifyingGlass
-          className={`size-[40px] ${pathname === "/search" ? "text-neutral-900" : "text-elements"}`}
+          className={`size-[30px] ${pathname === "/search" ? "text-neutral-900" : "text-elements"}`}
         />
       </Link>
       <Link href={"/game/create"}>
-        <div className="-mt-10 flex size-[80px] items-center justify-center rounded-2xl border-2 border-blue-500 bg-blue-800 shadow-md ring-2 ring-blue-100 transition-all">
-          <IoCreateSharp className="size-[48px] text-white drop-shadow" />
+        <div className="-mt-10 flex size-[80px] items-center justify-center rounded-[25%] border-2 border-blue-500 bg-[radial-gradient(80.49%_80.3%_at_47.16%_59.68%,#0D2A84_0%,#116AAC_100%)] shadow-md ring-2 ring-blue-100 transition-all">
+          <MdAssignmentAdd className="size-[48px] text-white drop-shadow" />
         </div>
       </Link>
     </nav>
