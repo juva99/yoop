@@ -5,12 +5,12 @@ import { Field } from './fields.entity';
 import { NotFoundException } from '@nestjs/common';
 import { CreateFieldDto } from './dto/create-field.dto';
 
-
 @Injectable()
 export class FieldsService {
   constructor(
     @InjectRepository(Field)
-    private fieldRepository: Repository<Field>) {}
+    private fieldRepository: Repository<Field>,
+  ) {}
 
   async findAll(): Promise<Field[]> {
     return await this.fieldRepository.find();
@@ -43,5 +43,4 @@ export class FieldsService {
     const field = this.fieldRepository.create(createFieldDto);
     return await this.fieldRepository.save(field);
   }
-
 }

@@ -1,14 +1,14 @@
 import { IsNumber, IsString } from 'class-validator';
 export class GetWeatherDto {
-    @IsNumber()
-    lat: number;
+  @IsNumber()
+  lat: number;
 
-    @IsNumber()
-    lon: number;
-  
-     @IsString()
-     dt: string;
+  @IsNumber()
+  lon: number;
 
-    @IsString()  
-     hour: number;
+  @IsString()
+  dt: string;
+
+  @IsString()
+  hour: number;
 }

@@ -68,12 +68,14 @@ const passwordRequirements = (
 export type CityIns = {
   value: string;
   label: string;
-}
+};
 
-export const cities: CityIns[] = Object.entries(City).map(([enumLabel, cityName]) => ({
-  label: cityName,
-  value: enumLabel,
-}));
+export const cities: CityIns[] = Object.entries(City).map(
+  ([enumLabel, cityName]) => ({
+    label: cityName,
+    value: enumLabel,
+  }),
+);
 
 const SignupForm = () => {
   const [birthDay, setBirthDay] = useState<Date>();

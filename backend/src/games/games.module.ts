@@ -8,7 +8,10 @@ import { GameParticipant } from 'src/game-participants/game-participants.entity'
 import { WeatherApiModule } from 'src/weather-api/weather-api.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Game, Field, GameParticipant]), WeatherApiModule],
+  imports: [
+    TypeOrmModule.forFeature([Game, Field, GameParticipant]),
+    WeatherApiModule,
+  ],
   controllers: [GamesController],
   providers: [GamesService],
 })
