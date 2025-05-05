@@ -14,6 +14,7 @@ import { GameType } from "@/app/enums/game-type.enum";
 import { CityFilter } from "./CityFilter";
 import { cities } from "../createGameComponents/CreateGame";
 import { DropDownInput } from "./DropDownInput";
+import { City } from "@/app/enums/city.enum";
 
 type Props = {
   updateFilters: (filters: Filters) => void;
@@ -41,7 +42,18 @@ const SearchGame: React.FC<Props> = ({ updateFilters }) => {
   });
 
   const onFilterChange = (key: string, value: any) => {
-    setFilters({ ...filters, [key]: value });
+    console.log("changing " + key + " to " + value);
+    if (key === "location")
+    {
+      const cityKey = Object.keys(City).find(
+        (k) => City[k as keyof typeof City] === value
+      );
+      console.log("key found is: " + cityKey);
+      setFilters({ ...filters, [key]: cityKey });
+    } else {
+      setFilters({ ...filters, [key]: value });
+    }
+    // console.log(filters)
   };
 
   return (
