@@ -66,7 +66,7 @@ export function DropDownInput({
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[180px] p-0 text-right">
+      <PopoverContent className="w-[180px] p-0 text-left">
         <Command>
           {!(filterKey === "startTime" || filterKey === "endTime") && (
             <CommandInput
@@ -86,7 +86,7 @@ export function DropDownInput({
                     if (!option.disabled) handleSelect(option.value);
                   }}
                   className={cn(
-                    "cursor-pointer justify-end",
+                    "cursor-pointer justify-start",
                     option.disabled && "cursor-not-allowed opacity-50",
                   )}
                 >
