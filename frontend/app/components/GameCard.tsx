@@ -21,6 +21,9 @@ const GameCard: React.FC<Props> = ({ game }) => {
     creator,
     field,
     price,
+    weatherTemp,
+    weatherCondition,
+    weatherIcon,
   } = game;
 
   // Ensure startDate is a Date object
@@ -46,7 +49,9 @@ const GameCard: React.FC<Props> = ({ game }) => {
             ) : null}
             {field.fieldName}
           </span>
+          <span>
           <p className="text-gray-500">
+          <span className="flex items-center gap-1">
             {dateObject.toLocaleDateString(locale, {
               month: "numeric",
               day: "numeric",
@@ -58,7 +63,12 @@ const GameCard: React.FC<Props> = ({ game }) => {
               hour12: false,
             })}{" "}
             {price && `| ${price}₪`}
+
+                {weatherTemp + "°"}
+                <img src={weatherIcon} alt="Weather Icon" className="w-7 h-7" />
+            </span>
           </p>
+          </span>
           <AvatarGroup players={users} />
         </div>
       </div>
