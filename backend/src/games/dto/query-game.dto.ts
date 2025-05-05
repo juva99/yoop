@@ -1,4 +1,5 @@
 import { IsDateString, IsEnum, IsOptional, IsString } from 'class-validator';
+import { City } from 'src/enums/city.enum';
 import { GameType } from 'src/enums/game-type.enum';
 
 export class QueryGameDto {
@@ -15,6 +16,6 @@ export class QueryGameDto {
   endDate?: Date;
 
   @IsOptional()
-  @IsString()
-  city?: string;
+  @IsEnum(City)
+  city?: City;
 }
