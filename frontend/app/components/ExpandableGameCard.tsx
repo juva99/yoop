@@ -51,20 +51,17 @@ const ExpandableGameCard: React.FC<Props> = ({ game, buttonTitle }) => {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
-    timeZone: "UTC",
   });
   const formattedTime = start.toLocaleTimeString("he-IL", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
-    timeZone: "UTC",
   });
 
   const formattedEndTime = end.toLocaleTimeString("he-IL", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
-    timeZone: "UTC",
   });
 
   return (

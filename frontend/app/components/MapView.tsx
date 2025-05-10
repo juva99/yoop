@@ -2,7 +2,6 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { Map, Marker } from "pigeon-maps";
-import testData from "../data/testdata.json";
 import { Game } from "@/app/types/Game";
 import GameCard from "./GameCard";
 
@@ -52,18 +51,6 @@ const MapView: React.FC<Props> = ({ defaultLocation, games }) => {
   const [visibleMarkers, setVisibleMarkers] = useState<any[]>([]);
   const [stats, setStats] = useState({ total: 0, visible: 0 });
   const mapRef = useRef<any>(null);
-
-  // Initialize all valid markers
-  useEffect(() => {
-    const validStadiums = testData.filter(
-      (stadium) => stadium.latitude && stadium.longitude,
-    );
-    allMarkersRef.current = validStadiums;
-    setStats((prev) => ({ ...prev, total: validStadiums.length }));
-
-    // Filter markers by initial radius
-    filterMarkersByDistance(defaultLocation.lat, defaultLocation.lng, radius);
-  }, [radius]);
 
   const handleMarkerClick = (game: any) => {
     setSelectedMarker(game);

@@ -30,6 +30,7 @@ import {
 
 import { signup } from "@/lib/auth";
 import { he } from "date-fns/locale";
+import { DateTimePicker } from "@/components/ui/datetime-picker";
 
 const passwordRequirements = (
   <div className="flex flex-col gap-2 p-2">
@@ -296,6 +297,10 @@ const SignupForm = () => {
       </div>
 
       <div className="form_item">
+        <Label htmlFor="birthDay" className="form_label">
+          תאריך לידה
+        </Label>
+
         <Popover>
           <PopoverTrigger asChild>
             <Button
@@ -307,7 +312,11 @@ const SignupForm = () => {
               )}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {birthDay ? format(birthDay, "PPP") : <span>בחר תאריך לידה</span>}
+              {birthDay ? (
+                format(birthDay, "dd/MM/yyyy")
+              ) : (
+                <span>בחר תאריך לידה</span>
+              )}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0">
@@ -316,7 +325,6 @@ const SignupForm = () => {
               selected={birthDay}
               onSelect={setBirthDay}
               locale={he}
-              captionLayout="dropdown-buttons"
               fromYear={fromYear}
               toYear={toYear}
               disabled={(date) => date > new Date()}
