@@ -280,7 +280,6 @@ export class GamesService {
     dayStart.setHours(dayStart.getHours() - timezone);
     const dayEnd = new Date(dayStart);
     dayEnd.setUTCDate(dayStart.getUTCDate() + 1);
-
     // Iterate through each half-hour slot of the day
     let currentSlotStart = new Date(dayStart);
     while (currentSlotStart < dayEnd) {
@@ -300,8 +299,8 @@ export class GamesService {
           break; // No need to check other games for this slot
         }
       }
-
       // If the slot is completely free, add its start time
+      currentSlotStart.setUTCHours(currentSlotStart.getUTCHours() - -timezone);
       if (isSlotAvailable) {
         const hours = currentSlotStart
           .getUTCHours()

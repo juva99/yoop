@@ -29,7 +29,7 @@ const gameTypeOptions = Object.entries(GameType).map(([_, value]) => ({
   value: value,
 }));
 
-const cityOptions = Object.entries(City).map(([_, value]) => ({
+const cityOptions = Object.entries(City).map(([label, value]) => ({
   label: value,
   value: value,
 }));
