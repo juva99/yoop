@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { BACKEND_URL } from "./constants";
+import { BACKEND_URL, FRONTEND_URL } from "./constants";
 import { FormState, LoginFormSchema, SignupFormSchema } from "./type";
 import { createSession, updateTokens } from "./session";
 
@@ -110,7 +110,7 @@ export const refreshToken = async (
 
     const { accessToken, refreshToken } = await response.json();
 
-    const updateRes = await fetch("http://localhost:3000/api/auth/update", {
+    const updateRes = await fetch(`${FRONTEND_URL}/api/auth/update`, {
       method: "POST",
       body: JSON.stringify({
         accessToken,
