@@ -3,7 +3,7 @@
 import { jwtVerify, SignJWT } from 'jose';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { Role } from './type';
+import { Role } from '../app/enums/role.enum';
 
 export type Session = {
   user: {

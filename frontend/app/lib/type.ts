@@ -83,11 +83,3 @@ export const LoginFormSchema = z.object({
     .trim()
     .min(8, { message: "הסיסמא חייבת להכיל לפחות 8 תווים " }),
 });
-
-
-export enum Role {
-  ADMIN = 'admin',
-  FIELD_MANAGER = 'field_manager',
-  USER = 'user',
-}
-
