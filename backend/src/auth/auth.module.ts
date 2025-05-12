@@ -30,8 +30,8 @@ import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
     RefreshStrategy,
     {
       provide: APP_GUARD,
-      useClass: JwtAuthGuard
-    }
+      useClass: JwtAuthGuard,
+    },
   ],
 })
 export class AuthModule {}

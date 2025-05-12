@@ -11,7 +11,7 @@ export default async function MyGames() {
     redirect("/auth/login");
   }
   const currUserUID = session.user.uid;
-  
+
   const games = await getMyGames();
 
   const managedGames = games.filter((game) => game.creator.uid === currUserUID);

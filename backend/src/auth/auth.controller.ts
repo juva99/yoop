@@ -25,7 +25,6 @@ export class AuthController {
     return await this.authService.registerUser(createUserDto);
   }
 
-
   @Public()
   @UseGuards(LocalAuthGuard)
   @Post('login')
@@ -33,14 +32,12 @@ export class AuthController {
     return this.authService.login(req.user.uid, req.user.name);
   }
 
-  
   @Get('protected')
   async getAll(@Request() req): Promise<{ message: string }> {
     return {
       message: `Permission granted for this protected API. Your ID: ${req.user.uid}`,
     };
   }
-
 
   @Public()
   @UseGuards(RefreshAuthGuard)
@@ -49,7 +46,6 @@ export class AuthController {
     return this.authService.refreshToken(req.user.uid, req.user.name);
   }
 
- 
   @Post('signout')
   async signOut(@Request() req): Promise<void> {
     return this.authService.signOut(req.user.uid);
