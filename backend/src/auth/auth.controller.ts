@@ -14,6 +14,8 @@ import { RefreshAuthGuard } from './guards/refresh-auth/refresh-auth.guard';
 import { User } from '../users/users.entity';
 import { authenticatedUser } from './types/authenticatedUser';
 import { Public } from './decorators/public.decorator';
+import { Roles } from './decorators/roles.decorator';
+import { Role } from 'src/enums/role.enum';
 
 @Controller('auth')
 export class AuthController {
@@ -29,7 +31,7 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() req): Promise<authenticatedUser> {
-    return this.authService.login(req.user.uid, req.user.name);
+    return this.authService.login(req.user.uid, req.user.role, req.user.name);
   }
 
   @Get('protected')
@@ -43,7 +45,11 @@ export class AuthController {
   @UseGuards(RefreshAuthGuard)
   @Post('refresh')
   async refreshToken(@Request() req): Promise<authenticatedUser> {
-    return this.authService.refreshToken(req.user.uid, req.user.name);
+    return this.authService.refreshToken(
+      req.user.uid,
+      req.user.role,
+      req.user.name,
+    );
   }
 
   @Post('signout')
