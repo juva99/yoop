@@ -13,23 +13,27 @@ import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
 import { RefreshAuthGuard } from './guards/refresh-auth/refresh-auth.guard';
 import { User } from '../users/users.entity';
 import { authenticatedUser } from './types/authenticatedUser';
+import { Public } from './decorators/public.decorator';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Public()
   @Post('signup')
   async registerUser(@Body() createUserDto: CreateUserDto): Promise<User> {
     return await this.authService.registerUser(createUserDto);
   }
 
+
+  @Public()
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() req): Promise<authenticatedUser> {
     return this.authService.login(req.user.uid, req.user.name);
   }
 
-  @UseGuards(JwtAuthGuard)
+  
   @Get('protected')
   async getAll(@Request() req): Promise<{ message: string }> {
     return {
@@ -37,13 +41,15 @@ export class AuthController {
     };
   }
 
+
+  @Public()
   @UseGuards(RefreshAuthGuard)
   @Post('refresh')
   async refreshToken(@Request() req): Promise<authenticatedUser> {
     return this.authService.refreshToken(req.user.uid, req.user.name);
   }
 
-  @UseGuards(JwtAuthGuard)
+ 
   @Post('signout')
   async signOut(@Request() req): Promise<void> {
     return this.authService.signOut(req.user.uid);
