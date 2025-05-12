@@ -5,6 +5,7 @@ import SearchGame from "@/components/searchComponents/SearchGame";
 import React, { useEffect, useState } from "react";
 import MapView from "../MapView";
 import { BACKEND_URL } from "@/lib/constants";
+import { authFetch } from "@/lib/authFetch";
 
 type Props = {};
 type Filters = {
@@ -56,7 +57,7 @@ const Search: React.FC<Props> = () => {
     });
 
     try {
-      const response = await fetch(
+      const response = await authFetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/query?${params.toString()}`,
         {
           method: "GET",

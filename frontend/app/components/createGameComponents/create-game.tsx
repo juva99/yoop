@@ -13,6 +13,7 @@ import EndTimeStep from "./EndTimeStep";
 import { getSession } from "@/lib/session";
 import { useRouter } from "next/navigation";
 import { Form } from "../ui/form";
+import { authFetch } from "@/lib/authFetch";
 
 export type Inputs = z.infer<typeof FormDataSchema>;
 const steps = [
@@ -69,7 +70,7 @@ export default function CreateGameForm() {
     const [endHour, endMinute] = data.endTime.split(":").map(Number);
     const endDateObj = new Date(year, month, day, endHour, endMinute);
 
-    const response = await fetch(
+    const response = await authFetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/games`,
       {
         method: "POST",

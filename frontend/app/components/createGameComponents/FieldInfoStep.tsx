@@ -5,6 +5,7 @@ import { City } from "@/app/enums/city.enum";
 import { useEffect, useState } from "react";
 import { Spinner } from "../ui/spinner";
 import { Combobox } from "../ui/combobox";
+import { authFetch } from "@/lib/authFetch";
 
 interface FieldInfoStepProps {
   form: UseFormReturn;
@@ -17,7 +18,7 @@ async function fetchFields(
     (key) => City[key as keyof typeof City] === city,
   );
 
-  const fieldsResponse = await fetch(
+  const fieldsResponse = await authFetch(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/fields/by-city?city=${city_key}`,
     { method: "GET" },
   );
