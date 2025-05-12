@@ -37,7 +37,7 @@ export class AuthService {
   async validateLocalUser(
     email,
     password,
-  ): Promise<{ uid: string; name: string }> {
+  ): Promise<{ uid: string; name: string, role: string }> {
     try {
       const user = await this.usersService.findByEmail(email);
 
@@ -54,6 +54,7 @@ export class AuthService {
       return {
         uid: user.uid,
         name: user.firstName + ' ' + user.lastName,
+        role: user.role
       };
     } catch (error) {
       console.error('Auth error:', error);
@@ -91,14 +92,14 @@ export class AuthService {
     };
   }
 
-  async validateJwtUser(userId: string): Promise<{ uid: string }> {
+  async validateJwtUser(userId: string): Promise<{ uid: string, role: string }> {
     const user = await this.usersService.findById(userId);
 
     if (!user) {
       throw new UnauthorizedException('המשתמש לא נמצא!');
     }
 
-    const currentUser = { uid: user.uid };
+    const currentUser = { uid: user.uid, role: user.role };
     return currentUser;
   }
 
