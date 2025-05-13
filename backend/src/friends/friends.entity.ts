@@ -8,10 +8,10 @@ export class FriendRelation {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => User, (user) => user.sentFriendRequests)
+  @ManyToOne(() => User, (user) => user.sentFriendRequests, { onDelete: 'CASCADE' })
   user1: User;
   
-  @ManyToOne(() => User, (user) => user.receivedFriendRequests)
+  @ManyToOne(() => User, (user) => user.receivedFriendRequests, { onDelete: 'CASCADE' })
   user2: User;
 
   @Column('enum', {

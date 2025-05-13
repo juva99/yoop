@@ -11,6 +11,7 @@ export class FriendsService {
   constructor(
     @InjectRepository(FriendRelation)
     private friendRepository: Repository<FriendRelation>,
+    @InjectRepository(User)
     private userRepository: Repository<User>,
   ) {}
   async setStatus(setStatusDto: FriendSetStatusDto): Promise<FriendRelation> {
