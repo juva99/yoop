@@ -11,6 +11,7 @@ import { Field } from 'src/fields/fields.entity';
 import { Game } from 'src/games/games.entity';
 import { GameParticipant } from 'src/game-participants/game-participants.entity';
 import { UserRole } from 'src/enums/user-role.enum';
+import { FriendRelation } from 'src/friends/friends.entity';
 
 @Entity('users')
 export class User {
@@ -51,20 +52,9 @@ export class User {
   @OneToMany(() => Field, (field) => field.manager)
   fieldsManage: Field[];
 
-  //firend list
-  @ManyToMany(() => User)
-  @JoinTable({
-    name: 'friend_list',
-    joinColumn: {
-      name: 'user1',
-      referencedColumnName: 'uid',
-    },
-    inverseJoinColumn: {
-      name: 'user2',
-      referencedColumnName: 'uid',
-    },
-  })
-  friendList: User[];
+  //friend list
+  @OneToMany(() => FriendRelation, (friendRelation) => friendRelation.id)
+  friendList: FriendRelation[];
 
   // game participants
   @OneToMany(() => GameParticipant, (gameParticipant) => gameParticipant.user)
