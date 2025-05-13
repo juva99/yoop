@@ -35,6 +35,7 @@ export class FriendsService {
     const friend = await this.userRepository.findOne({
       where: { uid: friendReqDto.user_uid },
     });
+
     if (!friend) {
       throw new NotFoundException(
         `User with id ${friendReqDto.user_uid} not found`,
@@ -45,5 +46,28 @@ export class FriendsService {
       user2: friend,
     });
     return this.friendRepository.save(request);
+  }
+
+  async deleteReq(id: string): Promise<void> {
+    const req = await this.friendRepository.findOne({ where: { id } });
+    if (!req) {
+      throw new NotFoundException(`Friend request with id ${id} not found`);
+    }
+    await this.friendRepository.remove(req);
+  }
+
+  async checkUser(user: User, relationId: string): Promise<Boolean> {
+    const relations = await this.friendRepository.find({
+      where: [
+        { user1: user, id: relationId },
+        { user2: user, id: relationId },
+      ],
+    });
+    if (!relations || relations.length === 0) {
+      throw new NotFoundException(
+        `No friend relations found for user with id ${user.uid} and relation id ${relationId}`,
+      );
+    }
+    return true;
   }
 }

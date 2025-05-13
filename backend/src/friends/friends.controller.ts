@@ -1,10 +1,19 @@
-import { Body, Controller, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { FriendSetStatusDto } from './dto/friendsSetStatus.dto';
 import { FriendReqDto } from './dto/friendsReq.dto';
 import { FriendRelation } from './friends.entity';
 import { FriendsService } from './friends.service';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { User } from 'src/users/users.entity';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
 
 @Controller('friends')
 export class FriendsController {
@@ -13,15 +22,25 @@ export class FriendsController {
   @Patch('/set-status')
   async setStatus(
     @Body() setStatusDto: FriendSetStatusDto,
+    @GetUser() user: User,
   ): Promise<FriendRelation> {
+    await this.friendsService.checkUser(user, setStatusDto.req_uid);
     return await this.friendsService.setStatus(setStatusDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('/send-req')
   async sendReq(
     @Body() friendReqDto: FriendReqDto,
     @GetUser() user: User,
   ): Promise<FriendRelation> {
     return await this.friendsService.sendReq(friendReqDto, user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('/delete-req')
+  async deleteReq(@GetUser() user: User, @Param('id') id: string) {
+    await this.friendsService.checkUser(user, id);
+    return await this.friendsService.deleteReq(id);
   }
 }
