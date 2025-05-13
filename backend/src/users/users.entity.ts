@@ -52,10 +52,11 @@ export class User {
   @OneToMany(() => Field, (field) => field.manager)
   fieldsManage: Field[];
 
-  //friend list
+  // Sent friend requests by this user
   @OneToMany(() => FriendRelation, (friendRelation) => friendRelation.user1)
   sentFriendRequests: FriendRelation[];
 
+  // Received friend requests for this user
   @OneToMany(() => FriendRelation, (friendRelation) => friendRelation.user2)
   receivedFriendRequests: FriendRelation[];
 
