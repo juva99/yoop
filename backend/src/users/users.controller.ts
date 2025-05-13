@@ -17,6 +17,11 @@ export class UsersController {
     return await this.userService.findById(id);
   }
 
+  @Get('search/:name')
+  async getByName(@Param('name') name: string): Promise<User[]> {
+    return await this.userService.findByName(name);
+  }
+
   @Post()
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
     return await this.userService.create(createUserDto);

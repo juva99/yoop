@@ -7,7 +7,7 @@ import {
 import { User } from './users.entity';
 import { CreateUserDto } from './dto/create-users.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, ILike } from 'typeorm';
 import { hash } from 'argon2';
 
 @Injectable()
@@ -64,6 +64,15 @@ export class UsersService {
     // .findOne({
     //   where: { userEmail: email },
     // });
+  }
+
+  async findByName(name: string): Promise<User[]> {
+    return await this.userRepository.find({
+      where: [
+        { firstName: ILike(`%${name}%`) },
+        { lastName: ILike(`%${name}%`) },
+      ],
+    });
   }
 
   // test if it works without null
