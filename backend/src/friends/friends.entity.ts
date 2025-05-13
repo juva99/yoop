@@ -7,9 +7,9 @@ export class FriendRelation {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => User, (user) => user.friendList)
+  @ManyToOne(() => User, (user) => user.sentFriendRequests)
   user1: User;
-  @ManyToOne(() => User, (user) => user.friendList)
+  @ManyToOne(() => User, (user) => user.receivedFriendRequests)
   user2: User;
 
   @Column('enum', {
