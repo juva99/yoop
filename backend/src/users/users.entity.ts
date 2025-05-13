@@ -53,8 +53,11 @@ export class User {
   fieldsManage: Field[];
 
   //friend list
-  @OneToMany(() => FriendRelation, (friendRelation) => friendRelation.id)
-  friendList: FriendRelation[];
+  @OneToMany(() => FriendRelation, (friendRelation) => friendRelation.user1)
+  sentFriendRequests: FriendRelation[];
+
+  @OneToMany(() => FriendRelation, (friendRelation) => friendRelation.user2)
+  receivedFriendRequests: FriendRelation[];
 
   // game participants
   @OneToMany(() => GameParticipant, (gameParticipant) => gameParticipant.user)
