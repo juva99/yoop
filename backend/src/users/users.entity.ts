@@ -44,8 +44,8 @@ export class User {
   @Column({ nullable: true })
   phoneNum?: string;
 
-  @Column({ default: Role.USER })
-  role: string;
+  @Column('enum', { enum: Role, default: Role.USER })
+  role: Role;
 
   //field managers
   @OneToMany(() => Field, (field) => field.manager)
