@@ -26,15 +26,7 @@ export default async function Home() {
         <p className="text-title text-2xl font-bold">
           היי {userName.split(" ")[0]},{" "}
         </p>
-        <div className="flex gap-3">
-          <NotificationsButton />
-          <Link
-            href={"/api/auth/signout"}
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-red-500 text-[10px] text-white"
-          >
-            x
-          </Link>
-        </div>
+        <NotificationsButton />
       </div>
       <div>
         <span className="text-subtitle text-l mb-2">משחקים עתידיים</span>
