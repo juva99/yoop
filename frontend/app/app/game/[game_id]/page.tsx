@@ -17,10 +17,11 @@ import { joinGame } from "@/lib/actions";
 import JoinGameButton from "@/components/JoinGameButton";
 import { ParticipationStatus } from "@/app/enums/participation-status.enum";
 import LeaveGameButton from "@/components/LeaveGameButton";
+import { authFetch } from "@/lib/authFetch";
 
 async function getGame(gameId: string): Promise<Game | null> {
   try {
-    const res = await fetch(
+    const res = await authFetch(
       `${process.env.BACKEND_URL}/games/byid/${gameId}`,
       {},
     );
@@ -33,6 +34,7 @@ async function getGame(gameId: string): Promise<Game | null> {
         `Failed to fetch game ${gameId}: ${res.status} ${res.statusText}`,
       );
     }
+
     const gameData = await res.json();
     return gameData as Game;
   } catch (error) {
@@ -74,20 +76,17 @@ export default async function Page({
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
-    timeZone: "UTC",
   });
   const formattedTime = start.toLocaleTimeString("he-IL", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
-    timeZone: "UTC",
   });
 
   const formattedEndTime = end.toLocaleTimeString("he-IL", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
-    timeZone: "UTC",
   });
 
   const session = await getSession();

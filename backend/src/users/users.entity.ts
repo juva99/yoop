@@ -10,8 +10,9 @@ import {
 import { Field } from 'src/fields/fields.entity';
 import { Game } from 'src/games/games.entity';
 import { GameParticipant } from 'src/game-participants/game-participants.entity';
-import { UserRole } from 'src/enums/user-role.enum';
 import { FriendRelation } from 'src/friends/friends.entity';
+import { Role } from 'src/enums/role.enum';
+
 
 @Entity('users')
 export class User {
@@ -45,8 +46,8 @@ export class User {
   @Column({ nullable: true })
   phoneNum?: string;
 
-  @Column({ default: UserRole.USER })
-  role: string;
+  @Column('enum', { enum: Role, default: Role.USER })
+  role: Role;
 
   //field managers
   @OneToMany(() => Field, (field) => field.manager)
