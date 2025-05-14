@@ -7,6 +7,7 @@ import { GamesModule } from './games/games.module';
 import { AuthModule } from './auth/auth.module';
 import { GameParticipantsModule } from './game-participants/game-participants.module';
 import { WeatherApiModule } from './weather-api/weather-api.module';
+import { FriendsModule } from './friends/friends.module';
 import { FieldFetchApiModule } from './field-fetch-api/field-fetch-api.module';
 
 @Module({
@@ -41,6 +42,7 @@ import { FieldFetchApiModule } from './field-fetch-api/field-fetch-api.module';
     GameParticipantsModule,
     WeatherApiModule,
     FieldFetchApiModule,
+    FriendsModule
   ],
   controllers: [],
 })

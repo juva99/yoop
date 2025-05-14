@@ -7,8 +7,9 @@ import {
 import { User } from './users.entity';
 import { CreateUserDto } from './dto/create-users.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, ILike } from 'typeorm';
 import { hash } from 'argon2';
+import { FriendRelation } from 'src/friends/friends.entity';
 
 @Injectable()
 export class UsersService {
@@ -61,9 +62,45 @@ export class UsersService {
       .addSelect(['user.pass', 'user.hashedRefreshToken'])
       .where('user.userEmail = :email', { email })
       .getOne();
-    // .findOne({
-    //   where: { userEmail: email },
-    // });
+  }
+
+  async findByName(name: string, currentUser: User): Promise<User[]> {
+    /* 
+    look up for new friends by first and last name
+    */
+    const queryBuilder = this.userRepository.createQueryBuilder('user');
+
+    // Search by first name or last name
+    queryBuilder.where(
+      '(user.firstName ILIKE :name OR user.lastName ILIKE :name)',
+      { name: `%${name}%` },
+    );
+
+    // Exclude the current user
+    queryBuilder.andWhere('user.uid != :currentUserId', {
+      currentUserId: currentUser.uid,
+    });
+
+    // Subquery to get IDs of friends
+    // Friends are users who have an accepted friend request with the current user
+    const subQuery = this.userRepository
+      .createQueryBuilder()
+      .subQuery()
+      .select(
+        'CASE WHEN fr.user1Uid = :currentUserId THEN fr.user2Uid ELSE fr.user1Uid END',
+      )
+      .from(FriendRelation, 'fr')
+      .where(
+        '(fr.user1Uid = :currentUserId OR fr.user2Uid = :currentUserId)',
+      )
+
+    // Exclude friends from the result
+    queryBuilder.andWhere('user.uid NOT IN (' + subQuery.getQuery() + ')');
+
+    // Set parameters for the subquery (TypeORM requires them on the main query builder)
+    queryBuilder.setParameter('currentUserId', currentUser.uid);
+
+    return await queryBuilder.getMany();
   }
 
   // test if it works without null
