@@ -38,7 +38,7 @@ export class AuthService {
   async validateLocalUser(
     email,
     password,
-  ): Promise<{ uid: string; name: string; role: string }> {
+  ): Promise<{ uid: string; name: string; role: Role }> {
     try {
       const user = await this.usersService.findByEmail(email);
 
@@ -100,7 +100,7 @@ export class AuthService {
 
   async validateJwtUser(
     userId: string,
-  ): Promise<{ uid: string; role: string }> {
+  ): Promise<{ uid: string; role: Role }> {
     const user = await this.usersService.findById(userId);
 
     if (!user) {
@@ -114,7 +114,7 @@ export class AuthService {
   async validateRefreshToken(
     userId: string,
     refreshToken: string,
-  ): Promise<{ uid: string; role: string; name?: string }> {
+  ): Promise<{ uid: string; role: Role; name?: string }> {
     const user = await this.usersService.findById(userId);
 
     if (!user) {
