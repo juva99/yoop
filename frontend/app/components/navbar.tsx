@@ -4,9 +4,9 @@ import React from "react";
 import Link from "next/link";
 import { PiSoccerBall, PiMagnifyingGlass } from "react-icons/pi";
 import { FaHouse } from "react-icons/fa6";
-import { IoCreateSharp } from "react-icons/io5";
 import { MdAssignmentAdd } from "react-icons/md";
 import { usePathname } from "next/navigation";
+import { TbLayoutGridAdd } from "react-icons/tb";
 
 const HIDDEN_PATHS = ["/auth/login", "/auth/signup"];
 
@@ -15,20 +15,25 @@ const Navbar = () => {
   if (HIDDEN_PATHS.includes(pathname)) return null;
 
   return (
-    <nav className="fixed bottom-0 z-50 flex h-15 w-full items-center justify-around border-t-2 border-[#0D2A84] bg-gray-100">
+    <nav className="fixed bottom-0 z-50 flex h-15 w-full items-center justify-around border-t-1 border-[#6b6b6b] bg-gray-100">
       <Link href={"/"}>
         <FaHouse
-          className={`size-[30px] ${pathname === "/" ? "text-neutral-900" : "text-elements"}`}
+          className={`size-[25px] ${pathname === "/" ? "text-neutral-900" : "text-elements"}`}
         />
       </Link>
       <Link href={"/mygames"}>
         <PiSoccerBall
-          className={`size-[30px] ${pathname === "/mygames" ? "text-neutral-900" : "text-elements"}`}
+          className={`size-[25px] ${pathname === "/mygames" ? "text-neutral-900" : "text-elements"}`}
+        />
+      </Link>
+      <Link href={"/menu"}>
+        <TbLayoutGridAdd
+          className={`size-[25px] ${pathname === "/search" ? "text-neutral-900" : "text-elements"}`}
         />
       </Link>
       <Link href={"/search"}>
         <PiMagnifyingGlass
-          className={`size-[30px] ${pathname === "/search" ? "text-neutral-900" : "text-elements"}`}
+          className={`size-[25px] ${pathname === "/search" ? "text-neutral-900" : "text-elements"}`}
         />
       </Link>
       <Link href={"/game/create"}>

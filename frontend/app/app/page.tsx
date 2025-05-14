@@ -32,12 +32,12 @@ export default async function Home() {
             href={"/api/auth/signout"}
             className="flex h-10 w-10 items-center justify-center rounded-full bg-red-500 text-[10px] text-white"
           >
-            התנתק
+            x
           </Link>
         </div>
       </div>
-      <div className="rounded-2xl shadow-xl">
-        <span className="text-subtitle mb-2 text-2xl">משחקים עתידיים</span>
+      <div>
+        <span className="text-subtitle text-l mb-2">משחקים עתידיים</span>
         <FutureGames games={data} />
       </div>
       <Search />
