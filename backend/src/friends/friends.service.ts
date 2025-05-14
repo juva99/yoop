@@ -25,6 +25,10 @@ export class FriendsService {
         `Friend request with id ${req_uid} not found`,
       );
     }
+
+    if (status === FriendReqStatus.REJECTED) {
+      return await this.friendRepository.remove(reqStatus);
+    }
     reqStatus.status = status;
     return this.friendRepository.save(reqStatus);
   }

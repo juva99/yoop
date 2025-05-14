@@ -56,5 +56,10 @@
     "plugins": [
       "prettier-plugin-tailwindcss"
     ]
+  },
+  "eslintConfig": {
+    "extends": [
+      "plugin:storybook/recommended"
+    ]
   }
 }
