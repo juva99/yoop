@@ -19,6 +19,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
 import { QueryGameDto } from './dto/query-game.dto';
 import { GameParticipant } from 'src/game-participants/game-participants.entity';
 import { QueryAvailableSlotsDto } from './dto/query-available-slots.dto';
+import { ParticipationStatus } from 'src/enums/participation-status.enum';
 
 @Controller('games')
 export class GamesController {
@@ -85,7 +86,21 @@ export class GamesController {
     @Param('gameId') gameId: string,
     @GetUser() user: User,
   ): Promise<GameParticipant> {
-    return await this.gameService.joinGame(gameId, user);
+    return await this.gameService.joinGame(
+      gameId,
+      user,
+      ParticipationStatus.PENDING,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/:gameId/invite/:userId')
+  async inviteFriendToGame(
+    @Param('gameId') gameId: string,
+    @Body('invited') invited: User,
+    @GetUser() inviter: User,
+  ): Promise<GameParticipant> {
+    return await this.gameService.inviteFriendToGame(gameId, inviter, invited);
   }
 
   //join game by id and add user to pending list

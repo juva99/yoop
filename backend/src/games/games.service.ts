@@ -140,7 +140,34 @@ export class GamesService {
     return this.findById(savedGame.gameId);
   }
 
-  async joinGame(gameId: string, user: User): Promise<GameParticipant> {
+  async inviteFriendToGame(gameId: string, inviter: User, invited: User) {
+    let status = ParticipationStatus.PENDING;
+    const game = await this.gameRepository.findOne({
+      where: { gameId },
+      relations: ['gameParticipants'],
+    });
+
+    if (!game) {
+      throw new NotFoundException(`Game with id ${gameId} not found`);
+    }
+
+    if (inviter.uid === game.creator.uid) {
+      status = ParticipationStatus.APPROVED;
+    }
+    const newParticipation = this.gameParticipantRepository.create({
+      game,
+      user: invited,
+      status,
+    });
+
+    return await this.gameParticipantRepository.save(newParticipation);
+  }
+
+  async joinGame(
+    gameId: string,
+    user: User,
+    status: ParticipationStatus,
+  ): Promise<GameParticipant> {
     const game = await this.gameRepository.findOne({
       where: { gameId },
       relations: ['gameParticipants'],
@@ -168,7 +195,7 @@ export class GamesService {
     const newParticipation = this.gameParticipantRepository.create({
       game: game,
       user: user,
-      status: ParticipationStatus.PENDING,
+      status,
     });
 
     return await this.gameParticipantRepository.save(newParticipation);
