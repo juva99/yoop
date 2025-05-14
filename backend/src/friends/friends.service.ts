@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { FriendSetStatusDto } from './dto/friendsSetStatus.dto';
+import { FriendReqStatus } from 'src/enums/friend-req-status.enum';
 import { FriendRelation } from './friends.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -69,5 +70,15 @@ export class FriendsService {
       );
     }
     return true;
+  }
+
+  async getPendingRequestsForUser(user: User): Promise<FriendRelation[]> {
+    return this.friendRepository.find({
+      where: {
+        user2: { uid: user.uid },
+        status: FriendReqStatus.PENDING,
+      },
+      relations: ['user1'],
+    });
   }
 }

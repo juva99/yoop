@@ -2,9 +2,11 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Param,
   Patch,
   Post,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { FriendSetStatusDto } from './dto/friendsSetStatus.dto';
@@ -42,5 +44,11 @@ export class FriendsController {
   async deleteReq(@GetUser() user: User, @Param('id') id: string) {
     await this.friendsService.checkUser(user, id);
     return await this.friendsService.deleteReq(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/pending-req')
+  async getPendingRequests(@GetUser() user: User) {
+    return this.friendsService.getPendingRequestsForUser(user);
   }
 }
