@@ -37,7 +37,6 @@ export class GamesController {
   }
 
   //get all games connected user is participating in
-  @UseGuards(JwtAuthGuard)
   @Get('/mygames')
   async getAllMine(@GetUser() user: User): Promise<Game[]> {
     return await this.gameService.findAllMine(user);
@@ -69,7 +68,6 @@ export class GamesController {
   }
 
   //create new game and set user as creator
-  @UseGuards(JwtAuthGuard)
   @Post()
   async create(
     @Body() createGameDto: CreateGameDto,
@@ -79,7 +77,6 @@ export class GamesController {
   }
 
   //join game by id and add user to pending list
-  @UseGuards(JwtAuthGuard)
   @Post('/:gameId/join')
   async joinGame(
     @Param('gameId') gameId: string,
@@ -89,7 +86,6 @@ export class GamesController {
   }
 
   //join game by id and add user to pending list
-  @UseGuards(JwtAuthGuard)
   @Delete('/:gameId/leave')
   async leaveGame(
     @Param('gameId') gameId: string,

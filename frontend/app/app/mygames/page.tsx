@@ -5,13 +5,14 @@ import { redirect } from "next/navigation";
 import { ParticipationStatus } from "../enums/participation-status.enum";
 
 export default async function MyGames() {
-  const games = await getMyGames();
   const session = await getSession();
   if (!session?.user?.uid) {
     console.error("Invalid session or user credentials");
     redirect("/auth/login");
   }
   const currUserUID = session.user.uid;
+
+  const games = await getMyGames();
 
   const managedGames = games.filter((game) => game.creator.uid === currUserUID);
   const approvedGames = games.filter((game) =>

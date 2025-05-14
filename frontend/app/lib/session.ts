@@ -3,11 +3,13 @@
 import { jwtVerify, SignJWT } from 'jose';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { Role } from '../app/enums/role.enum';
 
 export type Session = {
   user: {
     uid: string,
     name: string,
+    role: Role,
   };
   accessToken: string;
   refreshToken: string;
@@ -80,6 +82,7 @@ export async function updateTokens({accessToken, refreshToken}: {
       user: {
         uid: (payload.user as Session['user']).uid,
         name: (payload.user as Session['user']).name,
+        role: (payload.user as Session['user']).role,
       },
       accessToken,
       refreshToken

@@ -4,6 +4,7 @@ import { UseFormReturn } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { Spinner } from "../ui/spinner";
 import { Combobox } from "../ui/combobox";
+import { authFetch } from "@/lib/authFetch";
 
 interface TimeSlotStepProps {
   form: UseFormReturn;
@@ -63,7 +64,7 @@ async function fetchAvailableSlots(
   );
   const dateString = date_fixed.toISOString().split("T")[0];
 
-  const response = await fetch(
+  const response = await authFetch(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/available-slots/${field}?date=${dateString}&timezone=${date_fixed.getTimezoneOffset() / -60}`,
     { method: "GET" },
   );
