@@ -85,4 +85,19 @@ export class FriendsService {
       relations: ['user1'],
     });
   }
+  async getAllFriends(user: User): Promise<FriendRelation[]> {
+    return this.friendRepository.find({
+      where: [
+        {
+          user1: { uid: user.uid },
+          status: FriendReqStatus.APPROVED,
+        },
+        {
+          user2: { uid: user.uid },
+          status: FriendReqStatus.APPROVED,
+        },
+      ],
+      relations: ['user1', 'user2'],
+    });
+  }
 }

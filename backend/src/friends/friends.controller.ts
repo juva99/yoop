@@ -51,4 +51,10 @@ export class FriendsController {
   async getPendingRequests(@GetUser() user: User) {
     return this.friendsService.getPendingRequestsForUser(user);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/getAll')
+  async getAllFriends(@GetUser() user: User) {
+    return this.friendsService.getAllFriends(user);
+  }
 }

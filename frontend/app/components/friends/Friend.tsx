@@ -3,13 +3,15 @@ import { User } from "@/app/types/User";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { IoPersonAddOutline } from "react-icons/io5";
 import { authFetch } from "@/lib/authFetch";
-import React from "react";
+import { BsSendCheckFill } from "react-icons/bs";
+import React, { useState } from "react";
 
 type Props = {
   friend: User;
 };
 
 const Friend: React.FC<Props> = ({ friend }) => {
+  const [isSent, setIsSent] = useState<boolean>(false);
   const sendFriendRequest = async (friendId: string) => {
     try {
       const response = await authFetch(
@@ -28,7 +30,7 @@ const Friend: React.FC<Props> = ({ friend }) => {
       }
 
       const data = await response.json();
-      console.log(data);
+      setIsSent(true);
     } catch (error) {
       console.error("Error sending friend request:", error);
     }
@@ -49,7 +51,11 @@ const Friend: React.FC<Props> = ({ friend }) => {
         className="cursor-pointer"
         onClick={() => sendFriendRequest(friend.uid)}
       >
-        <IoPersonAddOutline size="20px" />
+        {isSent ? (
+          <BsSendCheckFill size="20px" />
+        ) : (
+          <IoPersonAddOutline size="20px" />
+        )}
       </div>
     </div>
   );

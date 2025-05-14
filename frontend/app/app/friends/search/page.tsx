@@ -36,8 +36,8 @@ export default async function SearchPage({
       </Form>
 
       <div>
-        {friends.map((friend: any) => (
-          <Friend key={friend.id} friend={friend} />
+        {friends.map((friend: any, i: number) => (
+          <Friend key={i} friend={friend} />
         ))}
       </div>
     </div>
