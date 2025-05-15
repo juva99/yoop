@@ -29,8 +29,7 @@ export class FriendsController {
     await this.friendsService.checkUser(user, setStatusDto.req_uid);
     return await this.friendsService.setStatus(setStatusDto);
   }
-
-  @UseGuards(JwtAuthGuard)
+  
   @Post('/send-req')
   async sendReq(
     @Body() friendReqDto: FriendReqDto,
@@ -39,20 +38,17 @@ export class FriendsController {
     return await this.friendsService.sendReq(friendReqDto, user);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Delete('/delete-req')
   async deleteReq(@GetUser() user: User, @Param('id') id: string) {
     await this.friendsService.checkUser(user, id);
     return await this.friendsService.deleteReq(id);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('/pending-req')
   async getPendingRequests(@GetUser() user: User) {
     return this.friendsService.getPendingRequestsForUser(user);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('/getAll')
   async getAllFriends(@GetUser() user: User) {
     return this.friendsService.getAllFriends(user);

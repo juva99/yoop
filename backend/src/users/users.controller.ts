@@ -20,7 +20,6 @@ export class UsersController {
     return await this.userService.findById(id);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('search_friends/:name')
   async getByName(@Param('name') name: string, @GetUser() user: User): Promise<User[]> {
     return await this.userService.findByName(name, user);

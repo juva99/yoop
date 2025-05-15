@@ -89,7 +89,6 @@ export class GamesController {
     );
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post('/:gameId/invite/:userId')
   async inviteFriendToGame(
     @Param('gameId') gameId: string,
