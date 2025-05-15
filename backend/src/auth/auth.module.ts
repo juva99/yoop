@@ -14,6 +14,7 @@ import { RefreshStrategy } from './strategies/refresh-token.strategy';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
 import { RolesGuard } from './guards/role-auth/role.guard';
+import { MailService } from 'src/messaging/mail.service';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { RolesGuard } from './guards/role-auth/role.guard';
     LocalStrategy,
     JwtStrategy,
     RefreshStrategy,
+    MailService,
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
