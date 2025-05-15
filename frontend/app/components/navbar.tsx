@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { PiSoccerBall, PiMagnifyingGlass } from "react-icons/pi";
+import { PiSoccerBall, PiMagnifyingGlassBold } from "react-icons/pi";
 import { FaHouse } from "react-icons/fa6";
 import { MdAssignmentAdd } from "react-icons/md";
 import { usePathname } from "next/navigation";
@@ -28,11 +28,11 @@ const Navbar = () => {
       </Link>
       <Link href={"/menu"}>
         <TbLayoutGridAdd
-          className={`size-[25px] ${pathname === "/search" ? "text-neutral-900" : "text-elements"}`}
+          className={`size-[25px] ${pathname === "/menu" ? "text-neutral-900" : "text-elements"}`}
         />
       </Link>
       <Link href={"/search"}>
-        <PiMagnifyingGlass
+        <PiMagnifyingGlassBold
           className={`size-[25px] ${pathname === "/search" ? "text-neutral-900" : "text-elements"}`}
         />
       </Link>
