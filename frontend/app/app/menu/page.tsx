@@ -1,15 +1,7 @@
 import Link from "next/link";
-import React from "react";
-import { IoPerson } from "react-icons/io5";
-import { MdOutlineWavingHand } from "react-icons/md";
-import { FaVolleyballBall } from "react-icons/fa";
 import Image from "next/image";
 
-type Props = {
-  // your props here
-};
-
-const page: React.FC<Props> = ({}) => {
+const page: React.FC = ({}) => {
   return (
     <div className="menu h-[70vh] bg-[url('/search-friends-background.png')] bg-cover bg-top bg-no-repeat px-7 pt-15 text-center">
       <h1 className="text-title mb-20 text-3xl font-bold">תפריט ראשי</h1>
