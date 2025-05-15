@@ -14,7 +14,6 @@ import { Game } from './games.entity';
 import { User } from 'src/users/users.entity';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { CreateGameDto } from './dto/create-game.dto';
-import { Field } from 'src/fields/fields.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
 import { QueryGameDto } from './dto/query-game.dto';
 import { GameParticipant } from 'src/game-participants/game-participants.entity';
