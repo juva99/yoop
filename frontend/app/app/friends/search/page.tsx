@@ -3,6 +3,7 @@ import Form from "next/form";
 import { authFetch } from "@/lib/authFetch";
 import { Button } from "@/components/ui/button";
 import FriendReq from "@/components/friends/FriendReq";
+import { User } from "@/app/types/User";
 
 export default async function SearchPage({
   searchParams,
@@ -36,8 +37,8 @@ export default async function SearchPage({
       </Form>
 
       <div>
-        {friends.map((friend: any, i: number) => (
-          <Friend key={i} friend={friend} />
+        {friends.map((friend: User, i: number) => (
+          <Friend key={friend.uid} friend={friend} />
         ))}
       </div>
     </div>
