@@ -25,7 +25,7 @@ const ProfilePage: React.FC<Props> = async () => {
   const friendRelations = await friendsResponse.json();
 
   return (
-    <div className="px-8 py-6">
+    <div className="w-full p-4">
       <div className="rounded-md bg-white p-6">
         <h1 className="mb-6 text-2xl font-semibold text-[#002366]">פרופיל</h1>
         <section className="mb-6">
