@@ -12,7 +12,7 @@ import { RefreshAuthGuard } from './guards/refresh-auth/refresh-auth.guard';
 import { User } from '../users/users.entity';
 import { authenticatedUser } from './types/authenticatedUser';
 import { Public } from './decorators/public.decorator';
-import { GetUser } from './get-user.decorator';
+import { GetUser } from './decorators/get-user.decorator';
 
 @Controller('auth')
 export class AuthController {
