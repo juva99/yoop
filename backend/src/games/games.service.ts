@@ -120,7 +120,7 @@ export class GamesService {
       maxParticipants,
       creator: user,
       field: fieldd,
-      status: GameStatus.AVAILABLE,
+      status: GameStatus.APPROVED,
       gameParticipants: [],
       weatherTemp: parseInt(weatherData.temp_c),
       weatherCondition: weatherData.condition.text,
@@ -345,5 +345,13 @@ export class GamesService {
     }
 
     return availableHalfHours;
-  }
+    }
+    
+    async updateGameStatus(gameId: string, status: GameStatus): Promise<Game> {
+        const game = await this.findById(gameId);
+
+        game.status = status;
+        return await this.gameRepository.save(game);
+
+    }
 }

@@ -5,12 +5,18 @@ import { Field } from './fields.entity';
 import { NotFoundException } from '@nestjs/common';
 import { CreateFieldDto } from './dto/create-field.dto';
 import { City } from 'src/enums/city.enum';
+import { CreateGameDto } from 'src/games/dto/create-game.dto';
+import { User } from 'src/users/users.entity';
+import { Game } from 'src/games/games.entity';
+import { GamesService } from 'src/games/games.service';
+import { GameStatus } from 'src/enums/game-status.enum';
 
 @Injectable()
 export class FieldsService {
   constructor(
     @InjectRepository(Field)
     private fieldRepository: Repository<Field>,
+    private readonly gamesService: GamesService,
   ) {}
 
   async findAll(): Promise<Field[]> {
@@ -50,5 +56,17 @@ export class FieldsService {
   async createMany(createFieldDtos: CreateFieldDto[]): Promise<Field[]> {
     const fields = this.fieldRepository.create(createFieldDtos);
     return await this.fieldRepository.save(fields);
+  }
+
+  async approveGame(gameId: string): Promise<Game> {
+    const game = this.gamesService.updateGameStatus(
+      gameId,
+      GameStatus.APPROVED,
+    );
+    return game;
+  }
+
+  async declineGame(gameId: string): Promise<void> {
+    return await this.gamesService.deleteOne(gameId);
   }
 }
