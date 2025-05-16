@@ -38,25 +38,30 @@ export class GamesService {
   ) {}
 
   async findAllMine(user: User): Promise<Game[]> {
-    const participations = await this.gameParticipantRepository.find({
-      where: { user: { uid: user.uid } },
-      relations: [
-        'game',
-        'game.field',
-        'game.creator',
-        'game.gameParticipants',
-        'game.gameParticipants.user',
-      ],
-    });
-    return participations.map((participation) => participation.game);
+    const participations = await this.gameParticipantRepository
+      .createQueryBuilder('gp')
+      .leftJoinAndSelect('gp.game', 'game')
+      .leftJoinAndSelect('game.field', 'field')
+      .leftJoinAndSelect('game.creator', 'creator')
+      .leftJoinAndSelect('game.gameParticipants', 'gameParticipants')
+      .leftJoinAndSelect('gameParticipants.user', 'participantUser')
+      .where('gp.user.uid = :uid', { uid: user.uid })
+      .andWhere('game.status = :status', { status: GameStatus.APPROVED })
+      .getMany();
+
+    return participations.map((p) => p.game);
   }
 
   async findAll(): Promise<Game[]> {
-    return await this.gameRepository.find();
+    return await this.gameRepository.find({
+      where: { status: GameStatus.APPROVED },
+    });
   }
 
   async findById(gameId: string): Promise<Game> {
-    const game = await this.gameRepository.findOne({ where: { gameId } });
+    const game = await this.gameRepository.findOne({
+      where: { gameId, status: GameStatus.APPROVED },
+    });
     if (!game) {
       throw new NotFoundException(`game with id ${gameId} not found`);
     }
@@ -70,6 +75,7 @@ export class GamesService {
         field: {
           fieldId,
         },
+        status: GameStatus.APPROVED,
       },
     });
     if (!game) {
@@ -85,6 +91,8 @@ export class GamesService {
     }
   }
 
+  //////////////////////////////////////////////////////////////////////////////
+  // Todo: change to create as pending or approved depending if field is private
   async create(createGameDto: CreateGameDto, user: User): Promise<Game> {
     const { gameType, startDate, endDate, maxParticipants, field } =
       createGameDto;
@@ -181,6 +189,10 @@ export class GamesService {
       throw new BadRequestException('Game is already full');
     }
 
+    if (game.status === GameStatus.PENDING) {
+      throw new BadRequestException('Game has not approved yet');
+    }
+
     const existingParticipation = await this.gameParticipantRepository.findOne({
       where: {
         game: { gameId: gameId },
@@ -229,6 +241,8 @@ export class GamesService {
     await this.gameParticipantRepository.delete(existingParticipation.id);
   }
 
+  ///////////////////////////////////////////////
+  /// if used to show the free games slots, need to return pending too
   async queryGames(queryDto: QueryGameDto): Promise<Game[]> {
     const { gameType, startDate, endDate, city } = queryDto;
     const query = this.gameRepository
@@ -236,7 +250,8 @@ export class GamesService {
       .leftJoinAndSelect('game.field', 'field')
       .leftJoinAndSelect('game.creator', 'creator')
       .leftJoinAndSelect('game.gameParticipants', 'gameParticipant')
-      .leftJoinAndSelect('gameParticipant.user', 'participantUser');
+      .leftJoinAndSelect('gameParticipant.user', 'participantUser')
+      .where('game.status = :status', { status: GameStatus.APPROVED });
 
     if (gameType) {
       query.andWhere('game.gameType = :gameType', { gameType });
@@ -257,6 +272,8 @@ export class GamesService {
     return await query.getMany();
   }
 
+  ///////////////////////////////////////////////
+  /// this used to calculate available slots, should also get the pending games
   async findGamesByFieldAndDate(
     fieldId: string,
     dateString: string,
@@ -345,13 +362,12 @@ export class GamesService {
     }
 
     return availableHalfHours;
-    }
-    
-    async updateGameStatus(gameId: string, status: GameStatus): Promise<Game> {
-        const game = await this.findById(gameId);
+  }
 
-        game.status = status;
-        return await this.gameRepository.save(game);
+  async updateGameStatus(gameId: string, status: GameStatus): Promise<Game> {
+    const game = await this.findById(gameId);
 
-    }
+    game.status = status;
+    return await this.gameRepository.save(game);
+  }
 }
