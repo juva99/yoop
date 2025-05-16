@@ -113,4 +113,17 @@ export class UsersService {
       { hashedRefreshToken: hashedRefreshToken },
     );
   }
+  
+  async updateUser(id: string, updatedFields: Partial<User>): Promise<User> {
+  const user = await this.userRepository.findOneBy({ uid: id });
+
+  if (!user) throw new Error('User not found');
+
+  Object.assign(user, updatedFields);
+  return await this.userRepository.save(user);
+}
+
+
+
+
 }
