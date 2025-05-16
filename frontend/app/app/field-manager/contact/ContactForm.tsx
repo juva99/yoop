@@ -21,12 +21,16 @@ type Props = {};
 
 const ContactForm: React.FC<Props> = ({}) => {
   const formSchema = z.object({
-    firstName: z.string().min(2, {
-      message: "הכנס שם תקין",
-    }),
-    lastName: z.string().min(2, {
-      message: "הכנס שם תקין",
-    }),
+    firstName: z
+      .string()
+      .trim()
+      .min(2, { message: "שם פרטי חייב להכיל לפחות שתי אותיות" })
+      .regex(/^[א-ת]+$/, { message: "שם משפחה חייב להכיל אותיות בעברית" }),
+    lastName: z
+      .string()
+      .trim()
+      .min(2, { message: "שם משפחה חייב להכיל לפחות שתי אותיות" })
+      .regex(/^[א-ת]+$/, { message: "שם משפחה חייב להכיל אותיות בעברית" }),
     email: z.string().trim().email({ message: "בבקשה הכנס כתובת מייל תקינה" }),
   });
 
