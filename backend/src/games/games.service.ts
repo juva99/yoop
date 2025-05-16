@@ -370,4 +370,14 @@ export class GamesService {
     game.status = status;
     return await this.gameRepository.save(game);
   }
+
+  async findPendingGamesByField(fieldId: string): Promise<Game[]> {
+    return this.gameRepository.find({
+      where: {
+        field: { fieldId },
+        status: GameStatus.PENDING,
+      },
+      order: { startDate: 'ASC' }, // Optional: sort by start date
+    });
+  }
 }

@@ -10,6 +10,7 @@ import { User } from 'src/users/users.entity';
 import { Game } from 'src/games/games.entity';
 import { GamesService } from 'src/games/games.service';
 import { GameStatus } from 'src/enums/game-status.enum';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class FieldsService {
@@ -17,6 +18,7 @@ export class FieldsService {
     @InjectRepository(Field)
     private fieldRepository: Repository<Field>,
     private readonly gamesService: GamesService,
+    private readonly usersService: UsersService,
   ) {}
 
   async findAll(): Promise<Field[]> {
@@ -68,5 +70,28 @@ export class FieldsService {
 
   async declineGame(gameId: string): Promise<void> {
     return await this.gamesService.deleteOne(gameId);
+  }
+
+  async findPendingGamesByField(fieldId: string): Promise<Game[]> {
+    return await this.gamesService.findPendingGamesByField(fieldId);
+  }
+
+  async setManagerToField(fieldId: string, userId: string): Promise<Field> {
+    const field = await this.findById(fieldId);
+    const newManager = await this.usersService.findById(userId);
+
+    field.isManaged = true;
+    field.manager = newManager;
+
+    return await this.fieldRepository.save(field);
+  }
+
+  async setFieldPublic(fieldId: string): Promise<Field> {
+    const field = await this.findById(fieldId);
+
+    field.isManaged = false;
+    field.manager = null;
+
+    return this.fieldRepository.save(field);
   }
 }
