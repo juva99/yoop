@@ -37,12 +37,6 @@ export class GamesController {
     return await this.gameService.queryGames(queryDto);
   }
 
-  //get all games connected user is participating in
-  @Get('/mygames')
-  async getAllMine(@GetUser() user: User): Promise<Game[]> {
-    return await this.gameService.findAllMine(user);
-  }
-
   //get game by id
   @Get('/byid/:id')
   async getById(@Param('id') id: string): Promise<Game> {

@@ -37,21 +37,6 @@ export class GamesService {
     private readonly weatherApiService: WeatherApiService,
   ) {}
 
-  async findAllMine(user: User): Promise<Game[]> {
-    const participations = await this.gameParticipantRepository
-      .createQueryBuilder('gp')
-      .leftJoinAndSelect('gp.game', 'game')
-      .leftJoinAndSelect('game.field', 'field')
-      .leftJoinAndSelect('game.creator', 'creator')
-      .leftJoinAndSelect('game.gameParticipants', 'gameParticipants')
-      .leftJoinAndSelect('gameParticipants.user', 'participantUser')
-      .where('gp.user.uid = :uid', { uid: user.uid })
-      .andWhere('game.status = :status', { status: GameStatus.APPROVED })
-      .getMany();
-
-    return participations.map((p) => p.game);
-  }
-
   async findAll(): Promise<Game[]> {
     return await this.gameRepository.find({
       where: { status: GameStatus.APPROVED },

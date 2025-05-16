@@ -7,6 +7,9 @@ import { User } from 'src/users/users.entity';
 import { ParticipationStatus } from 'src/enums/participation-status.enum';
 import { use } from 'passport';
 import { SetStatusDto } from './dto/set-status.dto';
+import { GamesService } from 'src/games/games.service';
+import { GameStatus } from 'src/enums/game-status.enum';
+
 @Injectable()
 export class GameParticipantsService {
   constructor(
@@ -40,5 +43,20 @@ export class GameParticipantsService {
     }
 
     return this.gameParticipantRepository.save(participant);
+  }
+
+  async getUserUpcomingGames(user: User): Promise<Game[]> {
+    const participations = await this.gameParticipantRepository
+      .createQueryBuilder('gp')
+      .leftJoinAndSelect('gp.game', 'game')
+      .leftJoinAndSelect('game.field', 'field')
+      .leftJoinAndSelect('game.creator', 'creator')
+      .leftJoinAndSelect('game.gameParticipants', 'gameParticipants')
+      .leftJoinAndSelect('gameParticipants.user', 'participantUser')
+      .where('gp.user.uid = :uid', { uid: user.uid })
+      .andWhere('game.status = :status', { status: GameStatus.APPROVED })
+      .getMany();
+
+    return participations.map((p) => p.game);
   }
 }
