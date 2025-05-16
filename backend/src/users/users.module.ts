@@ -10,5 +10,6 @@ import { FriendRelation } from 'src/friends/friends.entity';
   imports: [TypeOrmModule.forFeature([User, GameParticipant, FriendRelation])],
   providers: [UsersService],
   controllers: [UsersController],
+  exports: [UsersService]
 })
 export class UsersModule {}

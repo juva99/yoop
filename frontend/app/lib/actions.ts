@@ -38,11 +38,11 @@ export const leaveGame = async (gameId: string) => {
       const errorJson = await response.json();
       errorMessage = errorJson.message || errorMessage;
     } catch (error) {
-      console.error("Failed to parse error message: " + error)
+      console.error("Failed to parse error message: " + error);
     }
     throw new Error(errorMessage);
   }
-}
+};
 
 export const changeParticipationStatus = async (
   gameId: string,
@@ -70,10 +70,13 @@ export const changeParticipationStatus = async (
 };
 
 export const getMyGames = async (): Promise<Game[]> => {
-  const response = await authFetch(
-    `${BACKEND_URL}/games/mygames`,
-  );
+  const response = await authFetch(`${BACKEND_URL}/game-participants/mygames`);
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch games: ${response.statusText}`);
+  }
 
   const games = await response.json();
+
   return games;
 };

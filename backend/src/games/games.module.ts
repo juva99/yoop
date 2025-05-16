@@ -14,5 +14,6 @@ import { WeatherApiModule } from 'src/weather-api/weather-api.module';
   ],
   controllers: [GamesController],
   providers: [GamesService],
+  exports: [GamesService],
 })
 export class GamesModule {}

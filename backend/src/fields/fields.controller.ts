@@ -14,7 +14,6 @@ import { CreateFieldDto } from './dto/create-field.dto';
 import { Role } from 'src/enums/role.enum';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Game } from 'src/games/games.entity';
-import { SetManagerDto } from './dto/set-manager.dto';
 
 @Controller('fields')
 export class FieldsController {
@@ -46,35 +45,34 @@ export class FieldsController {
   }
 
   @Roles(Role.ADMIN, Role.FIELD_MANAGER)
-  @Patch('/:id/approve')
-  async approveGame(@Param('id') gameId: string): Promise<Game> {
+  @Patch('/:gameId/approve')
+  async approveGame(@Param('gameId') gameId: string): Promise<Game> {
     return await this.fieldService.approveGame(gameId);
   }
 
   @Roles(Role.ADMIN, Role.FIELD_MANAGER)
-  @Patch('/:id/decline')
-  async declineGame(@Param('id') gameId: string): Promise<void> {
+  @Patch('/:gameId/decline')
+  async declineGame(@Param('gameId') gameId: string): Promise<void> {
     await this.fieldService.declineGame(gameId);
   }
 
   @Roles(Role.ADMIN, Role.FIELD_MANAGER)
-  @Get('/:id/pendingGames')
-  async getPendingGamesById(@Param('id') fieldId: string): Promise<Game[]> {
+  @Get('/:gameId/pendingGames')
+  async getPendingGamesById(@Param('gameId') fieldId: string): Promise<Game[]> {
     return await this.fieldService.findPendingGamesByField(fieldId);
   }
 
   @Roles(Role.ADMIN)
-  @Patch(':fieldId/setManager')
+  @Patch('/:fieldId/setManager/:userId')
   async setManagerToField(
     @Param('fieldId') fieldId: string,
-    @Body() setManagerDto: SetManagerDto,
+    @Param('userId') userId: string,
   ): Promise<Field> {
-    const { userId } = setManagerDto;
     return this.fieldService.setManagerToField(fieldId, userId);
   }
 
   @Roles(Role.ADMIN)
-  @Delete(':fieldId/manager')
+  @Delete('/:fieldId/manager')
   async setFieldPublic(@Param('fieldId') fieldId: string): Promise<Field> {
     return this.fieldService.setFieldPublic(fieldId);
   }

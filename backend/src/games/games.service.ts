@@ -106,7 +106,9 @@ export class GamesService {
     };
     const weatherData = await this.weatherApiService.getWeather(getWeatherDto);
 
-    const status: GameStatus = fieldd.isManaged ? GameStatus.PENDING : GameStatus.APPROVED;
+    const status: GameStatus = fieldd.isManaged
+      ? GameStatus.PENDING
+      : GameStatus.APPROVED;
 
     const game = this.gameRepository.create({
       gameType,
@@ -132,7 +134,7 @@ export class GamesService {
     creatorParticipation.game = savedGame;
     await this.gameParticipantRepository.save(creatorParticipation);
 
-    return this.findById(savedGame.gameId);
+    return savedGame;
   }
 
   async inviteFriendToGame(gameId: string, inviter: User, invited: User) {
