@@ -121,6 +121,8 @@ export class GamesService {
     };
     const weatherData = await this.weatherApiService.getWeather(getWeatherDto);
 
+    const status: GameStatus = fieldd.isManaged ? GameStatus.PENDING : GameStatus.APPROVED;
+
     const game = this.gameRepository.create({
       gameType,
       startDate,
@@ -128,7 +130,7 @@ export class GamesService {
       maxParticipants,
       creator: user,
       field: fieldd,
-      status: GameStatus.APPROVED,
+      status: status,
       gameParticipants: [],
       weatherTemp: parseInt(weatherData.temp_c),
       weatherCondition: weatherData.condition.text,
