@@ -26,7 +26,7 @@ const page: React.FC = ({}) => {
           <span className="mt-2">דף הבית</span>
         </Link>
         <Link
-          href={"/games"}
+          href={"/mygames"}
           className="menu-item flex flex-col items-center justify-center"
         >
           <Image src="/menu-games.svg" alt="משחקים" width={50} height={50} />
