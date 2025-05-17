@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { BACKEND_URL, FRONTEND_URL } from "./constants";
 import { FormState, LoginFormSchema, SignupFormSchema } from "./type";
 import { createSession, updateTokens } from "./session";
+import { Role } from "@/app/enums/role.enum";
 
 export async function signup(
   state: FormState,
@@ -18,7 +19,7 @@ export async function signup(
     phoneNum: formData.get("phoneNum"),
     birthDay: formData.get("birthDay"),
     address: formData.get("address"),
-    role: "player",
+    role: Role.USER,
   });
 
   if (!validationFields.success) {

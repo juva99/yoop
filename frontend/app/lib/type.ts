@@ -1,3 +1,4 @@
+import { Role } from "@/app/enums/role.enum";
 import { z } from "zod";
 
 export type FormState =
@@ -66,7 +67,7 @@ export const SignupFormSchema = z
       .refine((val) => !isNaN(Date.parse(val)), {
         message: "בבקשה הכנס תאריך תקין",
       }),
-    role: z.enum(["player"]),
+    role: z.enum([Role.USER]),
   })
   .refine((data) => data.pass === data.passConfirm, {
     message: "הסיסמאות אינן מתאימות",

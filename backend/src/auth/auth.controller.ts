@@ -9,13 +9,10 @@ import {
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/users/dto/create-users.dto';
 import { LocalAuthGuard } from './guards/local-auth/local-auth.guard';
-import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
 import { RefreshAuthGuard } from './guards/refresh-auth/refresh-auth.guard';
 import { User } from '../users/users.entity';
 import { authenticatedUser } from './types/authenticatedUser';
 import { Public } from './decorators/public.decorator';
-import { Roles } from './decorators/roles.decorator';
-import { Role } from 'src/enums/role.enum';
 
 @Controller('auth')
 export class AuthController {
