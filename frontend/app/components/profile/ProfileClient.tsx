@@ -89,8 +89,15 @@ const ProfileClient: React.FC<Props> = ({ user, friendRelations }) => {
 
       setSuccessMessage("הפרטים עודכנו בהצלחה");
       setErrorMessage("");
+      // המתן רגע לפני רענון (כדי לראות את ההודעה לשבריר שנייה)
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     } catch (err) {
+      //----------בדיקה שלי----------//
       console.error("❌ שגיאה בשליחה:", err);
+      //----------בדיקה שלי----------//
+
       setErrorMessage("שגיאה בעדכון הפרטים");
       setSuccessMessage("");
     }

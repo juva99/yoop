@@ -10,6 +10,9 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-users.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UsePipes, ValidationPipe } from '@nestjs/common';
+
 import { User } from './users.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
@@ -48,9 +51,10 @@ export class UsersController {
   }
 
   @Put('update/:id')
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   async updateUser(
     @Param('id') id: string,
-    @Body() updatedFields: Partial<User>,
+    @Body() updatedFields: UpdateUserDto,
   ): Promise<User> {
     return await this.userService.updateUser(id, updatedFields);
   }
