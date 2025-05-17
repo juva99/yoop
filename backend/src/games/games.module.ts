@@ -6,11 +6,13 @@ import { Game } from './games.entity';
 import { Field } from 'src/fields/fields.entity';
 import { GameParticipant } from 'src/game-participants/game-participants.entity';
 import { WeatherApiModule } from 'src/weather-api/weather-api.module';
+import { GameParticipantsModule } from 'src/game-participants/game-participants.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Game, Field, GameParticipant]),
     WeatherApiModule,
+    GameParticipantsModule
   ],
   controllers: [GamesController],
   providers: [GamesService],

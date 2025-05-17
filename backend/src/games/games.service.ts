@@ -22,6 +22,7 @@ import { QueryGameDto } from './dto/query-game.dto';
 import { GameParticipant } from 'src/game-participants/game-participants.entity';
 import { ParticipationStatus } from 'src/enums/participation-status.enum';
 import { WeatherApiService } from 'src/weather-api/weather-api.service';
+import { GameParticipantsService } from 'src/game-participants/game-participants.service';
 
 @Injectable()
 export class GamesService {
@@ -32,24 +33,9 @@ export class GamesService {
     @InjectRepository(Field)
     private fieldRepository: Repository<Field>,
 
-    @InjectRepository(GameParticipant)
-    private gameParticipantRepository: Repository<GameParticipant>,
+    private readonly gameParticipantService: GameParticipantsService,
     private readonly weatherApiService: WeatherApiService,
   ) {}
-
-  async findAllMine(user: User): Promise<Game[]> {
-    const participations = await this.gameParticipantRepository.find({
-      where: { user: { uid: user.uid } },
-      relations: [
-        'game',
-        'game.field',
-        'game.creator',
-        'game.gameParticipants',
-        'game.gameParticipants.user',
-      ],
-    });
-    return participations.map((participation) => participation.game);
-  }
 
   async findAll(): Promise<Game[]> {
     return await this.gameRepository.find();
@@ -127,106 +113,11 @@ export class GamesService {
       weatherIcon: weatherData.condition.icon,
     });
 
-    //create game participant for the creator
-    const creatorParticipation = this.gameParticipantRepository.create({
-      game: game,
-      user: user,
-      status: ParticipationStatus.APPROVED,
-    });
     const savedGame = await this.gameRepository.save(game);
-    creatorParticipation.game = savedGame;
-    await this.gameParticipantRepository.save(creatorParticipation);
+    //create game participant for the creator
+    await this.gameParticipantService.createParticipation(user, game, ParticipationStatus.APPROVED);
 
     return this.findById(savedGame.gameId);
-  }
-
-  async inviteFriendToGame(gameId: string, inviter: User, invited: User) {
-    let status = ParticipationStatus.PENDING;
-    const game = await this.gameRepository.findOne({
-      where: { gameId },
-      relations: ['gameParticipants'],
-    });
-
-    if (!game) {
-      throw new NotFoundException(`Game with id ${gameId} not found`);
-    }
-
-    if (inviter.uid === game.creator.uid) {
-      status = ParticipationStatus.APPROVED;
-    }
-    const newParticipation = this.gameParticipantRepository.create({
-      game,
-      user: invited,
-      status,
-    });
-
-    return await this.gameParticipantRepository.save(newParticipation);
-  }
-
-  async joinGame(
-    gameId: string,
-    user: User,
-    status: ParticipationStatus,
-  ): Promise<GameParticipant> {
-    const game = await this.gameRepository.findOne({
-      where: { gameId },
-      relations: ['gameParticipants'],
-    });
-
-    if (!game) {
-      throw new NotFoundException(`Game with id ${gameId} not found`);
-    }
-
-    if (game.gameParticipants.length >= game.maxParticipants) {
-      throw new BadRequestException('Game is already full');
-    }
-
-    const existingParticipation = await this.gameParticipantRepository.findOne({
-      where: {
-        game: { gameId: gameId },
-        user: { uid: user.uid },
-      },
-    });
-
-    if (existingParticipation) {
-      throw new ConflictException('User is already participating in this game');
-    }
-
-    const newParticipation = this.gameParticipantRepository.create({
-      game: game,
-      user: user,
-      status,
-    });
-
-    return await this.gameParticipantRepository.save(newParticipation);
-  }
-
-  async leaveGame(gameId: string, user: User): Promise<void> {
-    const game = await this.gameRepository.findOne({
-      where: { gameId },
-      relations: ['gameParticipants'],
-    });
-
-    if (!game) {
-      throw new NotFoundException(`Game with id ${gameId} not found`);
-    }
-
-    const existingParticipation = await this.gameParticipantRepository.findOne({
-      where: {
-        game: { gameId: gameId },
-        user: { uid: user.uid },
-      },
-    });
-
-    if (!existingParticipation) {
-      throw new ConflictException('המשתמש אינו משתתף במשחק הזה');
-    }
-
-    if (game.creator.uid === user.uid) {
-      throw new ConflictException('המנהל אינו יכול לעזוב את המשחק');
-    }
-
-    await this.gameParticipantRepository.delete(existingParticipation.id);
   }
 
   async queryGames(queryDto: QueryGameDto): Promise<Game[]> {

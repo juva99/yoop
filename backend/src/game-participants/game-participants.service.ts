@@ -1,12 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Game } from 'src/games/games.entity';
 import { GameParticipant } from './game-participants.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/users/users.entity';
 import { ParticipationStatus } from 'src/enums/participation-status.enum';
-import { use } from 'passport';
 import { SetStatusDto } from './dto/set-status.dto';
+
 @Injectable()
 export class GameParticipantsService {
   constructor(
@@ -18,6 +18,15 @@ export class GameParticipantsService {
     private userRepository: Repository<User>,
   ) {}
 
+  async createParticipation (user: User, game: Game, status: ParticipationStatus): Promise<GameParticipant>{
+     const creatorParticipation = this.gameParticipantRepository.create({
+      user,
+      game,
+      status
+      });
+      await this.gameParticipantRepository.save(creatorParticipation);
+      return creatorParticipation;
+  }
   async setStatus(setStatusDto: SetStatusDto): Promise<GameParticipant> {
     const { uid, gameId, newStatus } = setStatusDto;
     let participant = await this.gameParticipantRepository.findOne({
@@ -40,5 +49,108 @@ export class GameParticipantsService {
     }
 
     return this.gameParticipantRepository.save(participant);
+  }
+
+    async findAllMine(user: User): Promise<Game[]> {
+    const participations = await this.gameParticipantRepository.find({
+      where: { user: { uid: user.uid } },
+      relations: [
+        'game',
+        'game.field',
+        'game.creator',
+        'game.gameParticipants',
+        'game.gameParticipants.user',
+      ],
+    });
+    return participations.map((participation) => participation.game);
+  }
+
+    async inviteFriendToGame(gameId: string, inviter: User, invited: User) {
+      let status = ParticipationStatus.PENDING;
+      const game = await this.gameRepository.findOne({
+        where: { gameId },
+        relations: ['gameParticipants'],
+      });
+  
+      if (!game) {
+        throw new NotFoundException(`Game with id ${gameId} not found`);
+      }
+  
+      if (inviter.uid === game.creator.uid) {
+        status = ParticipationStatus.APPROVED;
+      }
+      const newParticipation = this.gameParticipantRepository.create({
+        game,
+        user: invited,
+        status,
+      });
+  
+      return await this.gameParticipantRepository.save(newParticipation);
+    }
+
+      async joinGame(
+        gameId: string,
+        user: User,
+        status: ParticipationStatus,
+      ): Promise<GameParticipant> {
+        const game = await this.gameRepository.findOne({
+          where: { gameId },
+          relations: ['gameParticipants'],
+        });
+    
+        if (!game) {
+          throw new NotFoundException(`Game with id ${gameId} not found`);
+        }
+    
+        if (game.gameParticipants.length >= game.maxParticipants) {
+          throw new BadRequestException('Game is already full');
+        }
+    
+        const existingParticipation = await this.gameParticipantRepository.findOne({
+          where: {
+            game: { gameId: gameId },
+            user: { uid: user.uid },
+          },
+        });
+    
+        if (existingParticipation) {
+          throw new ConflictException('User is already participating in this game');
+        }
+    
+        const newParticipation = this.gameParticipantRepository.create({
+          game: game,
+          user: user,
+          status,
+        });
+    
+        return await this.gameParticipantRepository.save(newParticipation);
+      }
+
+    async leaveGame(gameId: string, user: User): Promise<void> {
+    const game = await this.gameRepository.findOne({
+      where: { gameId },
+      relations: ['gameParticipants'],
+    });
+
+    if (!game) {
+      throw new NotFoundException(`Game with id ${gameId} not found`);
+    }
+
+    const existingParticipation = await this.gameParticipantRepository.findOne({
+      where: {
+        game: { gameId: gameId },
+        user: { uid: user.uid },
+      },
+    });
+
+    if (!existingParticipation) {
+      throw new ConflictException('המשתמש אינו משתתף במשחק הזה');
+    }
+
+    if (game.creator.uid === user.uid) {
+      throw new ConflictException('המנהל אינו יכול לעזוב את המשחק');
+    }
+
+    await this.gameParticipantRepository.delete(existingParticipation.id);
   }
 }

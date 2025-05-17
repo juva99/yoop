@@ -8,7 +8,7 @@ import { Game } from 'src/games/games.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([GameParticipant, Game, User])],
-  exports: [TypeOrmModule],
+  exports: [TypeOrmModule, GameParticipantsService],
   controllers: [GameParticipantsController],
   providers: [GameParticipantsService],
 })
