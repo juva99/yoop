@@ -13,7 +13,6 @@ import { GameParticipant } from 'src/game-participants/game-participants.entity'
 import { FriendRelation } from 'src/friends/friends.entity';
 import { Role } from 'src/enums/role.enum';
 
-
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')

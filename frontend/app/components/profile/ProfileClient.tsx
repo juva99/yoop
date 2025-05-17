@@ -52,14 +52,12 @@ const ProfileClient: React.FC<Props> = ({ user, friendRelations }) => {
     address: (user.address as City) || "",
   };
 
-
   //----------בדיקה שלי----------//
   useEffect(() => {
     console.log("📥 נתוני התחלה בטופס:", defaultValues);
   }, []);
   //----------בדיקה שלי----------//
 
-  
   const form = useForm<ProfileUpdateFormValues>({
     resolver: zodResolver(ProfileUpdateSchema),
     defaultValues,
@@ -68,8 +66,7 @@ const ProfileClient: React.FC<Props> = ({ user, friendRelations }) => {
   //----------בדיקה שלי----------//
   const onSubmit = async (values: ProfileUpdateFormValues) => {
     console.log("📤 נשלח לשרת:", values);
-  //----------בדיקה שלי----------//
-
+    //----------בדיקה שלי----------//
 
     try {
       const res = await authFetch(
@@ -80,7 +77,7 @@ const ProfileClient: React.FC<Props> = ({ user, friendRelations }) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(values),
-        }
+        },
       );
 
       if (!res.ok) throw new Error("Failed to update");
@@ -89,7 +86,7 @@ const ProfileClient: React.FC<Props> = ({ user, friendRelations }) => {
       const dataFromServer = await res.json();
       console.log("✅ תגובת שרת:", dataFromServer);
       //----------בדיקה שלי----------//
-      
+
       setSuccessMessage("הפרטים עודכנו בהצלחה");
       setErrorMessage("");
     } catch (err) {
@@ -101,9 +98,7 @@ const ProfileClient: React.FC<Props> = ({ user, friendRelations }) => {
 
   const handleCityInput = (value: string) => {
     form.setValue("address", value as City);
-    const matches = allCities.filter((city) =>
-      city.startsWith(value)
-    );
+    const matches = allCities.filter((city) => city.startsWith(value));
     setCitySuggestions(matches);
   };
 
@@ -113,110 +108,145 @@ const ProfileClient: React.FC<Props> = ({ user, friendRelations }) => {
         <h1 className="mb-6 text-2xl text-[#002366]">פרופיל אישי </h1>
 
         <section className="mb-6">
-          <div className="flex items-center mb-3">
+          <div className="mb-3 flex items-center">
             <h2 className="text-lg font-semibold text-[#002366]">
               פרטים אישיים
             </h2>
             <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="ml-2"
-                onClick={() => setShowForm((prev) => !prev)}
-              >
-                {showForm
-                  ? <X className="h-5 w-5 text-[#002366]" />
-                  : <Pencil className="h-5 w-5 text-[#002366]" />
-                }
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="ml-2"
+              onClick={() => setShowForm((prev) => !prev)}
+            >
+              {showForm ? (
+                <X className="h-5 w-5 text-[#002366]" />
+              ) : (
+                <Pencil className="h-5 w-5 text-[#002366]" />
+              )}
             </Button>
           </div>
 
           {successMessage && (
-            <p className="mb-2 text-green-600 font-semibold">
+            <p className="mb-2 font-semibold text-green-600">
               {successMessage}
             </p>
           )}
           {errorMessage && (
-            <p className="mb-2 text-red-600 font-semibold">{errorMessage}</p>
+            <p className="mb-2 font-semibold text-red-600">{errorMessage}</p>
           )}
 
           {showForm && (
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-4 max-w-md"
+                className="max-w-md space-y-4"
               >
-                <FormField control={form.control} name="firstName" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>שם פרטי</FormLabel>
-                    <FormControl><Input {...field} /></FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
+                <FormField
+                  control={form.control}
+                  name="firstName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>שם פרטי</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                <FormField control={form.control} name="lastName" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>שם משפחה</FormLabel>
-                    <FormControl><Input {...field} /></FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
+                <FormField
+                  control={form.control}
+                  name="lastName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>שם משפחה</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                <FormField control={form.control} name="userEmail" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>אימייל</FormLabel>
-                    <FormControl><Input type="email" {...field} /></FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
+                <FormField
+                  control={form.control}
+                  name="userEmail"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>אימייל</FormLabel>
+                      <FormControl>
+                        <Input type="email" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                <FormField control={form.control} name="phoneNum" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>טלפון</FormLabel>
-                    <FormControl><Input {...field} /></FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
+                <FormField
+                  control={form.control}
+                  name="phoneNum"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>טלפון</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                <FormField control={form.control} name="birthDay" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>תאריך לידה</FormLabel>
-                    <FormControl><Input type="date" {...field} /></FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
+                <FormField
+                  control={form.control}
+                  name="birthDay"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>תאריך לידה</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                <FormField control={form.control} name="address" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>יישוב</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Input
-                          placeholder="הקלד את שם היישוב"
-                          value={form.watch("address")}
-                          onChange={(e) => handleCityInput(e.target.value)}
-                        />
-                        {citySuggestions.length > 0 && (
-                          <ul className="absolute z-10 mt-1 w-full bg-white border rounded shadow">
-                            {citySuggestions.map((city) => (
-                              <li
-                                key={city}
-                                className="px-3 py-1 hover:bg-gray-100 cursor-pointer"
-                                onClick={() => {
-                                  form.setValue("address", city as City);
-                                  setCitySuggestions([]);
-                                }}
-                              >
-                                {city}
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
+                <FormField
+                  control={form.control}
+                  name="address"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>יישוב</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            placeholder="הקלד את שם היישוב"
+                            value={form.watch("address")}
+                            onChange={(e) => handleCityInput(e.target.value)}
+                          />
+                          {citySuggestions.length > 0 && (
+                            <ul className="absolute z-10 mt-1 w-full rounded border bg-white shadow">
+                              {citySuggestions.map((city) => (
+                                <li
+                                  key={city}
+                                  className="cursor-pointer px-3 py-1 hover:bg-gray-100"
+                                  onClick={() => {
+                                    form.setValue("address", city as City);
+                                    setCitySuggestions([]);
+                                  }}
+                                >
+                                  {city}
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
                 <Button type="submit">שמור שינויים</Button>
               </form>

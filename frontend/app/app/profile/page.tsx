@@ -13,19 +13,16 @@ const ProfilePage = async () => {
 
   const userId = session.user.uid;
   const response = await authFetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/${userId}`
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/${userId}`,
   );
   const user: User = await response.json();
 
   const friendsResponse = await authFetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/friends/getAll`
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/friends/getAll`,
   );
   const friendRelations = await friendsResponse.json();
 
- 
-  return( 
-  <ProfileClient user={user} friendRelations={friendRelations} />
-);
+  return <ProfileClient user={user} friendRelations={friendRelations} />;
 };
 
 export default ProfilePage;

@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Delete, Param, UseGuards, Put } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Delete,
+  Param,
+  UseGuards,
+  Put,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-users.dto';
 import { User } from './users.entity';
@@ -21,7 +30,10 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Get('search_friends/:name')
-  async getByName(@Param('name') name: string, @GetUser() user: User): Promise<User[]> {
+  async getByName(
+    @Param('name') name: string,
+    @GetUser() user: User,
+  ): Promise<User[]> {
     return await this.userService.findByName(name, user);
   }
 
@@ -36,9 +48,10 @@ export class UsersController {
   }
 
   @Put('update/:id')
-  async updateUser(@Param('id') id: string, @Body() updatedFields: Partial<User>): Promise<User> {
+  async updateUser(
+    @Param('id') id: string,
+    @Body() updatedFields: Partial<User>,
+  ): Promise<User> {
     return await this.userService.updateUser(id, updatedFields);
   }
-
-
 }
