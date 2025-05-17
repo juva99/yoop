@@ -52,17 +52,24 @@ const ProfileClient: React.FC<Props> = ({ user, friendRelations }) => {
     address: (user.address as City) || "",
   };
 
+
+  //----------בדיקה שלי----------//
   useEffect(() => {
     console.log("📥 נתוני התחלה בטופס:", defaultValues);
   }, []);
+  //----------בדיקה שלי----------//
 
+  
   const form = useForm<ProfileUpdateFormValues>({
     resolver: zodResolver(ProfileUpdateSchema),
     defaultValues,
   });
 
+  //----------בדיקה שלי----------//
   const onSubmit = async (values: ProfileUpdateFormValues) => {
     console.log("📤 נשלח לשרת:", values);
+  //----------בדיקה שלי----------//
+
 
     try {
       const res = await authFetch(
@@ -78,9 +85,11 @@ const ProfileClient: React.FC<Props> = ({ user, friendRelations }) => {
 
       if (!res.ok) throw new Error("Failed to update");
 
+      //----------בדיקה שלי----------//
       const dataFromServer = await res.json();
       console.log("✅ תגובת שרת:", dataFromServer);
-
+      //----------בדיקה שלי----------//
+      
       setSuccessMessage("הפרטים עודכנו בהצלחה");
       setErrorMessage("");
     } catch (err) {
