@@ -5,6 +5,7 @@ import jwtConfig from '../config/jwt.config';
 import { ConfigType } from '@nestjs/config';
 import { AuthJwtPayload } from '../types/auth-jwtPayload';
 import { AuthService } from '../auth.service';
+import { Role } from 'src/enums/role.enum';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -24,7 +25,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: AuthJwtPayload): Promise<{ uid: string }> {
+  async validate(payload: AuthJwtPayload): Promise<{ uid: string, role: Role }> {
     const userId = payload.sub;
     return await this.authService.validateJwtUser(userId);
   }

@@ -14,6 +14,7 @@ import { JwtService } from '@nestjs/jwt';
 import refreshConfig from './config/refresh.config';
 import { ConfigType } from '@nestjs/config';
 import { authenticatedUser } from './types/authenticatedUser';
+import { Role } from 'src/enums/role.enum';
 
 @Injectable()
 export class AuthService {
@@ -37,7 +38,7 @@ export class AuthService {
   async validateLocalUser(
     email,
     password,
-  ): Promise<{ uid: string; name: string }> {
+  ): Promise<{ uid: string; name: string; role: Role }> {
     try {
       const user = await this.usersService.findByEmail(email);
 
@@ -54,6 +55,7 @@ export class AuthService {
       return {
         uid: user.uid,
         name: user.firstName + ' ' + user.lastName,
+        role: user.role,
       };
     } catch (error) {
       console.error('Auth error:', error);
@@ -65,13 +67,18 @@ export class AuthService {
     }
   }
 
-  async login(userId: string, name?: string): Promise<authenticatedUser> {
+  async login(
+    userId: string,
+    role: Role,
+    name?: string,
+  ): Promise<authenticatedUser> {
     const { accessToken, refreshToken } = await this.generateTokens(userId);
     const hashedRefreshToken = await hash(refreshToken);
     await this.usersService.updateRefreshToken(userId, hashedRefreshToken);
     return {
       uid: userId,
       name: name,
+      role,
       accessToken,
       refreshToken,
     };
@@ -91,21 +98,23 @@ export class AuthService {
     };
   }
 
-  async validateJwtUser(userId: string): Promise<{ uid: string }> {
+  async validateJwtUser(
+    userId: string,
+  ): Promise<{ uid: string; role: Role }> {
     const user = await this.usersService.findById(userId);
 
     if (!user) {
       throw new UnauthorizedException('המשתמש לא נמצא!');
     }
 
-    const currentUser = { uid: user.uid };
+    const currentUser = { uid: user.uid, role: user.role };
     return currentUser;
   }
 
   async validateRefreshToken(
     userId: string,
     refreshToken: string,
-  ): Promise<{ uid: string }> {
+  ): Promise<{ uid: string; role: Role; name?: string }> {
     const user = await this.usersService.findById(userId);
 
     if (!user) {
@@ -126,12 +135,13 @@ export class AuthService {
       throw new UnauthorizedException('Invalid Refresh Token!');
     }
 
-    const currentUser = { uid: user.uid };
+    const currentUser = { uid: user.uid, role: user.role, name: user.firstName + ' ' + user.lastName };
     return currentUser;
   }
 
   async refreshToken(
     userId: string,
+    role: Role,
     name?: string,
   ): Promise<authenticatedUser> {
     const { accessToken, refreshToken } = await this.generateTokens(userId);
@@ -140,6 +150,7 @@ export class AuthService {
     return {
       uid: userId,
       name: name,
+      role,
       accessToken,
       refreshToken,
     };

@@ -12,7 +12,6 @@ import MapView from "../MapView";
 import { Button } from "../ui/button";
 import { GameType } from "@/app/enums/game-type.enum";
 import { CityFilter } from "./CityFilter";
-import { cities } from "../createGameComponents/CreateGame";
 import { DropDownInput } from "./DropDownInput";
 import { City } from "@/app/enums/city.enum";
 
@@ -29,6 +28,11 @@ type Filters = {
   location?: any;
   radius?: any;
 };
+
+const cities = Object.entries(City).map(([label, value]) => ({
+  label: value,
+  value: label,
+}));
 
 const SearchGame: React.FC<Props> = ({ updateFilters }) => {
   const [filters, setFilters] = useState<Filters>({

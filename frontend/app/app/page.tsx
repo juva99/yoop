@@ -10,6 +10,7 @@ export default async function Home() {
   const res = await authFetch(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/mygames`,
   );
+
   const data = await res.json();
 
   const session = await getSession();

@@ -1,9 +1,10 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { BACKEND_URL } from "./constants";
+import { BACKEND_URL, FRONTEND_URL } from "./constants";
 import { FormState, LoginFormSchema, SignupFormSchema } from "./type";
 import { createSession, updateTokens } from "./session";
+import { Role } from "@/app/enums/role.enum";
 
 export async function signup(
   state: FormState,
@@ -18,7 +19,7 @@ export async function signup(
     phoneNum: formData.get("phoneNum"),
     birthDay: formData.get("birthDay"),
     address: formData.get("address"),
-    role: "player",
+    role: Role.USER,
   });
 
   if (!validationFields.success) {
@@ -77,6 +78,7 @@ export async function login(
       user: {
         uid: result.uid,
         name: result.name,
+        role: result.role,
       },
       accessToken: result.accessToken,
       refreshToken: result.refreshToken,
@@ -110,7 +112,7 @@ export const refreshToken = async (
 
     const { accessToken, refreshToken } = await response.json();
 
-    const updateRes = await fetch("http://localhost:3000/api/auth/update", {
+    const updateRes = await fetch(`${FRONTEND_URL}/api/auth/update`, {
       method: "POST",
       body: JSON.stringify({
         accessToken,
