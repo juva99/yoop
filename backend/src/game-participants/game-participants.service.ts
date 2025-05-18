@@ -15,9 +15,47 @@ export class GameParticipantsService {
     private gameRepository: Repository<Game>,
     @InjectRepository(GameParticipant)
     private gameParticipantRepository: Repository<GameParticipant>,
-    
+
     private readonly userService: UsersService,
   ) {}
+
+       async joinGame(
+        gameId: string,
+        user: User,
+        status: ParticipationStatus,
+      ): Promise<GameParticipant> {
+        const game = await this.gameRepository.findOne({
+          where: { gameId },
+          relations: ['gameParticipants'],
+        });
+    
+        if (!game) {
+          throw new NotFoundException(`Game with id ${gameId} not found`);
+        }
+    
+        if (game.gameParticipants.length >= game.maxParticipants) {
+          throw new BadRequestException('Game is already full');
+        }
+    
+        const existingParticipation = await this.gameParticipantRepository.findOne({
+          where: {
+            game: { gameId: gameId },
+            user: { uid: user.uid },
+          },
+        });
+    
+        if (existingParticipation) {
+          throw new ConflictException('User is already participating in this game');
+        }
+    
+        const newParticipation = this.gameParticipantRepository.create({
+          game: game,
+          user: user,
+          status,
+        });
+    
+        return await this.gameParticipantRepository.save(newParticipation);
+      }
 
   async setStatus(setStatusDto: SetStatusDto): Promise<GameParticipant> {
     const { uid, gameId, newStatus } = setStatusDto;
@@ -71,52 +109,11 @@ export class GameParticipantsService {
       if (inviter.uid === game.creator.uid) {
         status = ParticipationStatus.APPROVED;
       }
-      const newParticipation = this.gameParticipantRepository.create({
-        game,
-        user: invited,
-        status,
-      });
+      const newParticipation = await this.joinGame(game.gameId, invited, status);
   
-      return await this.gameParticipantRepository.save(newParticipation);
+      return newParticipation;
     }
 
-      async joinGame(
-        gameId: string,
-        user: User,
-        status: ParticipationStatus,
-      ): Promise<GameParticipant> {
-        const game = await this.gameRepository.findOne({
-          where: { gameId },
-          relations: ['gameParticipants'],
-        });
-    
-        if (!game) {
-          throw new NotFoundException(`Game with id ${gameId} not found`);
-        }
-    
-        if (game.gameParticipants.length >= game.maxParticipants) {
-          throw new BadRequestException('Game is already full');
-        }
-    
-        const existingParticipation = await this.gameParticipantRepository.findOne({
-          where: {
-            game: { gameId: gameId },
-            user: { uid: user.uid },
-          },
-        });
-    
-        if (existingParticipation) {
-          throw new ConflictException('User is already participating in this game');
-        }
-    
-        const newParticipation = this.gameParticipantRepository.create({
-          game: game,
-          user: user,
-          status,
-        });
-    
-        return await this.gameParticipantRepository.save(newParticipation);
-      }
 
     async leaveGame(gameId: string, user: User): Promise<void> {
     const game = await this.gameRepository.findOne({
