@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { User } from 'src/users/users.entity';
 import { ParticipationStatus } from 'src/enums/participation-status.enum';
 import { SetStatusDto } from './dto/set-status.dto';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class GameParticipantsService {
@@ -14,19 +15,10 @@ export class GameParticipantsService {
     private gameRepository: Repository<Game>,
     @InjectRepository(GameParticipant)
     private gameParticipantRepository: Repository<GameParticipant>,
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
+    
+    private readonly userService: UsersService,
   ) {}
 
-  async createParticipation (user: User, game: Game, status: ParticipationStatus): Promise<GameParticipant>{
-     const creatorParticipation = this.gameParticipantRepository.create({
-      user,
-      game,
-      status
-      });
-      await this.gameParticipantRepository.save(creatorParticipation);
-      return creatorParticipation;
-  }
   async setStatus(setStatusDto: SetStatusDto): Promise<GameParticipant> {
     const { uid, gameId, newStatus } = setStatusDto;
     let participant = await this.gameParticipantRepository.findOne({
@@ -36,7 +28,7 @@ export class GameParticipantsService {
 
     if (!participant) {
       const game = await this.gameRepository.findOne({ where: { gameId } });
-      const user = await this.userRepository.findOne({ where: { uid } });
+      const user = await this.userService.findById(uid);
       if (user && game) {
         participant = this.gameParticipantRepository.create({
           user: user,
