@@ -1,17 +1,9 @@
 import {
-  ArrayNotEmpty,
-  IsArray,
-  IsBoolean,
-  IsDate,
   IsDateString,
-  IsEmail,
   IsEnum,
-  IsNotEmpty,
   IsNumber,
   IsOptional,
-  isString,
   IsString,
-  Length,
 } from 'class-validator';
 import { GameType } from 'src/enums/game-type.enum';
 

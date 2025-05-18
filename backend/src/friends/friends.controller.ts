@@ -6,8 +6,6 @@ import {
   Param,
   Patch,
   Post,
-  Req,
-  UseGuards,
 } from '@nestjs/common';
 import { FriendSetStatusDto } from './dto/friendsSetStatus.dto';
 import { FriendReqDto } from './dto/friendsReq.dto';
@@ -15,7 +13,6 @@ import { FriendRelation } from './friends.entity';
 import { FriendsService } from './friends.service';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { User } from 'src/users/users.entity';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
 
 @Controller('friends')
 export class FriendsController {
@@ -29,8 +26,7 @@ export class FriendsController {
     await this.friendsService.checkUser(user, setStatusDto.req_uid);
     return await this.friendsService.setStatus(setStatusDto);
   }
-
-  @UseGuards(JwtAuthGuard)
+  
   @Post('/send-req')
   async sendReq(
     @Body() friendReqDto: FriendReqDto,
@@ -39,20 +35,17 @@ export class FriendsController {
     return await this.friendsService.sendReq(friendReqDto, user);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Delete('/delete-req')
   async deleteReq(@GetUser() user: User, @Param('id') id: string) {
     await this.friendsService.checkUser(user, id);
     return await this.friendsService.deleteReq(id);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('/pending-req')
   async getPendingRequests(@GetUser() user: User) {
     return this.friendsService.getPendingRequestsForUser(user);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('/getAll')
   async getAllFriends(@GetUser() user: User) {
     return this.friendsService.getAllFriends(user);

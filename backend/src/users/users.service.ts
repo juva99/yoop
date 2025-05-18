@@ -65,9 +65,7 @@ export class UsersService {
   }
 
   async findByName(name: string, currentUser: User): Promise<User[]> {
-    /* 
-    look up for new friends by first and last name
-    */
+    // look up for new friends by first and last name
     const queryBuilder = this.userRepository.createQueryBuilder('user');
 
     // Search by first name or last name

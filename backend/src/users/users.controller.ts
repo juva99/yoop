@@ -14,7 +14,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UsePipes, ValidationPipe } from '@nestjs/common';
 
 import { User } from './users.entity';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 
 @Controller('users')
@@ -26,12 +25,12 @@ export class UsersController {
     return await this.userService.findAll();
   }
 
+  
   @Get('/:id')
   async getById(@Param('id') id: string): Promise<User> {
     return await this.userService.findById(id);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('search_friends/:name')
   async getByName(
     @Param('name') name: string,
