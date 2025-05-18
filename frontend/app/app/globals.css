@@ -85,15 +85,15 @@
 }
 
 .input_underscore {
-  @apply border-elements  border-b-2 text-right;
+  @apply border-elements border-b-2 text-right;
 }
 
 .form_item {
-  @apply  mb-2 mt-2;
+  @apply mt-2 mb-2;
 }
 
 .form_label {
-  @apply mb-1 block text-sm font-semibold text-gray-700
+  @apply mb-1 block text-sm font-semibold text-gray-700;
 }
 
 .form_error {
@@ -152,4 +152,12 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.primary-btn {
+  @apply bg-title my-5 h-10 w-[100%] rounded-3xl text-xl text-white;
+}
+
+.input {
+  @apply mb-3 h-8 w-full border-b-1 border-gray-200 placeholder-gray-700 outline-none;
 }
