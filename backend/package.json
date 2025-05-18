@@ -22,7 +22,6 @@
     "nest": "nest"
   },
   "dependencies": {
-    "@hookform/resolvers": "^5.0.1",
     "@nestjs/axios": "^4.0.0",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
@@ -32,8 +31,6 @@
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/typeorm": "^11.0.0",
-    "@radix-ui/react-label": "^2.1.6",
-    "@radix-ui/react-slot": "^1.2.2",
     "argon2": "^0.41.1",
     "axios": "^1.9.0",
     "class-transformer": "^0.5.1",
@@ -44,11 +41,9 @@
     "passport-local": "^1.0.0",
     "pg": "^8.14.1",
     "proj4": "^2.15.0",
-    "react-hook-form": "^7.56.4",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
-    "typeorm": "^0.3.22",
-    "zod": "^3.24.4"
+    "typeorm": "^0.3.22"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
