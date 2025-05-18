@@ -53,15 +53,15 @@ export default function GameInfoStep({ form }: GameInfoStepProps) {
                   <Button
                     variant={"outline"}
                     className={cn(
-                      "w-[240px] pl-3 text-left font-normal",
+                      "w-[240px] pl-3 font-normal flex justify-start",
                       !field.value && "text-muted-foreground",
                     )}
                   >
-                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    <CalendarIcon className="h-4 w-4 opacity-50" />
                     {field.value ? (
                       format(field.value, "dd/MM/yyyy")
                     ) : (
-                      <span>Pick a date</span>
+                      <span>בחר תאריך</span>
                     )}
                   </Button>
                 </FormControl>
@@ -77,7 +77,6 @@ export default function GameInfoStep({ form }: GameInfoStepProps) {
                   }
                 />
               </PopoverContent>
-              {/* <DateTimePicker {...field} /> */}
             </Popover>
             <FormMessage />
           </FormItem>
