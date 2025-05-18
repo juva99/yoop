@@ -19,6 +19,7 @@ import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
+import { he } from "date-fns/locale";
 
 interface GameInfoStepProps {
   form: UseFormReturn;
@@ -71,6 +72,7 @@ export default function GameInfoStep({ form }: GameInfoStepProps) {
                   mode="single"
                   selected={field.value}
                   onSelect={field.onChange}
+                  locale={he}
                   disabled={(date) =>
                     date < new Date(new Date().toDateString()) ||
                     date < new Date("1900-01-01")

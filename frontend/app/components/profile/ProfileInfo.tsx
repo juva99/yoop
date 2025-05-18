@@ -26,16 +26,25 @@ import {
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Pencil, X } from "lucide-react";
+import { CalendarIcon, Pencil, X } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { format } from "date-fns";
+import { Calendar } from "../ui/calendar";
+import { cn } from "@/lib/utils";
+import { he } from "date-fns/locale";
+import { Combobox } from "../ui/combobox";
 
-const allCities = Object.values(City);
+const cityOptions = Object.entries(City).map(([label, value]) => ({
+  label: value,
+  value: value,
+}));
 
 type Props = {
   user: User;
   friendRelations: any[];
 };
 
-const ProfileClient: React.FC<Props> = ({ user, friendRelations }) => {
+const ProfileInfo: React.FC<Props> = ({ user, friendRelations }) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [citySuggestions, setCitySuggestions] = useState<string[]>([]);
@@ -103,18 +112,8 @@ const ProfileClient: React.FC<Props> = ({ user, friendRelations }) => {
     }
   };
 
-  const handleCityInput = (value: string) => {
-    form.setValue("address", value as City);
-    const matches = allCities.filter((city) => city.startsWith(value));
-    setCitySuggestions(matches);
-  };
-
   return (
-    <div className="w-full p-4">
-      <div className="rounded-md bg-white p-6">
-        <h1 className="mb-6 text-2xl text-[#002366]">פרופיל אישי </h1>
-
-        <section className="mb-6">
+    <>
           <div className="mb-3 flex items-center">
             <h2 className="text-lg font-semibold text-[#002366]">
               פרטים אישיים
@@ -142,7 +141,31 @@ const ProfileClient: React.FC<Props> = ({ user, friendRelations }) => {
           {errorMessage && (
             <p className="mb-2 font-semibold text-red-600">{errorMessage}</p>
           )}
-
+          {!showForm && (
+            <div className="max-w-md space-y-4">
+              <p>
+                <strong>שם פרטי:</strong> {user.firstName}
+              </p>
+              <p>
+                <strong>שם משפחה:</strong> {user.lastName}
+              </p>
+              <p>
+                <strong>אימייל:</strong> {user.userEmail || "לא זמין"}
+              </p>
+              <p>
+                <strong>טלפון:</strong> {user.phoneNum || "לא זמין"}
+              </p>
+              <p>
+                <strong>תאריך לידה:</strong>{" "}
+                {user.birthDay
+                  ? new Date(user.birthDay).toLocaleDateString("he-IL")
+                  : "לא זמין"}
+              </p>
+              <p>
+                <strong>יישוב:</strong> {user.address || "לא זמין"}
+              </p>
+            </div>
+          )}
           {showForm && (
             <Form {...form}>
               <form
@@ -211,61 +234,58 @@ const ProfileClient: React.FC<Props> = ({ user, friendRelations }) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>תאריך לידה</FormLabel>
-                      <FormControl>
-                        <Input type="date" {...field} />
-                      </FormControl>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant={"outline"}
+                                className={cn(
+                                  "w-full pl-3 font-normal flex justify-start",
+                                  !field.value && "text-muted-foreground",
+                                )}
+                              >
+                                <CalendarIcon className="h-4 w-4 opacity-50" />
+                                {field.value ? (
+                                  format(field.value, "dd/MM/yyyy")
+                                ) : (
+                                  <span>בחר תאריך</span>
+                                )}
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={field.value ? new Date(field.value) : undefined}
+                              onSelect={(date) => field.onChange(date ? (date.setHours(10), date.toISOString().slice(0,10)) : "")}
+                              locale={he}
+                              disabled={(date) =>
+                                date >= new Date(new Date().toDateString()) ||
+                                date < new Date("1900-01-01")
+                              }
+                            />
+                          </PopoverContent>
+                        </Popover>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-
-                <FormField
-                  control={form.control}
+                <Combobox
+                  form={form}
                   name="address"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>יישוב</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Input
-                            placeholder="הקלד את שם היישוב"
-                            value={form.watch("address")}
-                            onChange={(e) => handleCityInput(e.target.value)}
-                          />
-                          {citySuggestions.length > 0 && (
-                            <ul className="absolute z-10 mt-1 w-full rounded border bg-white shadow">
-                              {citySuggestions.map((city) => (
-                                <li
-                                  key={city}
-                                  className="cursor-pointer px-3 py-1 hover:bg-gray-100"
-                                  onClick={() => {
-                                    form.setValue("address", city as City);
-                                    setCitySuggestions([]);
-                                  }}
-                                >
-                                  {city}
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label="יישוב"
+                  options={cityOptions}
+                  placeholder="בחר עיר"
+                  searchPlaceholder="חפש עיר..."
+                  notFoundText="לא נמצאה עיר"
                 />
-
+                
                 <Button type="submit">שמור שינויים</Button>
               </form>
             </Form>
           )}
-        </section>
-
-        <hr className="my-6 border-t border-gray-200" />
-        <FriendList currentUserUid={user.uid} relations={friendRelations} />
-      </div>
-    </div>
+    </>
   );
 };
 
-export default ProfileClient;
+export default ProfileInfo;

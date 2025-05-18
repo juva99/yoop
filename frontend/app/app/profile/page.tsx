@@ -2,7 +2,8 @@ import { User } from "@/app/types/User";
 import FriendList from "@/components/friends/FriendList";
 import { authFetch } from "@/lib/authFetch";
 import { getSession } from "@/lib/session";
-import ProfileClient from "@/components/profile/ProfileClient";
+import ProfileInfo from "@/components/profile/ProfileInfo";
+import { Separator } from "@/components/ui/separator";
 
 const ProfilePage = async () => {
   const session = await getSession();
@@ -22,7 +23,18 @@ const ProfilePage = async () => {
   );
   const friendRelations = await friendsResponse.json();
 
-  return <ProfileClient user={user} friendRelations={friendRelations} />;
+  return  <div className="w-full p-4">
+          <div className="rounded-md bg-white p-6">
+              <h1 className="mb-6 text-2xl text-[#002366]">פרופיל אישי </h1>
+
+              <section className="mb-6">
+                  <ProfileInfo user={user} friendRelations={friendRelations} />
+                  <Separator />
+                  <FriendList currentUserUid={user.uid} relations={friendRelations} />
+              </section>
+          </div>
+        </div>
+;
 };
 
 export default ProfilePage;
