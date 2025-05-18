@@ -1,6 +1,18 @@
-import { Controller, Get, Post, Body, Delete, Param, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Delete,
+  Param,
+  UseGuards,
+  Put,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-users.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UsePipes, ValidationPipe } from '@nestjs/common';
+
 import { User } from './users.entity';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 
@@ -20,7 +32,10 @@ export class UsersController {
   }
 
   @Get('search_friends/:name')
-  async getByName(@Param('name') name: string, @GetUser() user: User): Promise<User[]> {
+  async getByName(
+    @Param('name') name: string,
+    @GetUser() user: User,
+  ): Promise<User[]> {
     return await this.userService.findByName(name, user);
   }
 
@@ -32,5 +47,14 @@ export class UsersController {
   @Delete('/:id')
   async deleteOne(@Param('id') id: string): Promise<void> {
     return await this.userService.deleteOne(id);
+  }
+
+  @Put('update/:id')
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  async updateUser(
+    @Param('id') id: string,
+    @Body() updatedFields: UpdateUserDto,
+  ): Promise<User> {
+    return await this.userService.updateUser(id, updatedFields);
   }
 }

@@ -98,9 +98,7 @@ export class AuthService {
     };
   }
 
-  async validateJwtUser(
-    userId: string,
-  ): Promise<{ uid: string; role: Role }> {
+  async validateJwtUser(userId: string): Promise<{ uid: string; role: Role }> {
     const user = await this.usersService.findById(userId);
 
     if (!user) {
@@ -135,7 +133,11 @@ export class AuthService {
       throw new UnauthorizedException('Invalid Refresh Token!');
     }
 
-    const currentUser = { uid: user.uid, role: user.role, name: user.firstName + ' ' + user.lastName };
+    const currentUser = {
+      uid: user.uid,
+      role: user.role,
+      name: user.firstName + ' ' + user.lastName,
+    };
     return currentUser;
   }
 

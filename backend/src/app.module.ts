@@ -42,7 +42,7 @@ import { FieldFetchApiModule } from './field-fetch-api/field-fetch-api.module';
     GameParticipantsModule,
     WeatherApiModule,
     FieldFetchApiModule,
-    FriendsModule
+    FriendsModule,
   ],
   controllers: [],
 })
