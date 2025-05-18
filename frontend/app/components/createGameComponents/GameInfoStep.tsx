@@ -54,7 +54,7 @@ export default function GameInfoStep({ form }: GameInfoStepProps) {
                   <Button
                     variant={"outline"}
                     className={cn(
-                      "w-[240px] pl-3 font-normal flex justify-start",
+                      "flex w-[240px] justify-start pl-3 font-normal",
                       !field.value && "text-muted-foreground",
                     )}
                   >
