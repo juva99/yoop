@@ -4,7 +4,6 @@ import {
   Param,
   Post,
   Body,
-  UseGuards,
   Query,
   ParseUUIDPipe,
   Delete,

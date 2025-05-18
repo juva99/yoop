@@ -6,8 +6,6 @@ import {
   Param,
   Patch,
   Post,
-  Req,
-  UseGuards,
 } from '@nestjs/common';
 import { FriendSetStatusDto } from './dto/friendsSetStatus.dto';
 import { FriendReqDto } from './dto/friendsReq.dto';
@@ -15,7 +13,6 @@ import { FriendRelation } from './friends.entity';
 import { FriendsService } from './friends.service';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { User } from 'src/users/users.entity';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
 
 @Controller('friends')
 export class FriendsController {

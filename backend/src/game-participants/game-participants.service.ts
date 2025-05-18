@@ -18,7 +18,6 @@ export class GameParticipantsService {
 
     private readonly userService: UsersService,
   ) {}
-
        async joinGame(
         gameId: string,
         user: User,
@@ -113,7 +112,6 @@ export class GameParticipantsService {
   
       return newParticipation;
     }
-
 
     async leaveGame(gameId: string, user: User): Promise<void> {
     const game = await this.gameRepository.findOne({

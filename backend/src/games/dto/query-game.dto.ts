@@ -1,4 +1,4 @@
-import { IsDateString, IsEnum, IsOptional, IsString } from 'class-validator';
+import { IsDateString, IsEnum, IsOptional } from 'class-validator';
 import { City } from 'src/enums/city.enum';
 import { GameType } from 'src/enums/game-type.enum';
 
