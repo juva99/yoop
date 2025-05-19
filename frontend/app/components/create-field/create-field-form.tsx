@@ -21,7 +21,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Switch } from "@/components/ui/switch";
 import {
   formDefaultValues,
   formSchema,
@@ -30,6 +29,9 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
+import GameTypeOption from "./game-type-option";
 
 const CreateFieldForm = () => {
   const form = useForm<FormSchema>({
@@ -67,11 +69,33 @@ const CreateFieldForm = () => {
     }
   };
 
+  const getGameTypeLabel = (type: GameType) => {
+    switch (type) {
+      case GameType.FootBall:
+        return "כדורגל";
+      case GameType.BasketBall:
+        return "כדורסל";
+      default:
+        return type;
+    }
+  };
+
+  const getGameTypeIcon = (type: GameType) => {
+    switch (type) {
+      case GameType.FootBall:
+        return "/menu-logout.png"; // Update with actual path
+      case GameType.BasketBall:
+        return "/menu-home.png"; // Update with actual path
+      default:
+        return "/menu-games"; // Default icon
+    }
+  };
+
   return (
     <div className="mx-auto max-w-2xl p-4">
-      <h1 className="mb-2 text-center text-2xl font-bold">Create Field</h1>
+      <h1 className="mb-2 text-center text-2xl font-bold">יצירת מגרש</h1>
       <p className="mb-8 text-center text-gray-600">
-        Add your field details below
+        הוסף את פרטי המגרש שלך למטה
       </p>
 
       <Form {...form}>
@@ -81,9 +105,9 @@ const CreateFieldForm = () => {
             name="fieldName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Field Name</FormLabel>
+                <FormLabel>שם המגרש</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter field name" {...field} />
+                  <Input placeholder="הכנס שם למגרש" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -96,16 +120,21 @@ const CreateFieldForm = () => {
               name="fieldLat"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Latitude</FormLabel>
+                  <FormLabel>קו רוחב</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
                       step="any"
-                      placeholder="Latitude"
+                      placeholder="קו רוחב"
                       {...field}
-                      onChange={(e) =>
-                        field.onChange(parseFloat(e.target.value))
-                      }
+                      value={field.value ?? ""}
+                      onChange={(e) => {
+                        const value =
+                          e.target.value === ""
+                            ? undefined
+                            : parseFloat(e.target.value);
+                        field.onChange(value);
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
@@ -118,16 +147,21 @@ const CreateFieldForm = () => {
               name="fieldLng"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Longitude</FormLabel>
+                  <FormLabel>קו אורך</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
                       step="any"
-                      placeholder="Longitude"
+                      placeholder="קו אורך"
                       {...field}
-                      onChange={(e) =>
-                        field.onChange(parseFloat(e.target.value))
-                      }
+                      value={field.value ?? ""}
+                      onChange={(e) => {
+                        const value =
+                          e.target.value === ""
+                            ? undefined
+                            : parseFloat(e.target.value);
+                        field.onChange(value);
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
@@ -136,9 +170,8 @@ const CreateFieldForm = () => {
             />
           </div>
 
-          {/* Map component placeholder - you might want to add an actual map component here */}
           <div className="flex h-64 items-center justify-center rounded-md bg-gray-100 text-gray-400">
-            Map Component (Click to set location)
+            רכיב מפה (לחץ כדי לבחור מיקום)
           </div>
 
           <FormField
@@ -146,14 +179,14 @@ const CreateFieldForm = () => {
             name="city"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>City</FormLabel>
+                <FormLabel>עיר</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select a city" />
+                      <SelectValue placeholder="בחר עיר" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -174,13 +207,11 @@ const CreateFieldForm = () => {
             name="fieldAddress"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Address (Optional)</FormLabel>
+                <FormLabel>כתובת (אופציונלי)</FormLabel>
                 <FormControl>
-                  <Input placeholder="Street address" {...field} />
+                  <Input placeholder="כתובת רחוב" {...field} />
                 </FormControl>
-                <FormDescription>
-                  Additional address details if needed
-                </FormDescription>
+                <FormDescription>פרטי כתובת נוספים במידת הצורך</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -192,10 +223,8 @@ const CreateFieldForm = () => {
             render={({ field }) => (
               <FormItem className="rounded-lg border p-4">
                 <div className="mb-2">
-                  <FormLabel className="text-base">Multiple Fields?</FormLabel>
-                  <FormDescription>
-                    Does this location have multiple fields?
-                  </FormDescription>
+                  <FormLabel className="text-base">מספר מגרשים?</FormLabel>
+                  <FormDescription>האם יש במתחם מספר מגרשים?</FormDescription>
                 </div>
                 <FormControl>
                   <RadioGroup
@@ -211,13 +240,13 @@ const CreateFieldForm = () => {
                       <FormControl>
                         <RadioGroupItem value="true" />
                       </FormControl>
-                      <FormLabel className="font-normal">Yes</FormLabel>
+                      <FormLabel className="font-normal">כן</FormLabel>
                     </FormItem>
                     <FormItem className="flex items-center space-x-2">
                       <FormControl>
                         <RadioGroupItem value="false" />
                       </FormControl>
-                      <FormLabel className="font-normal">No</FormLabel>
+                      <FormLabel className="font-normal">לא</FormLabel>
                     </FormItem>
                   </RadioGroup>
                 </FormControl>
@@ -232,32 +261,37 @@ const CreateFieldForm = () => {
               name="fieldInfo.gameType"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Game Types</FormLabel>
+                  <FormLabel>איזה סוג הוא?</FormLabel>
                   <FormDescription>
-                    Select all game types that can be played on this field
+                    בחר את סוג המשחק שניתן לשחק במגרש זה
                   </FormDescription>
-                  <div className="grid grid-cols-2 gap-4">
-                    {Object.values(GameType).map((type) => (
-                      <FormItem
-                        key={type}
-                        className="flex flex-row items-center justify-between space-y-0 rounded-lg border p-3"
-                      >
-                        <FormLabel className="font-normal">{type}</FormLabel>
-                        <FormControl>
-                          <Switch
-                            checked={field.value?.includes(type)}
-                            onCheckedChange={(checked) => {
-                              const currentValue = field.value || [];
-                              const updatedValue = checked
-                                ? [...currentValue, type]
-                                : currentValue.filter((val) => val !== type);
-                              field.onChange(updatedValue);
-                            }}
-                          />
-                        </FormControl>
-                      </FormItem>
-                    ))}
-                  </div>
+                  <FormControl>
+                    <div className="grid grid-cols-2 gap-4">
+                      {Object.values(GameType).map((type) => (
+                        <GameTypeOption
+                          key={type}
+                          value={type}
+                          label={getGameTypeLabel(type)}
+                          icon={getGameTypeIcon(type)}
+                          selected={field.value?.includes(type)}
+                          onSelect={() => {
+                            const currentValue = field.value || [];
+                            let updatedValue;
+
+                            if (currentValue.includes(type)) {
+                              updatedValue = currentValue.filter(
+                                (val) => val !== type,
+                              );
+                            } else {
+                              updatedValue = [...currentValue, type];
+                            }
+
+                            field.onChange(updatedValue);
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -269,17 +303,21 @@ const CreateFieldForm = () => {
                 name="numberOfFields"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Number of Fields</FormLabel>
+                    <FormLabel>מספר מגרשים</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
                         min="1"
-                        placeholder="How many fields?"
+                        placeholder="כמה מגרשים?"
                         {...field}
+                        value={field.value ?? ""}
                         onChange={(e) => {
-                          const value = parseInt(e.target.value);
+                          const value =
+                            e.target.value === ""
+                              ? undefined
+                              : parseInt(e.target.value);
                           field.onChange(value);
-                          handleNumberOfFieldsChange(value);
+                          if (value) handleNumberOfFieldsChange(value);
                         }}
                       />
                     </FormControl>
@@ -290,39 +328,40 @@ const CreateFieldForm = () => {
 
               {fields.map((field, index) => (
                 <div key={field.id} className="rounded-lg border p-4">
-                  <h3 className="mb-2 font-medium">Field {index + 1}</h3>
+                  <h3 className="mb-2 font-medium">מגרש {index + 1}</h3>
                   <FormField
                     control={form.control}
                     name={`fields.${index}.gameType`}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Game Types</FormLabel>
-                        <div className="grid grid-cols-2 gap-4">
-                          {Object.values(GameType).map((type) => (
-                            <FormItem
-                              key={type}
-                              className="flex flex-row items-center justify-between space-y-0 rounded-lg border p-3"
-                            >
-                              <FormLabel className="font-normal">
-                                {type}
-                              </FormLabel>
-                              <FormControl>
-                                <Switch
-                                  checked={field.value?.includes(type)}
-                                  onCheckedChange={(checked) => {
-                                    const currentValue = field.value || [];
-                                    const updatedValue = checked
-                                      ? [...currentValue, type]
-                                      : currentValue.filter(
-                                          (val) => val !== type,
-                                        );
-                                    field.onChange(updatedValue);
-                                  }}
-                                />
-                              </FormControl>
-                            </FormItem>
-                          ))}
-                        </div>
+                        <FormLabel>איזה סוג הוא?</FormLabel>
+                        <FormControl>
+                          <div className="grid grid-cols-2 gap-4">
+                            {Object.values(GameType).map((type) => (
+                              <GameTypeOption
+                                key={type}
+                                value={type}
+                                label={getGameTypeLabel(type)}
+                                icon={getGameTypeIcon(type)}
+                                selected={field.value?.includes(type)}
+                                onSelect={() => {
+                                  const currentValue = field.value || [];
+                                  let updatedValue;
+
+                                  if (currentValue.includes(type)) {
+                                    updatedValue = currentValue.filter(
+                                      (val) => val !== type,
+                                    );
+                                  } else {
+                                    updatedValue = [...currentValue, type];
+                                  }
+
+                                  field.onChange(updatedValue);
+                                }}
+                              />
+                            ))}
+                          </div>
+                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -333,7 +372,7 @@ const CreateFieldForm = () => {
           )}
 
           <Button type="submit" className="w-full">
-            Create Field
+            יצירת מגרש
           </Button>
         </form>
       </Form>
