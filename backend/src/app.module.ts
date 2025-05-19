@@ -9,6 +9,7 @@ import { GameParticipantsModule } from './game-participants/game-participants.mo
 import { WeatherApiModule } from './weather-api/weather-api.module';
 import { FriendsModule } from './friends/friends.module';
 import { FieldFetchApiModule } from './field-fetch-api/field-fetch-api.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { FieldFetchApiModule } from './field-fetch-api/field-fetch-api.module';
     WeatherApiModule,
     FieldFetchApiModule,
     FriendsModule,
+    MailModule
   ],
   controllers: [],
 })

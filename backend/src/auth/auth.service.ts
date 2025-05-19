@@ -15,12 +15,14 @@ import refreshConfig from './config/refresh.config';
 import { ConfigType } from '@nestjs/config';
 import { authenticatedUser } from './types/authenticatedUser';
 import { Role } from 'src/enums/role.enum';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
+    private readonly mailService: MailService,
     @Inject(refreshConfig.KEY)
     private refreshTokenConfig: ConfigType<typeof refreshConfig>,
   ) {}
@@ -32,7 +34,11 @@ export class AuthService {
     if (existingUser) {
       throw new ConflictException('User with this email is already registered');
     }
-    return this.usersService.create(createUserDto);
+    const user = await this.usersService.create(createUserDto);
+
+    // await this.mailService.sendWelcomeEmail(user.userEmail, user.firstName);
+
+    return user;
   }
 
   async validateLocalUser(
