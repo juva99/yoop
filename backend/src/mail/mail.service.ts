@@ -14,8 +14,8 @@ export class MailService {
   }
 
   async sendWelcomeEmail(to: string, name?: string) {
-    const fromEmail = this.configService.get<string>('MAIL_FROM');
-    const fromName = this.configService.get<string>('MAIL_FROM_NAME');
+    const fromEmail = process.env.MAIL_FROM;
+    const fromName = process.env.MAIL_FROM_NAME;
     try {
       const result = await this.mailjet
         .post('send', { version: 'v3.1' })

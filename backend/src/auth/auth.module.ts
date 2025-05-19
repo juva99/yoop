@@ -14,7 +14,7 @@ import { RefreshStrategy } from './strategies/refresh-token.strategy';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
 import { RolesGuard } from './guards/role-auth/role.guard';
-import { MailService } from 'src/messaging/mail.service';
+import { MailModule } from 'src/mail/mail.module';
 
 @Module({
   imports: [
@@ -22,6 +22,7 @@ import { MailService } from 'src/messaging/mail.service';
     JwtModule.registerAsync(jwtConfig.asProvider()),
     ConfigModule.forFeature(jwtConfig),
     ConfigModule.forFeature(refreshConfig),
+    MailModule
   ],
   controllers: [AuthController],
   providers: [
@@ -30,7 +31,6 @@ import { MailService } from 'src/messaging/mail.service';
     LocalStrategy,
     JwtStrategy,
     RefreshStrategy,
-    MailService,
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,

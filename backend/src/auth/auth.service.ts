@@ -15,7 +15,7 @@ import refreshConfig from './config/refresh.config';
 import { ConfigType } from '@nestjs/config';
 import { authenticatedUser } from './types/authenticatedUser';
 import { Role } from 'src/enums/role.enum';
-import { MailService } from 'src/messaging/mail.service';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class AuthService {
@@ -36,7 +36,7 @@ export class AuthService {
     }
     const user = await this.usersService.create(createUserDto);
 
-    await this.mailService.sendWelcomeEmail(user.userEmail, user.firstName);
+    // await this.mailService.sendWelcomeEmail(user.userEmail, user.firstName);
 
     return user;
   }
