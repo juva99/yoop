@@ -47,20 +47,10 @@ export class FieldsController {
   }
 
   @Roles(Role.ADMIN, Role.FIELD_MANAGER)
-  @Patch('/:gameId/approve')
-  async approveGame(@Param('gameId') gameId: string): Promise<Game> {
-    return await this.fieldService.approveGame(gameId);
-  }
-
-  @Roles(Role.ADMIN, Role.FIELD_MANAGER)
-  @Patch('/:gameId/decline')
-  async declineGame(@Param('gameId') gameId: string): Promise<void> {
-    await this.fieldService.declineGame(gameId);
-  }
-
-  @Roles(Role.ADMIN, Role.FIELD_MANAGER)
   @Get('/:fieldId/pendingGames')
-  async getPendingGamesByField(@Param('fieldId') fieldId: string): Promise<Game[]> {
+  async getPendingGamesByField(
+    @Param('fieldId') fieldId: string,
+  ): Promise<Game[]> {
     return await this.fieldService.findPendingGamesByField(fieldId);
   }
 

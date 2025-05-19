@@ -21,6 +21,7 @@ import { ParticipationStatus } from 'src/enums/participation-status.enum';
 import { WeatherApiService } from 'src/weather-api/weather-api.service';
 import { GameParticipantsService } from 'src/game-participants/game-participants.service';
 import { FieldsService } from 'src/fields/fields.service';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class GamesService {
@@ -30,6 +31,7 @@ export class GamesService {
     private readonly fieldService: FieldsService,
     private readonly gameParticipantService: GameParticipantsService,
     private readonly weatherApiService: WeatherApiService,
+    private readonly mailService: MailService
   ) {}
 
   async findAll(): Promise<Game[]> {
@@ -116,13 +118,15 @@ export class GamesService {
 
     const savedGame = await this.gameRepository.save(game);
     //create game participant for the creator
-    await this.gameParticipantService.joinGame(savedGame.gameId, user, ParticipationStatus.APPROVED);
+    await this.gameParticipantService.joinGame(
+      savedGame.gameId,
+      user,
+      ParticipationStatus.APPROVED,
+    );
 
     return savedGame;
   }
 
-  /////////////////////////////////////////////
-  // from other branch -- needs to be refactored
   async inviteFriendToGame(gameId: string, inviter: User, invited: User) {
     let status = ParticipationStatus.PENDING;
     const game = await this.gameRepository.findOne({
@@ -137,11 +141,14 @@ export class GamesService {
     if (inviter.uid === game.creator.uid) {
       status = ParticipationStatus.APPROVED;
     }
-    const newParticipation = await this.gameParticipantService.joinGame(game.gameId, invited, status);
+    const newParticipation = await this.gameParticipantService.joinGame(
+      game.gameId,
+      invited,
+      status,
+    );
 
     return newParticipation;
   }
-
 
   ///////////////////////////////////////////////
   /// if used to show the free games slots, need to return pending too
@@ -266,11 +273,20 @@ export class GamesService {
     return availableHalfHours;
   }
 
-  async updateGameStatus(gameId: string, status: GameStatus): Promise<Game> {
+  async approveGame(gameId: string, status: GameStatus): Promise<Game> {
     const game = await this.findById(gameId);
-
     game.status = status;
-    return await this.gameRepository.save(game);
+
+    const gameRes = await this.gameRepository.save(game);
+    this.mailService.sendNewGameStatus(gameRes.creator.userEmail, gameRes.creator.firstName, status, gameRes.field.fieldName)
+    return gameRes;
+  }
+
+  async declineGame(gameId: string): Promise<void> {
+    const game = await this.findById(gameId);
+    await this.deleteOne(gameId);
+        this.mailService.sendNewGameStatus(game.creator.userEmail, game.creator.firstName, GameStatus.DELETED, game.field.fieldName)
+
   }
 
   async findPendingGamesByField(fieldId: string): Promise<Game[]> {

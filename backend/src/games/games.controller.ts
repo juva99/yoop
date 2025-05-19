@@ -7,6 +7,7 @@ import {
   Query,
   ParseUUIDPipe,
   Delete,
+  Patch,
 } from '@nestjs/common';
 import { GamesService } from './games.service';
 import { Game } from './games.entity';
@@ -18,10 +19,14 @@ import { GameParticipant } from 'src/game-participants/game-participants.entity'
 import { QueryAvailableSlotsDto } from './dto/query-available-slots.dto';
 import { ParticipationStatus } from 'src/enums/participation-status.enum';
 import { GameParticipantsService } from 'src/game-participants/game-participants.service';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Role } from 'src/enums/role.enum';
+import { GameStatus } from 'src/enums/game-status.enum';
 
 @Controller('games')
 export class GamesController {
-  constructor(private readonly gameService: GamesService,
+  constructor(
+    private readonly gameService: GamesService,
     private readonly gameParticipantService: GameParticipantsService,
   ) {}
 
@@ -106,5 +111,17 @@ export class GamesController {
     @GetUser() user: User,
   ): Promise<void> {
     return await this.gameParticipantService.leaveGame(gameId, user);
+  }
+
+  @Roles(Role.ADMIN, Role.FIELD_MANAGER)
+  @Patch('/:gameId/approve')
+  async approveGame(@Param('gameId') gameId: string): Promise<Game> {
+    return await this.gameService.approveGame(gameId, GameStatus.APPROVED);
+  }
+
+  @Roles(Role.ADMIN, Role.FIELD_MANAGER)
+  @Patch('/:gameId/decline')
+  async declineGame(@Param('gameId') gameId: string): Promise<void> {
+    await this.gameService.declineGame(gameId);
   }
 }

@@ -58,17 +58,6 @@ export class FieldsService {
     return await this.fieldRepository.save(fields);
   }
 
-  async approveGame(gameId: string): Promise<Game> {
-    const game = this.gamesService.updateGameStatus(
-      gameId,
-      GameStatus.APPROVED,
-    );
-    return game;
-  }
-
-  async declineGame(gameId: string): Promise<void> {
-    return await this.gamesService.deleteOne(gameId);
-  }
 
   async findPendingGamesByField(fieldId: string): Promise<Game[]> {
     return await this.gamesService.findPendingGamesByField(fieldId);
