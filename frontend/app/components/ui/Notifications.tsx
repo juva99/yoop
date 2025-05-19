@@ -87,7 +87,7 @@ const NotificationsButton: React.FC<Props> = () => {
         </span>
       </div>
       {isOpen && (
-        <div className="absolute top-full -right-40 z-10 mt-2 w-70 rounded-md border border-gray-200 bg-white p-2 shadow-lg">
+        <div className="absolute top-full -right-60 z-10 mt-2 w-70 rounded-md border border-gray-200 bg-white p-2 shadow-lg">
           <h4 className="mb-2 text-sm font-semibold text-gray-700">
             הודעות חדשות
           </h4>

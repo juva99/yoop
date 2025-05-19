@@ -6,14 +6,14 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FriendReqDto } from './dto/friendsReq.dto';
 import { User } from 'src/users/users.entity';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class FriendsService {
   constructor(
     @InjectRepository(FriendRelation)
     private friendRepository: Repository<FriendRelation>,
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
+    private readonly userService: UsersService,
   ) {}
   async setStatus(setStatusDto: FriendSetStatusDto): Promise<FriendRelation> {
     const { req_uid, status } = setStatusDto;
@@ -37,19 +37,13 @@ export class FriendsService {
     friendReqDto: FriendReqDto,
     user: User,
   ): Promise<FriendRelation> {
-    const friend = await this.userRepository.findOne({
-      where: { uid: friendReqDto.user_uid },
-    });
+    const friend = await this.userService.findById(friendReqDto.user_uid);
 
-    if (!friend) {
-      throw new NotFoundException(
-        `User with id ${friendReqDto.user_uid} not found`,
-      );
-    }
     const request = this.friendRepository.create({
       user1: user,
       user2: friend,
     });
+
     return this.friendRepository.save(request);
   }
 

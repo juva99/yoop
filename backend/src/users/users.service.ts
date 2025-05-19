@@ -65,9 +65,7 @@ export class UsersService {
   }
 
   async findByName(name: string, currentUser: User): Promise<User[]> {
-    /* 
-    look up for new friends by first and last name
-    */
+    // look up for new friends by first and last name
     const queryBuilder = this.userRepository.createQueryBuilder('user');
 
     // Search by first name or last name
@@ -90,9 +88,7 @@ export class UsersService {
         'CASE WHEN fr.user1Uid = :currentUserId THEN fr.user2Uid ELSE fr.user1Uid END',
       )
       .from(FriendRelation, 'fr')
-      .where(
-        '(fr.user1Uid = :currentUserId OR fr.user2Uid = :currentUserId)',
-      )
+      .where('(fr.user1Uid = :currentUserId OR fr.user2Uid = :currentUserId)');
 
     // Exclude friends from the result
     queryBuilder.andWhere('user.uid NOT IN (' + subQuery.getQuery() + ')');
@@ -112,5 +108,14 @@ export class UsersService {
       { uid },
       { hashedRefreshToken: hashedRefreshToken },
     );
+  }
+
+  async updateUser(id: string, updatedFields: Partial<User>): Promise<User> {
+    const user = await this.userRepository.findOneBy({ uid: id });
+
+    if (!user) throw new Error('User not found');
+
+    Object.assign(user, updatedFields);
+    return await this.userRepository.save(user);
   }
 }

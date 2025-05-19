@@ -4,7 +4,6 @@ import {
   Param,
   Post,
   Body,
-  UseGuards,
   Query,
   ParseUUIDPipe,
   Delete,
@@ -12,18 +11,19 @@ import {
 import { GamesService } from './games.service';
 import { Game } from './games.entity';
 import { User } from 'src/users/users.entity';
-import { GetUser } from 'src/auth/get-user.decorator';
+import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { CreateGameDto } from './dto/create-game.dto';
-import { Field } from 'src/fields/fields.entity';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
 import { QueryGameDto } from './dto/query-game.dto';
 import { GameParticipant } from 'src/game-participants/game-participants.entity';
 import { QueryAvailableSlotsDto } from './dto/query-available-slots.dto';
 import { ParticipationStatus } from 'src/enums/participation-status.enum';
+import { GameParticipantsService } from 'src/game-participants/game-participants.service';
 
 @Controller('games')
 export class GamesController {
-  constructor(private readonly gameService: GamesService) {}
+  constructor(private readonly gameService: GamesService,
+    private readonly gameParticipantService: GameParticipantsService,
+  ) {}
 
   //get all games
   @Get()
@@ -40,7 +40,7 @@ export class GamesController {
   //get all games connected user is participating in
   @Get('/mygames')
   async getAllMine(@GetUser() user: User): Promise<Game[]> {
-    return await this.gameService.findAllMine(user);
+    return await this.gameParticipantService.findAllMine(user);
   }
 
   //get game by id
@@ -83,21 +83,20 @@ export class GamesController {
     @Param('gameId') gameId: string,
     @GetUser() user: User,
   ): Promise<GameParticipant> {
-    return await this.gameService.joinGame(
+    return await this.gameParticipantService.joinGame(
       gameId,
       user,
       ParticipationStatus.PENDING,
     );
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post('/:gameId/invite/:userId')
   async inviteFriendToGame(
     @Param('gameId') gameId: string,
     @Body('invited') invited: User,
     @GetUser() inviter: User,
   ): Promise<GameParticipant> {
-    return await this.gameService.inviteFriendToGame(gameId, inviter, invited);
+    return await this.gameParticipantService.inviteFriendToGame(gameId, inviter, invited);
   }
 
   //join game by id and add user to pending list
@@ -106,6 +105,6 @@ export class GamesController {
     @Param('gameId') gameId: string,
     @GetUser() user: User,
   ): Promise<void> {
-    return await this.gameService.leaveGame(gameId, user);
+    return await this.gameParticipantService.leaveGame(gameId, user);
   }
 }

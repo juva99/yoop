@@ -64,7 +64,7 @@ export function Combobox({
                   variant="outline"
                   role="combobox"
                   aria-expanded={open}
-                  className="input_underscore w-full justify-between"
+                  className="w-full justify-between text-right"
                 >
                   {field.value
                     ? options.find((option) => option.value === field.value)
@@ -74,32 +74,37 @@ export function Combobox({
                 </Button>
               </FormControl>
             </PopoverTrigger>
-            <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+            <PopoverContent
+              className="z-20 w-auto p-0"
+              align="start"
+              sideOffset={5}
+            >
               <Command>
                 <CommandInput placeholder={searchPlaceholder} />
                 <CommandEmpty>{notFoundText}</CommandEmpty>
                 <CommandGroup>
-                <ScrollArea className="h-48">
-                  {options.map((option) => (
-                    <CommandItem
-                      value={option.label}
-                      key={option.value}
-                      onSelect={() => {
-                        form.setValue(name, option.value);
-                        setOpen(false);
-                      }}
-                    >
-                      <Check
-                        className={cn(
-                          "mr-2 h-4 w-4",
-                          option.value === field.value
-                            ? "opacity-100"
-                            : "opacity-0",
-                        )}
-                      />
-                      {option.label}
-                    </CommandItem>
-                  ))}
+                  <ScrollArea className="h-48">
+                    {options.map((option) => (
+                      <CommandItem
+                        value={option.label}
+                        className="flex justify-end text-right"
+                        key={option.value}
+                        onSelect={() => {
+                          form.setValue(name, option.value);
+                          setOpen(false);
+                        }}
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            option.value === field.value
+                              ? "opacity-100"
+                              : "opacity-0",
+                          )}
+                        />
+                        {option.label}
+                      </CommandItem>
+                    ))}
                   </ScrollArea>
                 </CommandGroup>
               </Command>
