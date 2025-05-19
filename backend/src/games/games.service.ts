@@ -31,7 +31,7 @@ export class GamesService {
     private readonly fieldService: FieldsService,
     private readonly gameParticipantService: GameParticipantsService,
     private readonly weatherApiService: WeatherApiService,
-    private readonly mailService: MailService
+    private readonly mailService: MailService,
   ) {}
 
   async findAll(): Promise<Game[]> {
@@ -278,24 +278,44 @@ export class GamesService {
     game.status = status;
 
     const gameRes = await this.gameRepository.save(game);
-    this.mailService.sendNewGameStatus(gameRes.creator.userEmail, gameRes.creator.firstName, status, gameRes.field.fieldName)
+    this.mailService.sendNewGameStatus(
+      gameRes.creator.userEmail,
+      gameRes.creator.firstName,
+      status,
+      gameRes.field.fieldName,
+    );
     return gameRes;
   }
 
   async declineGame(gameId: string): Promise<void> {
     const game = await this.findById(gameId);
     await this.deleteOne(gameId);
-        this.mailService.sendNewGameStatus(game.creator.userEmail, game.creator.firstName, GameStatus.DELETED, game.field.fieldName)
-
+    this.mailService.sendNewGameStatus(
+      game.creator.userEmail,
+      game.creator.firstName,
+      GameStatus.DELETED,
+      game.field.fieldName,
+    );
   }
 
+  // Todo: get only future games
+  async findAllGamesByField(fieldId: string): Promise<Game[]> {
+    return this.gameRepository.find({
+      where: {
+        field: { fieldId },
+      },
+      order: { startDate: 'ASC' },
+    });
+  }
+
+  // Todo: get only future games
   async findPendingGamesByField(fieldId: string): Promise<Game[]> {
     return this.gameRepository.find({
       where: {
         field: { fieldId },
         status: GameStatus.PENDING,
       },
-      order: { startDate: 'ASC' }, // Optional: sort by start date
+      order: { startDate: 'ASC' },
     });
   }
 }

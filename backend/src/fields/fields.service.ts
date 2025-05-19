@@ -81,4 +81,14 @@ export class FieldsService {
 
     return this.fieldRepository.save(field);
   }
+
+  async getFieldsByUser(userId: string): Promise<Field[]> {
+    return await this.fieldRepository.find({
+      where: { manager: { uid: userId } },
+    });
+  }
+
+
+
+
 }

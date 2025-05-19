@@ -124,4 +124,18 @@ export class GamesController {
   async declineGame(@Param('gameId') gameId: string): Promise<void> {
     await this.gameService.declineGame(gameId);
   }
+
+  @Roles(Role.ADMIN, Role.FIELD_MANAGER)
+  @Get('/:fieldId/pendingGames')
+  async getPendingGamesByField(
+    @Param('fieldId') fieldId: string,
+  ): Promise<Game[]> {
+    return await this.gameService.findPendingGamesByField(fieldId);
+  }
+
+  @Roles(Role.ADMIN, Role.FIELD_MANAGER)
+  @Get('/:fieldId/allGames')
+  async getAllGamesByField(@Param('fieldId') fieldId: string): Promise<Game[]> {
+    return await this.gameService.findAllGamesByField(fieldId);
+  }
 }

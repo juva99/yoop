@@ -46,13 +46,6 @@ export class FieldsController {
     return await this.fieldService.deleteOne(id);
   }
 
-  @Roles(Role.ADMIN, Role.FIELD_MANAGER)
-  @Get('/:fieldId/pendingGames')
-  async getPendingGamesByField(
-    @Param('fieldId') fieldId: string,
-  ): Promise<Game[]> {
-    return await this.fieldService.findPendingGamesByField(fieldId);
-  }
 
   @Roles(Role.ADMIN)
   @Patch('/:fieldId/setManager/:userId')
