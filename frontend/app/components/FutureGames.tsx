@@ -51,30 +51,32 @@ const FutureGames: React.FC<Props> = ({ games }) => {
       {games.length === 0 ? (
         <span className="text-subtitle mr-3 text-2xl">אין משחקים עתידיים</span>
       ) : (
-        ""
-      )}
-      <div
-        className="transition-transform duration-300"
-        style={{ transform: `translateY(-${currentGame * 130}px)` }}
-      >
-        {games.slice(0, 5).map((game, i) => (
-          <div key={i} className="h-[130px]">
-            <GameCard game={game} />
+        <>
+          {" "}
+          <div
+            className="transition-transform duration-300"
+            style={{ transform: `translateY(-${currentGame * 130}px)` }}
+          >
+            {games.slice(0, 5).map((game, i) => (
+              <div key={i} className="h-[130px]">
+                <GameCard game={game} />
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-      <div className="bullets-container left-0 flex h-[130px] items-center pl-5">
-        <ul className="space-y-2">
-          {games.slice(0, 5).map((game, i) => (
-            <li key={i}>
-              <div
-                className={`h-3 w-3 cursor-pointer rounded-full ${currentGame == i ? "bg-black" : "bg-gray-200"}`}
-                onClick={() => setCurrentGame(i)}
-              />
-            </li>
-          ))}
-        </ul>
-      </div>
+          <div className="bullets-container left-0 flex h-[130px] items-center pl-5">
+            <ul className="space-y-2">
+              {games.slice(0, 5).map((game, i) => (
+                <li key={i}>
+                  <div
+                    className={`h-3 w-3 cursor-pointer rounded-full ${currentGame == i ? "bg-black" : "bg-gray-200"}`}
+                    onClick={() => setCurrentGame(i)}
+                  />
+                </li>
+              ))}
+            </ul>
+          </div>
+        </>
+      )}
     </div>
   );
 };
