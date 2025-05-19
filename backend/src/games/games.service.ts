@@ -1,7 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   Between,
@@ -26,7 +23,7 @@ export class GamesService {
   constructor(
     @InjectRepository(Game)
     private gameRepository: Repository<Game>,
-    
+
     private readonly fieldService: FieldsService,
     private readonly gameParticipantService: GameParticipantsService,
     private readonly weatherApiService: WeatherApiService,
@@ -105,7 +102,11 @@ export class GamesService {
 
     const savedGame = await this.gameRepository.save(game);
     //create game participant for the creator
-    await this.gameParticipantService.joinGame(savedGame.gameId, user, ParticipationStatus.APPROVED);
+    await this.gameParticipantService.joinGame(
+      savedGame.gameId,
+      user,
+      ParticipationStatus.APPROVED,
+    );
 
     return this.findById(savedGame.gameId);
   }
@@ -226,5 +227,20 @@ export class GamesService {
     }
 
     return availableHalfHours;
+  }
+
+  async setStatus(
+    gameId: string,
+    user: User,
+    status: GameStatus,
+  ): Promise<Game> {
+    const game = await this.gameRepository.findOne({
+      where: { gameId },
+    });
+    if (!game) {
+      throw new NotFoundException(`Game with id ${gameId} not found`);
+    }
+    game.status = status;
+    return await this.gameRepository.save(game);
   }
 }
