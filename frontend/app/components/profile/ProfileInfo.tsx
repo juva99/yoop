@@ -3,10 +3,8 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import { User } from "@/app/types/User";
 import { authFetch } from "@/lib/authFetch";
-import FriendList from "@/components/friends/FriendList";
 
 import {
   ProfileUpdateSchema,
@@ -41,10 +39,9 @@ const cityOptions = Object.entries(City).map(([label, value]) => ({
 
 type Props = {
   user: User;
-  friendRelations: any[];
 };
 
-const ProfileInfo: React.FC<Props> = ({ user, friendRelations }) => {
+const ProfileInfo: React.FC<Props> = ({ user }) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [citySuggestions, setCitySuggestions] = useState<string[]>([]);
