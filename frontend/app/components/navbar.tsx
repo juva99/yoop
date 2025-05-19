@@ -8,7 +8,13 @@ import { MdAssignmentAdd } from "react-icons/md";
 import { usePathname } from "next/navigation";
 import { TbLayoutGridAdd } from "react-icons/tb";
 
-const HIDDEN_PATHS = ["/auth/login", "/auth/signup"];
+const HIDDEN_PATHS = [
+  "/auth/login",
+  "/auth/signup",
+  "/menu",
+  "/field-manager/menu",
+  "/field-manager/contact",
+];
 
 const Navbar = () => {
   const pathname = usePathname();
