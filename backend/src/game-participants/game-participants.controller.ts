@@ -19,9 +19,4 @@ export class GameParticipantsController {
     return await this.gameParticipantsService.setStatus(setStatusDto);
   }
 
-  //get all games connected user is participating in
-  @Get('/mygames')
-  async getUserUpcomingGames(@GetUser() user: User): Promise<Game[]> {
-    return await this.gameParticipantsService.getUserUpcomingGames(user);
-  }
 }

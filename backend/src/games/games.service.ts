@@ -1,4 +1,5 @@
 import {
+  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -26,7 +27,6 @@ export class GamesService {
   constructor(
     @InjectRepository(Game)
     private gameRepository: Repository<Game>,
-    
     private readonly fieldService: FieldsService,
     private readonly gameParticipantService: GameParticipantsService,
     private readonly weatherApiService: WeatherApiService,
@@ -121,6 +121,8 @@ export class GamesService {
     return savedGame;
   }
 
+  /////////////////////////////////////////////
+  // from other branch -- needs to be refactored
   async inviteFriendToGame(gameId: string, inviter: User, invited: User) {
     let status = ParticipationStatus.PENDING;
     const game = await this.gameRepository.findOne({
@@ -135,84 +137,11 @@ export class GamesService {
     if (inviter.uid === game.creator.uid) {
       status = ParticipationStatus.APPROVED;
     }
-    const newParticipation = this.gameParticipantRepository.create({
-      game,
-      user: invited,
-      status,
-    });
+    const newParticipation = await this.gameParticipantService.joinGame(game.gameId, invited, status);
 
-    return await this.gameParticipantRepository.save(newParticipation);
+    return newParticipation;
   }
 
-  async joinGame(
-    gameId: string,
-    user: User,
-    status: ParticipationStatus,
-  ): Promise<GameParticipant> {
-    const game = await this.gameRepository.findOne({
-      where: { gameId },
-      relations: ['gameParticipants'],
-    });
-
-    if (!game) {
-      throw new NotFoundException(`Game with id ${gameId} not found`);
-    }
-
-    if (game.gameParticipants.length >= game.maxParticipants) {
-      throw new BadRequestException('Game is already full');
-    }
-
-    if (game.status === GameStatus.PENDING) {
-      throw new BadRequestException('Game has not approved yet');
-    }
-
-    const existingParticipation = await this.gameParticipantRepository.findOne({
-      where: {
-        game: { gameId: gameId },
-        user: { uid: user.uid },
-      },
-    });
-
-    if (existingParticipation) {
-      throw new ConflictException('User is already participating in this game');
-    }
-
-    const newParticipation = this.gameParticipantRepository.create({
-      game: game,
-      user: user,
-      status,
-    });
-
-    return await this.gameParticipantRepository.save(newParticipation);
-  }
-
-  async leaveGame(gameId: string, user: User): Promise<void> {
-    const game = await this.gameRepository.findOne({
-      where: { gameId },
-      relations: ['gameParticipants'],
-    });
-
-    if (!game) {
-      throw new NotFoundException(`Game with id ${gameId} not found`);
-    }
-
-    const existingParticipation = await this.gameParticipantRepository.findOne({
-      where: {
-        game: { gameId: gameId },
-        user: { uid: user.uid },
-      },
-    });
-
-    if (!existingParticipation) {
-      throw new ConflictException('המשתמש אינו משתתף במשחק הזה');
-    }
-
-    if (game.creator.uid === user.uid) {
-      throw new ConflictException('המנהל אינו יכול לעזוב את המשחק');
-    }
-
-    await this.gameParticipantRepository.delete(existingParticipation.id);
-  }
 
   ///////////////////////////////////////////////
   /// if used to show the free games slots, need to return pending too

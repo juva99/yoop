@@ -59,8 +59,8 @@ export class FieldsController {
   }
 
   @Roles(Role.ADMIN, Role.FIELD_MANAGER)
-  @Get('/:gameId/pendingGames')
-  async getPendingGamesById(@Param('gameId') fieldId: string): Promise<Game[]> {
+  @Get('/:fieldId/pendingGames')
+  async getPendingGamesByField(@Param('fieldId') fieldId: string): Promise<Game[]> {
     return await this.fieldService.findPendingGamesByField(fieldId);
   }
 
