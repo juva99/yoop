@@ -2,9 +2,6 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  ManyToOne,
-  ManyToMany,
-  JoinTable,
   OneToMany,
 } from 'typeorm';
 import { Field } from 'src/fields/fields.entity';
@@ -12,7 +9,6 @@ import { Game } from 'src/games/games.entity';
 import { GameParticipant } from 'src/game-participants/game-participants.entity';
 import { FriendRelation } from 'src/friends/friends.entity';
 import { Role } from 'src/enums/role.enum';
-
 
 @Entity('users')
 export class User {

@@ -19,6 +19,7 @@ import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
+import { he } from "date-fns/locale";
 
 interface GameInfoStepProps {
   form: UseFormReturn;
@@ -53,15 +54,15 @@ export default function GameInfoStep({ form }: GameInfoStepProps) {
                   <Button
                     variant={"outline"}
                     className={cn(
-                      "w-[240px] pl-3 text-left font-normal",
+                      "flex w-[240px] justify-start pl-3 font-normal",
                       !field.value && "text-muted-foreground",
                     )}
                   >
-                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    <CalendarIcon className="h-4 w-4 opacity-50" />
                     {field.value ? (
                       format(field.value, "dd/MM/yyyy")
                     ) : (
-                      <span>Pick a date</span>
+                      <span>בחר תאריך</span>
                     )}
                   </Button>
                 </FormControl>
@@ -71,13 +72,13 @@ export default function GameInfoStep({ form }: GameInfoStepProps) {
                   mode="single"
                   selected={field.value}
                   onSelect={field.onChange}
+                  locale={he}
                   disabled={(date) =>
                     date < new Date(new Date().toDateString()) ||
                     date < new Date("1900-01-01")
                   }
                 />
               </PopoverContent>
-              {/* <DateTimePicker {...field} /> */}
             </Popover>
             <FormMessage />
           </FormItem>

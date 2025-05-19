@@ -46,10 +46,10 @@ const FutureGames: React.FC<Props> = ({ games }) => {
   return (
     <div
       {...handlers}
-      className="border-elements relative flex h-[130px] w-full max-w-md justify-between overflow-hidden rounded-2xl border-1 shadow"
+      className="relative flex h-[130px] w-full max-w-md items-center justify-between overflow-hidden rounded-xl border-1 border-gray-200"
     >
       {games.length === 0 ? (
-        <p className="text-title mt-2 mr-3">אין משחקים עתידיים</p>
+        <span className="text-subtitle mr-3 text-2xl">אין משחקים עתידיים</span>
       ) : (
         ""
       )}

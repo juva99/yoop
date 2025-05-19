@@ -1,17 +1,23 @@
 "use client";
+
 import { User } from "@/app/types/User";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { IoPersonAddOutline } from "react-icons/io5";
-import { authFetch } from "@/lib/authFetch";
 import { BsSendCheckFill } from "react-icons/bs";
+import { FaUserXmark } from "react-icons/fa6";
 import React, { useState } from "react";
+import { authFetch } from "@/lib/authFetch";
 
 type Props = {
   friend: User;
+  relationId?: string;
+  action: "remove" | "add";
+  onClick?: () => void;
 };
 
-const Friend: React.FC<Props> = ({ friend }) => {
-  const [isSent, setIsSent] = useState<boolean>(false);
+const Friend: React.FC<Props> = ({ friend, action, onClick }) => {
+  const [sentRequest, setSentRequest] = useState<boolean>(false);
+
   const sendFriendRequest = async (friendId: string) => {
     try {
       const response = await authFetch(
@@ -25,38 +31,43 @@ const Friend: React.FC<Props> = ({ friend }) => {
         },
       );
 
-      if (!response.ok) {
-        throw new Error("Failed to send friend request");
-      }
-
-      const data = await response.json();
-      setIsSent(true);
+      if (!response.ok) throw new Error("Failed to send friend request");
+      setSentRequest(true);
     } catch (error) {
       console.error("Error sending friend request:", error);
     }
   };
 
   return (
-    <div className="flex w-full items-center justify-between border px-5 py-2 hover:bg-gray-100">
+    <div className="flex w-full items-center justify-between py-2 hover:bg-gray-100">
       <div className="flex items-center gap-2">
         <Avatar className="border-gray h-8 w-8 rounded-full border-2 text-center">
           <AvatarImage src={friend.profilePic} alt={friend.firstName} />
-          <AvatarFallback>{friend.firstName.charAt(0)}</AvatarFallback>
+          <AvatarFallback className="flex items-center justify-center text-sm font-medium">
+            <span>
+              {friend.firstName.charAt(0)}
+              {friend.lastName.charAt(0)}
+            </span>
+          </AvatarFallback>
         </Avatar>
         <span>
           {friend.firstName} {friend.lastName}
         </span>
       </div>
-      <div
-        className="cursor-pointer"
-        onClick={() => sendFriendRequest(friend.uid)}
-      >
-        {isSent ? (
-          <BsSendCheckFill size="20px" />
-        ) : (
-          <IoPersonAddOutline size="20px" />
-        )}
+
+      <div onClick={() => sendFriendRequest(friend.uid)}>
+        {action === "add" &&
+          (sentRequest ? (
+            <BsSendCheckFill size="17px" />
+          ) : (
+            <IoPersonAddOutline size="17px" />
+          ))}
       </div>
+      {action === "remove" && (
+        <div>
+          <FaUserXmark size="20px" />
+        </div>
+      )}
     </div>
   );
 };

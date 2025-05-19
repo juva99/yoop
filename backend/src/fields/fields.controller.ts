@@ -34,11 +34,13 @@ export class FieldsController {
     return await this.fieldService.findById(id);
   }
 
+  @Roles(Role.ADMIN, Role.FIELD_MANAGER)
   @Post()
   async create(@Body() createFieldDto: CreateFieldDto): Promise<Field> {
     return await this.fieldService.create(createFieldDto);
   }
 
+  @Roles(Role.ADMIN, Role.FIELD_MANAGER)
   @Delete('/:id')
   async deleteOne(@Param('id') id: string) {
     return await this.fieldService.deleteOne(id);

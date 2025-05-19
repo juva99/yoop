@@ -2,7 +2,6 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  JoinColumn,
   ManyToOne,
   OneToMany,
 } from 'typeorm';
@@ -10,7 +9,6 @@ import { User } from 'src/users/users.entity';
 import { Game } from 'src/games/games.entity';
 import { GameType } from 'src/enums/game-type.enum';
 import { City } from 'src/enums/city.enum';
-import { IsEnum } from 'class-validator';
 
 @Entity('fields')
 export class Field {

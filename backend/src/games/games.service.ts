@@ -1,8 +1,6 @@
 import {
   Injectable,
   NotFoundException,
-  BadRequestException,
-  ConflictException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
@@ -15,25 +13,22 @@ import {
 } from 'typeorm';
 import { Game } from './games.entity';
 import { CreateGameDto } from './dto/create-game.dto';
-import { Field } from 'src/fields/fields.entity';
 import { User } from 'src/users/users.entity';
 import { GameStatus } from 'src/enums/game-status.enum';
 import { QueryGameDto } from './dto/query-game.dto';
-import { GameParticipant } from 'src/game-participants/game-participants.entity';
 import { ParticipationStatus } from 'src/enums/participation-status.enum';
 import { WeatherApiService } from 'src/weather-api/weather-api.service';
+import { GameParticipantsService } from 'src/game-participants/game-participants.service';
+import { FieldsService } from 'src/fields/fields.service';
 
 @Injectable()
 export class GamesService {
   constructor(
     @InjectRepository(Game)
     private gameRepository: Repository<Game>,
-
-    @InjectRepository(Field)
-    private fieldRepository: Repository<Field>,
-
-    @InjectRepository(GameParticipant)
-    private gameParticipantRepository: Repository<GameParticipant>,
+    
+    private readonly fieldService: FieldsService,
+    private readonly gameParticipantService: GameParticipantsService,
     private readonly weatherApiService: WeatherApiService,
   ) {}
 
@@ -82,13 +77,8 @@ export class GamesService {
     const { gameType, startDate, endDate, maxParticipants, field } =
       createGameDto;
 
-    // Check if the field exists
-    const fieldd = await this.fieldRepository.findOne({
-      where: { fieldId: field },
-    });
-    if (!fieldd) {
-      throw new NotFoundException(`field with id ${field} not found`);
-    }
+    // Check if the field exists and pull entity
+    const fieldd = await this.fieldService.findById(field);
 
     //Add weather data to game
     const parsedStartDate = new Date(startDate);
@@ -124,15 +114,9 @@ export class GamesService {
       weatherIcon: weatherData.condition.icon,
     });
 
-    //create game participant for the creator
-    const creatorParticipation = this.gameParticipantRepository.create({
-      game: game,
-      user: user,
-      status: ParticipationStatus.APPROVED,
-    });
     const savedGame = await this.gameRepository.save(game);
-    creatorParticipation.game = savedGame;
-    await this.gameParticipantRepository.save(creatorParticipation);
+    //create game participant for the creator
+    await this.gameParticipantService.joinGame(savedGame.gameId, user, ParticipationStatus.APPROVED);
 
     return savedGame;
   }
