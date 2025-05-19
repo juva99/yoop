@@ -155,7 +155,7 @@ body {
 }
 
 .primary-btn {
-  @apply bg-title my-5 h-10 w-[100%] rounded-3xl text-xl text-white;
+  @apply bg-title mt-5 h-10 w-[100%] rounded-3xl text-xl text-white;
 }
 
 .input {

@@ -4,11 +4,10 @@ import React from "react";
 import Link from "next/link";
 import { PiSoccerBall, PiMagnifyingGlass } from "react-icons/pi";
 import { FaHouse } from "react-icons/fa6";
-import { IoCreateSharp } from "react-icons/io5";
 import { MdAssignmentAdd } from "react-icons/md";
 import { usePathname } from "next/navigation";
 
-const HIDDEN_PATHS = ["/auth/login", "/auth/signup"];
+const HIDDEN_PATHS = ["/auth/login", "/auth/signup", "/field-manager/contact"];
 
 const Navbar = () => {
   const pathname = usePathname();
