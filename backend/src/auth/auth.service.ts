@@ -2,6 +2,7 @@ import {
   ConflictException,
   Inject,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { User } from '../users/users.entity';
@@ -16,6 +17,7 @@ import { ConfigType } from '@nestjs/config';
 import { authenticatedUser } from './types/authenticatedUser';
 import { Role } from 'src/enums/role.enum';
 import { MailService } from 'src/mail/mail.service';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class AuthService {
@@ -167,4 +169,18 @@ export class AuthService {
   async signOut(uid: string): Promise<void> {
     return await this.usersService.updateRefreshToken(uid, 'null');
   }
+  
+  async forgotPassword(email: string): Promise<any>{
+        // get user based on posted email
+        const user= await this.usersService.findByEmail(email);
+        if (!user){
+          throw new NotFoundException(`user with email address${email} not found`);
+        }
+        // generate random reset token
+        const token = this.usersService.createPasswordResetToken(user.uid);
+        
+        return token;
+        //send it to users email
+  }
+
 }

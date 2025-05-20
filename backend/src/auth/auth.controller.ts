@@ -4,6 +4,7 @@ import {
   Body,
   UseGuards,
   Get,
+  Param,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/users/dto/create-users.dto';
@@ -53,4 +54,13 @@ export class AuthController {
   async signOut(@GetUser() user): Promise<void> {
     return this.authService.signOut(user.uid);
   }
+
+  @Public()
+  @Post('forgot-password')
+  async forgotPass(@Body() body){
+    console.log(body.email);
+    return this.authService.forgotPassword(body.email);
+  }
+
+
 }

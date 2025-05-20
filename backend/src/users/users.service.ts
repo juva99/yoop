@@ -7,9 +7,10 @@ import {
 import { User } from './users.entity';
 import { CreateUserDto } from './dto/create-users.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, ILike } from 'typeorm';
+import { Repository, ILike, MoreThan } from 'typeorm';
 import { hash } from 'argon2';
 import { FriendRelation } from 'src/friends/friends.entity';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class UsersService {
@@ -117,5 +118,52 @@ export class UsersService {
 
     Object.assign(user, updatedFields);
     return await this.userRepository.save(user);
+  }
+
+  async createPasswordResetToken(uid: string): Promise<any>{
+        const resetToken = crypto.randomBytes(32).toString('hex');
+        const passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+
+        const passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000);
+
+        await this.userRepository.update({uid}, 
+          { 
+            passwordResetToken,
+            passwordResetExpires,
+          }
+        );
+
+        return resetToken;
+  }
+
+  async changePassword(token: string, newPassword: string): Promise<void>{
+    //get user based on token
+    const hashedtoken = crypto.createHash('sha256').update(token).digest('hex');
+
+    const user = await this.userRepository.findOne({
+      where: {
+        passwordResetToken: hashedtoken,
+        passwordResetExpires: MoreThan(new Date()),
+      }
+    });
+    console.log(user);
+    
+    //if found and token isnt expired set new password and delete refreshtoken
+    if(!user){
+      throw new NotFoundException(`password reset token isn't valid`);
+    }
+    console.log(newPassword);
+    const hashedPass = await hash(newPassword)
+    
+    const updateduser = await this.userRepository.update(user.uid,
+      {
+        pass: hashedPass,
+        passwordResetToken: null,
+        hashedRefreshToken: null,
+      }
+    );
+    
+    console.log(updateduser);
+    //log user in
   }
 }

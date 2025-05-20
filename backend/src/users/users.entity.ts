@@ -66,6 +66,12 @@ export class User {
   createdGames: Game[];
 
   //refresh token
-  @Column({ nullable: true, select: false })
-  hashedRefreshToken?: string;
+  @Column({ nullable: true, type: 'varchar' })
+  passwordResetToken: string | null;
+
+  @Column({ nullable: true, type: 'varchar' })
+  hashedRefreshToken: string | null;
+
+  @Column({ nullable: true, select: false, type: 'timestamptz' })
+  passwordResetExpires?: Date;
 }
