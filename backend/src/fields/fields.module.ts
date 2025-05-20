@@ -7,10 +7,7 @@ import { GamesModule } from 'src/games/games.module';
 import { UsersModule } from 'src/users/users.module';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Field]),
-        GamesModule,
-        UsersModule
-    ],
+  imports: [TypeOrmModule.forFeature([Field]), UsersModule],
   providers: [FieldsService],
   controllers: [FieldsController],
   exports: [FieldsService],

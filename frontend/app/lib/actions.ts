@@ -70,7 +70,7 @@ export const changeParticipationStatus = async (
 };
 
 export const getMyGames = async (): Promise<Game[]> => {
-  const response = await authFetch(`${BACKEND_URL}/game-participants/mygames`);
+  const response = await authFetch(`${BACKEND_URL}/games/mygames`);
 
   if (!response.ok) {
     throw new Error(`Failed to fetch games: ${response.statusText}`);

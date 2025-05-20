@@ -51,13 +51,13 @@ export class FieldsController {
     @Param('fieldId') fieldId: string,
     @Param('userId') userId: string,
   ): Promise<Field> {
-    return this.fieldService.setManagerToField(fieldId, userId);
+    return await this.fieldService.setManagerToField(fieldId, userId);
   }
 
   @Roles(Role.ADMIN)
   @Patch('/:fieldId/setPublic')
   async setFieldPublic(@Param('fieldId') fieldId: string): Promise<Field> {
-    return this.fieldService.setFieldPublic(fieldId);
+    return await this.fieldService.setFieldPublic(fieldId);
   }
 
   @Roles(Role.ADMIN, Role.FIELD_MANAGER)

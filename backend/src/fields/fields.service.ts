@@ -5,9 +5,6 @@ import { Field } from './fields.entity';
 import { NotFoundException } from '@nestjs/common';
 import { CreateFieldDto } from './dto/create-field.dto';
 import { City } from 'src/enums/city.enum';
-import { Game } from 'src/games/games.entity';
-import { GamesService } from 'src/games/games.service';
-import { GameStatus } from 'src/enums/game-status.enum';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
@@ -15,7 +12,6 @@ export class FieldsService {
   constructor(
     @InjectRepository(Field)
     private fieldRepository: Repository<Field>,
-    private readonly gamesService: GamesService,
     private readonly usersService: UsersService,
   ) {}
 
