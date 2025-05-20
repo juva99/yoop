@@ -21,7 +21,8 @@ import { GameParticipantsService } from 'src/game-participants/game-participants
 
 @Controller('games')
 export class GamesController {
-  constructor(private readonly gameService: GamesService,
+  constructor(
+    private readonly gameService: GamesService,
     private readonly gameParticipantService: GameParticipantsService,
   ) {}
 
@@ -96,7 +97,11 @@ export class GamesController {
     @Body('invited') invited: User,
     @GetUser() inviter: User,
   ): Promise<GameParticipant> {
-    return await this.gameParticipantService.inviteFriendToGame(gameId, inviter, invited);
+    return await this.gameParticipantService.inviteFriendToGame(
+      gameId,
+      inviter,
+      invited,
+    );
   }
 
   //join game by id and add user to pending list

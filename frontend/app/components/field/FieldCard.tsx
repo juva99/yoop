@@ -19,27 +19,35 @@ const GameTypeIcon = (type: GameType) => {
 
 const FieldCard: React.FC<Props> = ({ field }) => {
   return (
-    <div className="field-card bg-white border border-blue-100 shadow-lg rounded-[18px] p-5 w-full max-800 mx-auto">
-      <div className="field-header flex justify-start items-center mb-4">
-        <div className="field-icon-container flex ml-3 mr-0 text-blue-700 text-2xl ">
+    <div className="field-card max-800 mx-auto w-full rounded-[18px] border border-blue-100 bg-white p-5 shadow-lg">
+      <div className="field-header mb-4 flex items-center justify-start">
+        <div className="field-icon-container mr-0 ml-3 flex text-2xl text-blue-700">
           {GameTypeIcon(field.gameTypes[0])}
         </div>
 
-        <div className="field-info flex items-center text-right ">
-          <span className="field-name text-[#00aaff] font-bold text-lg ml-5">{field.fieldName}</span>          
-          <span className="field-city text-[#0077cc] font-bold text-lg">{field.city}</span>
+        <div className="field-info flex items-center text-right">
+          <span className="field-name ml-5 text-lg font-bold text-[#00aaff]">
+            {field.fieldName}
+          </span>
+          <span className="field-city text-lg font-bold text-[#0077cc]">
+            {field.city}
+          </span>
         </div>
       </div>
 
       <Link
         href={`/field-manager/field/${field.fieldId}/games`}
         className="field-link-view block text-right text-[20px] font-bold text-blue-700 hover:text-[22px]"
-      >לצפייה במשחקים</Link>
+      >
+        לצפייה במשחקים
+      </Link>
 
       <Link
         href={`/field-manager/field/${field.fieldId}/edit`}
-        className="field-link-edit block text-right text-[20px] font-bold text-gray-400 hover:text-[22px] mt-1"
-      >שינוי פרטי המגרש</Link>
+        className="field-link-edit mt-1 block text-right text-[20px] font-bold text-gray-400 hover:text-[22px]"
+      >
+        שינוי פרטי המגרש
+      </Link>
     </div>
   );
 };

@@ -6,7 +6,6 @@ import { getSession } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { Role } from "@/app/enums/role.enum";
 
-
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin-ext"],
@@ -21,15 +20,15 @@ export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {  
+}>) {
   const session = await getSession();
-  const role: Role = session?.user?.role ?? "USER" as Role;   
-  
+  const role: Role = session?.user?.role ?? ("USER" as Role);
+
   return (
     <html lang="en" dir="rtl">
       <body className={`${geistSans.variable} antialiased`}>
         <main className="pb-20">{children}</main>
-        <Navbar role={role}/>
+        <Navbar role={role} />
       </body>
     </html>
   );

@@ -13,9 +13,6 @@ import { RiFunctionAddFill } from "react-icons/ri";
 import { VscSignOut } from "react-icons/vsc";
 import { CgProfile } from "react-icons/cg";
 
-
-
-
 const HIDDEN_PATHS = ["/auth/login", "/auth/signup", "/menu"];
 
 type NavbarProps = {
@@ -25,8 +22,8 @@ type NavbarProps = {
 const Navbar: React.FC<NavbarProps> = ({ role }) => {
   const pathname = usePathname();
   if (HIDDEN_PATHS.includes(pathname)) return null;
-  
-  if(role === Role.USER) {
+
+  if (role === Role.USER) {
     return (
       <nav className="fixed bottom-0 z-50 flex h-15 w-full items-center justify-around border-t-1 border-[#6b6b6b] bg-gray-100">
         <Link href={"/"}>
@@ -58,8 +55,7 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
     );
   }
 
-  
-  if(role === Role.FIELD_MANAGER || role === Role.ADMIN) {
+  if (role === Role.FIELD_MANAGER || role === Role.ADMIN) {
     return (
       <nav className="fixed bottom-0 z-50 flex h-15 w-full items-center justify-around border-t-1 border-[#6b6b6b] bg-gray-100">
         <Link href={"/profile"}>
@@ -67,33 +63,28 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
             className={`size-[25px] ${pathname === "/profile" ? "text-neutral-900" : "text-elements"}`}
           />
         </Link>
-        
-        
+
         <Link href={"/fields"}>
-          <GiSoccerField 
+          <GiSoccerField
             className={`size-[25px] ${pathname === "/fields" ? "text-neutral-900" : "text-elements"}`}
           />
-        </Link>  
+        </Link>
 
         <Link href={"/fields/edit"}>
-          <RiFunctionAddFill 
+          <RiFunctionAddFill
             className={`size-[25px] ${pathname === "/fields/edit" ? "text-neutral-900" : "text-elements"}`}
           />
         </Link>
 
         <Link href={"/api/auth/signout"}>
-          <VscSignOut 
+          <VscSignOut
             className={`size-[25px] ${pathname === "/api/auth/signout" ? "text-neutral-900" : "text-elements"}`}
           />
         </Link>
-
-
-
       </nav>
     );
-  } 
-  return null; 
-
+  }
+  return null;
 };
 
 export default Navbar;

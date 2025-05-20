@@ -9,19 +9,17 @@ type Props = {
 const Fields: React.FC<Props> = ({ fields }) => {
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
-      <h1 className="text-[#002366] text-2xl font-bold mb-4 mt-4 text-right">
+      <h1 className="mt-4 mb-4 text-right text-2xl font-bold text-[#002366]">
         המגרשים שלך
       </h1>
 
-      <div className="w-full flex flex-col items-center gap-6">
+      <div className="flex w-full flex-col items-center gap-6">
         {fields.length === 0 ? (
-          <p className="rounded border bg-gray-50 py-8 text-center text-lg text-gray-500 shadow-sm w-full max-w-md">
+          <p className="w-full max-w-md rounded border bg-gray-50 py-8 text-center text-lg text-gray-500 shadow-sm">
             אין מגרשים להצגה
           </p>
         ) : (
-          fields.map((field) => (
-            <FieldCard key={field.fieldId} field={field} />
-          ))
+          fields.map((field) => <FieldCard key={field.fieldId} field={field} />)
         )}
       </div>
     </div>

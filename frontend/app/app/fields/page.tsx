@@ -16,15 +16,14 @@ const FieldsPage = async () => {
       const userId = session.user.uid;
 
       const userRes = await authFetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/${userId}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/${userId}`,
       );
       user = await userRes.json();
       console.log("User details: ", user);
 
       const fieldsRes = await authFetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/fields/${userId}/allFields`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/fields/${userId}/allFields`,
       );
-
 
       if (fieldsRes.ok) {
         fields = await fieldsRes.json();
