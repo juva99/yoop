@@ -13,18 +13,18 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   formDefaultValues,
   formSchema,
   FormSchema,
 } from "@/lib/schemas/createFieldForm";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { useState } from "react";
 import GameTypeOption from "./game-type-option";
 import { Combobox } from "../ui/combobox";
 import { Map, Marker } from "pigeon-maps";
+import { Switch } from "../ui/switch";
 
 const cityOptions = Object.entries(City).map(([label, value]) => ({
   label: value,
@@ -38,7 +38,10 @@ const CreateFieldForm = () => {
     defaultValues: formDefaultValues,
   });
 
-  const [hasMultipleFields, setHasMultipleFields] = useState(false);
+  const hasMultipleFields = useWatch({
+    control: form.control,
+    name: "hasMultipleFields",
+  });
   // State for map marker position
   const [markerPosition, setMarkerPosition] = useState<[number, number] | null>(
     null,
@@ -206,36 +209,17 @@ const CreateFieldForm = () => {
             control={form.control}
             name="hasMultipleFields"
             render={({ field }) => (
-              <FormItem className="rounded-lg border p-4">
-                <div className="mb-2">
+              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                <div className="space-y-0.5">
                   <FormLabel className="text-base">מספר מגרשים?</FormLabel>
                   <FormDescription>האם יש במתחם מספר מגרשים?</FormDescription>
                 </div>
                 <FormControl>
-                  <RadioGroup
-                    onValueChange={(value) => {
-                      const boolValue = value === "true";
-                      field.onChange(boolValue);
-                      setHasMultipleFields(boolValue);
-                    }}
-                    defaultValue={field.value ? "true" : "false"}
-                    className="flex space-x-4"
-                  >
-                    <FormItem className="flex items-center space-x-2">
-                      <FormControl>
-                        <RadioGroupItem value="true" />
-                      </FormControl>
-                      <FormLabel className="font-normal">כן</FormLabel>
-                    </FormItem>
-                    <FormItem className="flex items-center space-x-2">
-                      <FormControl>
-                        <RadioGroupItem value="false" />
-                      </FormControl>
-                      <FormLabel className="font-normal">לא</FormLabel>
-                    </FormItem>
-                  </RadioGroup>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
                 </FormControl>
-                <FormMessage />
               </FormItem>
             )}
           />
