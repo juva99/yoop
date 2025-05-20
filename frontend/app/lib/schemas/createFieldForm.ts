@@ -5,7 +5,7 @@ import { z } from "zod";
 const fieldInfoSchema = z.object({
   gameType: z
     .array(z.nativeEnum(GameType))
-    .min(1, "At least one game type is required"),
+    .min(1, "יש לבחור לפחות סוג משחק אחד"),
 });
 
 const fieldDataSchema = z
@@ -16,7 +16,7 @@ const fieldDataSchema = z
     }),
     z.object({
       hasMultipleFields: z.literal(true),
-      numberOfFields: z.number().min(2, "At least one field is required"),
+      numberOfFields: z.number().min(2, "יש להזין לפחות שני מגרשים"),
       fields: z.array(fieldInfoSchema),
     }),
   ])
@@ -26,14 +26,14 @@ const fieldDataSchema = z
         ? data.fields.length === data.numberOfFields
         : true,
     {
-      message: "The number of fields must match the specified count.",
-      path: ["fields"], // Or "numberOfFields" depending on where you want the error to appear
+      message: "מספר המגרשים חייב להתאים למספר שהוזן",
+      path: ["numberOfFields"],
     },
   );
 
 const formSchema = z
   .object({
-    fieldName: z.string().min(1, "Field name is required"),
+    fieldName: z.string().min(1, "שם המגרש הוא שדה חובה"),
     fieldLat: z.number(),
     fieldLng: z.number(),
     city: z.nativeEnum(City),
@@ -47,7 +47,7 @@ const formDefaultValues: FormSchema = {
   fieldName: "",
   fieldLat: 0,
   fieldLng: 0,
-  city: City.TEL_AVIV_YAFO, // Replace 'City.DEFAULT' with an appropriate default value from the City enum
+  city: City.TEL_AVIV_YAFO,
   hasMultipleFields: false,
   fieldInfo: {
     gameType: [],
