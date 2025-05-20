@@ -69,6 +69,9 @@ export async function updateTokens({accessToken, refreshToken}: {
 }): Promise<void | null> { 
   const cookieStore = await cookies(); 
   const cookie = cookieStore.get("session")?.value;
+  console.log(cookieStore);
+  console.log(cookie);
+  
   if (!cookie)
     return null;
   

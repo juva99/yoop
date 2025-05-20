@@ -5,6 +5,7 @@ import {
   UseGuards,
   Get,
   Param,
+  Request,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/users/dto/create-users.dto';
@@ -42,11 +43,11 @@ export class AuthController {
   @Public()
   @UseGuards(RefreshAuthGuard)
   @Post('refresh')
-  async refreshToken(@GetUser() user): Promise<authenticatedUser> {
+  async refreshToken(@Request() req): Promise<authenticatedUser> {
     return this.authService.refreshToken(
-      user.uid,
-      user.role,
-      user.name,
+      req.user.uid,
+      req.user.role,
+      req.user.name,
     );
   }
 
@@ -58,7 +59,6 @@ export class AuthController {
   @Public()
   @Post('forgot-password')
   async forgotPass(@Body() body){
-    console.log(body.email);
     return this.authService.forgotPassword(body.email);
   }
 

@@ -18,6 +18,7 @@ import { authenticatedUser } from './types/authenticatedUser';
 import { Role } from 'src/enums/role.enum';
 import { MailService } from 'src/mail/mail.service';
 import * as crypto from 'crypto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -81,7 +82,10 @@ export class AuthService {
     name?: string,
   ): Promise<authenticatedUser> {
     const { accessToken, refreshToken } = await this.generateTokens(userId);
-    const hashedRefreshToken = await hash(refreshToken);
+
+    //change
+    const salt = await bcrypt.genSalt(10);
+    const hashedRefreshToken = await bcrypt.hash(refreshToken, salt);
     await this.usersService.updateRefreshToken(userId, hashedRefreshToken);
     return {
       uid: userId,
@@ -122,21 +126,19 @@ export class AuthService {
     refreshToken: string,
   ): Promise<{ uid: string; role: Role; name?: string }> {
     const user = await this.usersService.findById(userId);
-
     if (!user) {
       throw new UnauthorizedException('המשתמש לא נמצא!');
     }
-
     if (!user.hashedRefreshToken) {
       throw new UnauthorizedException(
         'Invalid refresh token or user not logged in',
       );
     }
-
-    const refreshTokenMatched = await verify(
-      user.hashedRefreshToken,
-      refreshToken,
-    );
+    const refreshTokenMatched = await bcrypt.compare(refreshToken, user.hashedRefreshToken);
+    // const refreshTokenMatched = await verify(
+    //   user.hashedRefreshToken,
+    //   refreshToken,
+    // );
     if (!refreshTokenMatched) {
       throw new UnauthorizedException('Invalid Refresh Token!');
     }
@@ -155,7 +157,9 @@ export class AuthService {
     name?: string,
   ): Promise<authenticatedUser> {
     const { accessToken, refreshToken } = await this.generateTokens(userId);
-    const hashedRefreshToken = await hash(refreshToken);
+    const salt = await bcrypt.genSalt(10);
+    const hashedRefreshToken = await bcrypt.hash(refreshToken, salt);
+    // const hashedRefreshToken = await hash(refreshToken);
     await this.usersService.updateRefreshToken(userId, hashedRefreshToken);
     return {
       uid: userId,

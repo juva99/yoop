@@ -105,7 +105,7 @@ export const refreshToken = async (
         refresh: oldRefreshToken,
       }),
     });
-
+    console.log('send refresh');
     if (!response.ok) {
       throw new Error("Failed to refresh token" + response.statusText);
     }

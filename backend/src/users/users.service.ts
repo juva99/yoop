@@ -107,7 +107,7 @@ export class UsersService {
   ): Promise<void> {
     await this.userRepository.update(
       { uid },
-      { hashedRefreshToken: hashedRefreshToken },
+      { hashedRefreshToken },
     );
   }
 
@@ -146,13 +146,11 @@ export class UsersService {
         passwordResetExpires: MoreThan(new Date()),
       }
     });
-    console.log(user);
-    
+
     //if found and token isnt expired set new password and delete refreshtoken
     if(!user){
       throw new NotFoundException(`password reset token isn't valid`);
     }
-    console.log(newPassword);
     const hashedPass = await hash(newPassword)
     
     const updateduser = await this.userRepository.update(user.uid,
@@ -163,7 +161,6 @@ export class UsersService {
       }
     );
     
-    console.log(updateduser);
     //log user in
   }
 }
