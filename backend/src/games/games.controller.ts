@@ -54,12 +54,6 @@ export class GamesController {
     return await this.gameService.findById(id);
   }
 
-  //get all games in selected field
-  @Get('/fieldId/:id')
-  async getByFieldId(@Param('id') id: string): Promise<Game[]> {
-    return await this.gameService.findByFieldId(id);
-  }
-
   //get available slots for a field on a specific date
   @Get('/available-slots/:fieldId')
   async getAvailableSlots(
@@ -120,7 +114,7 @@ export class GamesController {
   }
 
   @Roles(Role.ADMIN, Role.FIELD_MANAGER)
-  @Patch('/:gameId/decline')
+  @Delete('/:gameId/decline')
   async declineGame(@Param('gameId') gameId: string): Promise<void> {
     await this.gameService.declineGame(gameId);
   }
@@ -131,6 +125,14 @@ export class GamesController {
     @Param('fieldId') fieldId: string,
   ): Promise<Game[]> {
     return await this.gameService.findPendingGamesByField(fieldId);
+  }
+
+  //get all games in selected field
+  @Get('/:fieldId/approvedGames')
+  async getApprovedGamesByField(
+    @Param('fieldId') fieldId: string,
+  ): Promise<Game[]> {
+    return await this.gameService.findApprovedGamesByField(fieldId);
   }
 
   @Roles(Role.ADMIN, Role.FIELD_MANAGER)

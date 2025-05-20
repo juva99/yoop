@@ -13,7 +13,6 @@ import { Field } from './fields.entity';
 import { CreateFieldDto } from './dto/create-field.dto';
 import { Role } from 'src/enums/role.enum';
 import { Roles } from 'src/auth/decorators/roles.decorator';
-import { Game } from 'src/games/games.entity';
 
 @Controller('fields')
 export class FieldsController {
@@ -56,7 +55,7 @@ export class FieldsController {
   }
 
   @Roles(Role.ADMIN)
-  @Delete('/:fieldId/manager')
+  @Patch('/:fieldId/setPublic')
   async setFieldPublic(@Param('fieldId') fieldId: string): Promise<Field> {
     return this.fieldService.setFieldPublic(fieldId);
   }

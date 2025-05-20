@@ -50,22 +50,6 @@ export class GamesService {
     return game;
   }
 
-  async findByFieldId(fieldId: string): Promise<Game[]> {
-    const game = await this.gameRepository.find({
-      relations: ['field'],
-      where: {
-        field: {
-          fieldId,
-        },
-        status: GameStatus.APPROVED,
-      },
-    });
-    if (!game) {
-      throw new NotFoundException(`field with id ${fieldId} not found`);
-    }
-    return game;
-  }
-
   async deleteOne(gameId: string): Promise<void> {
     const results = await this.gameRepository.delete(gameId);
     if (results.affected === 0) {
@@ -303,22 +287,52 @@ export class GamesService {
 
   // Todo: get only future games
   async findAllGamesByField(fieldId: string): Promise<Game[]> {
-    return this.gameRepository.find({
+    const games = await this.gameRepository.find({
+      relations: ['field'],
       where: {
         field: { fieldId },
       },
       order: { startDate: 'ASC' },
     });
+
+    if (!games) {
+      throw new NotFoundException(`field with id ${fieldId} not found`);
+    }
+
+    return games;
   }
 
   // Todo: get only future games
   async findPendingGamesByField(fieldId: string): Promise<Game[]> {
-    return this.gameRepository.find({
+    const games = await this.gameRepository.find({
+      relations: ['field'],
       where: {
         field: { fieldId },
         status: GameStatus.PENDING,
       },
       order: { startDate: 'ASC' },
     });
+
+    if (!games) {
+      throw new NotFoundException(`field with id ${fieldId} not found`);
+    }
+
+    return games;
+  }
+
+  async findApprovedGamesByField(fieldId: string): Promise<Game[]> {
+    const games = await this.gameRepository.find({
+      relations: ['field'],
+      where: {
+        field: {
+          fieldId,
+        },
+        status: GameStatus.APPROVED,
+      },
+    });
+    if (!games) {
+      throw new NotFoundException(`field with id ${fieldId} not found`);
+    }
+    return games;
   }
 }
