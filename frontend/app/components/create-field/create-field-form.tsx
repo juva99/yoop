@@ -13,13 +13,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   formDefaultValues,
@@ -29,10 +22,9 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useState } from "react";
-import { cn } from "@/lib/utils";
-import Image from "next/image";
 import GameTypeOption from "./game-type-option";
 import { Combobox } from "../ui/combobox";
+import { Map, Marker } from "pigeon-maps";
 
 const cityOptions = Object.entries(City).map(([label, value]) => ({
   label: value,
@@ -47,6 +39,10 @@ const CreateFieldForm = () => {
   });
 
   const [hasMultipleFields, setHasMultipleFields] = useState(false);
+  // State for map marker position
+  const [markerPosition, setMarkerPosition] = useState<[number, number] | null>(
+    null,
+  );
 
   // Field array for managing multiple fields
   const { fields, append, remove } = useFieldArray({
@@ -73,6 +69,14 @@ const CreateFieldForm = () => {
         remove(i);
       }
     }
+  };
+
+  // Handle map click to update lat/lng and marker
+  const handleMapClick = ({ latLng }: { latLng: [number, number] }) => {
+    const [lat, lng] = latLng;
+    form.setValue("fieldLat", lat);
+    form.setValue("fieldLng", lng);
+    setMarkerPosition(latLng);
   };
 
   return (
@@ -118,6 +122,9 @@ const CreateFieldForm = () => {
                             ? undefined
                             : parseFloat(e.target.value);
                         field.onChange(value);
+                        if (value !== undefined && markerPosition) {
+                          setMarkerPosition([value, markerPosition[1]]);
+                        }
                       }}
                     />
                   </FormControl>
@@ -145,6 +152,9 @@ const CreateFieldForm = () => {
                             ? undefined
                             : parseFloat(e.target.value);
                         field.onChange(value);
+                        if (value !== undefined && markerPosition) {
+                          setMarkerPosition([markerPosition[0], value]);
+                        }
                       }}
                     />
                   </FormControl>
@@ -154,9 +164,20 @@ const CreateFieldForm = () => {
             />
           </div>
 
-          <div className="flex h-64 items-center justify-center rounded-md bg-gray-100 text-gray-400">
-            רכיב מפה (לחץ כדי לבחור מיקום)
+          <div className="h-64 overflow-hidden rounded-md">
+            <Map
+              height={256}
+              defaultCenter={[31.78, 35.21]} // Default center on Israel
+              defaultZoom={10}
+              onClick={handleMapClick}
+            >
+              {markerPosition && <Marker width={50} anchor={markerPosition} />}
+            </Map>
+            <p className="mt-1 text-center text-sm text-gray-500">
+              לחץ על המפה כדי לבחור מיקום
+            </p>
           </div>
+
           <Combobox
             form={form}
             name="city"
