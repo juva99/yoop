@@ -1,17 +1,35 @@
 import { GameType } from "@/app/enums/game-type.enum";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
+import { PiBasketball, PiSoccerBall } from "react-icons/pi";
+
+const getGameTypeLabel = (type: GameType) => {
+  switch (type) {
+    case GameType.FootBall:
+      return "כדורגל";
+    case GameType.BasketBall:
+      return "כדורסל";
+    default:
+      return type;
+  }
+};
+
+const getGameTypeIcon = (type: GameType) => {
+  switch (type) {
+    case GameType.FootBall:
+      return <PiSoccerBall size={40} />;
+    case GameType.BasketBall:
+      return <PiBasketball size={40} />;
+    default:
+      return null; // Default case
+  }
+};
 
 const GameTypeOption = ({
   value,
-  label,
-  icon,
   selected,
   onSelect,
 }: {
   value: GameType;
-  label: string;
-  icon: string;
   selected: boolean;
   onSelect: () => void;
 }) => {
@@ -26,9 +44,9 @@ const GameTypeOption = ({
       )}
     >
       <div className="mb-2 flex h-12 w-12 items-center justify-center">
-        <Image src={icon} alt={label} width={40} height={40} />
+        {getGameTypeIcon(value)}
       </div>
-      <span className="text-sm font-medium">{label}</span>
+      <span className="text-sm font-medium">{getGameTypeLabel(value)}</span>
     </div>
   );
 };

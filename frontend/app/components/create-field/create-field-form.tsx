@@ -32,6 +32,12 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import GameTypeOption from "./game-type-option";
+import { Combobox } from "../ui/combobox";
+
+const cityOptions = Object.entries(City).map(([label, value]) => ({
+  label: value,
+  value: value,
+}));
 
 const CreateFieldForm = () => {
   const form = useForm<FormSchema>({
@@ -66,28 +72,6 @@ const CreateFieldForm = () => {
       for (let i = currentFieldsCount - 1; i >= value; i--) {
         remove(i);
       }
-    }
-  };
-
-  const getGameTypeLabel = (type: GameType) => {
-    switch (type) {
-      case GameType.FootBall:
-        return "כדורגל";
-      case GameType.BasketBall:
-        return "כדורסל";
-      default:
-        return type;
-    }
-  };
-
-  const getGameTypeIcon = (type: GameType) => {
-    switch (type) {
-      case GameType.FootBall:
-        return "/menu-logout.png"; // Update with actual path
-      case GameType.BasketBall:
-        return "/menu-home.png"; // Update with actual path
-      default:
-        return "/menu-games"; // Default icon
     }
   };
 
@@ -173,35 +157,15 @@ const CreateFieldForm = () => {
           <div className="flex h-64 items-center justify-center rounded-md bg-gray-100 text-gray-400">
             רכיב מפה (לחץ כדי לבחור מיקום)
           </div>
-
-          <FormField
-            control={form.control}
+          <Combobox
+            form={form}
             name="city"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>עיר</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="בחר עיר" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {Object.values(City).map((city) => (
-                      <SelectItem key={city} value={city}>
-                        {city}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
+            label="עיר"
+            options={cityOptions}
+            placeholder="בחר עיר"
+            searchPlaceholder="חפש עיר..."
+            notFoundText="לא נמצאה עיר"
           />
-
           <FormField
             control={form.control}
             name="fieldAddress"
@@ -271,8 +235,6 @@ const CreateFieldForm = () => {
                         <GameTypeOption
                           key={type}
                           value={type}
-                          label={getGameTypeLabel(type)}
-                          icon={getGameTypeIcon(type)}
                           selected={field.value?.includes(type)}
                           onSelect={() => {
                             const currentValue = field.value || [];
@@ -341,8 +303,6 @@ const CreateFieldForm = () => {
                               <GameTypeOption
                                 key={type}
                                 value={type}
-                                label={getGameTypeLabel(type)}
-                                icon={getGameTypeIcon(type)}
                                 selected={field.value?.includes(type)}
                                 onSelect={() => {
                                   const currentValue = field.value || [];
