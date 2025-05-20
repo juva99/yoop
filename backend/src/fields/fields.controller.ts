@@ -46,7 +46,6 @@ export class FieldsController {
     return await this.fieldService.deleteOne(id);
   }
 
-
   @Roles(Role.ADMIN)
   @Patch('/:fieldId/setManager/:userId')
   async setManagerToField(
@@ -60,5 +59,11 @@ export class FieldsController {
   @Delete('/:fieldId/manager')
   async setFieldPublic(@Param('fieldId') fieldId: string): Promise<Field> {
     return this.fieldService.setFieldPublic(fieldId);
+  }
+
+  @Roles(Role.ADMIN, Role.FIELD_MANAGER)
+  @Get('/:userId/allFields')
+  async getFieldsByUser(@Param('userId') userId: string): Promise<Field[]> {
+    return await this.fieldService.getFieldsByUser(userId);
   }
 }

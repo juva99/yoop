@@ -278,18 +278,21 @@ export class GamesService {
     game.status = status;
 
     const gameRes = await this.gameRepository.save(game);
+
     this.mailService.sendNewGameStatus(
       gameRes.creator.userEmail,
       gameRes.creator.firstName,
       status,
       gameRes.field.fieldName,
     );
+
     return gameRes;
   }
 
   async declineGame(gameId: string): Promise<void> {
     const game = await this.findById(gameId);
     await this.deleteOne(gameId);
+
     this.mailService.sendNewGameStatus(
       game.creator.userEmail,
       game.creator.firstName,

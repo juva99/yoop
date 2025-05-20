@@ -58,11 +58,6 @@ export class FieldsService {
     return await this.fieldRepository.save(fields);
   }
 
-
-  async findPendingGamesByField(fieldId: string): Promise<Game[]> {
-    return await this.gamesService.findPendingGamesByField(fieldId);
-  }
-
   async setManagerToField(fieldId: string, userId: string): Promise<Field> {
     const field = await this.findById(fieldId);
     const newManager = await this.usersService.findById(userId);
@@ -87,8 +82,4 @@ export class FieldsService {
       where: { manager: { uid: userId } },
     });
   }
-
-
-
-
 }
