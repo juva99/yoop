@@ -41,7 +41,7 @@ const page: React.FC = ({}) => {
         </Link>
 
         <Link
-          href={"/friends/search"}
+          href={"/friends"}
           className="menu-item flex flex-col items-center justify-center"
         >
           <Image
