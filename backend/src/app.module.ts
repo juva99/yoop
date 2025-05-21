@@ -44,7 +44,7 @@ import { MailModule } from './mail/mail.module';
     WeatherApiModule,
     FieldFetchApiModule,
     FriendsModule,
-    MailModule
+    MailModule,
   ],
   controllers: [],
 })

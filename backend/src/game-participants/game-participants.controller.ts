@@ -18,5 +18,4 @@ export class GameParticipantsController {
   ): Promise<GameParticipant> {
     return await this.gameParticipantsService.setStatus(setStatusDto);
   }
-
 }

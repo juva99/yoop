@@ -57,8 +57,6 @@ export class GamesService {
     }
   }
 
-  //////////////////////////////////////////////////////////////////////////////
-  // Todo: change to create as pending or approved depending if field is private
   async create(createGameDto: CreateGameDto, user: User): Promise<Game> {
     const { gameType, startDate, endDate, maxParticipants, field } =
       createGameDto;
@@ -134,8 +132,6 @@ export class GamesService {
     return newParticipation;
   }
 
-  ///////////////////////////////////////////////
-  /// if used to show the free games slots, need to return pending too
   async queryGames(queryDto: QueryGameDto): Promise<Game[]> {
     const { gameType, startDate, endDate, city } = queryDto;
     const query = this.gameRepository

@@ -8,8 +8,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export default async function Home() {
-  const data = await getMyGames()
-  
+  const data = await getMyGames();
+
   const session = await getSession();
   if (!session?.user?.uid) {
     console.error("Invalid session or user credentials");
