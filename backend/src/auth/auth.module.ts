@@ -22,7 +22,7 @@ import { MailModule } from 'src/mail/mail.module';
     JwtModule.registerAsync(jwtConfig.asProvider()),
     ConfigModule.forFeature(jwtConfig),
     ConfigModule.forFeature(refreshConfig),
-    MailModule
+    MailModule,
   ],
   controllers: [AuthController],
   providers: [
