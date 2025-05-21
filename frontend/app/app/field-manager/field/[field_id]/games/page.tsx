@@ -1,6 +1,6 @@
 import { authFetch } from "@/lib/authFetch";
-import { Game } from "@/app/types/Game";
-import GameItem from "./GameItem";
+import { Field } from "@/app/types/Field";
+import FieldGameList from "@/components/gameManager/futureGames/FieldGameList";
 
 type Props = {
   params: {
@@ -9,8 +9,10 @@ type Props = {
 };
 
 const Page: React.FC<Props> = async ({ params }) => {
-  const response = await authFetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/fieldId/${params.field_id}`,
+  const { field_id } = await params;
+
+  const fieldResponse = await authFetch(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/fields/${field_id}`,
     {
       method: "GET",
       headers: {
@@ -19,26 +21,14 @@ const Page: React.FC<Props> = async ({ params }) => {
     },
   );
 
-  if (!response.ok) {
-    return <p>שגיאה בטעינת המשחקים</p>;
-  }
-
-  const games: Game[] = await response.json();
+  const field: Field = await fieldResponse.json();
 
   return (
     <div className="p-5">
-      <h1 className="text-title mb-6 text-2xl font-bold">רשימת משחקים</h1>
-      <div className="field__game-list rounded-lg border-2 border-gray-300 p-4">
-        {games.length === 0 ? (
-          <p>אין משחקים להצגה</p>
-        ) : (
-          <div>
-            {games.map((game) => (
-              <GameItem key={game.gameId} game={game} />
-            ))}
-          </div>
-        )}
-      </div>
+      <h1 className="text-title mb-6 text-2xl font-bold">
+        משחקים ב{field.fieldName}
+      </h1>
+      <FieldGameList fieldId={field.fieldId} />
     </div>
   );
 };

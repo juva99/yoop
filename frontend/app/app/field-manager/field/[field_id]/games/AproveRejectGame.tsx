@@ -3,48 +3,55 @@ import { GameStatus } from "@/app/enums/game-status.enum";
 import { Button } from "@/components/ui/button";
 import { authFetch } from "@/lib/authFetch";
 import React from "react";
+import { GoCheckCircle } from "react-icons/go";
+import { GoXCircle } from "react-icons/go";
 
 type Props = {
   gameId: string;
+  onStatusChange: () => void;
 };
 
-const AproveRejectGame: React.FC<Props> = ({ gameId }) => {
-  const setStatus = async (status: GameStatus) => {
+const ApproveRejectGame: React.FC<Props> = ({ gameId, onStatusChange }) => {
+  const approve = async () => {
     const response = await authFetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/${gameId}/setStatus`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/${gameId}/approve`,
       {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          status,
-        }),
       },
     );
 
     if (!response.ok) {
       console.error("Failed to approve the game");
     }
-    console.log(response);
+    onStatusChange();
   };
 
+  // const reject = async () => {
+  //   const response = await authFetch(
+  //     `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/${gameId}/approve`,
+  //     {
+  //       method: "PATCH",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     },
+  //   );
+
+  //   if (!response.ok) {
+  //     console.error("Failed to approve the game");
+  //   }
+  //   onStatusChange();
+  // };
+
   return (
-    <div>
-      <Button
-        onClick={() => setStatus(GameStatus.AVAILABLE)}
-        className="h-7 rounded-none rounded-tr-lg rounded-br-lg bg-green-300 p-2"
-      >
-        אשר
-      </Button>
-      <Button
-        onClick={() => setStatus(GameStatus.REJECTED)}
-        className="h-7 rounded-none rounded-tl-lg rounded-bl-lg bg-red-300 p-2"
-      >
-        דחה
-      </Button>
+    <div className="flex gap-2">
+      <GoCheckCircle color="#25D366" size={22} onClick={() => approve()} />
+      <GoXCircle color="red" size={22} onClick={() => {}} />
     </div>
   );
 };
 
-export default AproveRejectGame;
+export default ApproveRejectGame;

@@ -93,7 +93,7 @@ export class GamesService {
       maxParticipants,
       creator: user,
       field: fieldd,
-      status: GameStatus.AVAILABLE,
+      status: fieldd.isManaged ? GameStatus.PENDING : GameStatus.AVAILABLE,
       gameParticipants: [],
       weatherTemp: parseInt(weatherData.temp_c),
       weatherCondition: weatherData.condition.text,

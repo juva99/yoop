@@ -6,11 +6,13 @@ import { PiSoccerBall } from "react-icons/pi";
 import { PiBasketball } from "react-icons/pi";
 import { FaWhatsapp } from "react-icons/fa6";
 import AproveRejectGame from "./AproveRejectGame";
+
 interface Props {
   game: Game;
+  onStatusChange: () => void;
 }
 
-const GameItem: React.FC<Props> = ({ game }) => {
+const GameItem: React.FC<Props> = ({ game, onStatusChange }) => {
   const formatDate = (date: Date) =>
     new Date(date).toLocaleDateString("he-IL", {
       day: "2-digit",
@@ -29,42 +31,48 @@ const GameItem: React.FC<Props> = ({ game }) => {
     return `972${phoneNum.substring(1)}`;
   };
   return (
-    <div className="flex flex-col gap-1 border-b-2 border-gray-300 py-2">
-      <div className="flex items-center gap-2">
-        {game.gameType === GameType.FootBall ? (
-          <PiSoccerBall />
-        ) : (
-          <PiBasketball />
+    <div className="flex justify-between border-b-1 border-gray-200 text-sm">
+      <div className="flex flex-col gap-1 py-2">
+        <div className="flex items-center gap-2">
+          {game.gameType === GameType.FootBall ? (
+            <PiSoccerBall />
+          ) : (
+            <PiBasketball />
+          )}
+          <span>{formatDate(game.startDate)}</span>
+          <span>|</span>
+          <span>
+            {formatTime(game.startDate)}-{formatTime(game.endDate)}
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span>יוצר:</span>
+          <span>
+            {game.creator.firstName} {game.creator.lastName}
+          </span>
+          <span></span>
+          {game.creator.phoneNum && (
+            <a
+              href={`https://wa.me/${formatPhoneNumber(game.creator.phoneNum)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FaWhatsapp className="text-[#25D366]" />
+            </a>
+          )}
+        </div>
+        {game.status === GameStatus.AVAILABLE && (
+          <span>
+            רשומים: {game.gameParticipants.length}/{game.maxParticipants}
+          </span>
         )}
-        <span>{formatDate(game.startDate)}</span>
-        <span>|</span>
-        <span>
-          {formatTime(game.startDate)}-{formatTime(game.endDate)}
-        </span>
       </div>
       <div className="flex items-center gap-2">
-        <span>יוצר:</span>
-        <span>
-          {game.creator.firstName} {game.creator.lastName}
-        </span>
-        <span></span>
-        {game.creator.phoneNum && (
-          <a
-            href={`https://wa.me/${formatPhoneNumber(game.creator.phoneNum)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <FaWhatsapp className="text-[#25D366]" />
-          </a>
-        )}
-      </div>
-      <div className="flex items-center gap-2">
-        <span>סטטוס:</span>
-        <span>
-          {game.status === GameStatus.AVAILABLE ? "מאושר" : "ממתין לאישור"}
-        </span>
         {game.status === GameStatus.PENDING && (
-          <AproveRejectGame gameId={game.gameId} />
+          <AproveRejectGame
+            gameId={game.gameId}
+            onStatusChange={() => onStatusChange()}
+          />
         )}
       </div>
     </div>
