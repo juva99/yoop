@@ -3,6 +3,7 @@ import { GameType } from "@/app/enums/game-type.enum";
 import { z } from "zod";
 
 const fieldInfoSchema = z.object({
+  fieldNameOptional: z.string().optional(),
   gameType: z
     .array(z.nativeEnum(GameType))
     .min(1, "יש לבחור לפחות סוג משחק אחד"),

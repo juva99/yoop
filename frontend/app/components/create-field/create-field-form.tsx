@@ -298,6 +298,25 @@ const CreateFieldForm = () => {
                   <h3 className="mb-2 font-medium">מגרש {index + 1}</h3>
                   <FormField
                     control={form.control}
+                    name={`fields.${index}.fieldNameOptional`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>שם מגרש (אופציונלי)</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="הכנס שם למגרש"
+                            {...field}
+                            value={field.value ?? ""}
+                            onChange={(e) => field.onChange(e.target.value)}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
                     name={`fields.${index}.gameType`}
                     render={({ field }) => (
                       <FormItem>
