@@ -6,7 +6,7 @@ export const formSchema = z
       .string()
       .trim()
       .min(2, { message: "שם פרטי חייב להכיל לפחות שתי אותיות" })
-      .regex(/^[א-ת]+$/, { message: "שם משפחה חייב להכיל אותיות בעברית" }),
+      .regex(/^[א-ת]+$/, { message: "שם פרטי חייב להכיל אותיות בעברית" }),
     lastName: z
       .string()
       .trim()
