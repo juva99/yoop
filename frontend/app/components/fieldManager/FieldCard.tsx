@@ -7,23 +7,22 @@ type Props = {
   field: Field;
 };
 
-const GameTypeIcon = (type: GameType) => {
-  if (type === GameType.FootBall) {
-    return <PiSoccerBall className="field-icon" />;
-  }
-  if (type === GameType.BasketBall) {
-    return <PiBasketball className="field-icon" />;
-  }
-  return null;
-};
-
 const FieldCard: React.FC<Props> = ({ field }) => {
+  let icons = [];
+  if (field.gameTypes.includes(GameType.FootBall)) {
+    icons.push(<PiSoccerBall className="field-icon" />);
+  }
+  if (field.gameTypes.includes(GameType.BasketBall)) {
+    icons.push(<PiBasketball className="field-icon" />);
+  }
   return (
     <div className="field-card max-800 mx-auto w-full rounded-[18px] border border-blue-100 bg-white p-5 shadow-lg">
       <div className="field-header mb-4 flex items-center justify-start">
-        <div className="field-icon-container mr-0 ml-3 flex text-2xl text-blue-700">
-          {GameTypeIcon(field.gameTypes[0])}
-        </div>
+        {icons.map((icon) => (
+          <div className="field-icon-container mr-0 ml-3 flex text-2xl text-blue-700">
+            {icon}
+          </div>
+        ))}
 
         <div className="field-info flex items-center text-right">
           <span className="field-name ml-5 text-lg font-bold text-[#00aaff]">

@@ -62,22 +62,11 @@ const ProfileInfo: React.FC<Props> = ({ user, role }) => {
     address: (user.address as City) || "",
   };
 
-  //----------בדיקה שלי----------//
-  useEffect(() => {
-    console.log("📥 נתוני התחלה בטופס:", user);
-  }, []);
-  //----------בדיקה שלי----------//
-
   const form = useForm<ProfileUpdateFormValues>({
     resolver: zodResolver(ProfileUpdateSchema),
     defaultValues,
   });
-
-  //----------בדיקה שלי----------//
   const onSubmit = async (values: ProfileUpdateFormValues) => {
-    console.log("📤 נשלח לשרת:", values);
-    //----------בדיקה שלי----------//
-
     try {
       const res = await authFetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/update/${user.uid}`,
@@ -92,10 +81,7 @@ const ProfileInfo: React.FC<Props> = ({ user, role }) => {
 
       if (!res.ok) throw new Error("Failed to update");
 
-      //----------בדיקה שלי----------//
       const dataFromServer = await res.json();
-      console.log("✅ תגובת שרת:", dataFromServer);
-      //----------בדיקה שלי----------//
 
       setSuccessMessage("הפרטים עודכנו בהצלחה");
       setErrorMessage("");
@@ -104,10 +90,6 @@ const ProfileInfo: React.FC<Props> = ({ user, role }) => {
         window.location.reload();
       }, 1000);
     } catch (err) {
-      //----------בדיקה שלי----------//
-      console.error("❌ שגיאה בשליחה:", err);
-      //----------בדיקה שלי----------//
-
       setErrorMessage("שגיאה בעדכון הפרטים");
       setSuccessMessage("");
     }
