@@ -1,10 +1,4 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  ManyToOne,
-  JoinColumn,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { Game } from 'src/games/games.entity';
 import { User } from 'src/users/users.entity';
 import { ParticipationStatus } from 'src/enums/participation-status.enum';
@@ -15,11 +9,9 @@ export class GameParticipant {
   id: string;
 
   @ManyToOne(() => Game, (game) => game.gameParticipants)
-  // @JoinColumn({ name: 'gameId' })
   game: Game;
 
   @ManyToOne(() => User, (user) => user.gameParticipations, { eager: true })
-  // @JoinColumn({ name: 'userId' })
   user: User;
 
   @Column('enum', {

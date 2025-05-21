@@ -1,11 +1,11 @@
-@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --font-sans: "Open Sans", Arial, Helvetica, sans-serif;
+  --font-sans: "Open Sans", sans-serif;
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -86,13 +86,16 @@
 
 .input_underscore {
   @apply border-elements border-b-2 text-right;
+  @apply border-elements border-b-2 text-right;
 }
 
 .form_item {
   @apply mt-2 mb-2;
+  @apply mt-2 mb-2;
 }
 
 .form_label {
+  @apply mb-1 block text-sm font-semibold text-gray-700;
   @apply mb-1 block text-sm font-semibold text-gray-700;
 }
 
@@ -155,9 +158,16 @@ body {
 }
 
 .primary-btn {
-  @apply bg-title mt-5 h-10 w-[100%] rounded-3xl text-xl text-white;
+  @apply bg-title my-5 h-10 w-[100%] rounded-3xl text-xl text-white;
 }
 
 .input {
   @apply mb-3 h-8 w-full border-b-1 border-gray-200 placeholder-gray-700 outline-none;
+}
+
+.menu-item {
+  @apply flex flex-col items-center justify-center text-sm text-white;
+}
+.menu-grid {
+  @apply grid grid-cols-3 grid-rows-2 gap-x-4 gap-y-10;
 }
