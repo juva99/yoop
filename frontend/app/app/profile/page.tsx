@@ -4,7 +4,6 @@ import { getSession } from "@/lib/session";
 import ProfileInfo from "@/components/profile/ProfileInfo";
 import { Role } from "@/app/enums/role.enum";
 
-
 const ProfilePage = async () => {
   const session = await getSession();
   if (!session?.user?.uid) {
@@ -26,7 +25,7 @@ const ProfilePage = async () => {
           הפרופיל שלי{" "}
         </h1>
         <section className="mb-6">
-          <ProfileInfo user={user} role={role}/>
+          <ProfileInfo user={user} role={role} />
         </section>
       </div>
     </div>

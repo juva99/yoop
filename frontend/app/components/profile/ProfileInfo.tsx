@@ -40,17 +40,16 @@ const cityOptions = Object.entries(City).map(([label, value]) => ({
 
 type Props = {
   user: User;
-  role: Role
+  role: Role;
 };
 
-const ProfileInfo: React.FC<Props> = ({ user ,role}) => {
+const ProfileInfo: React.FC<Props> = ({ user, role }) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [citySuggestions, setCitySuggestions] = useState<string[]>([]);
   const [showForm, setShowForm] = useState(false);
 
   const isAdmin = role === Role.ADMIN || role === Role.FIELD_MANAGER;
-
 
   const defaultValues: ProfileUpdateFormValues = {
     firstName: user.firstName,
@@ -155,15 +154,15 @@ const ProfileInfo: React.FC<Props> = ({ user ,role}) => {
           </p>
           {!isAdmin && (
             <>
-            <p>
-              <strong>תאריך לידה:</strong>{" "}
-              {user.birthDay
-                ? new Date(user.birthDay).toLocaleDateString("he-IL")
-                : "לא זמין"}
-            </p>
-            <p>
-              <strong>יישוב:</strong> {user.address || "לא זמין"}
-            </p>
+              <p>
+                <strong>תאריך לידה:</strong>{" "}
+                {user.birthDay
+                  ? new Date(user.birthDay).toLocaleDateString("he-IL")
+                  : "לא זמין"}
+              </p>
+              <p>
+                <strong>יישוב:</strong> {user.address || "לא זמין"}
+              </p>
             </>
           )}
         </div>
@@ -230,70 +229,70 @@ const ProfileInfo: React.FC<Props> = ({ user ,role}) => {
               )}
             />
 
-          {!isAdmin && (
-            <>
-            <FormField
-              control={form.control}
-              name="birthDay"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>תאריך לידה</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "flex w-full justify-start pl-3 font-normal",
-                            !field.value && "text-muted-foreground",
-                          )}
-                        >
-                          <CalendarIcon className="h-4 w-4 opacity-50" />
-                          {field.value ? (
-                            format(field.value, "dd/MM/yyyy")
-                          ) : (
-                            <span>בחר תאריך</span>
-                          )}
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={
-                          field.value ? new Date(field.value) : undefined
-                        }
-                        onSelect={(date) =>
-                          field.onChange(
-                            date
-                              ? (date.setHours(10),
-                                date.toISOString().slice(0, 10))
-                              : "",
-                          )
-                        }
-                        locale={he}
-                        disabled={(date) =>
-                          date >= new Date(new Date().toDateString()) ||
-                          date < new Date("1900-01-01")
-                        }
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Combobox
-              form={form}
-              name="address"
-              label="יישוב"
-              options={cityOptions}
-              placeholder="בחר עיר"
-              searchPlaceholder="חפש עיר..."
-              notFoundText="לא נמצאה עיר"
-            />
-          </>
-          )}
+            {!isAdmin && (
+              <>
+                <FormField
+                  control={form.control}
+                  name="birthDay"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>תאריך לידה</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "flex w-full justify-start pl-3 font-normal",
+                                !field.value && "text-muted-foreground",
+                              )}
+                            >
+                              <CalendarIcon className="h-4 w-4 opacity-50" />
+                              {field.value ? (
+                                format(field.value, "dd/MM/yyyy")
+                              ) : (
+                                <span>בחר תאריך</span>
+                              )}
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={
+                              field.value ? new Date(field.value) : undefined
+                            }
+                            onSelect={(date) =>
+                              field.onChange(
+                                date
+                                  ? (date.setHours(10),
+                                    date.toISOString().slice(0, 10))
+                                  : "",
+                              )
+                            }
+                            locale={he}
+                            disabled={(date) =>
+                              date >= new Date(new Date().toDateString()) ||
+                              date < new Date("1900-01-01")
+                            }
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Combobox
+                  form={form}
+                  name="address"
+                  label="יישוב"
+                  options={cityOptions}
+                  placeholder="בחר עיר"
+                  searchPlaceholder="חפש עיר..."
+                  notFoundText="לא נמצאה עיר"
+                />
+              </>
+            )}
 
             <Button type="submit">שמור שינויים</Button>
           </form>
