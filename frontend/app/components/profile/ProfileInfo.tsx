@@ -31,6 +31,7 @@ import { Calendar } from "../ui/calendar";
 import { cn } from "@/lib/utils";
 import { he } from "date-fns/locale";
 import { Combobox } from "../ui/combobox";
+import { Role } from "@/app/enums/role.enum";
 
 const cityOptions = Object.entries(City).map(([label, value]) => ({
   label: value,
@@ -39,13 +40,17 @@ const cityOptions = Object.entries(City).map(([label, value]) => ({
 
 type Props = {
   user: User;
+  role: Role
 };
 
-const ProfileInfo: React.FC<Props> = ({ user }) => {
+const ProfileInfo: React.FC<Props> = ({ user ,role}) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [citySuggestions, setCitySuggestions] = useState<string[]>([]);
   const [showForm, setShowForm] = useState(false);
+
+  const isAdmin = role === Role.ADMIN || role === Role.FIELD_MANAGER;
+
 
   const defaultValues: ProfileUpdateFormValues = {
     firstName: user.firstName,
@@ -60,7 +65,7 @@ const ProfileInfo: React.FC<Props> = ({ user }) => {
 
   //----------בדיקה שלי----------//
   useEffect(() => {
-    console.log("📥 נתוני התחלה בטופס:", defaultValues);
+    console.log("📥 נתוני התחלה בטופס:", user);
   }, []);
   //----------בדיקה שלי----------//
 
@@ -148,15 +153,19 @@ const ProfileInfo: React.FC<Props> = ({ user }) => {
           <p>
             <strong>טלפון:</strong> {user.phoneNum || "לא זמין"}
           </p>
-          <p>
-            <strong>תאריך לידה:</strong>{" "}
-            {user.birthDay
-              ? new Date(user.birthDay).toLocaleDateString("he-IL")
-              : "לא זמין"}
-          </p>
-          <p>
-            <strong>יישוב:</strong> {user.address || "לא זמין"}
-          </p>
+          {!isAdmin && (
+            <>
+            <p>
+              <strong>תאריך לידה:</strong>{" "}
+              {user.birthDay
+                ? new Date(user.birthDay).toLocaleDateString("he-IL")
+                : "לא זמין"}
+            </p>
+            <p>
+              <strong>יישוב:</strong> {user.address || "לא זמין"}
+            </p>
+            </>
+          )}
         </div>
       )}
       {showForm && (
@@ -221,6 +230,8 @@ const ProfileInfo: React.FC<Props> = ({ user }) => {
               )}
             />
 
+          {!isAdmin && (
+            <>
             <FormField
               control={form.control}
               name="birthDay"
@@ -281,6 +292,8 @@ const ProfileInfo: React.FC<Props> = ({ user }) => {
               searchPlaceholder="חפש עיר..."
               notFoundText="לא נמצאה עיר"
             />
+          </>
+          )}
 
             <Button type="submit">שמור שינויים</Button>
           </form>

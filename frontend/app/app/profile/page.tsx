@@ -2,6 +2,8 @@ import { User } from "@/app/types/User";
 import { authFetch } from "@/lib/authFetch";
 import { getSession } from "@/lib/session";
 import ProfileInfo from "@/components/profile/ProfileInfo";
+import { Role } from "@/app/enums/role.enum";
+
 
 const ProfilePage = async () => {
   const session = await getSession();
@@ -15,6 +17,7 @@ const ProfilePage = async () => {
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/${userId}`,
   );
   const user: User = await response.json();
+  const role: Role = session?.user?.role ?? ("USER" as Role);
 
   return (
     <div className="h-[80vh] bg-[url('/search-friends-background.png')] bg-cover bg-top bg-no-repeat px-7 py-10">
@@ -23,7 +26,7 @@ const ProfilePage = async () => {
           הפרופיל שלי{" "}
         </h1>
         <section className="mb-6">
-          <ProfileInfo user={user} />
+          <ProfileInfo user={user} role={role}/>
         </section>
       </div>
     </div>
