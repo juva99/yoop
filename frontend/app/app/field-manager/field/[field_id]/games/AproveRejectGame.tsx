@@ -29,9 +29,9 @@ const ApproveRejectGame: React.FC<Props> = ({ gameId, onStatusChange }) => {
     onStatusChange();
   };
 
-  // const reject = async () => {
+  // const onAction = async (action: GameStatus) => {
   //   const response = await authFetch(
-  //     `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/${gameId}/approve`,
+  //     `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/${gameId}/${action}`,
   //     {
   //       method: "PATCH",
   //       headers: {
@@ -48,8 +48,16 @@ const ApproveRejectGame: React.FC<Props> = ({ gameId, onStatusChange }) => {
 
   return (
     <div className="flex gap-2">
-      <GoCheckCircle color="#25D366" size={22} onClick={() => approve()} />
-      <GoXCircle color="red" size={22} onClick={() => {}} />
+      <GoCheckCircle
+        color="#25D366"
+        size={22}
+        // onClick={() => onAction(GameStatus.AVAILABLE)}
+      />
+      <GoXCircle
+        color="red"
+        size={22}
+        // onClick={() => onAction(GameStatus.REJECTED)}
+      />
     </div>
   );
 };
