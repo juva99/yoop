@@ -1,6 +1,6 @@
 "use client";
 
-import { City } from "@/app/enums/city.enum";
+import { City, cityCoordinates } from "@/app/enums/city.enum";
 import { GameType } from "@/app/enums/game-type.enum";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,7 +20,7 @@ import {
 } from "@/lib/schemas/createFieldForm";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect } from "react"; // Import useEffect
 import GameTypeOption from "./game-type-option";
 import { Combobox } from "../ui/combobox";
 import { Map, Marker } from "pigeon-maps";
@@ -42,10 +42,18 @@ const CreateFieldForm = () => {
     control: form.control,
     name: "hasMultipleFields",
   });
+
+  const selectedCity = useWatch({
+    control: form.control,
+    name: "city",
+  });
+
   // State for map marker position
   const [markerPosition, setMarkerPosition] = useState<[number, number] | null>(
     null,
   );
+  // State for map center
+  const [mapCenter, setMapCenter] = useState<[number, number]>([31.78, 35.21]); // Default center (Israel)
 
   // Field array for managing multiple fields
   const { fields, append, remove } = useFieldArray({
@@ -57,6 +65,21 @@ const CreateFieldForm = () => {
     console.log(data);
     // Handle form submission - API call etc.
   };
+
+  // Update map center when selectedCity changes
+  useEffect(() => {
+    if (selectedCity && cityCoordinates[selectedCity as City]) {
+      setMapCenter(cityCoordinates[selectedCity as City]);
+      setMarkerPosition(null);
+      form.setValue("fieldLat", 0);
+      form.setValue("fieldLng", 0);
+    } else {
+      setMapCenter([31.78, 35.21]);
+      setMarkerPosition(null);
+      form.setValue("fieldLat", 0);
+      form.setValue("fieldLng", 0);
+    }
+  }, [selectedCity, form]);
 
   // Add a new field when numberOfFields changes
   const handleNumberOfFieldsChange = (value: number) => {
@@ -103,6 +126,16 @@ const CreateFieldForm = () => {
                 <FormMessage />
               </FormItem>
             )}
+          />
+
+          <Combobox
+            form={form}
+            name="city"
+            label="עיר"
+            options={cityOptions}
+            placeholder="בחר עיר"
+            searchPlaceholder="חפש עיר..."
+            notFoundText="לא נמצאה עיר"
           />
 
           <div className="grid grid-cols-2 gap-4">
@@ -169,27 +202,19 @@ const CreateFieldForm = () => {
 
           <div className="h-64 overflow-hidden rounded-md">
             <Map
+              key={mapCenter.join("-")} // Add key to force re-render on center change if needed
               height={256}
-              defaultCenter={[31.78, 35.21]} // Default center on Israel
-              defaultZoom={10}
+              center={mapCenter} // Use center prop for dynamic centering
+              defaultZoom={10} // Or manage zoom level in state as well
               onClick={handleMapClick}
             >
               {markerPosition && <Marker width={50} anchor={markerPosition} />}
             </Map>
             <p className="mt-1 text-center text-sm text-gray-500">
-              לחץ על המפה כדי לבחור מיקום
+              לחץ על המפה כדי לבחור מיקום או בחר עיר להתמקדות
             </p>
           </div>
 
-          <Combobox
-            form={form}
-            name="city"
-            label="עיר"
-            options={cityOptions}
-            placeholder="בחר עיר"
-            searchPlaceholder="חפש עיר..."
-            notFoundText="לא נמצאה עיר"
-          />
           <FormField
             control={form.control}
             name="fieldAddress"
