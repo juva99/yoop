@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import MapView from "../MapView";
 import { BACKEND_URL } from "@/lib/constants";
 import { authFetch } from "@/lib/authFetch";
+import { City, cityCoordinates } from "@/app/enums/city.enum";
 
 type Props = {};
 type Filters = {
@@ -14,7 +15,7 @@ type Filters = {
   startDate?: Date;
   endDate?: Date;
   time?: any;
-  location?: any;
+  location?: City;
   radius?: any;
 };
 
@@ -35,7 +36,7 @@ const Search: React.FC<Props> = () => {
     time: null,
     startDate: new Date(),
     endDate: new Date(),
-    location: "tel aviv",
+    location: City.TEL_AVIV_YAFO,
     radius: 10,
   });
 
@@ -85,13 +86,16 @@ const Search: React.FC<Props> = () => {
   const filtersHandler = (newFilters: Filters) => {
     setFilters(newFilters);
   };
-
+  const coords = cityCoordinates[filters.location as City];
   return (
     <div className="p-5">
       <SearchGame updateFilters={filtersHandler} />
       {filteredGames.length ? (
         <MapView
-          defaultLocation={{ lng: 34.79, lat: 32.13 }}
+          defaultLocation={{
+            lat: coords[0],
+            lng: coords[1],
+          }}
           games={filteredGames}
         />
       ) : (
