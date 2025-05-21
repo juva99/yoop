@@ -93,7 +93,7 @@ export class GamesService {
       maxParticipants,
       creator: user,
       field: fieldd,
-      status: GameStatus.AVAILABLE,
+      status: fieldd.isManaged ? GameStatus.PENDING : GameStatus.AVAILABLE,
       gameParticipants: [],
       weatherTemp: parseInt(weatherData.temp_c),
       weatherCondition: weatherData.condition.text,
@@ -227,5 +227,20 @@ export class GamesService {
     }
 
     return availableHalfHours;
+  }
+
+  async setStatus(
+    gameId: string,
+    user: User,
+    status: GameStatus,
+  ): Promise<Game> {
+    const game = await this.gameRepository.findOne({
+      where: { gameId },
+    });
+    if (!game) {
+      throw new NotFoundException(`Game with id ${gameId} not found`);
+    }
+    game.status = status;
+    return await this.gameRepository.save(game);
   }
 }
