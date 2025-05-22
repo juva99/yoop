@@ -98,6 +98,7 @@ export class GameParticipantsService {
     });
     return participations.map((participation) => participation.game);
   }
+
   async leaveGame(gameId: string, user: User): Promise<void> {
     const game = await this.gameRepository.findOne({
       where: { gameId },
@@ -126,7 +127,13 @@ export class GameParticipantsService {
     await this.gameParticipantRepository.delete(existingParticipation.id);
   }
 
-  async deleteParticipantsByGame(gameId: string): Promise<void> {
+  async deleteOne(gameId: string): Promise<void> {
     await this.gameParticipantRepository.delete({ game: { gameId } });
+
+    const results = await this.gameRepository.delete(gameId);
+
+    if (results.affected === 0) {
+      throw new NotFoundException(`Game with id "${gameId}" not found`);
+    }
   }
 }

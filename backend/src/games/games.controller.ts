@@ -144,6 +144,6 @@ export class GamesController {
   @Roles(Role.ADMIN)
   @Get('/:gameId/delete')
   async deleteGame(@Param('gameId') gameId: string): Promise<void> {
-    await this.gameService.deleteOne(gameId);
+    await this.gameParticipantService.deleteOne(gameId);
   }
 }

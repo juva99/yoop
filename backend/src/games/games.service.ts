@@ -50,14 +50,6 @@ export class GamesService {
     return game;
   }
 
-  async deleteOne(gameId: string): Promise<void> {
-    await this.gameParticipantService.deleteParticipantsByGame(gameId);
-    const results = await this.gameRepository.delete(gameId);
-    if (results.affected === 0) {
-      throw new NotFoundException(`Game with id ${gameId} not found`);
-    }
-  }
-
   async create(createGameDto: CreateGameDto, user: User): Promise<Game> {
     const { gameType, startDate, endDate, maxParticipants, field } =
       createGameDto;
@@ -270,7 +262,7 @@ export class GamesService {
 
   async declineGame(gameId: string): Promise<void> {
     const game = await this.findById(gameId);
-    await this.deleteOne(gameId);
+    await this.gameParticipantService.deleteOne(gameId);
 
     this.mailService.sendNewGameStatus(
       game.creator.userEmail,
