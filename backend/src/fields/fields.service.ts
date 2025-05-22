@@ -5,7 +5,7 @@ import { Field } from './fields.entity';
 import { NotFoundException } from '@nestjs/common';
 import { CreateFieldDto } from './dto/create-field.dto';
 import { City } from 'src/enums/city.enum';
-import { UsersService } from 'src/users/users.service';
+import { User } from 'src/users/users.entity';
 
 @Injectable()
 export class FieldsService {
