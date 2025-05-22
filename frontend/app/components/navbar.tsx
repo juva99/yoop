@@ -64,15 +64,15 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
           />
         </Link>
 
-        <Link href={"/fields"}>
+        <Link href={"/field-manager/fields"}>
           <GiSoccerField
-            className={`size-[25px] ${pathname === "/fields" ? "text-neutral-900" : "text-elements"}`}
+            className={`size-[25px] ${pathname === "/field-manager/fields" ? "text-neutral-900" : "text-elements"}`}
           />
         </Link>
 
-        <Link href={"/fields/edit"}>
+        <Link href={"/field-manager/field/games"}>
           <RiFunctionAddFill
-            className={`size-[25px] ${pathname === "/fields/edit" ? "text-neutral-900" : "text-elements"}`}
+            className={`size-[25px] ${pathname === "/field-manager/field/games" ? "text-neutral-900" : "text-elements"}`}
           />
         </Link>
 

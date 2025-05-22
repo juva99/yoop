@@ -49,6 +49,7 @@ export async function signup(
 }
 
 export async function login(
+  
   state: FormState,
   formData: FormData,
 ): Promise<FormState> {
@@ -83,7 +84,16 @@ export async function login(
       accessToken: result.accessToken,
       refreshToken: result.refreshToken,
     });
-    redirect("/");
+
+    const roleRedirectMap: Record<string, string> = {
+      user: "/",
+      field_manager: "/field-manager/fields",
+      admin: "/field-manager/fields", //כרגע זה מנהל המערכת נשנה את זה אחרכך
+    };
+
+  const redirectPath = roleRedirectMap[result.role] ?? "/";
+  redirect(redirectPath);
+
   } else {
     return {
       message:
