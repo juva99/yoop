@@ -5,6 +5,7 @@ import { Field } from './fields.entity';
 import { NotFoundException } from '@nestjs/common';
 import { CreateFieldDto } from './dto/create-field.dto';
 import { City } from 'src/enums/city.enum';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class FieldsService {
@@ -42,8 +43,15 @@ export class FieldsService {
     }
   }
 
-  async create(createFieldDto: CreateFieldDto): Promise<Field> {
+  async create(
+    createFieldDto: CreateFieldDto,
+    fieldManager: User,
+  ): Promise<Field> {
     const field = this.fieldRepository.create(createFieldDto);
+
+    field.manager = fieldManager;
+    field.isManaged = true;
+
     return await this.fieldRepository.save(field);
   }
 
