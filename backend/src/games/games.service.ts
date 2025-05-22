@@ -28,6 +28,7 @@ export class GamesService {
   constructor(
     @InjectRepository(Game)
     private gameRepository: Repository<Game>,
+    
     private readonly fieldService: FieldsService,
     private readonly gameParticipantService: GameParticipantsService,
     private readonly weatherApiService: WeatherApiService,
@@ -161,8 +162,6 @@ export class GamesService {
     return await query.getMany();
   }
 
-  ///////////////////////////////////////////////
-  /// this used to calculate available slots, should also get the pending games
   async findGamesByFieldAndDate(
     fieldId: string,
     dateString: string,

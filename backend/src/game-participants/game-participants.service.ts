@@ -98,7 +98,6 @@ export class GameParticipantsService {
     });
     return participations.map((participation) => participation.game);
   }
-
   async leaveGame(gameId: string, user: User): Promise<void> {
     const game = await this.gameRepository.findOne({
       where: { gameId },

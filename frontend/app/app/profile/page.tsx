@@ -1,9 +1,8 @@
 import { User } from "@/app/types/User";
-import FriendList from "@/components/friends/FriendList";
 import { authFetch } from "@/lib/authFetch";
 import { getSession } from "@/lib/session";
 import ProfileInfo from "@/components/profile/ProfileInfo";
-import { Separator } from "@/components/ui/separator";
+import { Role } from "@/app/enums/role.enum";
 
 const ProfilePage = async () => {
   const session = await getSession();
@@ -17,21 +16,16 @@ const ProfilePage = async () => {
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/${userId}`,
   );
   const user: User = await response.json();
-
-  const friendsResponse = await authFetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/friends/getAll`,
-  );
-  const friendRelations = await friendsResponse.json();
+  const role: Role = session?.user?.role ?? ("USER" as Role);
 
   return (
-    <div className="w-full p-4">
-      <div className="rounded-md bg-white p-6">
-        <h1 className="mb-6 text-2xl text-[#002366]">פרופיל אישי </h1>
-
+    <div className="h-[80vh] bg-[url('/search-friends-background.png')] bg-cover bg-top bg-no-repeat px-7 py-10">
+      <div className="rounded-md bg-white p-6 shadow-md">
+        <h1 className="text-title mb-6 text-center text-2xl font-bold">
+          הפרופיל שלי{" "}
+        </h1>
         <section className="mb-6">
-          <ProfileInfo user={user} friendRelations={friendRelations} />
-          <Separator />
-          <FriendList currentUserUid={user.uid} relations={friendRelations} />
+          <ProfileInfo user={user} role={role} />
         </section>
       </div>
     </div>

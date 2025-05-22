@@ -3,12 +3,21 @@ import Form from "next/form";
 import { authFetch } from "@/lib/authFetch";
 import { User } from "@/app/types/User";
 import { PiMagnifyingGlassThin } from "react-icons/pi";
+import { getSession } from "@/lib/session";
+import FriendList from "@/components/friends/FriendList";
 
 export default async function SearchPage({
   searchParams,
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
+  const session = await getSession();
+  if (!session?.user?.uid) {
+    console.error("Invalid session or user credentials");
+    return null;
+  }
+
+  const userId = session.user.uid;
   const query = (await searchParams).query;
 
   const response = await authFetch(
@@ -23,10 +32,20 @@ export default async function SearchPage({
 
   const friends = await response.json();
 
+  const friendsResponse = await authFetch(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/friends/getAll`,
+  );
+  const friendRelations = await friendsResponse.json();
+
   return (
     <div className="h-[80vh] bg-[url('/search-friends-background.png')] bg-cover bg-top bg-no-repeat px-7 py-10">
-      <div className="h-[400px] rounded-3xl bg-white px-8 py-5">
-        <h1 className="text-title font-md text-center text-3xl">הוספת חברים</h1>
+      <div className="mb-5 flex h-[250px] flex-col rounded-3xl bg-white p-8">
+        <FriendList currentUserUid={userId} relations={friendRelations} />
+      </div>
+      <div className="flex h-[250px] flex-col rounded-3xl bg-white p-8">
+        <h1 className="text-title text-center text-2xl font-bold">
+          הוספת חברים
+        </h1>
         <Form action="/friends/search">
           <div className="input-wrapper border-title mt-5 mb-5 flex justify-between border-b-1 py-1">
             <input
