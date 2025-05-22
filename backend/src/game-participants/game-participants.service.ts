@@ -125,4 +125,8 @@ export class GameParticipantsService {
 
     await this.gameParticipantRepository.delete(existingParticipation.id);
   }
+
+  async deleteParticipantsByGame(gameId: string): Promise<void> {
+    await this.gameParticipantRepository.delete({ game: { gameId } });
+  }
 }

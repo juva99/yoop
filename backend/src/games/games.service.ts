@@ -28,7 +28,6 @@ export class GamesService {
   constructor(
     @InjectRepository(Game)
     private gameRepository: Repository<Game>,
-    
     private readonly fieldService: FieldsService,
     private readonly gameParticipantService: GameParticipantsService,
     private readonly weatherApiService: WeatherApiService,
@@ -52,6 +51,7 @@ export class GamesService {
   }
 
   async deleteOne(gameId: string): Promise<void> {
+    await this.gameParticipantService.deleteParticipantsByGame(gameId);
     const results = await this.gameRepository.delete(gameId);
     if (results.affected === 0) {
       throw new NotFoundException(`Game with id ${gameId} not found`);

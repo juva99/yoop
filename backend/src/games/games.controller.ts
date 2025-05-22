@@ -140,4 +140,10 @@ export class GamesController {
   async getAllGamesByField(@Param('fieldId') fieldId: string): Promise<Game[]> {
     return await this.gameService.findAllGamesByField(fieldId);
   }
+
+  @Roles(Role.ADMIN)
+  @Get('/:gameId/delete')
+  async deleteGame(@Param('gameId') gameId: string): Promise<void> {
+    await this.gameService.deleteOne(gameId);
+  }
 }
