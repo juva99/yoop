@@ -15,9 +15,4 @@ export class GameParticipantsController {
   ): Promise<GameParticipant> {
     return await this.gameParticipantsService.setStatus(setStatusDto);
   }
-
-  @Delete('/:gameId/deleteParticipants')
-  async deleteParticipantsByGame(@Param('gameId') gameId: string) {
-    await this.gameParticipantsService.deleteParticipantsByGame(gameId);
-  }
 }
