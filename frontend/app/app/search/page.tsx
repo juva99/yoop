@@ -1,4 +1,4 @@
-import Search from "@/components/searchComponents/Search";
+import Search from "@/components/searchComponents/search-games";
 import React from "react";
 
 const page: React.FC = () => {
