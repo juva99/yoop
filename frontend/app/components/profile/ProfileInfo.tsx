@@ -264,14 +264,25 @@ const ProfileInfo: React.FC<Props> = ({ user, role }) => {
                     </FormItem>
                   )}
                 />
-                <Combobox
-                  form={form}
+                <FormField
+                  control={form.control}
                   name="address"
-                  label="יישוב"
-                  options={cityOptions}
-                  placeholder="בחר עיר"
-                  searchPlaceholder="חפש עיר..."
-                  notFoundText="לא נמצאה עיר"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>יישוב</FormLabel>
+                      <FormControl>
+                        <Combobox
+                          options={cityOptions}
+                          value={field.value}
+                          onSelect={field.onChange}
+                          placeholder="בחר עיר"
+                          searchPlaceholder="חפש עיר..."
+                          notFoundText="לא נמצאה עיר"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
               </>
             )}

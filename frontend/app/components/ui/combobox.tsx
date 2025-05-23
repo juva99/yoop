@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { UseFormReturn } from "react-hook-form";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -14,13 +13,6 @@ import {
   CommandItem,
 } from "@/components/ui/command";
 import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -28,91 +20,84 @@ import {
 import { ScrollArea } from "./scroll-area";
 
 interface ComboboxProps {
-  form: UseFormReturn<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
-  name: string;
-  label: string;
   options: { value: string; label: string }[];
+  value?: string;
+  onSelect?: (value: string) => void;
   placeholder?: string;
   searchPlaceholder?: string;
   notFoundText?: string;
   containerClassName?: string;
+  disabled?: boolean;
+  name?: string;
 }
 
 export function Combobox({
-  form,
-  name,
-  label,
   options,
+  value,
+  onSelect,
   placeholder = "Select an option...",
   searchPlaceholder = "Search...",
   notFoundText = "No option found.",
   containerClassName,
+  disabled = false,
+  name,
 }: ComboboxProps) {
   const [open, setOpen] = React.useState(false);
 
   return (
-    <FormField
-      control={form.control}
-      name={name}
-      render={({ field }) => (
-        <FormItem className={cn("flex flex-col", containerClassName)}>
-          <FormLabel>{label}</FormLabel>
-          <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
-              <FormControl>
-                <Button
-                  variant="outline"
-                  role="combobox"
-                  aria-expanded={open}
-                  className="w-full justify-between text-right"
-                >
-                  {field.value
-                    ? options.find((option) => option.value === field.value)
-                        ?.label
-                    : placeholder}
-                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-              </FormControl>
-            </PopoverTrigger>
-            <PopoverContent
-              className="z-20 w-auto p-0"
-              align="start"
-              sideOffset={5}
-            >
-              <Command>
-                <CommandInput placeholder={searchPlaceholder} />
-                <CommandEmpty>{notFoundText}</CommandEmpty>
-                <CommandGroup>
-                  <ScrollArea className="h-48">
-                    {options.map((option) => (
-                      <CommandItem
-                        value={option.label}
-                        className="flex justify-end text-right"
-                        key={option.value}
-                        onSelect={() => {
-                          form.setValue(name, option.value);
-                          setOpen(false);
-                        }}
-                      >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            option.value === field.value
-                              ? "opacity-100"
-                              : "opacity-0",
-                          )}
-                        />
-                        {option.label}
-                      </CommandItem>
-                    ))}
-                  </ScrollArea>
-                </CommandGroup>
-              </Command>
-            </PopoverContent>
-          </Popover>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
+    <div className={cn("flex flex-col", containerClassName)}>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            className="w-full justify-between text-right"
+            disabled={disabled}
+            name={name}
+          >
+            {value
+              ? options.find((option) => option.value === value)?.label
+              : placeholder}
+            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent
+          className="z-20 w-auto p-0"
+          align="start"
+          sideOffset={5}
+        >
+          <Command>
+            <CommandInput placeholder={searchPlaceholder} />
+            <CommandEmpty>{notFoundText}</CommandEmpty>
+            <CommandGroup>
+              <ScrollArea className="h-48">
+                {options.map((option) => (
+                  <CommandItem
+                    value={option.label}
+                    className="flex justify-end text-right"
+                    key={option.value}
+                    onSelect={() => {
+                      onSelect?.(option.value);
+                      setOpen(false);
+                    }}
+                  >
+                    <Check
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        option.value === value
+                          ? "opacity-100"
+                          : "opacity-0",
+                      )}
+                    />
+                    {option.label}
+                  </CommandItem>
+                ))}
+              </ScrollArea>
+            </CommandGroup>
+          </Command>
+        </PopoverContent>
+      </Popover>
+    </div>
   );
 }
