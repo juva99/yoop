@@ -4,7 +4,6 @@ import FilteredGames from "@/components/searchComponents/FilteredGames";
 import SearchGame from "@/components/searchComponents/SearchGame";
 import React, { useEffect, useState } from "react";
 import MapView from "../MapView";
-import { BACKEND_URL } from "@/lib/constants";
 import { authFetch } from "@/lib/authFetch";
 import { City, cityCoordinates } from "@/app/enums/city.enum";
 

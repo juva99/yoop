@@ -118,7 +118,7 @@ export default async function Page({
             <PiSoccerBall />
           ) : null}
         </span>
-        <h1 className="text-2xl font-bold">{`משחק ${gameType === GameType.BasketBall ? "כדורסל" : "כדורגל"} ב${field.fieldName}`}</h1>{" "}
+        <h1>{`משחק ${gameType === GameType.BasketBall ? "כדורסל" : "כדורגל"} ב${field.fieldName}`}</h1>{" "}
       </div>
       <div className="grid grid-cols-2 gap-4 border-t border-b py-4">
         {" "}

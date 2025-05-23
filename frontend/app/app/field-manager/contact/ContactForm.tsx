@@ -37,17 +37,11 @@ const ContactForm: React.FC<Props> = ({}) => {
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
   }
-  console.log(form.getValues());
-
   return (
     <div className="h-full w-full max-w-md p-7">
       <div className="mb-10 flex flex-col justify-center gap-4">
-        <h1 className="text-title text-2xl font-bold">
-          איזה כיף, עוד מגרשים לאוסף
-        </h1>
-        <h2 className="text-subtitle text-xl">
-          תשאיר לנו פרטים ונחזור אלייך :)
-        </h2>
+        <h1>איזה כיף, עוד מגרשים לאוסף</h1>
+        <h2>תשאיר לנו פרטים ונחזור אלייך :)</h2>
       </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">

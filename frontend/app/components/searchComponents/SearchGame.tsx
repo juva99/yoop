@@ -55,9 +55,7 @@ const SearchGame: React.FC<Props> = ({ updateFilters }) => {
 
   return (
     <div className="search-game">
-      <p className="search-game__title text-subtitle mt-5 text-2xl font-medium">
-        חיפוש משחק
-      </p>
+      <h2>חיפוש משחק</h2>
       <DropDownInput
         values={cities}
         placeholder="עיר"

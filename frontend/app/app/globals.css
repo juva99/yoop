@@ -156,6 +156,13 @@ body {
     @apply bg-background text-foreground;
   }
 }
+h1 {
+  @apply text-title mb-5 text-center text-3xl font-bold;
+}
+
+h2 {
+  @apply text-subtitle mb-3 text-2xl font-bold;
+}
 
 .primary-btn {
   @apply bg-title my-5 h-10 w-[100%] rounded-3xl text-xl text-white;

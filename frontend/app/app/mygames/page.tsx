@@ -34,7 +34,7 @@ export default async function MyGames() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
       <div className="mb-10">
-        <p className="mb-4 text-right text-2xl font-bold">משחקים בניהולך</p>
+        <h2>משחקים בניהולך</h2>
         {managedGames.length === 0 ? (
           <p className="rounded border bg-gray-50 py-8 text-center text-lg text-gray-500 shadow-sm">
             אין משחקים בניהולך
@@ -52,7 +52,7 @@ export default async function MyGames() {
         )}
       </div>
       <div className="mb-10">
-        <p className="mb-4 text-right text-2xl font-bold">המשחקים שלי</p>
+        <h2>משחקים שלי</h2>{" "}
         {managedGames.length === 0 ? (
           <p className="rounded border bg-gray-50 py-8 text-center text-lg text-gray-500 shadow-sm">
             אין משחקים עתידיים
@@ -70,7 +70,7 @@ export default async function MyGames() {
         )}
       </div>
       <div>
-        <p className="mb-4 text-right text-2xl font-bold">משחקים בהמתנה</p>
+        <h2>משחקים בהמתנה</h2>{" "}
         {pendingGames.length === 0 ? (
           <p className="rounded border bg-gray-50 py-8 text-center text-lg text-gray-500 shadow-sm">
             אין משחקים בהמתנה
