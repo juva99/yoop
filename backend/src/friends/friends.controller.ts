@@ -26,7 +26,7 @@ export class FriendsController {
     await this.friendsService.checkUser(user, setStatusDto.req_uid);
     return await this.friendsService.setStatus(setStatusDto);
   }
-  
+
   @Post('/send-req')
   async sendReq(
     @Body() friendReqDto: FriendReqDto,

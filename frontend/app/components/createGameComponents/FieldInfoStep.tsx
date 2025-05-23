@@ -52,13 +52,6 @@ export default function FieldInfoStep({ form }: FieldInfoStepProps) {
 
   return (
     <>
-      <h2 className="text-base leading-7 font-semibold text-gray-900">
-        Field Info
-      </h2>
-      <p className="mt-1 text-sm leading-6 text-gray-600">
-        Specify the field details.
-      </p>
-
       {availableFields.length > 0 ? (
         <Combobox
           form={form}
