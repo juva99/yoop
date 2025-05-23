@@ -1,12 +1,12 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Combobox } from "../ui/combobox";
 import { Button } from "@/components/ui/button";
-import { City } from "@/app/enums/city.enum";
+import { City, cityCoordinates } from "@/app/enums/city.enum";
 import { GameType } from "@/app/enums/game-type.enum";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+
 import {
   Form,
   FormControl,
@@ -22,15 +22,15 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { he } from "date-fns/locale";
 import { Slider } from "../ui/slider";
-
-const formSchema = z.object({
-  city: z.string(),
-  gameType: z.string().optional(),
-  date: z.date().optional(),
-  timeRange: z.array(z.number()).length(2).default([9, 22]),
-});
-
-type FormValues = z.infer<typeof formSchema>;
+import {
+  formDefaultValues,
+  FormSchema,
+  formSchema,
+} from "@/lib/schemas/searchForm";
+import FilteredGames from "./FilteredGames";
+import MapView from "../MapView";
+import { Game } from "@/app/types/Game";
+import { authFetch } from "@/lib/authFetch";
 
 const cityOptions = Object.values(City).map((city) => ({
   label: city,
@@ -43,19 +43,47 @@ const gameTypeOptions = Object.values(GameType).map((type) => ({
 }));
 
 const SearchGames = () => {
+  const [filteredGames, setFilteredGames] = useState<Game[]>([]);
+
   const form = useForm({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      city: "",
-      gameType: "",
-      date: undefined,
-      timeRange: [9, 22],
-    },
+    defaultValues: formDefaultValues,
   });
 
-  const onSubmit = (values: FormValues) => {
+  const selectedCity = useWatch({
+    control: form.control,
+    name: "city",
+  });
+
+  const onSubmit = async (values: FormSchema) => {
     console.log("Form Submitted:", values);
-    // Handle form submission logic
+
+    // Handle form submission logic - fetch games based on search criteria
+    try {
+      const params = new URLSearchParams();
+      if (values.city) params.set("city", values.city);
+      if (values.gameType) params.set("gameType", values.gameType);
+      if (values.date) params.set("date", values.date.toISOString());
+      if (values.timeRange) {
+        params.set("startTime", values.timeRange[0].toString());
+        params.set("endTime", values.timeRange[1].toString());
+      }
+
+      const response = await authFetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/query?${params.toString()}`,
+        {
+          method: "GET",
+        },
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        setFilteredGames(data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch games:", error);
+      setFilteredGames([]);
+    }
   };
 
   const formatTime = (hour: number) => {
@@ -63,6 +91,11 @@ const SearchGames = () => {
     const m = Math.round((hour - h) * 60);
     return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}`;
   };
+
+  const coords =
+    selectedCity && cityCoordinates[selectedCity as City]
+      ? cityCoordinates[selectedCity as City]
+      : [31.78, 35.21]; // Default to center of Israel
 
   return (
     <div className="p-5">
@@ -196,32 +229,18 @@ const SearchGames = () => {
           </form>
         </Form>
 
-        {/* <div className="search-game__filters mt-2 mb-2 flex gap-2">
-          <DateFilter value={filters.date} onFilterChange={onFilterChange} />
-          <TypeFilter onFilterChange={onFilterChange} />
-        </div>
-        <TimeSlider onFilterChange={onFilterChange} />
-        <Button
-          className="bg-title my-5 w-[100%]"
-          onClick={() => {
-            updateFilters(filters);
-          }}
-        >
-          חפש
-        </Button>
-      </div>
-      {filteredGames.length ? (
-        <MapView
-          defaultLocation={{
-            lat: coords[0],
-            lng: coords[1],
-          }}
-          games={filteredGames}
-        />
-      ) : (
-        ""
-      )}
-      <FilteredGames games={filteredGames} /> */}
+        {filteredGames.length ? (
+          <MapView
+            defaultLocation={{
+              lat: coords[0],
+              lng: coords[1],
+            }}
+            games={filteredGames}
+          />
+        ) : (
+          ""
+        )}
+        <FilteredGames games={filteredGames} />
       </div>
     </div>
   );
