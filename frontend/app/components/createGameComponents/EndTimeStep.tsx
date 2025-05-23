@@ -5,6 +5,13 @@ import { useEffect, useState } from "react";
 import { Spinner } from "../ui/spinner";
 import { Combobox } from "../ui/combobox";
 import { authFetch } from "@/lib/authFetch";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
 interface TimeSlotStepProps {
   form: UseFormReturn;
@@ -98,17 +105,28 @@ export default function EndTimeStep({ form }: TimeSlotStepProps) {
   return (
     <>
       {availableSlots.length > 0 ? (
-        <Combobox
-          form={form}
+        <FormField
+          control={form.control}
           name="endTime"
-          label="שעת סיום משחק"
-          options={availableSlots.map((slot) => ({
-            value: slot,
-            label: slot,
-          }))}
-          placeholder="בחר שעת סיום"
-          searchPlaceholder="חפש שעה..."
-          notFoundText="בחר שעת סיום"
+          render={({ field: endTimeField }) => (
+            <FormItem>
+              <FormLabel>שעת סיום משחק</FormLabel>
+              <FormControl>
+                <Combobox
+                  options={availableSlots.map((slot) => ({
+                    value: slot,
+                    label: slot,
+                  }))}
+                  value={endTimeField.value}
+                  onSelect={endTimeField.onChange}
+                  placeholder="בחר שעת סיום"
+                  searchPlaceholder="חפש שעה..."
+                  notFoundText="לא נמצאו שעות זמינות"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
       ) : (
         <Spinner />
