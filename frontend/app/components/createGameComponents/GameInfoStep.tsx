@@ -85,24 +85,46 @@ export default function GameInfoStep({ form }: GameInfoStepProps) {
         )}
       />
 
-      <Combobox
-        form={form}
+      <FormField
+        control={form.control}
         name="gameType"
-        label="סוג משחק"
-        options={gameTypeOptions}
-        placeholder="בחר סוג משחק"
-        searchPlaceholder="חפש סוג משחק..."
-        notFoundText="לא נמצא סוג משחק"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>סוג משחק</FormLabel>
+            <FormControl>
+              <Combobox
+                options={gameTypeOptions}
+                value={field.value}
+                onSelect={field.onChange}
+                placeholder="בחר סוג משחק"
+                searchPlaceholder="חפש סוג משחק..."
+                notFoundText="לא נמצא סוג משחק"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
       />
 
-      <Combobox
-        form={form}
+      <FormField
+        control={form.control}
         name="city"
-        label="עיר"
-        options={cityOptions}
-        placeholder="בחר עיר"
-        searchPlaceholder="חפש עיר..."
-        notFoundText="לא נמצאה עיר"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>עיר</FormLabel>
+            <FormControl>
+              <Combobox
+                options={cityOptions}
+                value={field.value}
+                onSelect={field.onChange}
+                placeholder="בחר עיר"
+                searchPlaceholder="חפש עיר..."
+                notFoundText="לא נמצאה עיר"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
       />
 
       <FormField
