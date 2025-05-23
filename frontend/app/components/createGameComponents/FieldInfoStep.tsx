@@ -6,6 +6,13 @@ import { useEffect, useState } from "react";
 import { Spinner } from "../ui/spinner";
 import { Combobox } from "../ui/combobox";
 import { authFetch } from "@/lib/authFetch";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
 interface FieldInfoStepProps {
   form: UseFormReturn;
@@ -53,14 +60,25 @@ export default function FieldInfoStep({ form }: FieldInfoStepProps) {
   return (
     <>
       {availableFields.length > 0 ? (
-        <Combobox
-          form={form}
+        <FormField
+          control={form.control}
           name="fieldName"
-          label="מגרש"
-          options={availableFields}
-          placeholder="בחר מגרש"
-          searchPlaceholder="חפש מגרש..."
-          notFoundText="בחר מגרש"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>מגרש</FormLabel>
+              <FormControl>
+                <Combobox
+                  options={availableFields}
+                  value={field.value}
+                  onSelect={field.onChange}
+                  placeholder="בחר מגרש"
+                  searchPlaceholder="חפש מגרש..."
+                  notFoundText="לא נמצא מגרש"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
       ) : (
         <Spinner />
