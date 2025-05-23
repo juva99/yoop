@@ -268,22 +268,22 @@ const ProfileInfo: React.FC<Props> = ({ user, role }) => {
                   control={form.control}
                   name="address"
                   render={({ field }) => (
-                <FormItem>
-                  <FormLabel>יישוב</FormLabel>
-                  <FormControl>
-                    <Combobox
+                    <FormItem>
+                      <FormLabel>יישוב</FormLabel>
+                      <FormControl>
+                        <Combobox
                           options={cityOptions}
                           value={field.value}
-                      onSelect={field.onChange}
-                      placeholder="בחר עיר"
+                          onSelect={field.onChange}
+                          placeholder="בחר עיר"
                           searchPlaceholder="חפש עיר..."
                           notFoundText="לא נמצאה עיר"
                         />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </>
             )}
 
