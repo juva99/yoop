@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Combobox } from "../ui/combobox";
 import { Button } from "@/components/ui/button";
 import { City, cityCoordinates } from "@/app/enums/city.enum";
-import { GameType } from "@/app/enums/game-type.enum";
+import { GameType, gameTypeDict } from "@/app/enums/game-type.enum";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -37,9 +37,9 @@ const cityOptions = Object.values(City).map((city) => ({
   value: city,
 }));
 
-const gameTypeOptions = Object.values(GameType).map((type) => ({
-  label: type,
-  value: type,
+const gameTypeOptions = Object.entries(GameType).map(([_, value]) => ({
+  label: gameTypeDict[value],
+  value: value,
 }));
 
 const getDateWithTime = (baseDate: Date, hourDecimal: number): Date => {

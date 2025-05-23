@@ -1,7 +1,7 @@
 "use client";
 
 import { City } from "@/app/enums/city.enum";
-import { GameType } from "@/app/enums/game-type.enum";
+import { GameType, gameTypeDict } from "@/app/enums/game-type.enum";
 import {
   FormControl,
   FormField,
@@ -9,7 +9,6 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import { DateTimePicker } from "../ui/datetime-picker";
 import { UseFormReturn } from "react-hook-form";
 import { Input } from "../ui/input";
 import { Combobox } from "../ui/combobox";
@@ -26,7 +25,7 @@ interface GameInfoStepProps {
 }
 
 const gameTypeOptions = Object.entries(GameType).map(([_, value]) => ({
-  label: value,
+  label: gameTypeDict[value],
   value: value,
 }));
 
