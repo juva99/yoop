@@ -27,7 +27,7 @@ import {
   FormSchema,
   formSchema,
 } from "@/lib/schemas/searchForm";
-import FilteredGames from "./FilteredGames";
+import FilteredGames from "./filtered-games";
 import MapView from "../MapView";
 import { Game } from "@/app/types/Game";
 import { authFetch } from "@/lib/authFetch";
