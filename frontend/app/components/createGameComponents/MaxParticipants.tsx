@@ -22,7 +22,7 @@ const MaxParticipants: React.FC<Props> = ({ onFilterChange }) => {
       <input
         type="number"
         min={2}
-        max={50}
+        max={30}
         value={num}
         onChange={(e) => {
           changeHandler(e.target.value);

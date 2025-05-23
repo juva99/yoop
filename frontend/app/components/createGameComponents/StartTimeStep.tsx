@@ -50,12 +50,6 @@ export default function StartTimeStep({ form }: TimeSlotStepProps) {
 
   return (
     <>
-      <h2 className="text-base leading-7 font-semibold text-gray-900">
-        Time Slot
-      </h2>
-      <p className="mt-1 text-sm leading-6 text-gray-600">
-        Set the start and end times for the game.
-      </p>
       {availableSlots.length > 0 ? (
         <Combobox
           form={form}

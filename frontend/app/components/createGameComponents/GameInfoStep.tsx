@@ -38,10 +38,6 @@ const cityOptions = Object.entries(City).map(([label, value]) => ({
 export default function GameInfoStep({ form }: GameInfoStepProps) {
   return (
     <>
-      <h2 className="text-base leading-7 font-semibold text-gray-900">
-        פרטי משחק
-      </h2>
-
       <FormField
         control={form.control}
         name="date"
