@@ -13,45 +13,8 @@ type Props = {
 };
 
 const GameCard: React.FC<Props> = ({ game }) => {
-  const {
-    gameId,
-    gameType,
-    startDate,
-    endDate,
-    gameParticipants,
-    field,
-    price,
-    weatherTemp,
-    weatherIcon,
-  } = game;
-
-  const users = gameParticipants
-    .filter((gp) => gp.status === ParticipationStatus.APPROVED)
-    .map((participant) => participant.user);
-
-  const start = new Date(startDate);
-  const end = new Date(endDate);
-
-  const formattedDate = start.toLocaleDateString("he-IL", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
-
-  const formattedStartTime = start.toLocaleTimeString("he-IL", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
-
-  const formattedEndTime = end.toLocaleTimeString("he-IL", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
-
   return (
-    <Link href={`/game/${gameId}`} dir="rtl">
+    <Link href={`/game/${game.gameId}`} dir="rtl">
       <Card variant="game">
         <GameCardContent game={game} />
       </Card>

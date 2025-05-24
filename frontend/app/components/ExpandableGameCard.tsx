@@ -81,15 +81,15 @@ const ExpandableGameCard: React.FC<Props> = ({ game, buttonTitle }) => {
           <span className="truncate">{field.fieldName}</span>
         </div>
         <div className="flex items-center gap-2">
-          {/* <Button
+          <Button
             onClick={() => router.push(`/game/${gameId}`)}
             className="bg-title rounded px-3 py-1 text-xs text-white"
           >
             {buttonTitle}
-          </Button> */}
-          {/* <CollapsibleTrigger className="text-xl text-gray-500">
+          </Button>
+          <CollapsibleTrigger className="text-xl text-gray-500">
             {isOpen ? <IoIosArrowUp /> : <IoIosArrowDown />}
-          </CollapsibleTrigger> */}
+          </CollapsibleTrigger>
         </div>
       </div>
 
@@ -109,7 +109,7 @@ const ExpandableGameCard: React.FC<Props> = ({ game, buttonTitle }) => {
         {!isOpen && <AvatarGroup players={users} />}
       </div>
 
-      {/* <CollapsibleContent className="mt-2 max-h-[200px] overflow-y-auto">
+      <CollapsibleContent className="mt-2 max-h-[200px] overflow-y-auto">
         <PlayersList
           gameId={gameId}
           creatorUID={creator.uid}
@@ -117,7 +117,7 @@ const ExpandableGameCard: React.FC<Props> = ({ game, buttonTitle }) => {
           status={ParticipationStatus.APPROVED}
           deleteEnable={false}
         />
-      </CollapsibleContent>  */}
+      </CollapsibleContent>
     </Collapsible>
   );
 };
