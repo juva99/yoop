@@ -6,16 +6,19 @@ import { SignupFormSchema } from "@/lib/schemas/signup_schema";
 import { z } from "zod";
 import { signup } from "@/lib/auth";
 import { useState } from "react";
-import { Combobox } from "@/components/ui/combobox"; 
+import { Combobox } from "@/components/ui/combobox";
 import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { he } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { FaRegEye } from "react-icons/fa";
 import { LuEyeClosed } from "react-icons/lu";
-
 
 import {
   Form,
@@ -37,8 +40,6 @@ const cityOptions = Object.values(City).map((value) => ({
   label: value,
   value: value,
 }));
-
-
 
 const SignupForm = () => {
   const form = useForm<SignupFormValues>({
@@ -66,7 +67,7 @@ const SignupForm = () => {
       formData.append(key, val);
     });
 
-    formData.set("role", Role.USER); 
+    formData.set("role", Role.USER);
 
     const result = await signup(undefined, formData);
 
@@ -136,21 +137,21 @@ const SignupForm = () => {
             <FormItem className="text-right">
               <FormLabel>סיסמא</FormLabel>
               <FormControl>
-        <div className="relative">
-          <Input
-            type={showPassword ? "text" : "password"}
-            placeholder="••••••••"
-            {...field}
-          />
-          <button
-            type="button"
-            onClick={() => setShowPassword((prev) => !prev)}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
-          >
-            {showPassword ? <FaRegEye /> : <LuEyeClosed />}
-          </button>
-        </div>
-      </FormControl>
+                <div className="relative">
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="••••••••"
+                    {...field}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500"
+                  >
+                    {showPassword ? <FaRegEye /> : <LuEyeClosed />}
+                  </button>
+                </div>
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
@@ -163,14 +164,14 @@ const SignupForm = () => {
             <FormItem className="text-right">
               <FormLabel>אימות סיסמא</FormLabel>
               <FormControl>
-        <div className="relative">
-          <Input
-            type={showPassword ? "text" : "password"}
-            placeholder="••••••••"
-            {...field}
-          />          
-        </div>
-      </FormControl>
+                <div className="relative">
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="••••••••"
+                    {...field}
+                  />
+                </div>
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
@@ -191,47 +192,53 @@ const SignupForm = () => {
         />
 
         <FormField
-  control={form.control}
-  name="birthDay"
-  render={({ field }) => (
-    <FormItem className="text-right">
-      <FormLabel>תאריך לידה</FormLabel>
-      <Popover>
-        <PopoverTrigger asChild>
-          <FormControl>
-            <Button
-              variant={"outline"}
-              className={cn(
-                "flex w-full justify-start pl-3 font-normal cursor-pointer",
-                !field.value && "text-muted-foreground"
-              )}
-            >
-              <CalendarIcon className="mr-2 h-4 w-4 text-blue-500" />
-              {field.value ? format(new Date(field.value), "d MMMM yyyy" , { locale: he }) : "בחר תאריך"}
-            </Button>
-          </FormControl>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
-          <Calendar
-            mode="single"
-            selected={field.value ? new Date(field.value) : undefined}
-            onSelect={(date) =>
-              field.onChange(
-                date ? (date.setHours(10), date.toISOString().slice(0, 10)) : ""
-              )
-            }
-            locale={he}
-            disabled={(date) =>
-              date >= new Date(new Date().toDateString()) ||
-              date < new Date("1900-01-01")
-            }
-          />
-        </PopoverContent>
-      </Popover>
-      <FormMessage />
-    </FormItem>
-  )}
-/>
+          control={form.control}
+          name="birthDay"
+          render={({ field }) => (
+            <FormItem className="text-right">
+              <FormLabel>תאריך לידה</FormLabel>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "flex w-full cursor-pointer justify-start pl-3 font-normal",
+                        !field.value && "text-muted-foreground",
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4 text-blue-500" />
+                      {field.value
+                        ? format(new Date(field.value), "d MMMM yyyy", {
+                            locale: he,
+                          })
+                        : "בחר תאריך"}
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={field.value ? new Date(field.value) : undefined}
+                    onSelect={(date) =>
+                      field.onChange(
+                        date
+                          ? (date.setHours(10), date.toISOString().slice(0, 10))
+                          : "",
+                      )
+                    }
+                    locale={he}
+                    disabled={(date) =>
+                      date >= new Date(new Date().toDateString()) ||
+                      date < new Date("1900-01-01")
+                    }
+                  />
+                </PopoverContent>
+              </Popover>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <FormField
           control={form.control}

@@ -10,7 +10,6 @@ import Link from "next/link";
 import { FaRegEye } from "react-icons/fa";
 import { LuEyeClosed } from "react-icons/lu";
 
-
 import { LoginFormSchema, LoginFormValues } from "@/lib/schemas/login_schema";
 
 import {
@@ -65,12 +64,12 @@ const LoginForm = () => {
         />
 
         <FormField
-                  control={form.control}
-                  name="pass"
-                  render={({ field }) => (
-                    <FormItem className="text-right">
-                      <FormLabel>סיסמא</FormLabel>
-                      <FormControl>
+          control={form.control}
+          name="pass"
+          render={({ field }) => (
+            <FormItem className="text-right">
+              <FormLabel>סיסמא</FormLabel>
+              <FormControl>
                 <div className="relative">
                   <Input
                     type={showPassword ? "text" : "password"}
@@ -80,17 +79,16 @@ const LoginForm = () => {
                   <button
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
-                    
+                    className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500"
                   >
                     {showPassword ? <FaRegEye /> : <LuEyeClosed />}
                   </button>
                 </div>
               </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <div className="flex items-center justify-between">
           <Link href="/auth/forgot" className="text-sm text-blue-600 underline">

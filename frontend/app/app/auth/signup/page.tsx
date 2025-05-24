@@ -24,15 +24,15 @@ const SignUp = () => {
           pointerEvents: "none",
           zIndex: 20,
         }}
-      />    
+      />
 
-      <div className="z-10 mx-2 mt-10 flex flex-col items-center rounded-xl bg-white/90 p-8 text-right shadow-lg w-[95vw] max-w-md">
+      <div className="z-10 mx-2 mt-10 flex w-[95vw] max-w-md flex-col items-center rounded-xl bg-white/90 p-8 text-right shadow-lg">
         <h1 className="text-4xl font-bold text-blue-500">וואי וואי!</h1>
-        <p className="text-xl mt-1 font-bold text-gray-800">
+        <p className="mt-1 text-xl font-bold text-gray-800">
           אוטוטו אתה עולה למגרש, פוגש חברים חדשים, ונותן גול מהסרטים ⚽️🔥
         </p>
-        <p className="text-gray-800 mt-2 text-sm">
-          <strong className="text-gray-800 font-bold">
+        <p className="mt-2 text-sm text-gray-800">
+          <strong className="font-bold text-gray-800">
             כל מה שנשאר זה למלא את הפרטים –
           </strong>{" "}
           ותכף תמצא את עצמך אומר: "איך חייתי בלי זה עד עכשיו?!"
@@ -51,7 +51,7 @@ const SignUp = () => {
             התחבר עכשיו
           </Link>
         </div>
-      </div>      
+      </div>
     </div>
   );
 };
