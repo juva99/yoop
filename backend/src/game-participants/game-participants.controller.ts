@@ -1,4 +1,4 @@
-import { Body, Controller, Patch } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch } from '@nestjs/common';
 import { GameParticipantsService } from './game-participants.service';
 import { SetStatusDto } from './dto/set-status.dto';
 import { GameParticipant } from './game-participants.entity';

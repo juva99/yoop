@@ -4,6 +4,7 @@ import { Game } from "@/app/types/Game";
 import Link from "next/link";
 import AvatarGroup from "./AvatarGroup";
 import { ParticipationStatus } from "@/app/enums/participation-status.enum";
+import { GameType } from "@/app/enums/game-type.enum";
 
 type Props = {
   game: Game;
@@ -42,9 +43,9 @@ const GameCard: React.FC<Props> = ({ game }) => {
       <div className="flex h-[130px] items-center pr-5 text-right">
         <div className="game-details">
           <span className="flex items-center gap-3 text-[24px] font-medium text-blue-400">
-            {gameType.toLowerCase() === "basketball" ? (
+            {gameType === GameType.BasketBall ? (
               <PiBasketball />
-            ) : gameType.toLowerCase() === "soccer" ? (
+            ) : gameType === GameType.FootBall ? (
               <PiSoccerBall />
             ) : null}
             {field.fieldName}

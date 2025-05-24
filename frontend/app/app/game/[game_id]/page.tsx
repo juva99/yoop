@@ -105,16 +105,15 @@ export default async function Page({
     (gp) =>
       gp.user.uid === currUserUID && gp.status !== ParticipationStatus.REJECTED,
   );
-
   return (
     <div className="container mx-auto flex flex-col gap-6 p-4">
       {" "}
       <div className="flex items-center gap-3">
         <span className="text-3xl text-blue-500">
           {" "}
-          {gameType.toLowerCase() === "basketball" ? (
+          {gameType === GameType.BasketBall ? (
             <PiBasketball />
-          ) : gameType.toLowerCase() === "soccer" ? (
+          ) : gameType === GameType.FootBall ? (
             <PiSoccerBall />
           ) : null}
         </span>

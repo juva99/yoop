@@ -12,7 +12,6 @@ import { User } from 'src/users/users.entity';
 import { ParticipationStatus } from 'src/enums/participation-status.enum';
 import { SetStatusDto } from './dto/set-status.dto';
 import { UsersService } from 'src/users/users.service';
-
 @Injectable()
 export class GameParticipantsService {
   constructor(
@@ -20,7 +19,6 @@ export class GameParticipantsService {
     private gameRepository: Repository<Game>,
     @InjectRepository(GameParticipant)
     private gameParticipantRepository: Repository<GameParticipant>,
-
     private readonly userService: UsersService,
   ) {}
   async joinGame(
@@ -99,25 +97,6 @@ export class GameParticipantsService {
     return participations.map((participation) => participation.game);
   }
 
-  async inviteFriendToGame(gameId: string, inviter: User, invited: User) {
-    let status = ParticipationStatus.PENDING;
-    const game = await this.gameRepository.findOne({
-      where: { gameId },
-      relations: ['gameParticipants'],
-    });
-
-    if (!game) {
-      throw new NotFoundException(`Game with id ${gameId} not found`);
-    }
-
-    if (inviter.uid === game.creator.uid) {
-      status = ParticipationStatus.APPROVED;
-    }
-    const newParticipation = await this.joinGame(game.gameId, invited, status);
-
-    return newParticipation;
-  }
-
   async leaveGame(gameId: string, user: User): Promise<void> {
     const game = await this.gameRepository.findOne({
       where: { gameId },
@@ -144,5 +123,24 @@ export class GameParticipantsService {
     }
 
     await this.gameParticipantRepository.delete(existingParticipation.id);
+  }
+
+  async inviteFriendToGame(gameId: string, inviter: User, invited: User) {
+    let status = ParticipationStatus.PENDING;
+    const game = await this.gameRepository.findOne({
+      where: { gameId },
+      relations: ['gameParticipants'],
+    });
+
+    if (!game) {
+      throw new NotFoundException(`Game with id ${gameId} not found`);
+    }
+
+    if (inviter.uid === game.creator.uid) {
+      status = ParticipationStatus.APPROVED;
+    }
+    const newParticipation = await this.joinGame(game.gameId, invited, status);
+
+    return newParticipation;
   }
 }

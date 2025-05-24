@@ -6,14 +6,15 @@ import {
   Delete,
   Param,
   Query,
+  Patch,
 } from '@nestjs/common';
 import { FieldsService } from './fields.service';
 import { Field } from './fields.entity';
 import { CreateFieldDto } from './dto/create-field.dto';
+import { Role } from 'src/enums/role.enum';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { User } from 'src/users/users.entity';
-import { Role } from 'src/enums/role.enum';
 
 @Controller('fields')
 export class FieldsController {
@@ -47,5 +48,26 @@ export class FieldsController {
   @Delete('/:id')
   async deleteOne(@Param('id') id: string) {
     return await this.fieldService.deleteOne(id);
+  }
+
+  @Roles(Role.ADMIN)
+  @Patch('/:fieldId/setManager/:userId')
+  async setManagerToField(
+    @Param('fieldId') fieldId: string,
+    @Param('userId') userId: string,
+  ): Promise<Field> {
+    return await this.fieldService.setManagerToField(fieldId, userId);
+  }
+
+  @Roles(Role.ADMIN)
+  @Patch('/:fieldId/setPublic')
+  async setFieldPublic(@Param('fieldId') fieldId: string): Promise<Field> {
+    return await this.fieldService.setFieldPublic(fieldId);
+  }
+
+  @Roles(Role.ADMIN, Role.FIELD_MANAGER)
+  @Get('/:userId/allFields')
+  async getFieldsByUser(@Param('userId') userId: string): Promise<Field[]> {
+    return await this.fieldService.getFieldsByUser(userId);
   }
 }

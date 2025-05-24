@@ -6,12 +6,14 @@ import { NotFoundException } from '@nestjs/common';
 import { CreateFieldDto } from './dto/create-field.dto';
 import { City } from 'src/enums/city.enum';
 import { User } from 'src/users/users.entity';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class FieldsService {
   constructor(
     @InjectRepository(Field)
     private fieldRepository: Repository<Field>,
+    private readonly usersService: UsersService,
   ) {}
 
   async findAll(): Promise<Field[]> {
@@ -58,5 +60,30 @@ export class FieldsService {
   async createMany(createFieldDtos: CreateFieldDto[]): Promise<Field[]> {
     const fields = this.fieldRepository.create(createFieldDtos);
     return await this.fieldRepository.save(fields);
+  }
+
+  async setManagerToField(fieldId: string, userId: string): Promise<Field> {
+    const field = await this.findById(fieldId);
+    const newManager = await this.usersService.findById(userId);
+
+    field.isManaged = true;
+    field.manager = newManager;
+
+    return await this.fieldRepository.save(field);
+  }
+
+  async setFieldPublic(fieldId: string): Promise<Field> {
+    const field = await this.findById(fieldId);
+
+    field.isManaged = false;
+    field.manager = null;
+
+    return this.fieldRepository.save(field);
+  }
+
+  async getFieldsByUser(userId: string): Promise<Field[]> {
+    return await this.fieldRepository.find({
+      where: { manager: { uid: userId } },
+    });
   }
 }

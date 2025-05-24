@@ -128,14 +128,25 @@ const CreateFieldForm = () => {
             )}
           />
 
-          <Combobox
-            form={form}
+          <FormField
+            control={form.control}
             name="city"
-            label="עיר"
-            options={cityOptions}
-            placeholder="בחר עיר"
-            searchPlaceholder="חפש עיר..."
-            notFoundText="לא נמצאה עיר"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>עיר</FormLabel>
+                <FormControl>
+                  <Combobox
+                    options={cityOptions}
+                    value={field.value}
+                    onSelect={field.onChange}
+                    placeholder="בחר עיר"
+                    searchPlaceholder="חפש עיר..."
+                    notFoundText="לא נמצאה עיר"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
 
           <div className="grid grid-cols-2 gap-4">
