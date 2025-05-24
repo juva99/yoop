@@ -10,6 +10,7 @@ import { ParticipationStatus } from "../enums/participation-status.enum";
 import { useEffect, useState } from "react";
 import { Game } from "../types/Game";
 import { Card } from "@/components/ui/card";
+import GameCard from "@/components/GameCard";
 
 export default function MyGames() {
   const [managedGames, setManagedGames] = useState<Game[]>([]);
@@ -67,11 +68,7 @@ export default function MyGames() {
           ) : (
             <div className="space-y-4 pt-4">
               {managedGames.map((game, index) => (
-                <ExpandableGameCard
-                  key={index}
-                  game={game}
-                  buttonTitle="לעמוד המשחק"
-                />
+                <GameCard key={index} game={game} />
               ))}
             </div>
           )}
@@ -85,11 +82,7 @@ export default function MyGames() {
           ) : (
             <div className="space-y-4 pt-4">
               {approvedGames.map((game, index) => (
-                <ExpandableGameCard
-                  key={index}
-                  game={game}
-                  buttonTitle="לעמוד המשחק"
-                />
+                <GameCard key={index} game={game} />
               ))}
             </div>
           )}
@@ -103,11 +96,7 @@ export default function MyGames() {
           ) : (
             <div className="space-y-4 pt-4">
               {pendingGames.map((game, index) => (
-                <ExpandableGameCard
-                  key={index}
-                  game={game}
-                  buttonTitle="לעמוד המשחק"
-                />
+                <GameCard key={index} game={game} />
               ))}
             </div>
           )}

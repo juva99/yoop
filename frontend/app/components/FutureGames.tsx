@@ -7,6 +7,7 @@ import { getSession } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { authFetch } from "@/lib/authFetch";
 import { Game } from "@/app/types/Game";
+import GameCardContent from "./GameCardContent";
 
 type Props = {
   games: Game[];
@@ -59,7 +60,7 @@ const FutureGames: React.FC<Props> = ({ games }) => {
           >
             {games.slice(0, 5).map((game, i) => (
               <div key={i} className="flex h-[110px] w-full items-center">
-                <GameCard game={game} />
+                <GameCardContent game={game} />
               </div>
             ))}
           </div>

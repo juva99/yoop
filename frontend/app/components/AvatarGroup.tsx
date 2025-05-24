@@ -8,12 +8,12 @@ interface Props {
 
 const AvatarGroup: React.FC<Props> = ({ players }) => {
   return (
-    <div className="players mt-2 flex items-center justify-start gap-1">
+    <div className="players flex items-center justify-start gap-1">
       <div className="flex justify-start -space-x-3">
         {players.slice(0, 5).map((player, index) => (
           <Avatar
             key={index}
-            className="h-7 w-7 rounded-full border-2 border-white"
+            className="h-6 w-6 rounded-full border-2 border-white"
           >
             <AvatarImage src={player.profilePic} alt={player.firstName} />
             <AvatarFallback>

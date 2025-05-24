@@ -5,6 +5,8 @@ import Link from "next/link";
 import AvatarGroup from "./AvatarGroup";
 import { ParticipationStatus } from "@/app/enums/participation-status.enum";
 import { GameType } from "@/app/enums/game-type.enum";
+import { Card } from "./ui/card";
+import GameCardContent from "./GameCardContent";
 
 type Props = {
   game: Game;
@@ -50,48 +52,9 @@ const GameCard: React.FC<Props> = ({ game }) => {
 
   return (
     <Link href={`/game/${gameId}`} dir="rtl">
-      <div className="flex w-full flex-col gap-1 text-right">
-        {/* כותרת */}
-        <div className="text-title flex items-center gap-2 text-base font-semibold">
-          {gameType === GameType.BasketBall ? (
-            <PiBasketball className="text-lg" />
-          ) : (
-            <PiSoccerBall className="text-lg" />
-          )}
-          <span className="max-w-[160px] truncate">{field.fieldName}</span>
-        </div>
-
-        {/* שורת מידע אחת */}
-        <div className="flex flex-wrap items-center gap-2 text-sm text-gray-600">
-          <span>{formattedDate}</span>
-          <span>|</span>
-          <span>{`${formattedStartTime} - ${formattedEndTime}`}</span>
-          {price && (
-            <>
-              <span>|</span>
-              <span>{price}₪</span>
-            </>
-          )}
-          {weatherTemp && (
-            <>
-              <span>|</span>
-              <span className="flex items-center gap-1">
-                {weatherTemp}°
-                {weatherIcon && (
-                  <img
-                    src={weatherIcon}
-                    alt="Weather Icon"
-                    className="h-5 w-5 object-contain"
-                  />
-                )}
-              </span>
-            </>
-          )}
-        </div>
-
-        {/* משתתפים */}
-        <AvatarGroup players={users} />
-      </div>
+      <Card variant="game">
+        <GameCardContent game={game} />
+      </Card>
     </Link>
   );
 };
