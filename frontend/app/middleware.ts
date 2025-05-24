@@ -1,15 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "./lib/session";
+import { getSession, isExpired } from "./lib/session";
+import { refreshToken } from "./lib/auth";
 
 export default async function middleware(req: NextRequest) {
-  const session = await getSession(); 
+  const session = await getSession();
+
   if (!session || !session.user) {
     return NextResponse.redirect(new URL("/auth/login", req.nextUrl));
   }
+  const isTokenExpired = await isExpired();
+  console.log("isTokenExpired", isTokenExpired);
+  if (isTokenExpired) {
+    try {
+      const refreshed_token = await refreshToken(session.refreshToken);
+      if (!refreshed_token) {
+        return NextResponse.redirect(new URL("/auth/login", req.nextUrl));
+      }
+    } catch (error) {
+      return NextResponse.redirect(new URL("/auth/login", req.nextUrl));
+    }
+  }
 
-  NextResponse.next();
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/", "/mygames", "/game/create", "/games/create", "/search"]
-}
+  matcher: ["/", "/mygames", "/game/create", "/games/create", "/search"],
+};

@@ -5,6 +5,7 @@ import { BACKEND_URL, FRONTEND_URL } from "./constants";
 import { FormState, LoginFormSchema, SignupFormSchema } from "./type";
 import { createSession, updateTokens } from "./session";
 import { Role } from "@/app/enums/role.enum";
+import { cookies } from "next/headers";
 
 export async function signup(
   state: FormState,
@@ -27,7 +28,6 @@ export async function signup(
       error: validationFields.error.flatten().fieldErrors,
     };
   }
-  console.log(JSON.stringify(validationFields.data));
   const response = await fetch(`${BACKEND_URL}/auth/signup`, {
     method: "POST",
     headers: {
@@ -83,7 +83,15 @@ export async function login(
       accessToken: result.accessToken,
       refreshToken: result.refreshToken,
     });
-    redirect("/");
+
+    const roleRedirectMap: Record<string, string> = {
+      user: "/",
+      field_manager: "/field-manager/fields",
+      admin: "/field-manager/fields", //כרגע זה מנהל המערכת נשנה את זה אחרכך
+    };
+
+    const redirectPath = roleRedirectMap[result.role] ?? "/";
+    redirect(redirectPath);
   } else {
     return {
       message:
@@ -105,22 +113,14 @@ export const refreshToken = async (
         refresh: oldRefreshToken,
       }),
     });
-    console.log('send refresh');
     if (!response.ok) {
       throw new Error("Failed to refresh token" + response.statusText);
     }
-
     const { accessToken, refreshToken } = await response.json();
-
-    const updateRes = await fetch(`${FRONTEND_URL}/api/auth/update`, {
-      method: "POST",
-      body: JSON.stringify({
-        accessToken,
-        refreshToken,
-      }),
+    await updateTokens({
+      accessToken,
+      refreshToken,
     });
-
-    if (!updateRes.ok) throw new Error("Failed to update the tokens");
 
     return accessToken;
   } catch (error) {
