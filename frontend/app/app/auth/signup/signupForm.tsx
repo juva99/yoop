@@ -207,9 +207,9 @@ const SignupForm = () => {
                         !field.value && "text-muted-foreground",
                       )}
                     >
-                      <CalendarIcon className="mr-2 h-4 w-4 text-blue-500" />
+                      <CalendarIcon className="mr-2 h-4 w-4 text-gray-500" />
                       {field.value
-                        ? format(new Date(field.value), "d MMMM yyyy", {
+                        ? format(new Date(field.value), "dd/MM/yyyy", {
                             locale: he,
                           })
                         : "בחר תאריך"}
