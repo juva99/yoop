@@ -83,8 +83,6 @@ export class GameParticipantsService {
     return this.gameParticipantRepository.save(participant);
   }
 
-  ////////////////////////////
-  // Todo: change to only approved
   async findAllMine(user: User): Promise<Game[]> {
     const participations = await this.gameParticipantRepository.find({
       where: { user: { uid: user.uid } },
@@ -127,11 +125,22 @@ export class GameParticipantsService {
     await this.gameParticipantRepository.delete(existingParticipation.id);
   }
 
+  async inviteFriendToGame(gameId: string, inviter: User, invited: User) {
+    let status = ParticipationStatus.PENDING;
+    const game = await this.gameRepository.findOne({
+      where: { gameId },
+      relations: ['gameParticipants'],
+    });
 
-    const results = await this.gameRepository.delete(gameId);
-
-    if (results.affected === 0) {
-      throw new NotFoundException(`Game with id "${gameId}" not found`);
+    if (!game) {
+      throw new NotFoundException(`Game with id ${gameId} not found`);
     }
+
+    if (inviter.uid === game.creator.uid) {
+      status = ParticipationStatus.APPROVED;
+    }
+    const newParticipation = await this.joinGame(game.gameId, invited, status);
+
+    return newParticipation;
   }
 }

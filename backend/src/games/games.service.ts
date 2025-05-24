@@ -102,29 +102,6 @@ export class GamesService {
     return savedGame;
   }
 
-  async inviteFriendToGame(gameId: string, inviter: User, invited: User) {
-    let status = ParticipationStatus.PENDING;
-    const game = await this.gameRepository.findOne({
-      where: { gameId },
-      relations: ['gameParticipants'],
-    });
-
-    if (!game) {
-      throw new NotFoundException(`Game with id ${gameId} not found`);
-    }
-
-    if (inviter.uid === game.creator.uid) {
-      status = ParticipationStatus.APPROVED;
-    }
-    const newParticipation = await this.gameParticipantService.joinGame(
-      game.gameId,
-      invited,
-      status,
-    );
-
-    return newParticipation;
-  }
-
   async queryGames(queryDto: QueryGameDto): Promise<Game[]> {
     const { gameType, startDate, endDate, city } = queryDto;
     const query = this.gameRepository
@@ -272,7 +249,6 @@ export class GamesService {
     );
   }
 
-  // Todo: get only future games
   async findAllGamesByField(fieldId: string): Promise<Game[]> {
     const games = await this.gameRepository.find({
       relations: ['field'],
@@ -283,13 +259,12 @@ export class GamesService {
     });
 
     if (!games) {
-      throw new NotFoundException(`field with id ${fieldId} not found`);
+      throw new NotFoundException(`No games found for field: ${fieldId}`);
     }
 
     return games;
   }
 
-  // Todo: get only future games
   async findPendingGamesByField(fieldId: string): Promise<Game[]> {
     const games = await this.gameRepository.find({
       relations: ['field'],
@@ -301,7 +276,7 @@ export class GamesService {
     });
 
     if (!games) {
-      throw new NotFoundException(`field with id ${fieldId} not found`);
+      throw new NotFoundException(`No games found for field: ${fieldId}`);
     }
 
     return games;
@@ -318,7 +293,7 @@ export class GamesService {
       },
     });
     if (!games) {
-      throw new NotFoundException(`field with id ${fieldId} not found`);
+      throw new NotFoundException(`No games found for field: ${fieldId}`);
     }
     return games;
   }

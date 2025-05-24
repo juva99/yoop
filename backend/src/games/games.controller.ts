@@ -95,7 +95,11 @@ export class GamesController {
     @Body('invited') invited: User,
     @GetUser() inviter: User,
   ): Promise<GameParticipant> {
-    return await this.gameService.inviteFriendToGame(gameId, inviter, invited);
+    return await this.gameParticipantService.inviteFriendToGame(
+      gameId,
+      inviter,
+      invited,
+    );
   }
 
   //join game by id and add user to pending list
