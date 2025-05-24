@@ -7,6 +7,9 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { login } from "@/lib/auth";
 import Link from "next/link";
+import { FaRegEye } from "react-icons/fa";
+import { LuEyeClosed } from "react-icons/lu";
+
 
 import { LoginFormSchema, LoginFormValues } from "@/lib/schemas/login_schema";
 
@@ -27,6 +30,8 @@ const LoginForm = () => {
       pass: "",
     },
   });
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const [formError, setFormError] = useState("");
 
@@ -49,7 +54,7 @@ const LoginForm = () => {
           control={form.control}
           name="userEmail"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="text-right">
               <FormLabel>אימייל</FormLabel>
               <FormControl>
                 <Input placeholder="example@email.com" {...field} />
@@ -60,18 +65,32 @@ const LoginForm = () => {
         />
 
         <FormField
-          control={form.control}
-          name="pass"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>סיסמא</FormLabel>
-              <FormControl>
-                <Input type="password" placeholder="••••••••" {...field} />
+                  control={form.control}
+                  name="pass"
+                  render={({ field }) => (
+                    <FormItem className="text-right">
+                      <FormLabel>סיסמא</FormLabel>
+                      <FormControl>
+                <div className="relative">
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="••••••••"
+                    {...field}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
+                    
+                  >
+                    {showPassword ? <FaRegEye /> : <LuEyeClosed />}
+                  </button>
+                </div>
               </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
         <div className="flex items-center justify-between">
           <Link href="/auth/forgot" className="text-sm text-blue-600 underline">
@@ -79,9 +98,11 @@ const LoginForm = () => {
           </Link>
         </div>
 
-        <Button type="submit" className="w-full bg-blue-500 py-2 text-white">
-          התחבר
-        </Button>
+        <div className="flex justify-center">
+          <Button type="submit" className="w-1/2 bg-blue-500 py-2 text-white">
+            התחבר
+          </Button>
+        </div>
       </form>
     </Form>
   );

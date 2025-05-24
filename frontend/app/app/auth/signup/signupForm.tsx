@@ -1,352 +1,266 @@
 "use client";
 
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { SignupFormSchema } from "@/lib/schemas/signup_schema";
+import { z } from "zod";
+import { signup } from "@/lib/auth";
+import { useState } from "react";
+import { Combobox } from "@/components/ui/combobox"; 
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
-import { useActionState, useState, ChangeEvent } from "react";
+import { he } from "date-fns/locale";
 import { cn } from "@/lib/utils";
-import { Label } from "@/components/ui/label";
+import { FaRegEye } from "react-icons/fa";
+import { LuEyeClosed } from "react-icons/lu";
+
+
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
+
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import SubmitButton from "@/components/ui/submitButton";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
+import { City } from "@/app/enums/city.enum";
+import { Role } from "@/app/enums/role.enum";
 
-import { signup } from "@/lib/auth";
-import { he } from "date-fns/locale";
-import { DateTimePicker } from "@/components/ui/datetime-picker";
+type SignupFormValues = z.infer<typeof SignupFormSchema>;
 
-const passwordRequirements = (
-  <div className="flex flex-col gap-2 p-2">
-    <div className="font-semibold text-gray-700">הסיסמא חייבת להכיל:</div>
-    <ul className="space-y-1 text-sm text-gray-600">
-      <li className="flex items-center">
-        <span className="ml-2 text-blue-500">•</span>
-        לפחות 8 תווים
-      </li>
-      <li className="flex items-center">
-        <span className="ml-2 text-blue-500">•</span>
-        אותיות גדולות וקטנות באנגלית
-      </li>
-      <li className="flex items-center">
-        <span className="ml-2 text-blue-500">•</span>
-        לפחות מספר אחד
-      </li>
-      <li className="flex items-center">
-        <span className="ml-2 text-blue-500">•</span>
-        לפחות תו מיוחד אחד
-      </li>
-    </ul>
-  </div>
-);
+const cityOptions = Object.values(City).map((value) => ({
+  label: value,
+  value: value,
+}));
 
-// still need to make a final list of cities
-const cities = [
-  { value: "תל אביב", label: "תל אביב" },
-  { value: "ירושלים", label: "ירושלים" },
-  { value: "חיפה", label: "חיפה" },
-  { value: "באר שבע", label: "באר שבע" },
-  { value: "ראשון לציון", label: "ראשון לציון" },
-];
+
 
 const SignupForm = () => {
-  const [birthDay, setBirthDay] = useState<Date>();
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [userEmail, setUserEmail] = useState("");
-  const [pass, setPass] = useState("");
-  const [passConfirm, setPassConfirm] = useState("");
-  const [phoneNum, setPhoneNum] = useState("");
-  const [selectedCity, setSelectedCity] = useState("");
-  const [openCombobox, setOpenCombobox] = useState(false);
+  const form = useForm<SignupFormValues>({
+    resolver: zodResolver(SignupFormSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      userEmail: "",
+      pass: "",
+      passConfirm: "",
+      phoneNum: "",
+      birthDay: "",
+      address: "" as City,
+      role: Role.USER,
+    },
+  });
+  const [showPassword, setShowPassword] = useState(false);
 
-  const [state, action] = useActionState(signup, undefined);
+  const [formError, setFormError] = useState("");
 
-  const handleInputChange =
-    (setter: React.Dispatch<React.SetStateAction<string>>) =>
-    (e: ChangeEvent<HTMLInputElement>) =>
-      setter(e.target.value);
+  const onSubmit = async (values: SignupFormValues) => {
+    const formData = new FormData();
 
-  // Define year range for the dropdowns
-  const currentYear = new Date().getFullYear();
-  const fromYear = currentYear - 100;
-  const toYear = currentYear;
+    Object.entries(values).forEach(([key, val]) => {
+      formData.append(key, val);
+    });
+
+    formData.set("role", Role.USER); 
+
+    const result = await signup(undefined, formData);
+
+    if (result?.error) {
+      Object.entries(result.error).forEach(([field, messages]) => {
+        if (Array.isArray(messages)) {
+          form.setError(field as keyof SignupFormValues, {
+            message: messages[0],
+          });
+        }
+      });
+      setFormError(result.message || "שגיאה בהרשמה");
+    }
+  };
 
   return (
-    <form action={action}>
-      {state?.message && <p className="form_error">{state.message}</p>}
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        {formError && <p className="text-sm text-red-500">{formError}</p>}
 
-      <div className="form_item">
-        <Label htmlFor="firstName" className="form_label">
-          שם פרטי
-        </Label>
-        <Input
-          type="text"
-          id="firstName"
+        <FormField
+          control={form.control}
           name="firstName"
-          placeholder="הכנס שם פרטי"
-          className="input_underscore"
-          value={firstName}
-          onChange={handleInputChange(setFirstName)}
-        ></Input>
-      </div>
-      {state?.error?.firstName && (
-        <div className="form_error">
-          <ul>
-            {state.error.firstName.map((error) => (
-              <li key={error}>{error}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      <div className="form_item">
-        <Label htmlFor="lastName" className="form_label">
-          שם משפחה
-        </Label>
-        <Input
-          type="text"
-          id="lastName"
-          name="lastName"
-          placeholder="הכנס שם משפחה"
-          className="input_underscore"
-          value={lastName}
-          onChange={handleInputChange(setLastName)}
-        ></Input>
-      </div>
-      {state?.error?.lastName && (
-        <div className="form_error">
-          <ul>
-            {state.error.lastName.map((error) => (
-              <li key={error}>{error}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      <div className="form_item">
-        <Label htmlFor="userEmail" className="form_label">
-          אימייל
-        </Label>
-        <Input
-          type="email"
-          id="userEmail"
-          name="userEmail"
-          placeholder="example@email.com"
-          className="input_underscore"
-          value={userEmail}
-          onChange={handleInputChange(setUserEmail)}
-        ></Input>
-      </div>
-      {state?.error?.userEmail && (
-        <p className="form_error">{state.error.userEmail}</p>
-      )}
-
-      <div className="form_item">
-        <HoverCard>
-          <HoverCardTrigger>
-            <Label htmlFor="pass" className="form_label">
-              סיסמא
-            </Label>
-            <Input
-              type="password"
-              id="pass"
-              name="pass"
-              placeholder="••••••••"
-              className="input_underscore"
-              value={pass}
-              onChange={handleInputChange(setPass)}
-            ></Input>
-          </HoverCardTrigger>
-          <HoverCardContent>{passwordRequirements}</HoverCardContent>
-        </HoverCard>
-      </div>
-      {state?.error?.pass && (
-        <div className="form_error">
-          <p>הסיסמא חייבת להכיל:</p>
-          <ul>
-            {state.error.pass.map((error) => (
-              <li key={error}>{error}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      <div className="form_item">
-        <HoverCard>
-          <HoverCardTrigger>
-            <Label htmlFor="passConfirm" className="form_label">
-              הכנס שוב סיסמא
-            </Label>
-            <Input
-              type="password"
-              id="passConfirm"
-              name="passConfirm"
-              placeholder="••••••••"
-              className="input_underscore"
-              value={passConfirm}
-              onChange={handleInputChange(setPassConfirm)}
-            ></Input>
-          </HoverCardTrigger>
-          <HoverCardContent>{passwordRequirements}</HoverCardContent>
-        </HoverCard>
-      </div>
-      {state?.error?.passConfirm && (
-        <div className="form_error">
-          {state.error.passConfirm.includes("הסיסמאות אינן מתאימות") && (
-            <p className="font-semibold">הסיסמאות אינן מתאימות</p>
+          render={({ field }) => (
+            <FormItem className="text-right">
+              <FormLabel>שם פרטי</FormLabel>
+              <FormControl>
+                <Input placeholder="הכנס שם פרטי" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
           )}
-          <p> הסיסמא חייבת להכיל:</p>
-          <ul>
-            {state.error.passConfirm
-              .filter((error) => error !== "הסיסמאות אינן מתאימות")
-              .map((error) => (
-                <li key={error}>{error}</li>
-              ))}
-          </ul>
+        />
+
+        <FormField
+          control={form.control}
+          name="lastName"
+          render={({ field }) => (
+            <FormItem className="text-right">
+              <FormLabel>שם משפחה</FormLabel>
+              <FormControl>
+                <Input placeholder="הכנס שם משפחה" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="userEmail"
+          render={({ field }) => (
+            <FormItem className="text-right">
+              <FormLabel>אימייל</FormLabel>
+              <FormControl>
+                <Input placeholder="example@email.com" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="pass"
+          render={({ field }) => (
+            <FormItem className="text-right">
+              <FormLabel>סיסמא</FormLabel>
+              <FormControl>
+        <div className="relative">
+          <Input
+            type={showPassword ? "text" : "password"}
+            placeholder="••••••••"
+            {...field}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((prev) => !prev)}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
+          >
+            {showPassword ? <FaRegEye /> : <LuEyeClosed />}
+          </button>
         </div>
-      )}
+      </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-      <div className="form_item">
-        <Label htmlFor="phoneNum" className="form_label">
-          מספר טלפון
-        </Label>
-        <Input
-          type="tel"
-          id="phoneNum"
+        <FormField
+          control={form.control}
+          name="passConfirm"
+          render={({ field }) => (
+            <FormItem className="text-right">
+              <FormLabel>אימות סיסמא</FormLabel>
+              <FormControl>
+        <div className="relative">
+          <Input
+            type={showPassword ? "text" : "password"}
+            placeholder="••••••••"
+            {...field}
+          />          
+        </div>
+      </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
           name="phoneNum"
-          placeholder="050-1234567"
-          className="input_underscore"
-          value={phoneNum}
-          onChange={handleInputChange(setPhoneNum)}
-        ></Input>
-      </div>
-      {state?.error?.phoneNum && (
-        <p className="form_error">{state.error.phoneNum}</p>
-      )}
+          render={({ field }) => (
+            <FormItem className="text-right">
+              <FormLabel>טלפון</FormLabel>
+              <FormControl>
+                <Input placeholder="050-1234567" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-      <div className="form_item">
-        <Label htmlFor="address" className="form_label">
-          עיר מגורים
-        </Label>
-        <Popover open={openCombobox} onOpenChange={setOpenCombobox}>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              role="combobox"
-              aria-expanded={openCombobox}
-              className="input_underscore w-full justify-between"
-              id="address"
-            >
-              {selectedCity
-                ? cities.find((city) => city.value === selectedCity)?.label
-                : "בחר עיר..."}
-              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-            <Command>
-              <CommandInput placeholder="חיפוש עיר..." />
-              <CommandList>
-                <CommandEmpty>לא נמצאה עיר.</CommandEmpty>
-                <CommandGroup>
-                  {cities.map((city) => (
-                    <CommandItem
-                      key={city.value}
-                      value={city.value}
-                      onSelect={(currentValue) => {
-                        setSelectedCity(
-                          currentValue === selectedCity ? "" : currentValue,
-                        );
-                        setOpenCombobox(false);
-                      }}
-                    >
-                      <Check
-                        className={cn(
-                          "mr-2 h-4 w-4",
-                          selectedCity === city.value
-                            ? "opacity-100"
-                            : "opacity-0",
-                        )}
-                      />
-                      {city.label}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover>
-        <input type="hidden" name="address" value={selectedCity} />
-      </div>
-
-      <div className="form_item">
-        <Label htmlFor="birthDay" className="form_label">
-          תאריך לידה
-        </Label>
-
-        <Popover>
-          <PopoverTrigger asChild>
+        <FormField
+  control={form.control}
+  name="birthDay"
+  render={({ field }) => (
+    <FormItem className="text-right">
+      <FormLabel>תאריך לידה</FormLabel>
+      <Popover>
+        <PopoverTrigger asChild>
+          <FormControl>
             <Button
               variant={"outline"}
               className={cn(
-                "mt-3 w-full justify-start text-left font-normal",
-                "input_underscore",
-                !birthDay && "text-muted-foreground",
+                "flex w-full justify-start pl-3 font-normal cursor-pointer",
+                !field.value && "text-muted-foreground"
               )}
             >
-              <CalendarIcon className="mr-2 h-4 w-4" />
-              {birthDay ? (
-                format(birthDay, "dd/MM/yyyy")
-              ) : (
-                <span>בחר תאריך לידה</span>
-              )}
+              <CalendarIcon className="mr-2 h-4 w-4 text-blue-500" />
+              {field.value ? format(new Date(field.value), "d MMMM yyyy" , { locale: he }) : "בחר תאריך"}
             </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0">
-            <Calendar
-              mode="single"
-              selected={birthDay}
-              onSelect={setBirthDay}
-              locale={he}
-              fromYear={fromYear}
-              toYear={toYear}
-              disabled={(date) => date > new Date()}
-            />
-          </PopoverContent>
-        </Popover>
-        <input
-          type="hidden"
-          name="birthDay"
-          value={birthDay ? birthDay.toISOString().slice(0, 10) : ""}
-        />
-      </div>
-      {state?.error?.birthDay && (
-        <p className="form_error">{state.error.birthDay[0]}</p>
-      )}
+          </FormControl>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align="start">
+          <Calendar
+            mode="single"
+            selected={field.value ? new Date(field.value) : undefined}
+            onSelect={(date) =>
+              field.onChange(
+                date ? (date.setHours(10), date.toISOString().slice(0, 10)) : ""
+              )
+            }
+            locale={he}
+            disabled={(date) =>
+              date >= new Date(new Date().toDateString()) ||
+              date < new Date("1900-01-01")
+            }
+          />
+        </PopoverContent>
+      </Popover>
+      <FormMessage />
+    </FormItem>
+  )}
+/>
 
-      <div className="flex w-full justify-center">
-        <SubmitButton className="mt-3 rounded-sm bg-blue-500 px-5 py-5 text-lg font-semibold text-white">
-          הירשם עכשיו
-        </SubmitButton>
-      </div>
-    </form>
+        <FormField
+          control={form.control}
+          name="address"
+          render={({ field }) => (
+            <FormItem className="text-right">
+              <FormLabel>יישוב</FormLabel>
+              <FormControl>
+                <Combobox
+                  options={cityOptions}
+                  value={field.value}
+                  onSelect={field.onChange}
+                  placeholder="בחר עיר"
+                  searchPlaceholder="חפש עיר..."
+                  notFoundText="לא נמצאה עיר"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div className="flex justify-center">
+          <Button type="submit" className="w-1/2 bg-blue-500 py-2 text-white">
+            הירשם
+          </Button>
+        </div>
+      </form>
+    </Form>
   );
 };
 

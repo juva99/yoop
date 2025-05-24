@@ -5,53 +5,54 @@ import { FcGoogle } from "react-icons/fc";
 import Image from "next/image";
 import SignupForm from "./signupForm";
 import Link from "next/link";
+import LogoWithMusic from "@/components/LogoWithMusic";
 
 const SignUp = () => {
   return (
-    <>
-      <div className="mb-3 flex items-center">
-        <Image
-          src="/goalkeeper.png"
-          alt="GoalKeeper Photo"
-          width={250}
-          height={100}
-        />
-      </div>
-      <div className="mx-auto w-95/100">
-        <h1 className="text-4xl font-bold text-blue-500"> וואי וואי!</h1>
-        <h2 className="text-1xl p-1 font-bold text-blue-900">
-          {" "}
-          אוטוטו אתה עולה למגרש, פוגש חברים חדשים, ונותן גול מהסרטים ⚽️🔥{" "}
-        </h2>
-        <p className="p-1 text-gray-800">
-          <strong className="font-bold text-gray-800">
-            {" "}
-            כל מה שנשאר זה למלא את הפרטים -{" "}
-          </strong>
+    <div className="absolute flex min-h-screen flex-col items-center bg-white">
+      {/* לוגו עליון בפינה */}
+      <Image
+        src="/BlueLogo.png"
+        alt="Blue Logo"
+        width={120}
+        height={120}
+        className="absolute"
+        style={{
+          top: 50,
+          left: 68,
+          transform: "translate(-60%, -60%)",
+          pointerEvents: "none",
+          zIndex: 20,
+        }}
+      />    
+
+      <div className="z-10 mx-2 mt-10 flex flex-col items-center rounded-xl bg-white/90 p-8 text-right shadow-lg w-[95vw] max-w-md">
+        <h1 className="text-4xl font-bold text-blue-500">וואי וואי!</h1>
+        <p className="text-xl mt-1 font-bold text-gray-800">
+          אוטוטו אתה עולה למגרש, פוגש חברים חדשים, ונותן גול מהסרטים ⚽️🔥
+        </p>
+        <p className="text-gray-800 mt-2 text-sm">
+          <strong className="text-gray-800 font-bold">
+            כל מה שנשאר זה למלא את הפרטים –
+          </strong>{" "}
           ותכף תמצא את עצמך אומר: "איך חייתי בלי זה עד עכשיו?!"
         </p>
-        <div className="mt-5">
+
+        <div className="mt-6 w-full">
           <SignupForm />
         </div>
-        <div className="mt-3 flex flex-col items-center gap-2">
-          {/* <h1 className="text-center text-gray-800">או הירשם עם</h1>
-          <div className="flex gap-2">
-            <button type="button">
-              <FcGoogle size={30} />
-            </button>
-          </div> */}
-        </div>
-        <div className="mt-4 flex items-center justify-center gap-1 text-sm">
+
+        <div className="mt-4 flex w-full items-center justify-center gap-1 text-sm">
           <p className="text-gray-600">כבר רשום למערכת?</p>
           <Link
-            href={"/auth/login"}
+            href="/auth/login"
             className="font-medium text-blue-500 underline hover:text-blue-700"
           >
             התחבר עכשיו
           </Link>
         </div>
-      </div>
-    </>
+      </div>      
+    </div>
   );
 };
 
