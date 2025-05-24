@@ -12,7 +12,7 @@ import { FieldsModule } from 'src/fields/fields.module';
     TypeOrmModule.forFeature([Game]),
     WeatherApiModule,
     GameParticipantsModule,
-    FieldsModule
+    FieldsModule,
   ],
   controllers: [GamesController],
   providers: [GamesService],

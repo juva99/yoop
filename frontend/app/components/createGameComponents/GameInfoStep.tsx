@@ -1,7 +1,7 @@
 "use client";
 
 import { City } from "@/app/enums/city.enum";
-import { GameType } from "@/app/enums/game-type.enum";
+import { GameType, gameTypeDict } from "@/app/enums/game-type.enum";
 import {
   FormControl,
   FormField,
@@ -9,7 +9,6 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import { DateTimePicker } from "../ui/datetime-picker";
 import { UseFormReturn } from "react-hook-form";
 import { Input } from "../ui/input";
 import { Combobox } from "../ui/combobox";
@@ -26,7 +25,7 @@ interface GameInfoStepProps {
 }
 
 const gameTypeOptions = Object.entries(GameType).map(([_, value]) => ({
-  label: value,
+  label: gameTypeDict[value],
   value: value,
 }));
 
@@ -38,10 +37,6 @@ const cityOptions = Object.entries(City).map(([label, value]) => ({
 export default function GameInfoStep({ form }: GameInfoStepProps) {
   return (
     <>
-      <h2 className="text-base leading-7 font-semibold text-gray-900">
-        פרטי משחק
-      </h2>
-
       <FormField
         control={form.control}
         name="date"
@@ -85,24 +80,46 @@ export default function GameInfoStep({ form }: GameInfoStepProps) {
         )}
       />
 
-      <Combobox
-        form={form}
+      <FormField
+        control={form.control}
         name="gameType"
-        label="סוג משחק"
-        options={gameTypeOptions}
-        placeholder="בחר סוג משחק"
-        searchPlaceholder="חפש סוג משחק..."
-        notFoundText="לא נמצא סוג משחק"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>סוג משחק</FormLabel>
+            <FormControl>
+              <Combobox
+                options={gameTypeOptions}
+                value={field.value}
+                onSelect={field.onChange}
+                placeholder="בחר סוג משחק"
+                searchPlaceholder="חפש סוג משחק..."
+                notFoundText="לא נמצא סוג משחק"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
       />
 
-      <Combobox
-        form={form}
+      <FormField
+        control={form.control}
         name="city"
-        label="עיר"
-        options={cityOptions}
-        placeholder="בחר עיר"
-        searchPlaceholder="חפש עיר..."
-        notFoundText="לא נמצאה עיר"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>עיר</FormLabel>
+            <FormControl>
+              <Combobox
+                options={cityOptions}
+                value={field.value}
+                onSelect={field.onChange}
+                placeholder="בחר עיר"
+                searchPlaceholder="חפש עיר..."
+                notFoundText="לא נמצאה עיר"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
       />
 
       <FormField

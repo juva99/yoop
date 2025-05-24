@@ -14,6 +14,7 @@ import PlayersList from "./PlayersList";
 import { Button } from "./ui/button";
 import { ParticipationStatus } from "@/app/enums/participation-status.enum";
 import { useRouter } from "next/navigation";
+import { GameType } from "@/app/enums/game-type.enum";
 
 type Props = {
   game: Game;
@@ -80,9 +81,9 @@ const ExpandableGameCard: React.FC<Props> = ({ game, buttonTitle }) => {
         <div className="flex items-start pr-5 text-right">
           <div className="game-details">
             <span className="flex items-center gap-3 text-[20px] font-medium text-blue-400">
-              {gameType.toLowerCase() === "basketball" ? (
+              {gameType === GameType.BasketBall ? (
                 <PiBasketball />
-              ) : gameType.toLowerCase() === "football" ? (
+              ) : gameType === GameType.FootBall ? (
                 <PiSoccerBall />
               ) : null}
               <span className={`max-w-[150px] ${!isOpen ? "truncate" : ""}`}>

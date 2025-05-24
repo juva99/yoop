@@ -1,5 +1,5 @@
 import FutureGames from "@/components/FutureGames";
-import Search from "@/components/searchComponents/Search";
+import Search from "@/components/searchComponents/search-games";
 import NotificationsButton from "@/components/ui/Notifications";
 import { authFetch } from "@/lib/authFetch";
 import { getSession } from "@/lib/session";
