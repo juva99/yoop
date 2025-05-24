@@ -5,12 +5,10 @@ import { FcGoogle } from "react-icons/fc";
 import Image from "next/image";
 import SignupForm from "./signupForm";
 import Link from "next/link";
-import LogoWithMusic from "@/components/LogoWithMusic";
 
 const SignUp = () => {
   return (
     <div className="absolute flex min-h-screen flex-col items-center bg-white">
-      {/* לוגו עליון בפינה */}
       <Image
         src="/BlueLogo.png"
         alt="Blue Logo"

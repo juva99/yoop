@@ -3,7 +3,6 @@ import { FcGoogle } from "react-icons/fc";
 import LoginForm from "./loginForm";
 import Image from "next/image";
 import Link from "next/link";
-import LogoWithMusic from "@/components/LogoWithMusic";
 
 const Login = () => {
   return (
@@ -20,12 +19,18 @@ const Login = () => {
             left: 68,
             transform: "translate(-60%, -60%)",
             pointerEvents: "none",
-            zIndex: 10,
+            zIndex: 20,
           }}
         />
-        <LogoWithMusic />
 
-        <div className="z-10 mx-5 mt-50 flex flex-col items-center rounded-xl bg-white/90 p-8 text-right shadow-lg">
+        <div className="z-10 mx-5 mt-5 flex flex-col items-center rounded-xl bg-white/90 p-8 text-right shadow-lg">
+          <Image
+            src="/logo.png"
+            alt="Logo"
+            width={150}
+            height={150}
+            style={{ border: "none" }}
+          />
           <h1 className="text-title text-4xl font-bold">רגע רגע...</h1>
           <h1 className="text-title text-4xl font-bold">מי אתה בכלל?</h1>
           <p className="text-subtitle text-2xl font-bold">
