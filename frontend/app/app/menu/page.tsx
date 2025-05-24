@@ -4,7 +4,7 @@ import Image from "next/image";
 const page: React.FC = ({}) => {
   return (
     <div className="menu h-[70vh] bg-[url('/search-friends-background.png')] bg-cover bg-top bg-no-repeat px-7 pt-15 text-center">
-      <h1 className="text-title mb-20 text-3xl font-bold">תפריט ראשי</h1>
+      <h1 className="mb-20">תפריט ראשי</h1>
       <div className="menu-grid">
         <Link
           href={"/search"}

@@ -54,7 +54,7 @@ const FriendList: React.FC<Props> = ({ currentUserUid, relations }) => {
 
   return (
     <section className="h-[220px]">
-      <h1 className="text-title text-center text-2xl font-bold">החברים שלי</h1>
+      <h1>החברים שלי</h1>
       {friendsWithRelation.length === 0 ? (
         <p className="text-sm text-gray-500">אין חברים להצגה</p>
       ) : (

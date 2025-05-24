@@ -35,7 +35,7 @@ const PlayersList: React.FC<Props> = ({
   const isCreator = creatorUID === currUserUID;
 
   return (
-    <div className="players flex flex-col items-start gap-2 pr-4">
+    <div className="players flex flex-col items-start gap-2">
       <div className="flex w-full flex-col space-y-1">
         {gameParticipants
           .filter((gameParticipant) => gameParticipant.status === status)
@@ -57,9 +57,7 @@ const PlayersList: React.FC<Props> = ({
                       {player.firstName.charAt(0)}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="text-sm">
-                    {player.firstName + " " + player.lastName}
-                  </span>
+                  <span>{player.firstName + " " + player.lastName}</span>
                   {player.uid === creatorUID && (
                     <PiCrownSimpleBold className="" />
                   )}
@@ -94,7 +92,7 @@ const PlayersList: React.FC<Props> = ({
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      <FaWhatsapp className="text-[#25D366]" />
+                      <FaWhatsapp size={20} className="text-[#25D366]" />
                     </a>
                   )}
                 </div>

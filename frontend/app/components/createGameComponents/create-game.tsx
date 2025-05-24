@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { Form } from "../ui/form";
 import { authFetch } from "@/lib/authFetch";
 import { set } from "date-fns";
+import { Card } from "../ui/card";
 
 export type Inputs = z.infer<typeof FormDataSchema>;
 const steps = [
@@ -135,8 +136,8 @@ export default function CreateGameForm() {
   const CurrentStepComponent = steps[currentStep]?.component;
 
   return (
-    <section className="absolute flex flex-col justify-between p-24">
-      <h1>יצירת משחק חדש</h1>
+    <Card variant="form">
+      {currentStep !== steps.length && <h1>יצירת משחק חדש</h1>}
       <Form {...form}>
         <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
           {CurrentStepComponent && (
@@ -152,9 +153,8 @@ export default function CreateGameForm() {
 
           {currentStep === steps.length && (
             <>
-              <p className="mt-1 text-sm leading-6 text-gray-600">
-                המשחק נוצר בהצלחה
-              </p>
+              <h1>המשחק נוצר בהצלחה</h1>
+              <h2>מיד תעבור לעמוד המשחק</h2>
             </>
           )}
         </form>
@@ -186,6 +186,6 @@ export default function CreateGameForm() {
           </button>
         )}
       </div>
-    </section>
+    </Card>
   );
 }

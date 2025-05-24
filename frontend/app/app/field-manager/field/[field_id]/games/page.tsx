@@ -25,9 +25,7 @@ const Page: React.FC<Props> = async ({ params }) => {
 
   return (
     <div className="p-5">
-      <h1 className="text-title mb-6 text-2xl font-bold">
-        משחקים ב{field.fieldName}
-      </h1>
+      <h1>משחקים ב{field.fieldName}</h1>
       <FieldGameList fieldId={field.fieldId} />
     </div>
   );

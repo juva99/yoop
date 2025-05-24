@@ -3,6 +3,7 @@ import { Game } from "@/app/types/Game";
 import React, { useState } from "react";
 import GameCard from "../GameCard";
 import ExpandableGameCard from "../ExpandableGameCard";
+import { Card } from "../ui/card";
 
 type Props = {
   games: Game[];
@@ -23,8 +24,8 @@ const FilteredGames: React.FC<Props> = ({ games }) => {
       </p>
       <div className="filtered-games__list max-h-100 overflow-y-auto">
         {games.map((g, i) => (
-          <div key={i} className="border-1">
-            <ExpandableGameCard game={g} buttonTitle="הצטרף" />
+          <div key={i}>
+            <GameCard game={g} />
           </div>
         ))}
       </div>
