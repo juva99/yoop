@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Combobox } from "../ui/combobox";
 import { Button } from "@/components/ui/button";
 import { City, cityCoordinates } from "@/app/enums/city.enum";
-import { GameType } from "@/app/enums/game-type.enum";
+import { GameType, gameTypeDict } from "@/app/enums/game-type.enum";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -37,10 +37,18 @@ const cityOptions = Object.values(City).map((city) => ({
   value: city,
 }));
 
-const gameTypeOptions = Object.values(GameType).map((type) => ({
-  label: type,
-  value: type,
+const gameTypeOptions = Object.entries(GameType).map(([_, value]) => ({
+  label: gameTypeDict[value],
+  value: value,
 }));
+
+const getDateWithTime = (baseDate: Date, hourDecimal: number): Date => {
+  const date = new Date(baseDate);
+  const hours = Math.floor(hourDecimal);
+  const minutes = Math.round((hourDecimal - hours) * 60);
+  date.setHours(hours, minutes, 0, 0);
+  return date;
+};
 
 const SearchGames = () => {
   const [filteredGames, setFilteredGames] = useState<Game[]>([]);
@@ -61,12 +69,15 @@ const SearchGames = () => {
     // Handle form submission logic - fetch games based on search criteria
     try {
       const params = new URLSearchParams();
+      values.date.setHours(10);
+      const startDate = getDateWithTime(values.date, values.timeRange[0]);
+      const endDate = getDateWithTime(values.date, values.timeRange[1]);
+
       if (values.city) params.set("city", values.city);
       if (values.gameType) params.set("gameType", values.gameType);
-      if (values.date) params.set("date", values.date.toISOString());
       if (values.timeRange) {
-        params.set("startTime", values.timeRange[0].toString());
-        params.set("endTime", values.timeRange[1].toString());
+        params.set("startDate", startDate.toISOString());
+        params.set("endDate", endDate.toISOString());
       }
 
       const response = await authFetch(
