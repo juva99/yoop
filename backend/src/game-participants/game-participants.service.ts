@@ -127,8 +127,6 @@ export class GameParticipantsService {
     await this.gameParticipantRepository.delete(existingParticipation.id);
   }
 
-  async deleteOne(gameId: string): Promise<void> {
-    await this.gameParticipantRepository.delete({ game: { gameId } });
 
     const results = await this.gameRepository.delete(gameId);
 

@@ -46,7 +46,6 @@ export class Game {
   //game participants
   @OneToMany(() => GameParticipant, (gameParticipant) => gameParticipant.game, {
     eager: true,
-    cascade: true,
   })
   gameParticipants: GameParticipant[];
 

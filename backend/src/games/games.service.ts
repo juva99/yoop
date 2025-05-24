@@ -262,7 +262,7 @@ export class GamesService {
 
   async declineGame(gameId: string): Promise<void> {
     const game = await this.findById(gameId);
-    await this.gameParticipantService.deleteOne(gameId);
+    await this.deleteOne(gameId);
 
     this.mailService.sendNewGameStatus(
       game.creator.userEmail,
@@ -321,5 +321,18 @@ export class GamesService {
       throw new NotFoundException(`field with id ${fieldId} not found`);
     }
     return games;
+  }
+
+  async deleteOne(gameId: string): Promise<void> {
+    const game = await this.gameRepository.findOne({
+      where: { gameId },
+      relations: ['gameParticipants'],
+    });
+
+    if (!game) {
+      throw new NotFoundException(`Game with id "${gameId}" not found`);
+    }
+
+    await this.gameRepository.remove(game);
   }
 }
