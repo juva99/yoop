@@ -137,7 +137,7 @@ export default function CreateGameForm() {
 
   return (
     <Card variant="form">
-      <h1>יצירת משחק חדש</h1>
+      {currentStep !== steps.length && <h1>יצירת משחק חדש</h1>}
       <Form {...form}>
         <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
           {CurrentStepComponent && (
@@ -153,9 +153,8 @@ export default function CreateGameForm() {
 
           {currentStep === steps.length && (
             <>
-              <p className="mt-1 text-sm leading-6 text-gray-600">
-                המשחק נוצר בהצלחה
-              </p>
+              <h1>המשחק נוצר בהצלחה</h1>
+              <h2>מיד תעבור לעמוד המשחק</h2>
             </>
           )}
         </form>
