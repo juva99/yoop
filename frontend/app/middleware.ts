@@ -9,7 +9,6 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/auth/login", req.nextUrl));
   }
   const isTokenExpired = await isExpired();
-  console.log("isTokenExpired", isTokenExpired);
   if (isTokenExpired) {
     try {
       const refreshed_token = await refreshToken(session.refreshToken);
