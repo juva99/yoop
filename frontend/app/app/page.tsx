@@ -5,7 +5,7 @@ import { authFetch } from "@/lib/authFetch";
 import { getSession } from "@/lib/session";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-
+import { Card } from "@/components/ui/card";
 export default async function Home() {
   const res = await authFetch(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/mygames`,
@@ -29,7 +29,9 @@ export default async function Home() {
       </div>
       <div>
         <span className="text-subtitle text-l mb-2">משחקים עתידיים</span>
-        <FutureGames games={data} />
+        <Card>
+          <FutureGames games={data} />
+        </Card>
       </div>
       <Search />
     </div>

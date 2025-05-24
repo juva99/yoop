@@ -16,61 +16,81 @@ const GameCard: React.FC<Props> = ({ game }) => {
     gameType,
     startDate,
     endDate,
-    maxParticipants,
-    status,
     gameParticipants,
-    creator,
     field,
     price,
     weatherTemp,
-    weatherCondition,
     weatherIcon,
   } = game;
-
-  // Ensure startDate is a Date object
-  const dateObject =
-    typeof startDate === "string" ? new Date(startDate) : startDate;
 
   const users = gameParticipants
     .filter((gp) => gp.status === ParticipationStatus.APPROVED)
     .map((participant) => participant.user);
 
-  // Define a consistent locale for formatting
-  const locale = "he-IL"; // Use Hebrew (Israel) locale
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  const formattedDate = start.toLocaleDateString("he-IL", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+
+  const formattedStartTime = start.toLocaleTimeString("he-IL", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+
+  const formattedEndTime = end.toLocaleTimeString("he-IL", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
 
   return (
-    <Link href={`/game/${gameId}`}>
-      <div className="flex h-[130px] items-center pr-5 text-right">
-        <div className="game-details">
-          <span className="flex items-center gap-3 text-[24px] font-medium text-blue-400">
-            {gameType === GameType.BasketBall ? (
-              <PiBasketball />
-            ) : gameType === GameType.FootBall ? (
-              <PiSoccerBall />
-            ) : null}
-            {field.fieldName}
-          </span>
-          <span>
-            <p className="text-gray-500">
-              <span className="flex items-center gap-1">
-                {dateObject.toLocaleDateString(locale, {
-                  month: "numeric",
-                  day: "numeric",
-                })}{" "}
-                |{" "}
-                {dateObject.toLocaleTimeString(locale, {
-                  hour: "numeric",
-                  minute: "2-digit",
-                  hour12: false,
-                })}{" "}
-                {price && `| ${price}₪`}
-                {weatherTemp + "°"}
-                <img src={weatherIcon} alt="Weather Icon" className="h-7 w-7" />
-              </span>
-            </p>
-          </span>
-          <AvatarGroup players={users} />
+    <Link href={`/game/${gameId}`} dir="rtl">
+      <div className="flex w-full flex-col gap-1 text-right">
+        {/* כותרת */}
+        <div className="text-title flex items-center gap-2 text-base font-semibold">
+          {gameType === GameType.BasketBall ? (
+            <PiBasketball className="text-lg" />
+          ) : (
+            <PiSoccerBall className="text-lg" />
+          )}
+          <span className="max-w-[160px] truncate">{field.fieldName}</span>
         </div>
+
+        {/* שורת מידע אחת */}
+        <div className="flex flex-wrap items-center gap-2 text-sm text-gray-600">
+          <span>{formattedDate}</span>
+          <span>|</span>
+          <span>{`${formattedStartTime} - ${formattedEndTime}`}</span>
+          {price && (
+            <>
+              <span>|</span>
+              <span>{price}₪</span>
+            </>
+          )}
+          {weatherTemp && (
+            <>
+              <span>|</span>
+              <span className="flex items-center gap-1">
+                {weatherTemp}°
+                {weatherIcon && (
+                  <img
+                    src={weatherIcon}
+                    alt="Weather Icon"
+                    className="h-5 w-5 object-contain"
+                  />
+                )}
+              </span>
+            </>
+          )}
+        </div>
+
+        {/* משתתפים */}
+        <AvatarGroup players={users} />
       </div>
     </Link>
   );

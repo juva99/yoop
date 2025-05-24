@@ -46,7 +46,7 @@ const FutureGames: React.FC<Props> = ({ games }) => {
   return (
     <div
       {...handlers}
-      className="relative flex h-[130px] w-full max-w-md items-center justify-between overflow-hidden rounded-xl border-1 border-gray-200"
+      className="relative flex max-h-[110px] w-full justify-between overflow-hidden"
     >
       {games.length === 0 ? (
         <span className="text-subtitle mr-3 text-2xl">אין משחקים עתידיים</span>
@@ -55,15 +55,15 @@ const FutureGames: React.FC<Props> = ({ games }) => {
           {" "}
           <div
             className="transition-transform duration-300"
-            style={{ transform: `translateY(-${currentGame * 130}px)` }}
+            style={{ transform: `translateY(-${currentGame * 110}px)` }}
           >
             {games.slice(0, 5).map((game, i) => (
-              <div key={i} className="h-[130px]">
+              <div key={i} className="flex h-[110px] w-full items-center">
                 <GameCard game={game} />
               </div>
             ))}
           </div>
-          <div className="bullets-container left-0 flex h-[130px] items-center pl-5">
+          <div className="bullets-container left-0 flex h-[110px] items-center pl-5">
             <ul className="space-y-2">
               {games.slice(0, 5).map((game, i) => (
                 <li key={i}>
