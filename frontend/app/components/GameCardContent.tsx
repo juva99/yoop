@@ -88,12 +88,10 @@ const GameCardContent: React.FC<Props> = ({ game }) => {
         )}
       </div>
 
-      <div className="flex flex-wrap items-center gap-2 text-sm text-gray-600">
-        <p>
-          רשומים: {game.maxParticipants}/ {game.gameParticipants.length}
-        </p>
-        <AvatarGroup players={users} />
-      </div>
+      <p className="text-sm text-gray-600">
+        רשומים: {game.maxParticipants}/ {game.gameParticipants.length}
+      </p>
+      <AvatarGroup players={users} />
     </div>
   );
 };
