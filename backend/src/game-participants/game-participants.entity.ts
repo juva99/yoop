@@ -8,7 +8,9 @@ export class GameParticipant {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => Game, (game) => game.gameParticipants)
+  @ManyToOne(() => Game, (game) => game.gameParticipants, {
+    onDelete: 'CASCADE', // Add this
+  })
   game: Game;
 
   @ManyToOne(() => User, (user) => user.gameParticipations, { eager: true })
