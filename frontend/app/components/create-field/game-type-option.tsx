@@ -1,17 +1,6 @@
-import { GameType } from "@/app/enums/game-type.enum";
+import { GameType, gameTypeDict } from "@/app/enums/game-type.enum";
 import { cn } from "@/lib/utils";
 import { PiBasketball, PiSoccerBall } from "react-icons/pi";
-
-const getGameTypeLabel = (type: GameType) => {
-  switch (type) {
-    case GameType.FootBall:
-      return "כדורגל";
-    case GameType.BasketBall:
-      return "כדורסל";
-    default:
-      return type;
-  }
-};
 
 const getGameTypeIcon = (type: GameType) => {
   switch (type) {
@@ -46,7 +35,7 @@ const GameTypeOption = ({
       <div className="mb-2 flex h-12 w-12 items-center justify-center">
         {getGameTypeIcon(value)}
       </div>
-      <span className="text-sm font-medium">{getGameTypeLabel(value)}</span>
+      <span className="text-sm font-medium">{gameTypeDict[value]}</span>
     </div>
   );
 };
