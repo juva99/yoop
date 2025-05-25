@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 export default async function SearchPage({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const session = await getSession();
   if (!session?.user?.uid) {
