@@ -8,9 +8,11 @@ import { User } from './users.entity';
 import { CreateUserDto } from './dto/create-users.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, ILike, MoreThan } from 'typeorm';
-import { hash } from 'argon2';
 import { FriendRelation } from 'src/friends/friends.entity';
 import * as crypto from 'crypto';
+import * as bcrypt from 'bcrypt';
+import { CreateManagerDto } from './dto/create-manager.dto';
+import { Role } from 'src/enums/role.enum';
 
 @Injectable()
 export class UsersService {
@@ -32,10 +34,12 @@ export class UsersService {
         );
       }
       const { pass, ...user } = this.userRepository.create(createUserDto);
-      const hashedPass = await hash(pass);
+      const salt = await bcrypt.genSalt(10);
+      const hashedPass = await bcrypt.hash(pass, salt);
       return await this.userRepository.save({
         pass: hashedPass,
         ...user,
+        role: Role.USER
       });
     } catch (error) {
       throw new Error(error);
@@ -120,11 +124,11 @@ export class UsersService {
     return await this.userRepository.save(user);
   }
 
-  async createPasswordResetToken(uid: string): Promise<any>{
+  async createPasswordResetToken(uid: string, hours: number): Promise<any>{
         const resetToken = crypto.randomBytes(32).toString('hex');
         const passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
 
-        const passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000);
+        const passwordResetExpires = new Date(Date.now() + hours * 60 * 60 * 1000);
 
         await this.userRepository.update({uid}, 
           { 
@@ -151,7 +155,8 @@ export class UsersService {
     if(!user){
       throw new NotFoundException(`password reset token isn't valid`);
     }
-    const hashedPass = await hash(newPassword)
+      const salt = await bcrypt.genSalt(10);
+      const hashedPass = await bcrypt.hash(newPassword, salt);
     
     const updateduser = await this.userRepository.update(user.uid,
       {
@@ -160,7 +165,18 @@ export class UsersService {
         hashedRefreshToken: null,
       }
     );
-    
     //log user in
   }
+
+  async createManager(createManagerDto: CreateManagerDto): Promise<User>{
+    const password = crypto.randomBytes(Math.ceil(12 * 1.5)).toString('base64').replace(/[^a-zA-Z0-9]/g, '').slice(0, 12);
+    const salt = await bcrypt.genSalt(10);
+    const hashedPass = await bcrypt.hash(password, salt);
+    const {pass, ...user } = this.userRepository.create(createManagerDto);
+    return await this.userRepository.save({
+        pass: hashedPass,
+        ...user,
+        role: Role.FIELD_MANAGER
+      });
+    } 
 }

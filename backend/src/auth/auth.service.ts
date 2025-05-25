@@ -6,7 +6,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { User } from '../users/users.entity';
-import { hash, verify } from 'argon2';
 import { CreateUserDto } from 'src/users/dto/create-users.dto';
 import { UsersService } from 'src/users/users.service';
 import { AuthJwtPayload } from './types/auth-jwtPayload';
@@ -17,7 +16,6 @@ import { ConfigType } from '@nestjs/config';
 import { authenticatedUser } from './types/authenticatedUser';
 import { Role } from 'src/enums/role.enum';
 import { MailService } from 'src/mail/mail.service';
-import * as crypto from 'crypto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -55,7 +53,7 @@ export class AuthService {
         throw new UnauthorizedException('פרטי ההתחברות שגויים');
       }
 
-      const isPasswordMatched = await verify(user.pass, password);
+      const isPasswordMatched = await bcrypt.compare(password, user.pass);
 
       if (!isPasswordMatched) {
         throw new UnauthorizedException('פרטי ההתחברות שגויים');
@@ -126,6 +124,7 @@ export class AuthService {
     refreshToken: string,
   ): Promise<{ uid: string; role: Role; name?: string }> {
     const user = await this.usersService.findById(userId);
+    
     if (!user) {
       throw new UnauthorizedException('המשתמש לא נמצא!');
     }
@@ -135,10 +134,6 @@ export class AuthService {
       );
     }
     const refreshTokenMatched = await bcrypt.compare(refreshToken, user.hashedRefreshToken);
-    // const refreshTokenMatched = await verify(
-    //   user.hashedRefreshToken,
-    //   refreshToken,
-    // );
     if (!refreshTokenMatched) {
       throw new UnauthorizedException('Invalid Refresh Token!');
     }
@@ -159,7 +154,6 @@ export class AuthService {
     const { accessToken, refreshToken } = await this.generateTokens(userId);
     const salt = await bcrypt.genSalt(10);
     const hashedRefreshToken = await bcrypt.hash(refreshToken, salt);
-    // const hashedRefreshToken = await hash(refreshToken);
     await this.usersService.updateRefreshToken(userId, hashedRefreshToken);
     return {
       uid: userId,
@@ -181,10 +175,10 @@ export class AuthService {
           throw new NotFoundException(`user with email address${email} not found`);
         }
         // generate random reset token
-        const token = this.usersService.createPasswordResetToken(user.uid);
+        const token = this.usersService.createPasswordResetToken(user.uid, 1);
         
         return token;
-        //send it to users email
+        //send it to users email  
   }
 
 }

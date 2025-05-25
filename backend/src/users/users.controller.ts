@@ -15,6 +15,7 @@ import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { User } from './users.entity';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { Public } from 'src/auth/decorators/public.decorator';
+import { CreateManagerDto } from './dto/create-manager.dto';
 
 
 @Controller('users')
@@ -63,4 +64,10 @@ export class UsersController {
   async resetPass(@Param('token') token: string, @Body() body){
     return this.userService.changePassword(token, body.password);
   } 
+
+
+  @Post('/create-manager')
+  async createManager(@Body() createManagerDto: CreateManagerDto){
+    return this.userService.createManager(createManagerDto);
+  }
 }
