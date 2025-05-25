@@ -70,7 +70,7 @@ const FieldGameList: React.FC<Props> = ({ fieldId }) => {
 
       return (
         (finished && isFinished) ||
-        (available && game.status === GameStatus.AVAILABLE) ||
+        (available && game.status === GameStatus.APPROVED) ||
         (pending && game.status === GameStatus.PENDING)
       );
     });
@@ -93,7 +93,7 @@ const FieldGameList: React.FC<Props> = ({ fieldId }) => {
   };
 
   const availableCount = allGames.filter(
-    (g) => g.status === GameStatus.AVAILABLE,
+    (g) => g.status === GameStatus.APPROVED,
   ).length;
   const pendingCount = allGames.filter(
     (g) => g.status === GameStatus.PENDING,

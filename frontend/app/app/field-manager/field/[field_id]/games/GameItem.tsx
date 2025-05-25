@@ -61,7 +61,7 @@ const GameItem: React.FC<Props> = ({ game, onStatusChange }) => {
             </a>
           )}
         </div>
-        {game.status === GameStatus.AVAILABLE && (
+        {game.status === GameStatus.APPROVED && (
           <span>
             רשומים: {game.gameParticipants.length}/{game.maxParticipants}
           </span>
