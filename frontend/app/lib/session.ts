@@ -33,7 +33,7 @@ export async function createSession(payload: Session): Promise<void> {
     httpOnly: true,
     secure: false,
     expires: expiredAt,
-    sameSite: "none",
+    sameSite: "lax",
     path: "/",
   });
 }
