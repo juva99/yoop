@@ -4,20 +4,16 @@ import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import { BACKEND_URL } from "../../../../lib/constants";
 
-
 export async function GET(req: NextRequest): Promise<NextResponse> {
-  const response = await authFetch(
-    `${BACKEND_URL}/auth/signout`,
-    {
-      method: "POST",
-    }
-  );
-  
+  const response = await authFetch(`${BACKEND_URL}/auth/signout`, {
+    method: "POST",
+  });
+
   if (response.ok) {
     await deleteSession();
   }
- 
+
   //redirect to welcomepage
-  revalidatePath("/")
+  revalidatePath("/");
   return NextResponse.redirect(new URL("/", req.nextUrl));
 }

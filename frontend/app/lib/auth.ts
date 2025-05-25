@@ -49,7 +49,6 @@ export async function signup(
 }
 
 export async function login(
-  
   state: FormState,
   formData: FormData,
 ): Promise<FormState> {
@@ -74,7 +73,6 @@ export async function login(
 
   if (response.ok) {
     const result = await response.json();
-
     await createSession({
       user: {
         uid: result.uid,
@@ -91,9 +89,8 @@ export async function login(
       admin: "/field-manager/fields", //כרגע זה מנהל המערכת נשנה את זה אחרכך
     };
 
-  const redirectPath = roleRedirectMap[result.role] ?? "/";
-  redirect(redirectPath);
-
+    const redirectPath = roleRedirectMap[result.role] ?? "/";
+    redirect(redirectPath);
   } else {
     return {
       message:

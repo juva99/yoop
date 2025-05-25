@@ -1,22 +1,22 @@
-"use server"
+"use server";
 
-import { jwtVerify, SignJWT } from 'jose';
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
-import { Role } from '../app/enums/role.enum';
+import { jwtVerify, SignJWT } from "jose";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { Role } from "../app/enums/role.enum";
 
 export type Session = {
   user: {
-    uid: string,
-    name: string,
-    role: Role,
+    uid: string;
+    name: string;
+    role: Role;
   };
   accessToken: string;
   refreshToken: string;
-} 
+};
 
 const secretKey = process.env.SESSION_SECRET_KEY!;
-const encodedKey = new TextEncoder().encode(secretKey)
+const encodedKey = new TextEncoder().encode(secretKey);
 
 export async function createSession(payload: Session): Promise<void> {
   const expiredAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
@@ -26,73 +26,69 @@ export async function createSession(payload: Session): Promise<void> {
     .setIssuedAt()
     .setExpirationTime("7d")
     .sign(encodedKey);
-  
+
   const cookieStore = await cookies();
-  
+
   cookieStore.set("session", session, {
     httpOnly: true,
-    secure: true,
+    secure: false,
     expires: expiredAt,
-    sameSite: "lax",
-    path: "/"
+    sameSite: "none",
+    path: "/",
   });
 }
 
 export async function getSession(): Promise<Session | null> {
-  const cookieStore = await cookies(); 
+  const cookieStore = await cookies();
   const cookie = cookieStore.get("session")?.value;
-  if (!cookie)
-    return null;
-  
+  if (!cookie) return null;
+
   try {
     const { payload } = await jwtVerify(cookie, encodedKey, {
-      algorithms: ["HS256"]
+      algorithms: ["HS256"],
     });
 
-    return payload as Session
-  }
-  catch (error) {
+    return payload as Session;
+  } catch (error) {
     console.error("Failed to verify the session", error);
     redirect("/auth/login");
   }
 }
-
 
 export async function deleteSession(): Promise<void> {
   const cookieStore = await cookies();
   cookieStore.delete("session");
 }
 
-export async function updateTokens({accessToken, refreshToken}: {
+export async function updateTokens({
+  accessToken,
+  refreshToken,
+}: {
   accessToken: string;
   refreshToken: string;
-}): Promise<void | null> { 
-  const cookieStore = await cookies(); 
+}): Promise<void | null> {
+  const cookieStore = await cookies();
   const cookie = cookieStore.get("session")?.value;
-  if (!cookie)
-    return null;
-  
+  if (!cookie) return null;
+
   try {
     const { payload } = await jwtVerify(cookie, encodedKey);
 
-    if (!payload)
-      throw new Error("Session not found");
+    if (!payload) throw new Error("Session not found");
 
     const newPayload: Session = {
       user: {
-        uid: (payload.user as Session['user']).uid,
-        name: (payload.user as Session['user']).name,
-        role: (payload.user as Session['user']).role,
+        uid: (payload.user as Session["user"]).uid,
+        name: (payload.user as Session["user"]).name,
+        role: (payload.user as Session["user"]).role,
       },
       accessToken,
-      refreshToken
-    }
+      refreshToken,
+    };
 
     await createSession(newPayload);
-  }
-  catch (error) {
+  } catch (error) {
     console.error("Failed to update the tokens", error);
     redirect("/auth/login");
   }
-  
 }
