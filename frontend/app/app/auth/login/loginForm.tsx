@@ -1,61 +1,108 @@
 "use client";
 
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import SubmitButton from "@/components/ui/submitButton";
-import { useActionState } from "react";
-import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
 import { login } from "@/lib/auth";
+import Link from "next/link";
+import { FaRegEye } from "react-icons/fa";
+import { LuEyeClosed } from "react-icons/lu";
+
+import { LoginFormSchema, LoginFormValues } from "@/lib/schemas/login_schema";
+
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
 
 const LoginForm = () => {
-  const [state, action] = useActionState(login, undefined);
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(LoginFormSchema),
+    defaultValues: {
+      userEmail: "",
+      pass: "",
+    },
+  });
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const [formError, setFormError] = useState("");
+
+  const onSubmit = async (values: LoginFormValues) => {
+    const formData = new FormData();
+    formData.append("userEmail", values.userEmail);
+    formData.append("pass", values.pass);
+    const result = await login(undefined, formData);
+    if (result?.error) {
+      setFormError(result.message || "שגיאה בהתחברות");
+    }
+  };
 
   return (
-    <form action={action}>
-      {state?.message && <p className="form_error">{state.message}</p>}
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        {formError && <p className="text-sm text-red-500">{formError}</p>}
 
-      <div className="form_item">
-        <Label htmlFor="userEmail" className="form_label">
-          אימייל
-        </Label>
-        <Input
-          type="email"
-          id="userEmail"
+        <FormField
+          control={form.control}
           name="userEmail"
-          placeholder="example@email.com"
-          className="input_underscore"
-        ></Input>
-      </div>
-      {state?.error?.userEmail && (
-        <p className="form_error">{state.error.userEmail}</p>
-      )}
+          render={({ field }) => (
+            <FormItem className="text-right">
+              <FormLabel>אימייל</FormLabel>
+              <FormControl>
+                <Input placeholder="example@email.com" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-      <div className="form_item">
-        <Label htmlFor="pass" className="form_label">
-          סיסמא
-        </Label>
-        <Input
-          type="password"
-          id="pass"
+        <FormField
+          control={form.control}
           name="pass"
-          placeholder="••••••••"
-          className="input_underscore"
-        ></Input>
-        <Link
-          href={"/auth/signup"}
-          className="mr-2 text-sm font-medium text-blue-500 underline hover:text-blue-700"
-        >
-          שכחת סיסמא?
-        </Link>
-      </div>
-      {state?.error?.pass && <p className="form_error">{state.error.pass}</p>}
+          render={({ field }) => (
+            <FormItem className="text-right">
+              <FormLabel>סיסמא</FormLabel>
+              <FormControl>
+                <div className="relative">
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="••••••••"
+                    {...field}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500"
+                  >
+                    {showPassword ? <FaRegEye /> : <LuEyeClosed />}
+                  </button>
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-      <div className="flex w-full justify-center">
-        <SubmitButton className="mt-3 rounded-sm bg-blue-500 px-5 py-5 text-lg font-semibold text-white">
-          התחבר
-        </SubmitButton>
-      </div>
-    </form>
+        <div className="flex items-center justify-between">
+          <Link href="/auth/forgot" className="text-sm text-blue-600 underline">
+            שכחת סיסמה?
+          </Link>
+        </div>
+
+        <div className="flex justify-center">
+          <Button type="submit" className="w-1/2 bg-blue-500 py-2 text-white">
+            התחבר
+          </Button>
+        </div>
+      </form>
+    </Form>
   );
 };
 

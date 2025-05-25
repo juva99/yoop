@@ -17,8 +17,8 @@ export const ProfileUpdateSchema = z.object({
 
   userEmail: z
     .string()
-    .trim()
-    .email({ message: "כתובת מייל לא תקינה" }),
+    .min(1, { message: "חובה למלא אימייל" })
+    .email({ message: "אימייל לא תקין" }),
 
   phoneNum: z
     .string()

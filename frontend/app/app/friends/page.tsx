@@ -5,6 +5,7 @@ import { User } from "@/app/types/User";
 import { PiMagnifyingGlassThin } from "react-icons/pi";
 import { getSession } from "@/lib/session";
 import FriendList from "@/components/friends/FriendList";
+import { Input } from "@/components/ui/input";
 
 export default async function SearchPage({
   searchParams,
@@ -43,12 +44,10 @@ export default async function SearchPage({
         <FriendList currentUserUid={userId} relations={friendRelations} />
       </div>
       <div className="flex h-[250px] flex-col rounded-3xl bg-white p-8">
-        <h1 className="text-title text-center text-2xl font-bold">
-          הוספת חברים
-        </h1>
+        <h1>הוספת חברים</h1>
         <Form action="/friends/search">
           <div className="input-wrapper border-title mt-5 mb-5 flex justify-between border-b-1 py-1">
-            <input
+            <Input
               type="text"
               name="query"
               className="bg-transparent outline-none"

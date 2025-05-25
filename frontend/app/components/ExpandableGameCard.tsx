@@ -66,41 +66,49 @@ const ExpandableGameCard: React.FC<Props> = ({ game, buttonTitle }) => {
   });
 
   return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen} className="relative">
-      <div>
-        <CollapsibleTrigger className="absolute top-2 left-2 z-10">
-          {!isOpen && <IoIosArrowDown />}
-          {isOpen && <IoIosArrowUp />}
-        </CollapsibleTrigger>
-        <Button
-          onClick={() => router.push(`/game/${gameId}`)}
-          className="absolute top-2 left-10 z-10 h-auto min-h-0 rounded-sm bg-blue-500 px-2.5 py-1.5 text-[12px] leading-none font-semibold text-white"
-        >
-          {buttonTitle}
-        </Button>
-        <div className="flex items-start pr-5 text-right">
-          <div className="game-details">
-            <span className="flex items-center gap-3 text-[20px] font-medium text-blue-400">
-              {gameType === GameType.BasketBall ? (
-                <PiBasketball />
-              ) : gameType === GameType.FootBall ? (
-                <PiSoccerBall />
-              ) : null}
-              <span className={`max-w-[150px] ${!isOpen ? "truncate" : ""}`}>
-                {field.fieldName}
-              </span>
-            </span>
-            <p className="text-gray-500">
-              {formattedDate} | {formattedTime} {price && "|" + price + "₪"}
-              <span className="flex items-center gap-1">
-                {weatherTemp + "°"}
-                <img src={weatherIcon} alt="Weather Icon" className="h-6 w-6" />
-              </span>
-            </p>
-            {!isOpen && <AvatarGroup players={users} />}
-          </div>
+    <Collapsible
+      open={isOpen}
+      onOpenChange={setIsOpen}
+      className="relative space-y-2 rounded-xl border bg-white p-4 shadow-sm"
+    >
+      <div className="flex items-start justify-between">
+        <div className="text-title flex items-center gap-3 font-medium">
+          {gameType === GameType.BasketBall ? (
+            <PiBasketball />
+          ) : (
+            <PiSoccerBall />
+          )}
+          <span className="truncate">{field.fieldName}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            onClick={() => router.push(`/game/${gameId}`)}
+            className="bg-title rounded px-3 py-1 text-xs text-white"
+          >
+            {buttonTitle}
+          </Button>
+          <CollapsibleTrigger className="text-xl text-gray-500">
+            {isOpen ? <IoIosArrowUp /> : <IoIosArrowDown />}
+          </CollapsibleTrigger>
         </div>
       </div>
+
+      <div className="flex gap-2 text-sm text-gray-600">
+        {formattedDate} | {formattedTime} {price && `| ${price}₪`} |{" "}
+        {weatherTemp && (
+          <span className="flex items-center gap-1">
+            {weatherTemp}°
+            <img src={weatherIcon} alt="Weather Icon" className="h-5 w-5" />
+          </span>
+        )}
+      </div>
+      <div className="flex items-center gap-2 text-sm text-gray-600">
+        <p>
+          ({game.maxParticipants}/ {game.gameParticipants.length})
+        </p>
+        {!isOpen && <AvatarGroup players={users} />}
+      </div>
+
       <CollapsibleContent className="mt-2 max-h-[200px] overflow-y-auto">
         <PlayersList
           gameId={gameId}

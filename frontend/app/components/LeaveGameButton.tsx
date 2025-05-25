@@ -3,6 +3,7 @@
 import { leaveGame } from "@/lib/actions";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Button } from "./ui/button";
 
 interface Props {
   gameId: string;
@@ -24,12 +25,13 @@ export default function LeaveGameButton({ gameId }: Props) {
 
   return (
     <div className="flex flex-col items-center">
-      <button
+      <Button
+        variant="submit"
         onClick={() => clickedLeave(gameId)}
-        className="rounded bg-red-500 px-4 py-2 font-bold text-white hover:bg-red-700"
+        className="bg-red-500"
       >
         עזוב משחק
-      </button>
+      </Button>
       {error && (
         <p className="mt-2 text-center text-sm text-red-500">{error}</p>
       )}

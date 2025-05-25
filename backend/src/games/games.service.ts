@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   Between,
@@ -17,50 +21,33 @@ import { ParticipationStatus } from 'src/enums/participation-status.enum';
 import { WeatherApiService } from 'src/weather-api/weather-api.service';
 import { GameParticipantsService } from 'src/game-participants/game-participants.service';
 import { FieldsService } from 'src/fields/fields.service';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class GamesService {
   constructor(
     @InjectRepository(Game)
     private gameRepository: Repository<Game>,
-
     private readonly fieldService: FieldsService,
     private readonly gameParticipantService: GameParticipantsService,
     private readonly weatherApiService: WeatherApiService,
+    private readonly mailService: MailService,
   ) {}
 
   async findAll(): Promise<Game[]> {
-    return await this.gameRepository.find();
+    return await this.gameRepository.find({
+      where: { status: GameStatus.APPROVED },
+    });
   }
 
   async findById(gameId: string): Promise<Game> {
-    const game = await this.gameRepository.findOne({ where: { gameId } });
+    const game = await this.gameRepository.findOne({
+      where: { gameId },
+    });
     if (!game) {
       throw new NotFoundException(`game with id ${gameId} not found`);
     }
     return game;
-  }
-
-  async findByFieldId(fieldId: string): Promise<Game[]> {
-    const game = await this.gameRepository.find({
-      relations: ['field'],
-      where: {
-        field: {
-          fieldId,
-        },
-      },
-    });
-    if (!game) {
-      throw new NotFoundException(`field with id ${fieldId} not found`);
-    }
-    return game;
-  }
-
-  async deleteOne(gameId: string): Promise<void> {
-    const results = await this.gameRepository.delete(gameId);
-    if (results.affected === 0) {
-      throw new NotFoundException(`Game with id ${gameId} not found`);
-    }
   }
 
   async create(createGameDto: CreateGameDto, user: User): Promise<Game> {
@@ -86,6 +73,10 @@ export class GamesService {
     };
     const weatherData = await this.weatherApiService.getWeather(getWeatherDto);
 
+    const status: GameStatus = fieldd.isManaged
+      ? GameStatus.PENDING
+      : GameStatus.APPROVED;
+
     const game = this.gameRepository.create({
       gameType,
       startDate,
@@ -93,7 +84,7 @@ export class GamesService {
       maxParticipants,
       creator: user,
       field: fieldd,
-      status: fieldd.isManaged ? GameStatus.PENDING : GameStatus.AVAILABLE,
+      status: status,
       gameParticipants: [],
       weatherTemp: parseInt(weatherData.temp_c),
       weatherCondition: weatherData.condition.text,
@@ -108,7 +99,7 @@ export class GamesService {
       ParticipationStatus.APPROVED,
     );
 
-    return this.findById(savedGame.gameId);
+    return savedGame;
   }
 
   async queryGames(queryDto: QueryGameDto): Promise<Game[]> {
@@ -118,7 +109,8 @@ export class GamesService {
       .leftJoinAndSelect('game.field', 'field')
       .leftJoinAndSelect('game.creator', 'creator')
       .leftJoinAndSelect('game.gameParticipants', 'gameParticipant')
-      .leftJoinAndSelect('gameParticipant.user', 'participantUser');
+      .leftJoinAndSelect('gameParticipant.user', 'participantUser')
+      .where('game.status = :status', { status: GameStatus.APPROVED });
 
     if (gameType) {
       query.andWhere('game.gameType = :gameType', { gameType });
@@ -229,18 +221,93 @@ export class GamesService {
     return availableHalfHours;
   }
 
-  async setStatus(
-    gameId: string,
-    user: User,
-    status: GameStatus,
-  ): Promise<Game> {
+  async approveGame(gameId: string, status: GameStatus): Promise<Game> {
+    const game = await this.findById(gameId);
+    game.status = status;
+
+    const gameRes = await this.gameRepository.save(game);
+
+    this.mailService.sendNewGameStatus(
+      gameRes.creator.userEmail,
+      gameRes.creator.firstName,
+      status,
+      gameRes.field.fieldName,
+    );
+
+    return gameRes;
+  }
+
+  async declineGame(gameId: string): Promise<void> {
+    const game = await this.findById(gameId);
+    await this.deleteOne(gameId);
+
+    this.mailService.sendNewGameStatus(
+      game.creator.userEmail,
+      game.creator.firstName,
+      GameStatus.DELETED,
+      game.field.fieldName,
+    );
+  }
+
+  async findAllGamesByField(fieldId: string): Promise<Game[]> {
+    const games = await this.gameRepository.find({
+      relations: ['field'],
+      where: {
+        field: { fieldId },
+      },
+      order: { startDate: 'ASC' },
+    });
+
+    if (!games) {
+      throw new NotFoundException(`No games found for field: ${fieldId}`);
+    }
+
+    return games;
+  }
+
+  async findPendingGamesByField(fieldId: string): Promise<Game[]> {
+    const games = await this.gameRepository.find({
+      relations: ['field'],
+      where: {
+        field: { fieldId },
+        status: GameStatus.PENDING,
+      },
+      order: { startDate: 'ASC' },
+    });
+
+    if (!games) {
+      throw new NotFoundException(`No games found for field: ${fieldId}`);
+    }
+
+    return games;
+  }
+
+  async findApprovedGamesByField(fieldId: string): Promise<Game[]> {
+    const games = await this.gameRepository.find({
+      relations: ['field'],
+      where: {
+        field: {
+          fieldId,
+        },
+        status: GameStatus.APPROVED,
+      },
+    });
+    if (!games) {
+      throw new NotFoundException(`No games found for field: ${fieldId}`);
+    }
+    return games;
+  }
+
+  async deleteOne(gameId: string): Promise<void> {
     const game = await this.gameRepository.findOne({
       where: { gameId },
+      relations: ['gameParticipants'],
     });
+
     if (!game) {
-      throw new NotFoundException(`Game with id ${gameId} not found`);
+      throw new NotFoundException(`Game with id "${gameId}" not found`);
     }
-    game.status = status;
-    return await this.gameRepository.save(game);
+
+    await this.gameRepository.remove(game);
   }
 }

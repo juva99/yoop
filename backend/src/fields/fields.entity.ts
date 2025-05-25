@@ -40,8 +40,8 @@ export class Field {
   city: City;
 
   //field manager
-  @ManyToOne(() => User, (manager) => manager.fieldsManage)
-  manager: User;
+  @ManyToOne(() => User, (manager) => manager.fieldsManage, { nullable: true })
+  manager: User | null;
 
   //games played in this field
   @OneToMany(() => Game, (game) => game.field)

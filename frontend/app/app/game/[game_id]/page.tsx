@@ -106,10 +106,10 @@ export default async function Page({
       gp.user.uid === currUserUID && gp.status !== ParticipationStatus.REJECTED,
   );
   return (
-    <div className="container mx-auto flex flex-col gap-6 p-4">
+    <div className="container mx-auto flex flex-col gap-6 p-8">
       {" "}
-      <div className="flex items-center gap-3">
-        <span className="text-3xl text-blue-500">
+      <div className="text-title flex items-center gap-3 text-2xl font-bold">
+        <span>
           {" "}
           {gameType === GameType.BasketBall ? (
             <PiBasketball />
@@ -117,9 +117,9 @@ export default async function Page({
             <PiSoccerBall />
           ) : null}
         </span>
-        <h1 className="text-2xl font-bold">{`משחק ${gameType === GameType.BasketBall ? "כדורסל" : "כדורגל"} ב${field.fieldName}`}</h1>{" "}
+        <span>{`משחק ${gameType === GameType.BasketBall ? "כדורסל" : "כדורגל"} `}</span>{" "}
       </div>
-      <div className="grid grid-cols-2 gap-4 border-t border-b py-4">
+      <div className="flex flex-col gap-2">
         {" "}
         <div className="flex items-center gap-2">
           <IoMdPin className="text-gray-600" />
@@ -145,7 +145,7 @@ export default async function Page({
         )}
       </div>
       <div>
-        <h2 className="mb-2 text-xl font-semibold">
+        <h2>
           משתתפים ({approvedCount}/{maxParticipants})
         </h2>
         <PlayersList
@@ -158,7 +158,7 @@ export default async function Page({
         />
       </div>
       <div>
-        <h2 className="mb-2 text-xl font-semibold">רשימת המתנה</h2>
+        <h2>רשימת המתנה</h2>
         <PlayersList
           gameId={gameId}
           creatorUID={creator.uid}
@@ -169,7 +169,7 @@ export default async function Page({
         />
       </div>
       <div>
-        <h2 className="mb-2 text-xl font-semibold">מיקום</h2>
+        <h2>מיקום</h2>
         <MapView
           defaultLocation={{ lng: field.fieldLng, lat: field.fieldLat }}
           games={[game]}

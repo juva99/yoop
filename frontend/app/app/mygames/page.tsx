@@ -1,92 +1,107 @@
+"use client";
+
+import * as React from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ExpandableGameCard from "@/components/ExpandableGameCard";
 import { getMyGames } from "@/lib/actions";
 import { getSession } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { ParticipationStatus } from "../enums/participation-status.enum";
+import { useEffect, useState } from "react";
+import { Game } from "../types/Game";
+import { Card } from "@/components/ui/card";
+import GameCard from "@/components/GameCard";
 
-export default async function MyGames() {
-  const session = await getSession();
-  if (!session?.user?.uid) {
-    console.error("Invalid session or user credentials");
-    redirect("/auth/login");
-  }
-  const currUserUID = session.user.uid;
+export default function MyGames() {
+  const [managedGames, setManagedGames] = useState<Game[]>([]);
+  const [approvedGames, setApprovedGames] = useState<Game[]>([]);
+  const [pendingGames, setPendingGames] = useState<Game[]>([]);
 
-  const games = await getMyGames();
+  useEffect(() => {
+    (async () => {
+      const session = await getSession();
+      if (!session?.user?.uid) {
+        console.error("Invalid session or user credentials");
+        redirect("/auth/login");
+      }
+      const currUserUID = session.user.uid;
+      const games = await getMyGames();
 
-  const managedGames = games.filter((game) => game.creator.uid === currUserUID);
-  const approvedGames = games.filter((game) =>
-    game.gameParticipants.some(
-      (gp) =>
-        gp.user.uid === currUserUID &&
-        gp.status === ParticipationStatus.APPROVED,
-    ),
-  );
+      setManagedGames(games.filter((game) => game.creator.uid === currUserUID));
 
-  const pendingGames = games.filter((game) =>
-    game.gameParticipants.some(
-      (gp) =>
-        gp.user.uid === currUserUID &&
-        gp.status === ParticipationStatus.PENDING,
-    ),
-  );
+      setApprovedGames(
+        games.filter((game) =>
+          game.gameParticipants.some(
+            (gp) =>
+              gp.user.uid === currUserUID &&
+              gp.status === ParticipationStatus.APPROVED,
+          ),
+        ),
+      );
+
+      setPendingGames(
+        games.filter((game) =>
+          game.gameParticipants.some(
+            (gp) =>
+              gp.user.uid === currUserUID &&
+              gp.status === ParticipationStatus.PENDING,
+          ),
+        ),
+      );
+    })();
+  }, []);
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8">
-      <div className="mb-10">
-        <p className="mb-4 text-right text-2xl font-bold">משחקים בניהולך</p>
-        {managedGames.length === 0 ? (
-          <p className="rounded border bg-gray-50 py-8 text-center text-lg text-gray-500 shadow-sm">
-            אין משחקים בניהולך
-          </p>
-        ) : (
-          <div className="space-y-4">
-            {managedGames.map((game, index) => (
-              <ExpandableGameCard
-                key={index}
-                game={game}
-                buttonTitle="לעמוד המשחק"
-              />
-            ))}
-          </div>
-        )}
-      </div>
-      <div className="mb-10">
-        <p className="mb-4 text-right text-2xl font-bold">המשחקים שלי</p>
-        {managedGames.length === 0 ? (
-          <p className="rounded border bg-gray-50 py-8 text-center text-lg text-gray-500 shadow-sm">
-            אין משחקים עתידיים
-          </p>
-        ) : (
-          <div className="space-y-4">
-            {approvedGames.map((game, index) => (
-              <ExpandableGameCard
-                key={index}
-                game={game}
-                buttonTitle="לעמוד המשחק"
-              />
-            ))}
-          </div>
-        )}
-      </div>
-      <div>
-        <p className="mb-4 text-right text-2xl font-bold">משחקים בהמתנה</p>
-        {pendingGames.length === 0 ? (
-          <p className="rounded border bg-gray-50 py-8 text-center text-lg text-gray-500 shadow-sm">
-            אין משחקים בהמתנה
-          </p>
-        ) : (
-          <div className="space-y-4">
-            {pendingGames.map((game, index) => (
-              <ExpandableGameCard
-                key={index}
-                game={game}
-                buttonTitle="לעמוד המשחק"
-              />
-            ))}
-          </div>
-        )}
-      </div>
+    <div className="mx-auto max-w-3xl px-4 pt-6">
+      <Tabs defaultValue="approved" className="w-full" dir="rtl">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="approved">המשחקים שלי</TabsTrigger>
+          <TabsTrigger value="managed">בניהולך</TabsTrigger>
+          <TabsTrigger value="pending">בהמתנה</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="managed">
+          {managedGames.length === 0 ? (
+            <Card>
+              <p className="h-30 text-center">לא נמצאו משחקים</p>
+            </Card>
+          ) : (
+            <div className="space-y-4 pt-4">
+              {managedGames.map((game, index) => (
+                <GameCard key={index} game={game} />
+              ))}
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="approved">
+          {approvedGames.length === 0 ? (
+            <Card>
+              <p className="h-30 text-center">לא נמצאו משחקים</p>
+            </Card>
+          ) : (
+            <div className="space-y-4 pt-4">
+              {approvedGames.map((game, index) => (
+                <GameCard key={index} game={game} />
+              ))}
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="pending">
+          {pendingGames.length === 0 ? (
+            <Card>
+              <p className="h-30 text-center">לא נמצאו משחקים</p>
+            </Card>
+          ) : (
+            <div className="space-y-4 pt-4">
+              {pendingGames.map((game, index) => (
+                <GameCard key={index} game={game} />
+              ))}
+            </div>
+          )}
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

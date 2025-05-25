@@ -6,6 +6,7 @@ import { Game } from './games.entity';
 import { WeatherApiModule } from 'src/weather-api/weather-api.module';
 import { GameParticipantsModule } from 'src/game-participants/game-participants.module';
 import { FieldsModule } from 'src/fields/fields.module';
+import { MailModule } from 'src/mail/mail.module';
 
 @Module({
   imports: [
@@ -13,8 +14,10 @@ import { FieldsModule } from 'src/fields/fields.module';
     WeatherApiModule,
     GameParticipantsModule,
     FieldsModule,
+    MailModule,
   ],
   controllers: [GamesController],
   providers: [GamesService],
+  exports: [GamesService],
 })
 export class GamesModule {}
