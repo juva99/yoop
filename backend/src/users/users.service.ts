@@ -124,7 +124,8 @@ export class UsersService {
     return await this.userRepository.save(user);
   }
 
-  async createPasswordResetToken(uid: string, hours: number): Promise<any>{
+  //create reset token for user by id, set token vlaid for hours provided
+  async createPasswordResetToken(uid: string, hours: number): Promise<string>{
         const resetToken = crypto.randomBytes(32).toString('hex');
         const passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
 
@@ -140,6 +141,7 @@ export class UsersService {
         return resetToken;
   }
 
+  //change password by token
   async changePassword(token: string, newPassword: string): Promise<void>{
     //get user based on token
     const hashedtoken = crypto.createHash('sha256').update(token).digest('hex');
@@ -168,6 +170,7 @@ export class UsersService {
     //log user in
   }
 
+  //create manager user with generated random password.
   async createManager(createManagerDto: CreateManagerDto): Promise<User>{
     const password = crypto.randomBytes(Math.ceil(12 * 1.5)).toString('base64').replace(/[^a-zA-Z0-9]/g, '').slice(0, 12);
     const salt = await bcrypt.genSalt(10);

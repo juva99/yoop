@@ -44,4 +44,71 @@ export class MailService {
       console.error('Mailjet error:', error.response?.body || error);
     }
   }
+
+    async sendPasswordReset(to: string, token: string, name?: string) {
+    const fromEmail = process.env.MAIL_FROM;
+    const fromName = process.env.MAIL_FROM_NAME;
+    try {
+      const result = await this.mailjet
+        .post('send', { version: 'v3.1' })
+        .request({
+          Messages: [
+            {
+              From: {
+                Email: fromEmail,
+                Name: fromName,
+              },
+              To: [
+                {
+                  Email: to,
+                  Name: name || to,
+                },
+              ],
+              Subject: 'איפוס סיסמא לאפליקציית Yoop',
+              HTMLPart: `<div dir="rtl" style="text-align:right;font-family:Arial,Helvetica,sans-serif;">
+              <h3> שלום ${name || ''},<h3>
+                            <p>איפוס הסיסמא שלך יתבצע בקישור הבא:${process.env.FRONTEND_URL}auth/reset-password/?resetToken=${token}</p>
+                            <p> אם לא ביקשת לאפס את סיסמתך אל תבצע כל פעולה וראה מייל זה כמבוטל.<p></div>`,
+            },
+          ],
+        });
+      console.log('Mailjet response:', result.body);
+    } catch (error) {
+      console.error('Mailjet error:', error.response?.body || error);
+    }
+  }
+    async sendManagerInvite(to: string, token: string, name?: string) {
+    const fromEmail = process.env.MAIL_FROM;
+    const fromName = process.env.MAIL_FROM_NAME;
+    try {
+      const result = await this.mailjet
+        .post('send', { version: 'v3.1' })
+        .request({
+          Messages: [
+            {
+              From: {
+                Email: fromEmail,
+                Name: fromName,
+              },
+              To: [
+                {
+                  Email: to,
+                  Name: name || to,
+                },
+              ],
+              Subject: 'ברוכים הבאים לאפליקציית Yoop!',
+              HTMLPart: `<div dir="rtl" style="text-align:right;font-family:Arial,Helvetica,sans-serif;">
+              <h3> שלום ${name || ''},<h3>
+                           <p> מנהל אישר את בקשתך להירשם לאתר, ונפתח עבורך משתמש ייעודי לניהול המגרשים שלך<p>
+                            <p>קביעת סיסמא ראשונית תתבצע בקישור שלך יתבצע בקישור הבא:${process.env.FRONTEND_URL}auth/reset-password/?resetToken=${token}</p>
+                            <p>המייל להתחברות יהיה המייל אליו קיבלת הודעה זו. במידה ותרצה לשנות אותו תוכל לעשות זו לאחר ההתחברות הראשונה.<p>
+                            <p>שמחים לעבוד איתך!, צוות Yoop<p></div>`,
+            },
+          ],
+        });
+      console.log('Mailjet response:', result.body);
+    } catch (error) {
+      console.error('Mailjet error:', error.response?.body || error);
+    }
+  }
 }

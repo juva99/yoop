@@ -15,6 +15,7 @@ import { User } from '../users/users.entity';
 import { authenticatedUser } from './types/authenticatedUser';
 import { Public } from './decorators/public.decorator';
 import { GetUser } from './decorators/get-user.decorator';
+import { CreateManagerDto } from 'src/users/dto/create-manager.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -62,5 +63,9 @@ export class AuthController {
     return this.authService.forgotPassword(body.email);
   }
 
+  @Post('/approve-manager')
+  async approveManager(@Body() createManagerDto: CreateManagerDto): Promise<User>{
+    return this.authService.approveManager(createManagerDto);
+  }
 
 }

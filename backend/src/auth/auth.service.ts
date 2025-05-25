@@ -17,6 +17,7 @@ import { authenticatedUser } from './types/authenticatedUser';
 import { Role } from 'src/enums/role.enum';
 import { MailService } from 'src/mail/mail.service';
 import * as bcrypt from 'bcrypt';
+import { CreateManagerDto } from 'src/users/dto/create-manager.dto';
 
 @Injectable()
 export class AuthService {
@@ -175,10 +176,16 @@ export class AuthService {
           throw new NotFoundException(`user with email address${email} not found`);
         }
         // generate random reset token
-        const token = this.usersService.createPasswordResetToken(user.uid, 1);
+        const token = await this.usersService.createPasswordResetToken(user.uid, 1);
         
-        return token;
-        //send it to users email  
+        this.mailService.sendPasswordReset(email, token, user.firstName);
+
   }
 
+  async approveManager(createManagerDto: CreateManagerDto): Promise<User>{
+    const manager = await this.usersService.createManager(createManagerDto);
+    const token = await this.usersService.createPasswordResetToken(manager.uid, 72);
+    this.mailService.sendManagerInvite(manager.userEmail, token, manager.firstName + " " + manager.lastName);
+    return manager;
+  }
 }
