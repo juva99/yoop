@@ -76,11 +76,11 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
           />
         </Link>
 
-        <Link href={"/api/auth/signout"}>
+        <a href={"/api/auth/signout"}>
           <VscSignOut
             className={`size-[25px] ${pathname === "/api/auth/signout" ? "text-neutral-900" : "text-elements"}`}
           />
-        </Link>
+        </a>
       </nav>
     );
   }
