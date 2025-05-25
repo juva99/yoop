@@ -8,7 +8,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   const response = await authFetch(`${BACKEND_URL}/auth/signout`, {
     method: "POST",
   });
-
   if (response.ok) {
     await deleteSession();
   }

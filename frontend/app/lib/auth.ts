@@ -27,7 +27,6 @@ export async function signup(
       error: validationFields.error.flatten().fieldErrors,
     };
   }
-  console.log(JSON.stringify(validationFields.data));
   const response = await fetch(`${BACKEND_URL}/auth/signup`, {
     method: "POST",
     headers: {
