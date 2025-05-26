@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Inject,
   Injectable,
@@ -18,11 +19,13 @@ import { Role } from 'src/enums/role.enum';
 import { MailService } from 'src/mail/mail.service';
 import * as bcrypt from 'bcrypt';
 import { CreateManagerDto } from 'src/users/dto/create-manager.dto';
+import { ManagerSignupService } from 'src/manager-signup/manager-signup.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
+    private readonly managerSignupService: ManagerSignupService,
     private readonly jwtService: JwtService,
     private readonly mailService: MailService,
     @Inject(refreshConfig.KEY)
@@ -182,10 +185,32 @@ export class AuthService {
 
   }
 
-  async approveManager(createManagerDto: CreateManagerDto): Promise<User>{
+  //replace dto to contact-id
+async approveManager(managerSignupId: string): Promise<User> {
+  // Get manager contact form by ID
+  const managerSignup = await this.managerSignupService.findById(managerSignupId);
+  //Set managerDto with details from contact signup form
+  const createManagerDto: CreateManagerDto = {
+    firstName: managerSignup.firstName,
+    lastName: managerSignup.lastName,
+    userEmail: managerSignup.email,
+    phoneNum: managerSignup.phoneNum,
+  };
+  
+  //try to create user by form, if cant throw error
+  try {
     const manager = await this.usersService.createManager(createManagerDto);
     const token = await this.usersService.createPasswordResetToken(manager.uid, 72);
-    this.mailService.sendManagerInvite(manager.userEmail, token, manager.firstName + " " + manager.lastName);
+    //if succeeded delete signup form and return user
+    await this.mailService.sendManagerInvite(
+      manager.userEmail,
+      token,
+      manager.firstName + " " + manager.lastName
+    );
+    await this.managerSignupService.delete(managerSignupId);
     return manager;
+  } catch (error) {
+    throw new BadRequestException('Failed to approve manager: ' + error.message);
   }
+}
 }

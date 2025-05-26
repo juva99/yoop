@@ -13,7 +13,7 @@ export class ManagerSignup{
     id: string;
 
     @Column()
-    firstName: String;
+    firstName: string;
 
     @Column()
     lastName: string;

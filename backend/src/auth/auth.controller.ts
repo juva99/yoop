@@ -63,9 +63,9 @@ export class AuthController {
     return this.authService.forgotPassword(body.email);
   }
 
-  @Post('/approve-manager')
-  async approveManager(@Body() createManagerDto: CreateManagerDto): Promise<User>{
-    return this.authService.approveManager(createManagerDto);
+  @Post('/approve-manager/:id')
+  async approveManager(@Param("id") managerSignupId: string): Promise<User>{
+    return this.authService.approveManager(managerSignupId);
   }
 
 }

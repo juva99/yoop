@@ -7,6 +7,7 @@ import { ManagerSignup } from './manager-signup.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([ManagerSignup])],
   controllers: [ManagerSignupController],
-  providers: [ManagerSignupService]
+  providers: [ManagerSignupService],
+  exports: [ManagerSignupService]
 })
 export class ManagerSignupModule {}

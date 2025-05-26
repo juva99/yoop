@@ -114,7 +114,7 @@ export class MailService {
               HTMLPart: `<div dir="rtl" style="text-align:right;font-family:Arial,Helvetica,sans-serif;">
               <h3> שלום ${name || ''},<h3>
                             <p>איפוס הסיסמא שלך יתבצע בקישור הבא:${process.env.FRONTEND_URL}auth/reset-password/?resetToken=${token}</p>
-                            <p> אם לא ביקשת לאפס את סיסמתך אל תבצע כל פעולה וראה מייל זה כמבוטל.<p></div>`,
+                            <p> הקישור תקף לשעה בלבד. אם לא ביקשת לאפס את סיסמתך אל תבצע כל פעולה וראה מייל זה כמבוטל.</p></div>`,
             },
           ],
         });
@@ -145,10 +145,11 @@ export class MailService {
               Subject: 'ברוכים הבאים לאפליקציית Yoop!',
               HTMLPart: `<div dir="rtl" style="text-align:right;font-family:Arial,Helvetica,sans-serif;">
               <h3> שלום ${name || ''},<h3>
-                           <p> מנהל אישר את בקשתך להירשם לאתר, ונפתח עבורך משתמש ייעודי לניהול המגרשים שלך<p>
+                           <p> מנהל אישר את בקשתך להירשם לאתר, ונפתח עבורך משתמש ייעודי לניהול המגרשים שלך</p>
                             <p>קביעת סיסמא ראשונית תתבצע בקישור שלך יתבצע בקישור הבא:${process.env.FRONTEND_URL}auth/reset-password/?resetToken=${token}</p>
-                            <p>המייל להתחברות יהיה המייל אליו קיבלת הודעה זו. במידה ותרצה לשנות אותו תוכל לעשות זו לאחר ההתחברות הראשונה.<p>
-                            <p>שמחים לעבוד איתך!, צוות Yoop<p></div>`,
+                            <p>הקישור תקף ל72 שעות בלבד!</p>
+                            <p>המייל להתחברות יהיה המייל אליו קיבלת הודעה זו. במידה ותרצה לשנות אותו תוכל לעשות זו לאחר ההתחברות הראשונה.</p>
+                            <p>שמחים לעבוד איתך!, צוות Yoop</p></div>`,
             },
           ],
         });
