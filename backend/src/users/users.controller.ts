@@ -5,7 +5,6 @@ import {
   Body,
   Delete,
   Param,
-  UseGuards,
   Put,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
@@ -15,6 +14,7 @@ import { UsePipes, ValidationPipe } from '@nestjs/common';
 
 import { User } from './users.entity';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -56,4 +56,11 @@ export class UsersController {
   ): Promise<User> {
     return await this.userService.updateUser(id, updatedFields);
   }
+
+  @Public()
+  @Post(`reset-password/:token`)
+  async resetPass(@Param('token') token: string, @Body() body){
+    return this.userService.changePassword(token, body.password);
+  } 
+
 }

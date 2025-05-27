@@ -7,9 +7,12 @@ import {
 import { User } from './users.entity';
 import { CreateUserDto } from './dto/create-users.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, ILike } from 'typeorm';
-import { hash } from 'argon2';
+import { Repository, ILike, MoreThan } from 'typeorm';
 import { FriendRelation } from 'src/friends/friends.entity';
+import * as crypto from 'crypto';
+import * as bcrypt from 'bcrypt';
+import { CreateManagerDto } from './dto/create-manager.dto';
+import { Role } from 'src/enums/role.enum';
 
 @Injectable()
 export class UsersService {
@@ -31,10 +34,12 @@ export class UsersService {
         );
       }
       const { pass, ...user } = this.userRepository.create(createUserDto);
-      const hashedPass = await hash(pass);
+      const salt = await bcrypt.genSalt(10);
+      const hashedPass = await bcrypt.hash(pass, salt);
       return await this.userRepository.save({
         pass: hashedPass,
         ...user,
+        role: Role.USER
       });
     } catch (error) {
       throw new Error(error);
@@ -106,7 +111,7 @@ export class UsersService {
   ): Promise<void> {
     await this.userRepository.update(
       { uid },
-      { hashedRefreshToken: hashedRefreshToken },
+      { hashedRefreshToken },
     );
   }
 
@@ -118,4 +123,63 @@ export class UsersService {
     Object.assign(user, updatedFields);
     return await this.userRepository.save(user);
   }
+
+  //create reset token for user by id, set token vlaid for hours provided
+  async createPasswordResetToken(uid: string, hours: number): Promise<string>{
+        const resetToken = crypto.randomBytes(32).toString('hex');
+        const passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+
+        const passwordResetExpires = new Date(Date.now() + hours * 60 * 60 * 1000);
+
+        await this.userRepository.update({uid}, 
+          { 
+            passwordResetToken,
+            passwordResetExpires,
+          }
+        );
+
+        return resetToken;
+  }
+
+  //change password by token
+  async changePassword(token: string, newPassword: string): Promise<void>{
+    //get user based on token
+    const hashedtoken = crypto.createHash('sha256').update(token).digest('hex');
+
+    const user = await this.userRepository.findOne({
+      where: {
+        passwordResetToken: hashedtoken,
+        passwordResetExpires: MoreThan(new Date()),
+      }
+    });
+
+    //if found and token isnt expired set new password and delete refreshtoken
+    if(!user){
+      throw new NotFoundException(`password reset token isn't valid`);
+    }
+      const salt = await bcrypt.genSalt(10);
+      const hashedPass = await bcrypt.hash(newPassword, salt);
+    
+    const updateduser = await this.userRepository.update(user.uid,
+      {
+        pass: hashedPass,
+        passwordResetToken: null,
+        hashedRefreshToken: null,
+      }
+    );
+    //log user in
+  }
+
+  //create manager user with generated random password.
+  async createManager(createManagerDto: CreateManagerDto): Promise<User>{
+    const password = crypto.randomBytes(Math.ceil(12 * 1.5)).toString('base64').replace(/[^a-zA-Z0-9]/g, '').slice(0, 12);
+    const salt = await bcrypt.genSalt(10);
+    const hashedPass = await bcrypt.hash(password, salt);
+    const {pass, ...user } = this.userRepository.create(createManagerDto);
+    return await this.userRepository.save({
+        pass: hashedPass,
+        ...user,
+        role: Role.FIELD_MANAGER
+      });
+    } 
 }

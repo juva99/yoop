@@ -15,6 +15,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
 import { RolesGuard } from './guards/role-auth/role.guard';
 import { MailModule } from 'src/mail/mail.module';
+import { ManagerSignupModule } from 'src/manager-signup/manager-signup.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { MailModule } from 'src/mail/mail.module';
     ConfigModule.forFeature(jwtConfig),
     ConfigModule.forFeature(refreshConfig),
     MailModule,
+    ManagerSignupModule
   ],
   controllers: [AuthController],
   providers: [

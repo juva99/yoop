@@ -13,16 +13,16 @@ import { Role } from 'src/enums/role.enum';
 export class RefreshStrategy extends PassportStrategy(Strategy, 'refresh-jwt') {
   constructor(
     @Inject(refreshConfig.KEY)
-    private refreshTokenCongif: ConfigType<typeof refreshConfig>,
+    private refreshTokenConfig: ConfigType<typeof refreshConfig>,
     private authService: AuthService,
   ) {
-    if (!refreshTokenCongif.secret) {
+    if (!refreshTokenConfig.secret) {
       throw new Error('Refresh JWT secret is not defined');
     }
 
     super({
       jwtFromRequest: ExtractJwt.fromBodyField('refresh'),
-      secretOrKey: refreshTokenCongif.secret,
+      secretOrKey: refreshTokenConfig.secret,
       ignoreExpiration: false,
       passReqToCallback: true,
     });
@@ -34,7 +34,6 @@ export class RefreshStrategy extends PassportStrategy(Strategy, 'refresh-jwt') {
   ): Promise<{ uid: string; role: Role; name?: string }> {
     const userId = payload.sub;
     const refreshToken = req.body.refresh;
-
     return await this.authService.validateRefreshToken(userId, refreshToken);
   }
 }

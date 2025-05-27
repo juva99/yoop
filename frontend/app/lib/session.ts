@@ -92,3 +92,21 @@ export async function updateTokens({
     redirect("/auth/login");
   }
 }
+
+export async function isExpired(): Promise<boolean> {
+  const session = await getSession();
+  if (!session) return true;
+
+  try {
+    const { payload } = await jwtVerify(session.accessToken, encodedKey, {
+      algorithms: ["HS256"],
+    });
+
+    if (!payload.exp) return true;
+
+    const currentTime = Math.floor(Date.now() / 1000);
+    return payload.exp < currentTime;
+  } catch (error) {
+    return true;
+  }
+}
