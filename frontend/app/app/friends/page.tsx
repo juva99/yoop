@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 export default async function SearchPage({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const session = await getSession();
   if (!session?.user?.uid) {
@@ -43,9 +43,9 @@ export default async function SearchPage({
       <div className="mb-5 flex h-[250px] flex-col rounded-3xl bg-white p-8">
         <FriendList currentUserUid={userId} relations={friendRelations} />
       </div>
-      <div className="flex h-[250px] flex-col rounded-3xl bg-white p-8">
+      <div className="flex h-[450px] flex-col rounded-3xl bg-white p-8">
         <h1>הוספת חברים</h1>
-        <Form action="/friends/search">
+        <Form action="/friends">
           <div className="input-wrapper border-title mt-5 mb-5 flex justify-between border-b-1 py-1">
             <Input
               type="text"
@@ -60,7 +60,7 @@ export default async function SearchPage({
           </div>
         </Form>
 
-        <div className="scrollbar-none max-h-[300px] overflow-y-scroll">
+        <div className="scrollbar-none overflow-y-scroll">
           {friends.length ? (
             friends.map((friend: User, i: number) => (
               <Friend key={friend.uid} friend={friend} action="add" />

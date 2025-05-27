@@ -4,7 +4,6 @@ import { jwtVerify, SignJWT } from "jose";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Role } from "../app/enums/role.enum";
-import { get } from "http";
 
 export type Session = {
   user: {
@@ -32,7 +31,7 @@ export async function createSession(payload: Session): Promise<void> {
 
   cookieStore.set("session", session, {
     httpOnly: true,
-    secure: true,
+    secure: false,
     expires: expiredAt,
     sameSite: "lax",
     path: "/",
@@ -70,7 +69,6 @@ export async function updateTokens({
 }): Promise<void | null> {
   const cookieStore = await cookies();
   const cookie = cookieStore.get("session")?.value;
-
   if (!cookie) return null;
 
   try {

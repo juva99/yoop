@@ -53,10 +53,10 @@ const page: React.FC = ({}) => {
           <span className="mt-2">חברים</span>
         </Link>
 
-        <Link href={"/api/auth/signout"} className="menu-item">
+        <a href={"/api/auth/signout"} className="menu-item">
           <Image src="/menu-logout.png" alt="התנתק" width={50} height={50} />
           <span className="mt-2">התנתק</span>
-        </Link>
+        </a>
       </div>
     </div>
   );
