@@ -2,11 +2,13 @@ import {
   IsBoolean,
   IsDateString,
   IsEmail,
+  IsEmpty,
   IsOptional,
   IsString,
   Length,
   Matches,
 } from 'class-validator';
+import { Role } from 'src/enums/role.enum';
 
 export class CreateUserDto {
   @IsString()
@@ -53,4 +55,7 @@ export class CreateUserDto {
     message: 'is not valid phone number',
   })
   phoneNum?: string;
+
+  @IsEmpty()
+  role: Role;
 }

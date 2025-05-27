@@ -25,8 +25,8 @@ export default async function Home() {
         <NotificationsButton />
       </div>
       <div>
-        <span className="text-subtitle text-l mb-2">משחקים עתידיים</span>
         <Card>
+          <h3 className="mb-80">משחקים עתידיים</h3>
           <FutureGames games={data} />
         </Card>
       </div>

@@ -10,6 +10,7 @@ import { WeatherApiModule } from './weather-api/weather-api.module';
 import { FriendsModule } from './friends/friends.module';
 import { FieldFetchApiModule } from './field-fetch-api/field-fetch-api.module';
 import { MailModule } from './mail/mail.module';
+import { ManagerSignupModule } from './manager-signup/manager-signup.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { MailModule } from './mail/mail.module';
     FieldFetchApiModule,
     FriendsModule,
     MailModule,
+    ManagerSignupModule,
   ],
   controllers: [],
 })

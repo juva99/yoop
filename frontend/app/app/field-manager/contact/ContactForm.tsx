@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 
 import React from "react";
 import { formSchema } from "@/lib/schemas/manager_signup_schema";
+import { Card } from "@/components/ui/card";
 
 type Props = {};
 
@@ -28,8 +29,6 @@ const ContactForm: React.FC<Props> = ({}) => {
       lastName: "",
       email: "",
       phoneNum: "",
-      password: "",
-      confirmPassword: "",
       hasCourt: undefined,
     },
   });
@@ -38,134 +37,108 @@ const ContactForm: React.FC<Props> = ({}) => {
     console.log(values);
   }
   return (
-    <div className="h-full w-full max-w-md p-7">
-      <div className="mb-10 flex flex-col justify-center gap-4">
-        <h1>איזה כיף, עוד מגרשים לאוסף</h1>
-        <h2>תשאיר לנו פרטים ונחזור אלייך :)</h2>
-      </div>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
-          <FormField
-            control={form.control}
-            name="firstName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>שם פרטי</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="הקלד שם פרטי"
-                    {...field}
-                    className="input"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="lastName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>שם משפחה</FormLabel>
-                <FormControl>
-                  <Input placeholder="הקלד שם משפחה" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>כתובת מייל</FormLabel>
-                <FormControl>
-                  <Input placeholder="הקלד את המייל שלך" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="phoneNum"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>מספר פלאפון</FormLabel>
-                <FormControl>
-                  <Input
-                    type="phone"
-                    placeholder="הקלד מספר פלאפון"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>סיסמה</FormLabel>
-                <FormControl>
-                  <Input type="password" placeholder="הקלד סיסמה" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="confirmPassword"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>סיסמה</FormLabel>
-                <FormControl>
-                  <Input type="password" placeholder="הקלד סיסמה" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="hasCourt"
-            render={({ field }) => (
-              <FormItem className="items-center space-x-2 space-x-reverse">
-                <div className="flex items-center space-x-2">
+    <div className="h-full w-full p-7">
+      <Card>
+        <div className="flex flex-col justify-center gap-1 py-4">
+          <h2 className="text-center">איזה כיף, עוד מגרשים לאוסף</h2>
+          <h3 className="text-center">תשאיר לנו פרטים ונחזור אלייך בהקדם</h3>
+        </div>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+            <FormField
+              control={form.control}
+              name="firstName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>שם פרטי</FormLabel>
                   <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      id="terms"
+                    <Input
+                      placeholder="הקלד שם פרטי"
+                      {...field}
+                      className="input"
                     />
                   </FormControl>
-                  <FormLabel htmlFor="terms" className="text-sm leading-none">
-                    אני מצהיר שיש בבעלותי/בניהולי מגרש/י ספורט.
-                  </FormLabel>
-                </div>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button
-            type="submit"
-            className="primary-btn"
-            onClick={() => {
-              console.log(form.getValues());
-            }}
-          >
-            שלח
-          </Button>
-        </form>
-      </Form>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="lastName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>שם משפחה</FormLabel>
+                  <FormControl>
+                    <Input placeholder="הקלד שם משפחה" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>כתובת מייל</FormLabel>
+                  <FormControl>
+                    <Input placeholder="הקלד את המייל שלך" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="phoneNum"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>מספר פלאפון</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="phone"
+                      placeholder="הקלד מספר פלאפון"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="hasCourt"
+              render={({ field }) => (
+                <FormItem className="items-center space-x-2 space-x-reverse">
+                  <div className="flex items-center space-x-2">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        id="terms"
+                      />
+                    </FormControl>
+                    <FormLabel htmlFor="terms" className="text-sm leading-none">
+                      אני מצהיר שיש בבעלותי/בניהולי מגרש/י ספורט.
+                    </FormLabel>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button
+              type="submit"
+              variant="submit"
+              onClick={() => {
+                console.log(form.getValues());
+              }}
+            >
+              שלח
+            </Button>
+          </form>
+        </Form>
+      </Card>
     </div>
   );
 };

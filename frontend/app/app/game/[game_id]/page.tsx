@@ -13,11 +13,11 @@ import { notFound } from "next/navigation"; // Import notFound
 import { GameType } from "@/app/enums/game-type.enum";
 import { getSession } from "@/lib/session";
 import { redirect } from "next/navigation";
-import { joinGame } from "@/lib/actions";
 import JoinGameButton from "@/components/JoinGameButton";
 import { ParticipationStatus } from "@/app/enums/participation-status.enum";
 import LeaveGameButton from "@/components/LeaveGameButton";
 import { authFetch } from "@/lib/authFetch";
+import { Card } from "@/components/ui/card";
 
 async function getGame(gameId: string): Promise<Game | null> {
   try {
@@ -107,83 +107,85 @@ export default async function Page({
   );
   return (
     <div className="container mx-auto flex flex-col gap-6 p-8">
-      {" "}
-      <div className="text-title flex items-center gap-3 text-2xl font-bold">
-        <span>
-          {" "}
-          {gameType === GameType.BasketBall ? (
-            <PiBasketball />
-          ) : gameType === GameType.FootBall ? (
-            <PiSoccerBall />
-          ) : null}
-        </span>
-        <span>{`משחק ${gameType === GameType.BasketBall ? "כדורסל" : "כדורגל"} `}</span>{" "}
-      </div>
-      <div className="flex flex-col gap-2">
+      <Card>
         {" "}
-        <div className="flex items-center gap-2">
-          <IoMdPin className="text-gray-600" />
-          <p>
-            {field.fieldName}, {field.fieldAddress ?? "כתובת לא זמינה"}
-          </p>
+        <div className="text-title flex items-center gap-3 text-2xl font-bold">
+          <span>
+            {" "}
+            {gameType === GameType.BasketBall ? (
+              <PiBasketball />
+            ) : gameType === GameType.FootBall ? (
+              <PiSoccerBall />
+            ) : null}
+          </span>
+          <span>{`משחק ${gameType === GameType.BasketBall ? "כדורסל" : "כדורגל"} `}</span>{" "}
         </div>
-        <div className="flex items-center gap-2">
-          <PiCalendarDots className="text-gray-600" />
-          <p>{formattedDate}</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <PiClock className="text-gray-600" />
-          <p>
-            {formattedTime}-{formattedEndTime}
-          </p>
-        </div>
-        {price !== undefined && (
+        <div className="flex flex-col gap-2">
+          {" "}
           <div className="flex items-center gap-2">
-            <PiCoins className="text-gray-600" />
-            <p>{price === null ? "חינם" : `${price} ₪`}</p>{" "}
+            <IoMdPin className="text-gray-600" />
+            <p>
+              {field.fieldName}, {field.fieldAddress ?? "כתובת לא זמינה"}
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <PiCalendarDots className="text-gray-600" />
+            <p>{formattedDate}</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <PiClock className="text-gray-600" />
+            <p>
+              {formattedTime}-{formattedEndTime}
+            </p>
+          </div>
+          {price !== undefined && (
+            <div className="flex items-center gap-2">
+              <PiCoins className="text-gray-600" />
+              <p>{price === null ? "חינם" : `${price} ₪`}</p>{" "}
+            </div>
+          )}
+        </div>
+        <div>
+          <h3>
+            משתתפים ({approvedCount}/{maxParticipants})
+          </h3>
+          <PlayersList
+            gameId={gameId}
+            creatorUID={creator.uid}
+            currUserUID={currUserUID}
+            gameParticipants={gameParticipants}
+            status={ParticipationStatus.APPROVED}
+            deleteEnable={true}
+          />
+        </div>
+        <div>
+          <h3>רשימת המתנה</h3>
+          <PlayersList
+            gameId={gameId}
+            creatorUID={creator.uid}
+            currUserUID={currUserUID}
+            gameParticipants={gameParticipants}
+            status={ParticipationStatus.PENDING}
+            deleteEnable={true}
+          />
+        </div>
+        <div>
+          <h3>מיקום</h3>
+          <MapView
+            defaultLocation={{ lng: field.fieldLng, lat: field.fieldLat }}
+            games={[game]}
+          />
+        </div>
+        {!isJoined ? (
+          <div className="mt-4 flex justify-center gap-4">
+            <JoinGameButton gameId={gameId} />
+          </div>
+        ) : (
+          <div className="mt-4 flex justify-center gap-4">
+            <LeaveGameButton gameId={gameId} />
           </div>
         )}
-      </div>
-      <div>
-        <h2>
-          משתתפים ({approvedCount}/{maxParticipants})
-        </h2>
-        <PlayersList
-          gameId={gameId}
-          creatorUID={creator.uid}
-          currUserUID={currUserUID}
-          gameParticipants={gameParticipants}
-          status={ParticipationStatus.APPROVED}
-          deleteEnable={true}
-        />
-      </div>
-      <div>
-        <h2>רשימת המתנה</h2>
-        <PlayersList
-          gameId={gameId}
-          creatorUID={creator.uid}
-          currUserUID={currUserUID}
-          gameParticipants={gameParticipants}
-          status={ParticipationStatus.PENDING}
-          deleteEnable={true}
-        />
-      </div>
-      <div>
-        <h2>מיקום</h2>
-        <MapView
-          defaultLocation={{ lng: field.fieldLng, lat: field.fieldLat }}
-          games={[game]}
-        />
-      </div>
-      {!isJoined ? (
-        <div className="mt-4 flex justify-center gap-4">
-          <JoinGameButton gameId={gameId} />
-        </div>
-      ) : (
-        <div className="mt-4 flex justify-center gap-4">
-          <LeaveGameButton gameId={gameId} />
-        </div>
-      )}
+      </Card>
     </div>
   );
 }

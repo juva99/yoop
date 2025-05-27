@@ -18,7 +18,7 @@ function Card({ className, variant = "default", ...props }: CardProps) {
     <div
       data-slot="card"
       className={cn(
-        "flex flex-col gap-6 rounded-2xl p-4",
+        "flex flex-col rounded-2xl p-4",
         variantStyles[variant],
         className,
       )}

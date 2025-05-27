@@ -1,4 +1,12 @@
-import { Controller, Post, Body, UseGuards, Get } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Get,
+  Param,
+  Request,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/users/dto/create-users.dto';
 import { LocalAuthGuard } from './guards/local-auth/local-auth.guard';
@@ -7,6 +15,7 @@ import { User } from '../users/users.entity';
 import { authenticatedUser } from './types/authenticatedUser';
 import { Public } from './decorators/public.decorator';
 import { GetUser } from './decorators/get-user.decorator';
+import { CreateManagerDto } from 'src/users/dto/create-manager.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -35,12 +44,28 @@ export class AuthController {
   @Public()
   @UseGuards(RefreshAuthGuard)
   @Post('refresh')
-  async refreshToken(@GetUser() user): Promise<authenticatedUser> {
-    return this.authService.refreshToken(user.uid, user.role, user.name);
+  async refreshToken(@Request() req): Promise<authenticatedUser> {
+    return this.authService.refreshToken(
+      req.user.uid,
+      req.user.role,
+      req.user.name,
+    );
   }
 
   @Post('signout')
   async signOut(@GetUser() user): Promise<void> {
     return this.authService.signOut(user.uid);
   }
+
+  @Public()
+  @Post('forgot-password')
+  async forgotPass(@Body() body){
+    return this.authService.forgotPassword(body.email);
+  }
+
+  @Post('/approve-manager/:id')
+  async approveManager(@Param("id") managerSignupId: string): Promise<User>{
+    return this.authService.approveManager(managerSignupId);
+  }
+
 }

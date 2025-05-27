@@ -13,7 +13,12 @@ import { RiFunctionAddFill } from "react-icons/ri";
 import { VscSignOut } from "react-icons/vsc";
 import { CgProfile } from "react-icons/cg";
 
-const HIDDEN_PATHS = ["/auth/login", "/auth/signup", "/menu"];
+const HIDDEN_PATHS = [
+  "/auth/login",
+  "/auth/signup",
+  "/menu",
+  "/field-manager/contact",
+];
 
 type NavbarProps = {
   role: Role;
