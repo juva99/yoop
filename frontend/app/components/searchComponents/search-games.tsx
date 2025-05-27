@@ -111,148 +111,146 @@ const SearchGames = () => {
 
   return (
     <Card>
-      <div className="p-5">
-        <div className="search-game">
-          <h2>חיפוש משחק</h2>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="city"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>עיר</FormLabel>
-                      <FormControl>
-                        <Combobox
-                          options={cityOptions}
-                          value={field.value}
-                          onSelect={field.onChange}
-                          placeholder="בחר עיר..."
-                          searchPlaceholder="חפש עיר..."
-                          notFoundText="לא נמצאה עיר."
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="gameType"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>סוג משחק</FormLabel>
-                      <FormControl>
-                        <Combobox
-                          options={gameTypeOptions}
-                          value={field.value}
-                          onSelect={field.onChange}
-                          placeholder="בחר סוג משחק..."
-                          searchPlaceholder="חפש סוג משחק..."
-                          notFoundText="לא נמצא סוג משחק."
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
+      <div className="search-game">
+        <h2>חיפוש משחק</h2>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+            <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="date"
+                name="city"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>תאריך</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "flex w-full justify-start pl-3 font-normal",
-                              !field.value && "text-muted-foreground",
-                            )}
-                          >
-                            <CalendarIcon className="h-4 w-4 opacity-50" />
-                            {field.value ? (
-                              format(field.value, "dd/MM/yyyy")
-                            ) : (
-                              <span>בחר תאריך</span>
-                            )}
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          locale={he}
-                          disabled={(date) =>
-                            date < new Date(new Date().toDateString()) ||
-                            date < new Date("1900-01-01")
-                          }
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="timeRange"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      טווח שעות:{" "}
-                      {field.value ? formatTime(field.value[0]) : "00:00"} -{" "}
-                      {field.value ? formatTime(field.value[1]) : "00:00"}
-                    </FormLabel>
+                    <FormLabel>עיר</FormLabel>
                     <FormControl>
-                      <div className="px-3">
-                        <Slider
-                          min={0}
-                          max={24}
-                          step={0.5}
-                          value={field.value}
-                          onValueChange={field.onChange}
-                          className="w-full"
-                        />
-                        <div className="mt-1 flex justify-between text-sm text-gray-500">
-                          <span>00:00</span>
-                          <span>24:00</span>
-                        </div>
-                      </div>
+                      <Combobox
+                        options={cityOptions}
+                        value={field.value}
+                        onSelect={field.onChange}
+                        placeholder="בחר עיר..."
+                        searchPlaceholder="חפש עיר..."
+                        notFoundText="לא נמצאה עיר."
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
 
-              <Button type="submit" className="bg-title my-5 w-[100%]">
-                חפש
-              </Button>
-            </form>
-          </Form>
+              <FormField
+                control={form.control}
+                name="gameType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>סוג משחק</FormLabel>
+                    <FormControl>
+                      <Combobox
+                        options={gameTypeOptions}
+                        value={field.value}
+                        onSelect={field.onChange}
+                        placeholder="בחר סוג משחק..."
+                        searchPlaceholder="חפש סוג משחק..."
+                        notFoundText="לא נמצא סוג משחק."
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
-          {filteredGames.length ? (
-            <MapView
-              defaultLocation={{
-                lat: coords[0],
-                lng: coords[1],
-              }}
-              games={filteredGames}
+            <FormField
+              control={form.control}
+              name="date"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>תאריך</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "flex w-full justify-start pl-3 font-normal",
+                            !field.value && "text-muted-foreground",
+                          )}
+                        >
+                          <CalendarIcon className="h-4 w-4 opacity-50" />
+                          {field.value ? (
+                            format(field.value, "dd/MM/yyyy")
+                          ) : (
+                            <span>בחר תאריך</span>
+                          )}
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        locale={he}
+                        disabled={(date) =>
+                          date < new Date(new Date().toDateString()) ||
+                          date < new Date("1900-01-01")
+                        }
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          ) : (
-            ""
-          )}
-          <FilteredGames games={filteredGames} />
-        </div>
+
+            <FormField
+              control={form.control}
+              name="timeRange"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    טווח שעות:{" "}
+                    {field.value ? formatTime(field.value[0]) : "00:00"} -{" "}
+                    {field.value ? formatTime(field.value[1]) : "00:00"}
+                  </FormLabel>
+                  <FormControl>
+                    <div className="px-3">
+                      <Slider
+                        min={0}
+                        max={24}
+                        step={0.5}
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        className="w-full"
+                      />
+                      <div className="mt-1 flex justify-between text-sm text-gray-500">
+                        <span>00:00</span>
+                        <span>24:00</span>
+                      </div>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <Button type="submit" className="bg-title my-5 w-[100%]">
+              חפש
+            </Button>
+          </form>
+        </Form>
+
+        {filteredGames.length ? (
+          <MapView
+            defaultLocation={{
+              lat: coords[0],
+              lng: coords[1],
+            }}
+            games={filteredGames}
+          />
+        ) : (
+          ""
+        )}
+        <FilteredGames games={filteredGames} />
       </div>
     </Card>
   );

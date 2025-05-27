@@ -13,12 +13,14 @@ const AvatarGroup: React.FC<Props> = ({ players }) => {
         {players.slice(0, 5).map((player, index) => (
           <Avatar
             key={index}
-            className="h-6 w-6 rounded-full border-2 border-white"
+            className="h-7 w-7 rounded-full border-2 border-white"
           >
             <AvatarImage src={player.profilePic} alt={player.firstName} />
             <AvatarFallback>
-              {player.firstName.charAt(0)}
-              {player.lastName.charAt(0)}
+              <span className="text-[12px]">
+                {player.firstName.charAt(0)}
+                {player.lastName.charAt(0)}
+              </span>
             </AvatarFallback>
           </Avatar>
         ))}

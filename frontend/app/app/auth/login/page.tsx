@@ -3,70 +3,55 @@ import { FcGoogle } from "react-icons/fc";
 import LoginForm from "./loginForm";
 import Image from "next/image";
 import Link from "next/link";
+import { Card } from "@/components/ui/card";
 
 const Login = () => {
   return (
-    <>
-      <div className="absolute flex min-h-screen flex-col items-center bg-white">
+    <div className="flex min-h-screen flex-col items-center gap-8 px-6 py-10">
+      <Image
+        src="/symbol.png"
+        alt="symbol"
+        width={100}
+        height={100}
+        className="absolute top-0 left-0 z-1"
+      />
+
+      <div className="flex w-full justify-center">
         <Image
-          src="/BlueLogo.png"
-          alt="Blue Logo"
-          width={120}
-          height={120}
-          className="absolute"
-          style={{
-            top: 50,
-            left: 68,
-            transform: "translate(-60%, -60%)",
-            pointerEvents: "none",
-            zIndex: 20,
-          }}
+          src="/logo.png"
+          alt="Logo"
+          width={100}
+          height={100}
+          className="mb-4 rounded-full shadow-2xl"
         />
-
-        <div className="z-10 mx-5 mt-5 flex flex-col items-center rounded-xl bg-white/90 p-8 text-right shadow-lg">
-          <Image
-            src="/logo.png"
-            alt="Logo"
-            width={150}
-            height={150}
-            style={{ border: "none" }}
-          />
-          <h1 className="text-title text-4xl font-bold">רגע רגע...</h1>
-          <h1 className="text-title text-4xl font-bold">מי אתה בכלל?</h1>
-          <p className="text-subtitle text-2xl font-bold">
-            נראה שאתה עדיין לא מחובר,
-          </p>
-          <p className="text-2xl font-bold text-blue-900">
-            אז איך נכניס אותך למגרש?
-          </p>
-
-          <div className="mt-6 w-full">
-            <LoginForm />
-          </div>
-
-          <div className="mt-4 flex w-full items-center justify-center gap-1 text-sm">
-            <p className="text-gray-600">עדיין לא נרשמת?</p>
-            <Link
-              href="/auth/signup"
-              className="font-medium text-blue-500 underline hover:text-blue-700"
-            >
-              הרשם עכשיו
-            </Link>
-          </div>
-        </div>
-
-        <div className="absolute bottom-0 left-0 w-full">
-          <Image
-            src="/grass.png"
-            alt="Grass Photo"
-            width={200}
-            height={200}
-            className="h-30 w-full object-cover"
-            style={{ zIndex: -1 }}
-          />
-        </div>
       </div>
-    </>
+      <div className="text-center">
+        <h2>נראה שאתה עדיין לא מחובר,</h2>
+        <h2>אז איך נכניס אותך למגרש?</h2>
+      </div>
+      <div className="mt-6 w-full">
+        <LoginForm />
+      </div>
+      <div className="text-center text-sm text-gray-600">
+        <div className="mt-4 flex w-full items-center justify-center gap-1">
+          <p>עדיין לא נרשמת?</p>
+          הרשם
+          <Link
+            href="/auth/signup"
+            className="text-title font-medium underline"
+          >
+            בתור שחקן
+          </Link>
+        </div>
+        או{" "}
+        <Link
+          href="/field-manager/contact"
+          className="text-title font-medium underline"
+        >
+          כמנהל מגרש{" "}
+        </Link>
+      </div>
+    </div>
   );
 };
 

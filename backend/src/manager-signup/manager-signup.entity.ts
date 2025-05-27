@@ -1,29 +1,22 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  ManyToOne,
-  OneToMany,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('manager-signup')
-export class ManagerSignup{
+export class ManagerSignup {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
+  @Column()
+  firstName: string;
 
-    @Column()
-    firstName: string;
+  @Column()
+  lastName: string;
 
-    @Column()
-    lastName: string;
+  @Column({ unique: true })
+  email: string;
 
-    @Column()
-    email: string;
+  @Column()
+  phoneNum: string;
 
-    @Column()
-    phoneNum: string;
-
-    @Column()
-    message: string;
+  @Column()
+  message: string;
 }

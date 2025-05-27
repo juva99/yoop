@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { login } from "@/lib/auth";
 import Link from "next/link";
-import { FaRegEye } from "react-icons/fa";
-import { LuEyeClosed } from "react-icons/lu";
+import { TbEyeOff } from "react-icons/tb";
+import { TbEyeCheck } from "react-icons/tb";
 
 import { LoginFormSchema, LoginFormValues } from "@/lib/schemas/login_schema";
 
@@ -81,7 +81,7 @@ const LoginForm = () => {
                     onClick={() => setShowPassword((prev) => !prev)}
                     className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500"
                   >
-                    {showPassword ? <FaRegEye /> : <LuEyeClosed />}
+                    {showPassword ? <TbEyeCheck /> : <TbEyeOff />}
                   </button>
                 </div>
               </FormControl>
@@ -97,7 +97,7 @@ const LoginForm = () => {
         </div>
 
         <div className="flex justify-center">
-          <Button type="submit" className="w-1/2 bg-blue-500 py-2 text-white">
+          <Button type="submit" variant={"submit"}>
             התחבר
           </Button>
         </div>

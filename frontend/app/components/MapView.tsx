@@ -111,9 +111,8 @@ const MapView: React.FC<Props> = ({ defaultLocation, games }) => {
     // Filter markers based on new center and radius
     filterMarkersByDistance(center[0], center[1], adjustedRadius);
   };
-
   return (
-    <div className="relative overflow-hidden rounded-md">
+    <div className="relative h-[200px] overflow-hidden rounded-md">
       <Map
         center={mapCenter}
         zoom={zoom}
