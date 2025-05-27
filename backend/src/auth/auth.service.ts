@@ -7,19 +7,19 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { User } from '../users/users.entity';
-import { CreateUserDto } from 'src/users/dto/create-users.dto';
-import { UsersService } from 'src/users/users.service';
+import { CreateUserDto } from '../users/dto/create-users.dto';
+import { UsersService } from '../users/users.service';
 import { AuthJwtPayload } from './types/auth-jwtPayload';
 import { tokens } from './types/tokens';
 import { JwtService } from '@nestjs/jwt';
 import refreshConfig from './config/refresh.config';
 import { ConfigType } from '@nestjs/config';
 import { authenticatedUser } from './types/authenticatedUser';
-import { Role } from 'src/enums/role.enum';
-import { MailService } from 'src/mail/mail.service';
+import { Role } from '../enums/role.enum';
+import { MailService } from '../mail/mail.service';
 import * as bcrypt from 'bcrypt';
-import { CreateManagerDto } from 'src/users/dto/create-manager.dto';
-import { ManagerSignupService } from 'src/manager-signup/manager-signup.service';
+import { CreateManagerDto } from '../users/dto/create-manager.dto';
+import { ManagerSignupService } from '../manager-signup/manager-signup.service';
 
 @Injectable()
 export class AuthService {

@@ -8,11 +8,11 @@ import { User } from './users.entity';
 import { CreateUserDto } from './dto/create-users.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, ILike, MoreThan } from 'typeorm';
-import { FriendRelation } from 'src/friends/friends.entity';
+import { FriendRelation } from '../friends/friends.entity';
 import * as crypto from 'crypto';
 import * as bcrypt from 'bcrypt';
 import { CreateManagerDto } from './dto/create-manager.dto';
-import { Role } from 'src/enums/role.enum';
+import { Role } from '../enums/role.enum';
 
 @Injectable()
 export class UsersService {

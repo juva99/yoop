@@ -4,8 +4,8 @@ import { Repository } from 'typeorm';
 import { Field } from './fields.entity';
 import { NotFoundException } from '@nestjs/common';
 import { CreateFieldDto } from './dto/create-field.dto';
-import { City } from 'src/enums/city.enum';
-import { UsersService } from 'src/users/users.service';
+import { City } from '../enums/city.enum';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class FieldsService {

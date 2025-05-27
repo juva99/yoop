@@ -5,11 +5,11 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import { User } from 'src/users/users.entity';
-import { Field } from 'src/fields/fields.entity';
-import { GameType } from 'src/enums/game-type.enum';
-import { GameStatus } from 'src/enums/game-status.enum';
-import { GameParticipant } from 'src/game-participants/game-participants.entity';
+import { User } from '../users/users.entity';
+import { Field } from '../fields/fields.entity';
+import { GameType } from '../enums/game-type.enum';
+import { GameStatus } from '../enums/game-status.enum';
+import { GameParticipant } from '../game-participants/game-participants.entity';
 
 @Entity('games')
 export class Game {

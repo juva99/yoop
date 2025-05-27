@@ -5,13 +5,13 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Game } from 'src/games/games.entity';
+import { Game } from '../games/games.entity';
 import { GameParticipant } from './game-participants.entity';
 import { Repository } from 'typeorm';
-import { User } from 'src/users/users.entity';
-import { ParticipationStatus } from 'src/enums/participation-status.enum';
+import { User } from '../users/users.entity';
+import { ParticipationStatus } from '../enums/participation-status.enum';
 import { SetStatusDto } from './dto/set-status.dto';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '../users/users.service';
 @Injectable()
 export class GameParticipantsService {
   constructor(

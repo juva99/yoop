@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { GameStatus } from 'src/enums/game-status.enum';
+import { GameStatus } from '../enums/game-status.enum';
 const mailjet = require('node-mailjet');
 
 @Injectable()

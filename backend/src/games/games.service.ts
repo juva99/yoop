@@ -14,14 +14,14 @@ import {
 } from 'typeorm';
 import { Game } from './games.entity';
 import { CreateGameDto } from './dto/create-game.dto';
-import { User } from 'src/users/users.entity';
-import { GameStatus } from 'src/enums/game-status.enum';
+import { User } from '../users/users.entity';
+import { GameStatus } from '../enums/game-status.enum';
 import { QueryGameDto } from './dto/query-game.dto';
-import { ParticipationStatus } from 'src/enums/participation-status.enum';
-import { WeatherApiService } from 'src/weather-api/weather-api.service';
-import { GameParticipantsService } from 'src/game-participants/game-participants.service';
-import { FieldsService } from 'src/fields/fields.service';
-import { MailService } from 'src/mail/mail.service';
+import { ParticipationStatus } from '../enums/participation-status.enum';
+import { WeatherApiService } from '../weather-api/weather-api.service';
+import { GameParticipantsService } from '../game-participants/game-participants.service';
+import { FieldsService } from '../fields/fields.service';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class GamesService {

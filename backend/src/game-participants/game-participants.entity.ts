@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { Game } from 'src/games/games.entity';
-import { User } from 'src/users/users.entity';
-import { ParticipationStatus } from 'src/enums/participation-status.enum';
+import { Game } from '../games/games.entity';
+import { User } from '../users/users.entity';
+import { ParticipationStatus } from '../enums/participation-status.enum';
 
 @Entity('participating_games')
 export class GameParticipant {

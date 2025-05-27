@@ -5,8 +5,8 @@ import {
   ManyToOne,
   Unique,
 } from 'typeorm';
-import { User } from 'src/users/users.entity';
-import { FriendReqStatus } from 'src/enums/friend-req-status.enum';
+import { User } from '../users/users.entity';
+import { FriendReqStatus } from '../enums/friend-req-status.enum';
 
 @Entity('friend-relations')
 @Unique(['user1', 'user2'])

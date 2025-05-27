@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { FriendSetStatusDto } from './dto/friendsSetStatus.dto';
-import { FriendReqStatus } from 'src/enums/friend-req-status.enum';
+import { FriendReqStatus } from '../enums/friend-req-status.enum';
 import { FriendRelation } from './friends.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FriendReqDto } from './dto/friendsReq.dto';
-import { User } from 'src/users/users.entity';
-import { UsersService } from 'src/users/users.service';
+import { User } from '../users/users.entity';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class FriendsService {

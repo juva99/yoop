@@ -1,9 +1,9 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { Field } from 'src/fields/fields.entity';
-import { Game } from 'src/games/games.entity';
-import { GameParticipant } from 'src/game-participants/game-participants.entity';
-import { FriendRelation } from 'src/friends/friends.entity';
-import { Role } from 'src/enums/role.enum';
+import { Field } from '../fields/fields.entity';
+import { Game } from '../games/games.entity';
+import { GameParticipant } from '../game-participants/game-participants.entity';
+import { FriendRelation } from '../friends/friends.entity';
+import { Role } from '../enums/role.enum';
 
 @Entity('users')
 export class User {
