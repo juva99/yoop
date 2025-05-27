@@ -1,5 +1,5 @@
 export enum GameStatus {
-  FULL = 'full',
+  DELETED = 'deleted',
   PENDING = 'pending',
-  AVAILABLE = 'available',
+  APPROVED = 'approved',
 }

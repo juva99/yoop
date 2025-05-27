@@ -19,6 +19,8 @@ import { GameParticipant } from 'src/game-participants/game-participants.entity'
 import { QueryAvailableSlotsDto } from './dto/query-available-slots.dto';
 import { ParticipationStatus } from 'src/enums/participation-status.enum';
 import { GameParticipantsService } from 'src/game-participants/game-participants.service';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Role } from 'src/enums/role.enum';
 import { GameStatus } from 'src/enums/game-status.enum';
 
 @Controller('games')
@@ -50,12 +52,6 @@ export class GamesController {
   @Get('/byid/:id')
   async getById(@Param('id') id: string): Promise<Game> {
     return await this.gameService.findById(id);
-  }
-
-  //get all games in selected field
-  @Get('/fieldId/:id')
-  async getByFieldId(@Param('id') id: string): Promise<Game[]> {
-    return await this.gameService.findByFieldId(id);
   }
 
   //get available slots for a field on a specific date
@@ -115,12 +111,43 @@ export class GamesController {
     return await this.gameParticipantService.leaveGame(gameId, user);
   }
 
-  @Patch('/:gameId/setStatus')
-  async setStatus(
-    @Param('gameId') gameId: string,
-    @Body('status') status: GameStatus,
-    @GetUser() user: User,
-  ): Promise<Game> {
-    return await this.gameService.setStatus(gameId, user, status);
+  @Roles(Role.ADMIN, Role.FIELD_MANAGER)
+  @Patch('/:gameId/approve')
+  async approveGame(@Param('gameId') gameId: string): Promise<Game> {
+    return await this.gameService.approveGame(gameId, GameStatus.APPROVED);
+  }
+
+  @Roles(Role.ADMIN, Role.FIELD_MANAGER)
+  @Delete('/:gameId/decline')
+  async declineGame(@Param('gameId') gameId: string): Promise<void> {
+    await this.gameService.declineGame(gameId);
+  }
+
+  @Roles(Role.ADMIN, Role.FIELD_MANAGER)
+  @Get('/:fieldId/pendingGames')
+  async getPendingGamesByField(
+    @Param('fieldId') fieldId: string,
+  ): Promise<Game[]> {
+    return await this.gameService.findPendingGamesByField(fieldId);
+  }
+
+  //get all games in selected field
+  @Get('/:fieldId/approvedGames')
+  async getApprovedGamesByField(
+    @Param('fieldId') fieldId: string,
+  ): Promise<Game[]> {
+    return await this.gameService.findApprovedGamesByField(fieldId);
+  }
+
+  @Roles(Role.ADMIN, Role.FIELD_MANAGER)
+  @Get('/:fieldId/allGames')
+  async getAllGamesByField(@Param('fieldId') fieldId: string): Promise<Game[]> {
+    return await this.gameService.findAllGamesByField(fieldId);
+  }
+
+  @Roles(Role.ADMIN)
+  @Delete('/:gameId/delete')
+  async deleteGame(@Param('gameId') gameId: string): Promise<void> {
+    await this.gameService.deleteOne(gameId);
   }
 }

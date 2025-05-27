@@ -6,58 +6,67 @@ import Link from "next/link";
 
 const Login = () => {
   return (
-    <div>
-      <div className="direction-ltr flex w-full">
+    <>
+      <div className="absolute flex min-h-screen flex-col items-center bg-white">
         <Image
-          src="/basketballPlayer.png"
-          alt="Basketball Player Photo"
+          src="/BlueLogo.png"
+          alt="Blue Logo"
           width={120}
-          height={50}
-          className="mr-auto"
+          height={120}
+          className="absolute"
+          style={{
+            top: 50,
+            left: 68,
+            transform: "translate(-60%, -60%)",
+            pointerEvents: "none",
+            zIndex: 20,
+          }}
         />
-      </div>
 
-      <div className="mx-5 text-right">
-        <h1 className="text-title text-4xl font-bold">רגע רגע...</h1>
-        <h1 className="text-title text-4xl font-bold">מי אתה בכלל?</h1>
-        <p className="text-subtitle text-2xl font-bold">
-          נראה שאתה עדיין לא מחובר,
-        </p>
-        <p className="text-2xl font-bold text-blue-900">
-          אז איך נכניס אותך למגרש?
-        </p>
-      </div>
+        <div className="z-10 mx-5 mt-5 flex flex-col items-center rounded-xl bg-white/90 p-8 text-right shadow-lg">
+          <Image
+            src="/logo.png"
+            alt="Logo"
+            width={150}
+            height={150}
+            style={{ border: "none" }}
+          />
+          <h1 className="text-title text-4xl font-bold">רגע רגע...</h1>
+          <h1 className="text-title text-4xl font-bold">מי אתה בכלל?</h1>
+          <p className="text-subtitle text-2xl font-bold">
+            נראה שאתה עדיין לא מחובר,
+          </p>
+          <p className="text-2xl font-bold text-blue-900">
+            אז איך נכניס אותך למגרש?
+          </p>
 
-      <LoginForm />
+          <div className="mt-6 w-full">
+            <LoginForm />
+          </div>
 
-      {/* <div className="mt-3 flex flex-col items-center gap-2">
-        <h1 className="text-center text-gray-800">או התחבר עם</h1>
-        <div className="flex gap-4">
-          <button type="button">
-            <FcGoogle size={35} />
-          </button>
+          <div className="mt-4 flex w-full items-center justify-center gap-1 text-sm">
+            <p className="text-gray-600">עדיין לא נרשמת?</p>
+            <Link
+              href="/auth/signup"
+              className="font-medium text-blue-500 underline hover:text-blue-700"
+            >
+              הרשם עכשיו
+            </Link>
+          </div>
         </div>
-      </div> */}
 
-      <div className="mt-4 flex items-center justify-center gap-1 text-sm">
-        <p className="text-gray-600">עדיין לא נרשמת?</p>
-        <Link
-          href={"/auth/signup"}
-          className="font-medium text-blue-500 underline hover:text-blue-700"
-        >
-          הרשם עכשיו
-        </Link>
+        <div className="absolute bottom-0 left-0 w-full">
+          <Image
+            src="/grass.png"
+            alt="Grass Photo"
+            width={200}
+            height={200}
+            className="h-30 w-full object-cover"
+            style={{ zIndex: -1 }}
+          />
+        </div>
       </div>
-
-      <Image
-        src="/grass.png"
-        alt="Grass Photo"
-        width={100}
-        height={100}
-        className="absolute bottom-0 left-0 h-10 w-full object-cover"
-        style={{ zIndex: -1 }}
-      />
-    </div>
+    </>
   );
 };
 
