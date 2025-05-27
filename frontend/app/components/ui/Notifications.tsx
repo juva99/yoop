@@ -24,7 +24,6 @@ const NotificationsButton: React.FC<Props> = () => {
       if (!res.ok) throw new Error("Failed to fetch notifications");
       const requests = await res.json();
       setNotifications(requests);
-      console.log(requests);
     } catch (error) {
       console.error("Error fetching notifications:", error);
     }

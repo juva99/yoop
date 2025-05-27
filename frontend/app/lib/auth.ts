@@ -73,7 +73,6 @@ export async function login(
 
   if (response.ok) {
     const result = await response.json();
-
     await createSession({
       user: {
         uid: result.uid,

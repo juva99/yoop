@@ -3,9 +3,9 @@ import { Field } from "@/app/types/Field";
 import FieldGameList from "@/components/gameManager/futureGames/FieldGameList";
 
 type Props = {
-  params: {
+  params: Promise<{
     field_id: string;
-  };
+  }>;
 };
 
 const Page: React.FC<Props> = async ({ params }) => {
