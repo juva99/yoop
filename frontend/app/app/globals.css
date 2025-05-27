@@ -161,7 +161,7 @@ h1 {
 }
 
 h2 {
-  @apply text-subtitle mb-2 text-xl font-bold;
+  @apply text-subtitle mb-4 text-xl font-bold;
 }
 
 h3 {
