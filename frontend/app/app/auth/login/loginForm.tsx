@@ -9,6 +9,7 @@ import { login } from "@/lib/auth";
 import Link from "next/link";
 import { TbEyeOff } from "react-icons/tb";
 import { TbEyeCheck } from "react-icons/tb";
+import { toast } from "sonner";
 
 import { LoginFormSchema, LoginFormValues } from "@/lib/schemas/login_schema";
 
@@ -32,23 +33,18 @@ const LoginForm = () => {
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const [formError, setFormError] = useState("");
-
   const onSubmit = async (values: LoginFormValues) => {
-    const formData = new FormData();
-    formData.append("userEmail", values.userEmail);
-    formData.append("pass", values.pass);
-    const result = await login(undefined, formData);
+    console.log(values);
+    const result = await login(values.userEmail, values.pass);
+    console.log(result);
     if (result?.error) {
-      setFormError(result.message || "שגיאה בהתחברות");
+      toast.error(result.message || "שגיאה בהתחברות");
     }
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        {formError && <p className="text-sm text-red-500">{formError}</p>}
-
         <FormField
           control={form.control}
           name="userEmail"
