@@ -231,7 +231,7 @@ const SearchGames = () => {
             )}
           />
 
-          <Button type="submit" className="bg-title my-5 w-[100%]">
+          <Button type="submit" variant={"submit"}>
             חפש
           </Button>
         </form>

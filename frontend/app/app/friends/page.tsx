@@ -5,7 +5,7 @@ import { User } from "@/app/types/User";
 import { PiMagnifyingGlassThin } from "react-icons/pi";
 import { getSession } from "@/lib/session";
 import FriendList from "@/components/friends/FriendList";
-import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
 
 export default async function SearchPage({
   searchParams,
@@ -39,21 +39,22 @@ export default async function SearchPage({
   const friendRelations = await friendsResponse.json();
 
   return (
-    <div className="h-[80vh] bg-[url('/search-friends-background.png')] bg-cover bg-top bg-no-repeat px-7 py-10">
-      <div className="mb-5 flex h-[250px] flex-col rounded-3xl bg-white p-8">
+    <div className="flex min-h-[100vh] flex-col gap-5 bg-[url('/search-friends-background.png')] bg-top bg-no-repeat p-5">
+      <Card variant="friends">
         <FriendList currentUserUid={userId} relations={friendRelations} />
-      </div>
-      <div className="flex h-[450px] flex-col rounded-3xl bg-white p-8">
+      </Card>
+      <Card variant="friends">
         <h1>הוספת חברים</h1>
         <Form action="/friends">
           <div className="input-wrapper border-title mt-5 mb-5 flex justify-between border-b-1 py-1">
-            <Input
+            <input
               type="text"
               name="query"
-              className="bg-transparent outline-none"
               placeholder="חפש חבר"
               defaultValue={query}
+              className="border-none bg-white bg-none shadow-none focus:border-none focus:ring-0 focus:outline-none"
             />
+
             <button type="submit">
               <PiMagnifyingGlassThin />
             </button>
@@ -62,14 +63,14 @@ export default async function SearchPage({
 
         <div className="scrollbar-none overflow-y-scroll">
           {friends.length ? (
-            friends.map((friend: User, i: number) => (
+            friends.map((friend: User) => (
               <Friend key={friend.uid} friend={friend} action="add" />
             ))
           ) : (
             <p>אין תוצאות</p>
           )}
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

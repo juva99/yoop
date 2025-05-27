@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
-type CardVariant = "default" | "form" | "game";
+type CardVariant = "default" | "form" | "game" | "friends";
 
 interface CardProps extends React.ComponentProps<"div"> {
   variant?: CardVariant;
@@ -12,6 +12,8 @@ function Card({ className, variant = "default", ...props }: CardProps) {
       "bg-card text-card-foreground border border-gray-100 shadow-sm w-full",
     form: "bg-white h-full text-gray-900 shadow-lg px-8",
     game: "bg-card text-card-foreground border border-gray-100 shadow-sm w-full mt-3",
+    friends:
+      "max-h-[400px] overflow-y-auto bg-card text-card-foreground border border-gray-100 shadow-sm w-full mt-3",
   };
 
   return (
