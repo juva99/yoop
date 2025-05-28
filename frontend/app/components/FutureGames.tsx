@@ -5,7 +5,6 @@ import { useSwipeable } from "react-swipeable";
 import { Game } from "@/app/types/Game";
 import GameCardContent from "./GameCardContent";
 import Link from "next/link";
-
 type Props = {
   games: Game[];
 };
@@ -57,9 +56,9 @@ const FutureGames: React.FC<Props> = ({ games }) => {
           >
             {games.slice(0, 5).map((game, i) => (
               <div key={i} className="flex h-[110px] w-full items-center">
-                <a href={`/game/${game.gameId}`}>
+                <Link href={`/game/${game.gameId}`}>
                   <GameCardContent game={game} />
-                </a>
+                </Link>
               </div>
             ))}
           </div>

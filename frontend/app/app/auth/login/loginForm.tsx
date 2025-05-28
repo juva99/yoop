@@ -34,9 +34,7 @@ const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = async (values: LoginFormValues) => {
-    console.log(values);
     const result = await login(values.userEmail, values.pass);
-    console.log(result);
     if (result?.error) {
       toast.error(result.message || "שגיאה בהתחברות");
     }

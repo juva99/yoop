@@ -1,7 +1,7 @@
 "use client";
 
 import { User } from "@/app/types/User";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { IoPersonAddOutline } from "react-icons/io5";
 import { BsSendCheckFill } from "react-icons/bs";
 import { FaUserXmark } from "react-icons/fa6";
@@ -39,15 +39,13 @@ const Friend: React.FC<Props> = ({ friend, action, onClick }) => {
   };
 
   return (
-    <div className="flex w-full items-center justify-between py-2 hover:bg-gray-100">
+    <div className="flex w-full items-center justify-between py-2">
       <div className="flex items-center gap-2">
-        <Avatar className="h-7 w-7 rounded-full bg-gray-300 text-center font-bold text-white">
+        <Avatar className="flex h-7 w-7 rounded-full text-center font-bold text-white">
           <AvatarImage src={friend.profilePic} alt={friend.firstName} />
           <AvatarFallback>
-            <span className="text-[12px]">
-              {friend.firstName.charAt(0)}
-              {friend.lastName.charAt(0)}
-            </span>
+            {friend.firstName.charAt(0)}
+            {friend.lastName.charAt(0)}
           </AvatarFallback>
         </Avatar>
         <span>
