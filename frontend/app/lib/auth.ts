@@ -98,3 +98,30 @@ export const refreshToken = async (
     return null;
   }
 };
+
+export const forgotPassword = async (email: string) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/forgot-password`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: email }),
+      },
+    );
+
+    if (!response.ok) {
+      const data = await response.json();
+      return {
+        error: true,
+        message: data.message || "שגיאה בשליחת בקשת איפוס סיסמה",
+      };
+    }
+
+    return { success: true };
+  } catch (error) {
+    return { error: true, message: "שגיאה בחיבור לשרת" };
+  }
+};
