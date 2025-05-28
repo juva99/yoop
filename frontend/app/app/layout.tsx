@@ -3,7 +3,8 @@ import { Geist } from "next/font/google";
 import Navbar from "@/components/navbar";
 import "./globals.css";
 import { getSession } from "@/lib/session";
-import { redirect } from "next/navigation";
+import { Toaster } from "sonner";
+
 import { Role } from "@/app/enums/role.enum";
 
 const geistSans = Geist({
@@ -29,6 +30,7 @@ export default async function RootLayout({
       <body className={`${geistSans.variable} antialiased`}>
         <main className="pb-20">{children}</main>
         <Navbar role={role} />
+        <Toaster richColors position="top-center" />
       </body>
     </html>
   );

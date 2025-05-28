@@ -19,18 +19,21 @@ export default async function Home() {
   const userName = session.user.name;
 
   return (
-    <div className="mb-10 flex flex-col gap-6 p-4 pb-6">
+    <div className="mb-10 flex flex-col gap-6 p-3">
       <div className="mb-2 flex flex-row items-center justify-between">
         <h1>היי {userName.split(" ")[0]}, </h1>
         <NotificationsButton />
       </div>
       <div>
-        <span className="text-subtitle text-l mb-2">משחקים עתידיים</span>
         <Card>
+          <h3>משחקים עתידיים</h3>
           <FutureGames games={data} />
         </Card>
       </div>
-      <Search />
+      <Card>
+        <h3>חיפוש משחק</h3>
+        <Search />
+      </Card>
     </div>
   );
 }

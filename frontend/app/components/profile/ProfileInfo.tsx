@@ -46,7 +46,6 @@ type Props = {
 const ProfileInfo: React.FC<Props> = ({ user, role }) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [citySuggestions, setCitySuggestions] = useState<string[]>([]);
   const [showForm, setShowForm] = useState(false);
 
   const isAdmin = role === Role.ADMIN || role === Role.FIELD_MANAGER;
@@ -81,11 +80,8 @@ const ProfileInfo: React.FC<Props> = ({ user, role }) => {
 
       if (!res.ok) throw new Error("Failed to update");
 
-      const dataFromServer = await res.json();
-
       setSuccessMessage("הפרטים עודכנו בהצלחה");
       setErrorMessage("");
-      // המתן רגע לפני רענון (כדי לראות את ההודעה לשבריר שנייה)
       setTimeout(() => {
         window.location.reload();
       }, 1000);
@@ -98,7 +94,9 @@ const ProfileInfo: React.FC<Props> = ({ user, role }) => {
   return (
     <>
       <div className="mb-3 flex items-center">
-        <h2 className="text-lg font-semibold text-[#002366]">פרטים אישיים</h2>
+        <span className="text-lg font-semibold text-[#002366]">
+          פרטים אישיים
+        </span>
         <Button
           type="button"
           variant="ghost"
@@ -121,7 +119,7 @@ const ProfileInfo: React.FC<Props> = ({ user, role }) => {
         <p className="mb-2 font-semibold text-red-600">{errorMessage}</p>
       )}
       {!showForm && (
-        <div className="max-w-md space-y-4">
+        <div className="max-w-md space-y-5">
           <p>
             <strong>שם פרטי:</strong> {user.firstName}
           </p>
@@ -287,7 +285,9 @@ const ProfileInfo: React.FC<Props> = ({ user, role }) => {
               </>
             )}
 
-            <Button type="submit">שמור שינויים</Button>
+            <Button type="submit" variant={"submit"}>
+              שמור שינויים
+            </Button>
           </form>
         </Form>
       )}

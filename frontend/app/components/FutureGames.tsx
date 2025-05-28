@@ -1,14 +1,10 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import { useState } from "react";
-import GameCard from "./GameCard";
 import { useSwipeable } from "react-swipeable";
-import { getSession } from "@/lib/session";
-import { redirect } from "next/navigation";
-import { authFetch } from "@/lib/authFetch";
 import { Game } from "@/app/types/Game";
 import GameCardContent from "./GameCardContent";
-
+import Link from "next/link";
 type Props = {
   games: Game[];
 };
@@ -60,7 +56,9 @@ const FutureGames: React.FC<Props> = ({ games }) => {
           >
             {games.slice(0, 5).map((game, i) => (
               <div key={i} className="flex h-[110px] w-full items-center">
-                <GameCardContent game={game} />
+                <Link href={`/game/${game.gameId}`}>
+                  <GameCardContent game={game} />
+                </Link>
               </div>
             ))}
           </div>

@@ -16,6 +16,7 @@ import { Form } from "../ui/form";
 import { authFetch } from "@/lib/authFetch";
 import { set } from "date-fns";
 import { Card } from "../ui/card";
+import { Button } from "../ui/button";
 
 export type Inputs = z.infer<typeof FormDataSchema>;
 const steps = [
@@ -136,7 +137,7 @@ export default function CreateGameForm() {
   const CurrentStepComponent = steps[currentStep]?.component;
 
   return (
-    <Card variant="form">
+    <div className="pt-5">
       {currentStep !== steps.length && <h1>יצירת משחק חדש</h1>}
       <Form {...form}>
         <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
@@ -146,6 +147,7 @@ export default function CreateGameForm() {
               initial={{ x: delta >= 0 ? "50%" : "-50%", opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="flex flex-col justify-center space-y-5"
             >
               <CurrentStepComponent form={form as any} />
             </motion.div>
@@ -153,8 +155,8 @@ export default function CreateGameForm() {
 
           {currentStep === steps.length && (
             <>
-              <h1>המשחק נוצר בהצלחה</h1>
-              <h2>מיד תעבור לעמוד המשחק</h2>
+              <h1 className="text-center">המשחק נוצר בהצלחה</h1>
+              <h2 className="text-center">מיד תעבור לעמוד המשחק</h2>
             </>
           )}
         </form>
@@ -163,29 +165,20 @@ export default function CreateGameForm() {
       {/* Navigation */}
       <div className="mt-12 flex justify-between py-12">
         {!isSubmitting && (
-          <button
-            type="button"
-            onClick={prev}
-            disabled={currentStep === 0}
-            className="rounded bg-white px-2 py-1 text-sm font-semibold text-sky-900 shadow-sm ring-1 ring-sky-300 ring-inset hover:bg-sky-50 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            קודם
+          <button type="button" onClick={prev} disabled={currentStep === 0}>
+            חזור
           </button>
         )}
         {currentStep < steps.length && (
-          <button
-            type="button"
-            onClick={next}
-            className="rounded bg-white px-2 py-1 text-sm font-semibold text-sky-900 shadow-sm ring-1 ring-sky-300 ring-inset hover:bg-sky-50 disabled:cursor-not-allowed disabled:opacity-50"
-          >
+          <Button type="button" onClick={next}>
             {currentStep === steps.length - 1 ? (
               <span>סיים</span>
             ) : (
-              <span>הבא</span>
+              <span>המשך</span>
             )}
-          </button>
+          </Button>
         )}
       </div>
-    </Card>
+    </div>
   );
 }

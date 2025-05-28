@@ -17,6 +17,9 @@ import { Input } from "@/components/ui/input";
 
 import React from "react";
 import { formSchema } from "@/lib/schemas/manager_signup_schema";
+import { Card } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 
 type Props = {};
 
@@ -28,23 +31,46 @@ const ContactForm: React.FC<Props> = ({}) => {
       lastName: "",
       email: "",
       phoneNum: "",
-      password: "",
-      confirmPassword: "",
       hasCourt: undefined,
+      message: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/manager-signup/create`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      },
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      toast.error(
+        errorData.message ||
+          "אירעה שגיאה בשליחת הפרטים, אנא נסה שוב מאוחר יותר.",
+      );
+      return;
+    }
+    const data = await response.json();
+    toast.success("הפרטים נשלחו בהצלחה, נחזור אלייך בהקדם!");
+    form.reset();
   }
   return (
-    <div className="h-full w-full max-w-md p-7">
-      <div className="mb-10 flex flex-col justify-center gap-4">
-        <h1>איזה כיף, עוד מגרשים לאוסף</h1>
-        <h2>תשאיר לנו פרטים ונחזור אלייך :)</h2>
+    <div className="h-full w-full">
+      <div className="flex flex-col justify-center gap-1">
+        <h1 className="text-center">איזה כיף, עוד מגרשים לאוסף</h1>
+        <h2 className="text-center">תשאיר לנו פרטים ונחזור אלייך בהקדם</h2>
       </div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="mt-10 space-y-5"
+        >
           <FormField
             control={form.control}
             name="firstName"
@@ -108,32 +134,21 @@ const ContactForm: React.FC<Props> = ({}) => {
 
           <FormField
             control={form.control}
-            name="password"
+            name="message"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>סיסמה</FormLabel>
+                <FormLabel>פרט על המגרש</FormLabel>
                 <FormControl>
-                  <Input type="password" placeholder="הקלד סיסמה" {...field} />
+                  <Textarea
+                    placeholder="הסבר בכמה מילים על הרקע שלך כמנהל המגרש"
+                    className="resize-none"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-
-          <FormField
-            control={form.control}
-            name="confirmPassword"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>סיסמה</FormLabel>
-                <FormControl>
-                  <Input type="password" placeholder="הקלד סיסמה" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
           <FormField
             control={form.control}
             name="hasCourt"
@@ -155,13 +170,7 @@ const ContactForm: React.FC<Props> = ({}) => {
               </FormItem>
             )}
           />
-          <Button
-            type="submit"
-            className="primary-btn"
-            onClick={() => {
-              console.log(form.getValues());
-            }}
-          >
+          <Button type="submit" variant="submit">
             שלח
           </Button>
         </form>

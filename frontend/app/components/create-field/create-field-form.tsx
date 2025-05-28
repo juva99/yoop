@@ -25,6 +25,7 @@ import GameTypeOption from "./game-type-option";
 import { Combobox } from "../ui/combobox";
 import { Map, Marker } from "pigeon-maps";
 import { Switch } from "../ui/switch";
+import { Card } from "../ui/card";
 
 const cityOptions = Object.entries(City).map(([label, value]) => ({
   label: value,
@@ -107,10 +108,8 @@ const CreateFieldForm = () => {
 
   return (
     <div className="mx-auto max-w-2xl p-4">
-      <h1>יצירת מגרש</h1>
-      <p className="mb-8 text-center text-gray-600">
-        הוסף את פרטי המגרש שלך למטה
-      </p>
+      <h1>הוספת מגרש</h1>
+      <h3 className="text-center">הוסף את פרטי המגרש שלך למטה</h3>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

@@ -20,7 +20,7 @@ const ProfilePage = async () => {
 
   return (
     <div className="h-[80vh] bg-[url('/search-friends-background.png')] bg-cover bg-top bg-no-repeat px-7 py-10">
-      <div className="rounded-md bg-white p-6 shadow-md">
+      <div className="rounded-xl bg-white p-6 shadow-xl">
         <h1>הפרופיל שלי </h1>
         <ProfileInfo user={user} role={role} />
       </div>

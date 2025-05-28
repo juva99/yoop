@@ -13,7 +13,12 @@ import { RiFunctionAddFill } from "react-icons/ri";
 import { VscSignOut } from "react-icons/vsc";
 import { CgProfile } from "react-icons/cg";
 
-const HIDDEN_PATHS = ["/auth/login", "/auth/signup", "/menu"];
+const HIDDEN_PATHS = [
+  "/auth/login",
+  "/auth/signup",
+  "/menu",
+  "/field-manager/contact",
+];
 
 type NavbarProps = {
   role: Role;
@@ -47,7 +52,7 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
           />
         </Link>
         <Link href={"/game/create"}>
-          <div className="-mt-10 flex size-[80px] items-center justify-center rounded-[25%] border-2 border-blue-500 bg-[radial-gradient(80.49%_80.3%_at_47.16%_59.68%,#0D2A84_0%,#116AAC_100%)] shadow-md ring-2 ring-blue-100 transition-all">
+          <div className="-mt-10 flex size-[70px] items-center justify-center rounded-[25%] border-2 border-blue-500 bg-[radial-gradient(80.49%_80.3%_at_47.16%_59.68%,#0D2A84_0%,#116AAC_100%)] shadow-md ring-2 ring-blue-100 transition-all">
             <MdAssignmentAdd className="size-[48px] text-white drop-shadow" />
           </div>
         </Link>

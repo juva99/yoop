@@ -18,8 +18,8 @@ const FilteredGames: React.FC<Props> = ({ games }) => {
   });
   return (
     <div className="mt-4 w-[100%] items-center overflow-hidden">
-      <p>
-        <span className="text-title ml-2 text-xl">{games.length} נמצאו</span>
+      <p className="text-sm font-semibold">
+        <span className="text-title">{games.length} נמצאו</span>{" "}
         <span className="text-subtitle">{availables} פנוים להרשמה</span>
       </p>
       <div className="filtered-games__list max-h-100 overflow-y-auto">

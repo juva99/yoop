@@ -7,8 +7,9 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { login } from "@/lib/auth";
 import Link from "next/link";
-import { FaRegEye } from "react-icons/fa";
-import { LuEyeClosed } from "react-icons/lu";
+import { TbEyeOff } from "react-icons/tb";
+import { TbEyeCheck } from "react-icons/tb";
+import { toast } from "sonner";
 
 import { LoginFormSchema, LoginFormValues } from "@/lib/schemas/login_schema";
 
@@ -32,23 +33,16 @@ const LoginForm = () => {
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const [formError, setFormError] = useState("");
-
   const onSubmit = async (values: LoginFormValues) => {
-    const formData = new FormData();
-    formData.append("userEmail", values.userEmail);
-    formData.append("pass", values.pass);
-    const result = await login(undefined, formData);
+    const result = await login(values.userEmail, values.pass);
     if (result?.error) {
-      setFormError(result.message || "שגיאה בהתחברות");
+      toast.error(result.message || "שגיאה בהתחברות");
     }
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        {formError && <p className="text-sm text-red-500">{formError}</p>}
-
         <FormField
           control={form.control}
           name="userEmail"
@@ -81,7 +75,7 @@ const LoginForm = () => {
                     onClick={() => setShowPassword((prev) => !prev)}
                     className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500"
                   >
-                    {showPassword ? <FaRegEye /> : <LuEyeClosed />}
+                    {showPassword ? <TbEyeCheck /> : <TbEyeOff />}
                   </button>
                 </div>
               </FormControl>
@@ -97,7 +91,7 @@ const LoginForm = () => {
         </div>
 
         <div className="flex justify-center">
-          <Button type="submit" className="w-1/2 bg-blue-500 py-2 text-white">
+          <Button type="submit" variant={"submit"}>
             התחבר
           </Button>
         </div>

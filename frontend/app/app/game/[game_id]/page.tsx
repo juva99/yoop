@@ -13,11 +13,11 @@ import { notFound } from "next/navigation"; // Import notFound
 import { GameType } from "@/app/enums/game-type.enum";
 import { getSession } from "@/lib/session";
 import { redirect } from "next/navigation";
-import { joinGame } from "@/lib/actions";
 import JoinGameButton from "@/components/JoinGameButton";
 import { ParticipationStatus } from "@/app/enums/participation-status.enum";
 import LeaveGameButton from "@/components/LeaveGameButton";
 import { authFetch } from "@/lib/authFetch";
+import { Card } from "@/components/ui/card";
 
 async function getGame(gameId: string): Promise<Game | null> {
   try {
@@ -105,8 +105,9 @@ export default async function Page({
     (gp) =>
       gp.user.uid === currUserUID && gp.status !== ParticipationStatus.REJECTED,
   );
+
   return (
-    <div className="container mx-auto flex flex-col gap-6 p-8">
+    <div className="flex h-full flex-col gap-6 p-6">
       {" "}
       <div className="text-title flex items-center gap-3 text-2xl font-bold">
         <span>
@@ -123,9 +124,7 @@ export default async function Page({
         {" "}
         <div className="flex items-center gap-2">
           <IoMdPin className="text-gray-600" />
-          <p>
-            {field.fieldName}, {field.fieldAddress ?? "כתובת לא זמינה"}
-          </p>
+          <p>{field.fieldName}</p>
         </div>
         <div className="flex items-center gap-2">
           <PiCalendarDots className="text-gray-600" />
@@ -145,9 +144,9 @@ export default async function Page({
         )}
       </div>
       <div>
-        <h2>
+        <h3>
           משתתפים ({approvedCount}/{maxParticipants})
-        </h2>
+        </h3>
         <PlayersList
           gameId={gameId}
           creatorUID={creator.uid}
@@ -158,7 +157,7 @@ export default async function Page({
         />
       </div>
       <div>
-        <h2>רשימת המתנה</h2>
+        <h3>רשימת המתנה</h3>
         <PlayersList
           gameId={gameId}
           creatorUID={creator.uid}
@@ -169,7 +168,7 @@ export default async function Page({
         />
       </div>
       <div>
-        <h2>מיקום</h2>
+        <h3>מיקום</h3>
         <MapView
           defaultLocation={{ lng: field.fieldLng, lat: field.fieldLat }}
           games={[game]}
