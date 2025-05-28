@@ -243,7 +243,7 @@ const SignupForm = () => {
         />
 
         <div className="flex justify-center">
-          <Button type="submit" className="w-1/2 bg-blue-500 py-2 text-white">
+          <Button type="submit" variant={"submit"}>
             הירשם
           </Button>
         </div>
