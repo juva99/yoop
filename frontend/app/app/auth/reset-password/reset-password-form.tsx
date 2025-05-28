@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { resetPassword } from "@/lib/auth"; // This function needs to be created
+import { resetPassword } from "@/lib/auth";
 import {
   ResetPasswordSchema,
   ResetPasswordFormValues,
@@ -48,8 +48,6 @@ const ResetPasswordForm = () => {
         toast.error(result.message || "שגיאה באיפוס הסיסמה");
       } else {
         toast.success("הסיסמה אופסה בהצלחה");
-        // Optionally redirect the user to the login page
-        // window.location.href = "/auth/login";
       }
     } catch (error) {
       toast.error("שגיאה באיפוס הסיסמה");
