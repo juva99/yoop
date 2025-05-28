@@ -53,6 +53,7 @@ const formDefaultValues: FormSchema = {
   fieldInfo: {
     gameType: [],
   },
+  fieldAddress: "",
 };
 
 export { formSchema, formDefaultValues, type FormSchema };
