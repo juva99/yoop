@@ -207,8 +207,8 @@ const SearchGames = () => {
               <FormItem>
                 <FormLabel>
                   טווח שעות:{" "}
-                  {field.value ? formatTime(field.value[0]) : "00:00"} -{" "}
-                  {field.value ? formatTime(field.value[1]) : "00:00"}
+                  {field.value ? formatTime(field.value[1]) : "00:00"} -{" "}
+                  {field.value ? formatTime(field.value[0]) : "00:00"}
                 </FormLabel>
                 <FormControl>
                   <div className="px-3">
@@ -221,8 +221,8 @@ const SearchGames = () => {
                       className="w-full"
                     />
                     <div className="mt-1 flex justify-between text-sm text-gray-500">
-                      <span>00:00</span>
                       <span>24:00</span>
+                      <span>00:00</span>
                     </div>
                   </div>
                 </FormControl>

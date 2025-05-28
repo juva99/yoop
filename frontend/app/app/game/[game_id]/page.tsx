@@ -124,7 +124,9 @@ export default async function Page({
         {" "}
         <div className="flex items-center gap-2">
           <IoMdPin className="text-gray-600" />
-          <p>{field.fieldName}</p>
+          <p>
+            {field.fieldName}, {field.city}
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <PiCalendarDots className="text-gray-600" />

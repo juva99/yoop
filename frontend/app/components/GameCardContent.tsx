@@ -88,7 +88,7 @@ const GameCardContent: React.FC<Props> = ({ game }) => {
       </div>
 
       <p className="text-sm text-gray-600">
-        רשומים: {game.maxParticipants}/{game.gameParticipants.length}
+        רשומים: {game.gameParticipants.length}/{game.maxParticipants}
       </p>
       <AvatarGroup players={users} />
     </div>
