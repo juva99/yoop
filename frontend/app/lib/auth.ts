@@ -125,3 +125,30 @@ export const forgotPassword = async (email: string) => {
     return { error: true, message: "שגיאה בחיבור לשרת" };
   }
 };
+
+export const resetPassword = async (token: string, password: string) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/reset-password/${token}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ password }),
+      },
+    );
+
+    if (!response.ok) {
+      const data = await response.json();
+      return {
+        error: true,
+        message: data.message || "שגיאה באיפוס סיסמה",
+      };
+    }
+
+    return { success: true };
+  } catch (error) {
+    return { error: true, message: "שגיאה בחיבור לשרת" };
+  }
+};
