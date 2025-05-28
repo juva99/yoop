@@ -12,8 +12,8 @@ import {
 } from "@/lib/schemas/reset_password_schema";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { FaRegEye } from "react-icons/fa";
-import { LuEyeClosed } from "react-icons/lu";
+import { TbEyeOff } from "react-icons/tb";
+import { TbEyeCheck } from "react-icons/tb";
 
 import {
   Form,
@@ -28,7 +28,7 @@ const ResetPasswordForm = () => {
   const searchParams = useSearchParams();
   const resetToken = searchParams.get("resetToken");
   const [showPassword, setShowPassword] = useState(false);
-
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const form = useForm<ResetPasswordFormValues>({
     resolver: zodResolver(ResetPasswordSchema),
     defaultValues: {
@@ -75,7 +75,7 @@ const ResetPasswordForm = () => {
                     onClick={() => setShowPassword((prev) => !prev)}
                     className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500"
                   >
-                    {showPassword ? <FaRegEye /> : <LuEyeClosed />}
+                    {showPassword ? <TbEyeCheck /> : <TbEyeOff />}
                   </button>
                 </div>
               </FormControl>
@@ -92,10 +92,17 @@ const ResetPasswordForm = () => {
               <FormControl>
                 <div className="relative">
                   <Input
-                    type={showPassword ? "text" : "password"}
+                    type={showConfirmPassword ? "text" : "password"}
                     placeholder="••••••••"
                     {...field}
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword((prev) => !prev)}
+                    className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500"
+                  >
+                    {showConfirmPassword ? <TbEyeCheck /> : <TbEyeOff />}
+                  </button>
                 </div>
               </FormControl>
               <FormMessage />
