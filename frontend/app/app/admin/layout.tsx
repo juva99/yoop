@@ -38,7 +38,7 @@ export default async function AdminLayout({
 
   return (
     <SidebarProvider>
-      <SidebarTrigger className="absolute top-4 right-4 z-10 text-gray-700 hover:text-black" />
+      <SidebarTrigger className="fixed top-0 right-0 z-50 h-10 w-10 rounded-none rounded-bl-3xl bg-white shadow" />
       <div dir="rtl" className="relative flex min-h-screen w-full bg-white">
         <Sidebar side="right" className="border-l bg-gray-100 shadow-md">
           <div className="p-4">
