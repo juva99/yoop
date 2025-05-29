@@ -192,3 +192,12 @@ input:-webkit-autofill:active {
   color: inherit !important;
   transition: background-color 9999s ease-out;
 }
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
