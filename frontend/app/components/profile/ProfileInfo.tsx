@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { User } from "@/app/types/User";
-import { authFetch } from "@/lib/authFetch";
+import { updateProfile } from "@/lib/auth";
 
 import {
   ProfileUpdateSchema,
@@ -67,24 +67,18 @@ const ProfileInfo: React.FC<Props> = ({ user, role }) => {
   });
   const onSubmit = async (values: ProfileUpdateFormValues) => {
     try {
-      const res = await authFetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/update/${user.uid}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(values),
-        },
-      );
+      const result = await updateProfile(user.uid, values);
 
-      if (!res.ok) throw new Error("Failed to update");
-
-      setSuccessMessage("הפרטים עודכנו בהצלחה");
-      setErrorMessage("");
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
+      if (result?.error) {
+        setErrorMessage(result.message || "שגיאה בעדכון הפרטים");
+        setSuccessMessage("");
+      } else {
+        setSuccessMessage("הפרטים עודכנו בהצלחה");
+        setErrorMessage("");
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      }
     } catch (err) {
       setErrorMessage("שגיאה בעדכון הפרטים");
       setSuccessMessage("");
