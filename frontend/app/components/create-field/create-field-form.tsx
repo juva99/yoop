@@ -26,6 +26,8 @@ import { Combobox } from "../ui/combobox";
 import { Map, Marker } from "pigeon-maps";
 import { Switch } from "../ui/switch";
 import { Card } from "../ui/card";
+import { authFetch } from "@/lib/authFetch";
+import { toast } from "sonner";
 
 const cityOptions = Object.entries(City).map(([label, value]) => ({
   label: value,
@@ -61,10 +63,79 @@ const CreateFieldForm = () => {
     name: "fields",
     control: form.control,
   });
+  const onSubmit = async (data: FormSchema) => {
+    if (data.hasMultipleFields) {
+      const allResponses = await Promise.all(
+        data.fields.map(async (field) => {
+          const name =
+            field.fieldNameOptional && field.fieldNameOptional.trim() !== ""
+              ? `${data.fieldName} - ${field.fieldNameOptional.trim()}`
+              : data.fieldName;
 
-  const onSubmit = (data: FormSchema) => {
-    console.log(data);
-    // Handle form submission - API call etc.
+          const payload = {
+            fieldName: name,
+            fieldLat: data.fieldLat,
+            fieldLng: data.fieldLng,
+            city: data.city,
+            fieldAddress: data.fieldAddress,
+            gameTypes: field.gameType,
+            isManaged: true,
+          };
+
+          const res = await authFetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/fields`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(payload),
+            },
+          );
+
+          return res;
+        }),
+      );
+
+      const failed = allResponses.filter((r) => !r.ok);
+      if (failed.length > 0) {
+        toast.error(
+          `נכשלו ${failed.length} מתוך ${allResponses.length} מגרשים`,
+        );
+      } else {
+        toast.success("כל המגרשים נוצרו בהצלחה");
+      }
+
+      return;
+    }
+
+    //single field
+    const payload = {
+      fieldName: data.fieldName,
+      fieldLat: data.fieldLat,
+      fieldLng: data.fieldLng,
+      city: data.city,
+      fieldAddress: data.fieldAddress,
+      gameTypes: data.fieldInfo.gameType,
+      isManaged: true,
+    };
+
+    const response = await authFetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/fields`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      },
+    );
+
+    if (!response.ok) {
+      toast.error("שגיאה ביצירת המגרש");
+    } else {
+      toast.success("המגרש נוצר בהצלחה");
+    }
   };
 
   // Update map center when selectedCity changes

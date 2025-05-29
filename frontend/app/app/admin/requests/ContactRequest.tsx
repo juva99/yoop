@@ -62,12 +62,9 @@ const ContactRequest: React.FC<ContactRequestProps> = ({
 
   return (
     <div className="relative text-sm text-gray-600">
-      <div className="flex flex-col gap-0.5">
+      <div className="flex flex-col gap-0.75">
         <p>
           <strong>שם:</strong> {firstName} {lastName}
-        </p>
-        <p>
-          <strong>מייל:</strong> {email}
         </p>
         <div className="flex items-center gap-2">
           <strong>טלפון:</strong> {phoneNum}
@@ -79,6 +76,10 @@ const ContactRequest: React.FC<ContactRequestProps> = ({
             <FaWhatsapp size={16} className="text-[#25D366]" />
           </Link>
         </div>
+        <p>
+          <strong>מייל:</strong> {email}
+        </p>
+
         <p>
           <strong>הודעה:</strong> {message}
         </p>

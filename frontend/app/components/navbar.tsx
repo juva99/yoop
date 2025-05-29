@@ -60,30 +60,6 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
     );
   }
 
-  if (role === Role.FIELD_MANAGER) {
-    return (
-      <nav className="fixed bottom-0 z-50 flex h-15 w-full items-center justify-around border-t-1 border-[#6b6b6b] bg-gray-100">
-        <Link href={"/profile"}>
-          <CgProfile
-            className={`size-[25px] ${pathname === "/profile" ? "text-neutral-900" : "text-elements"}`}
-          />
-        </Link>
-
-        <Link href={"/field-manager/fields"}>
-          <GiSoccerField
-            className={`size-[25px] ${pathname === "/field-manager/fields" ? "text-neutral-900" : "text-elements"}`}
-          />
-        </Link>
-
-        <a href={"/api/auth/signout"}>
-          <VscSignOut
-            className={`size-[25px] ${pathname === "/api/auth/signout" ? "text-neutral-900" : "text-elements"}`}
-          />
-        </a>
-      </nav>
-    );
-  }
-
   return null;
 };
 

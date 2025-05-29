@@ -27,7 +27,7 @@ const FieldGameList: React.FC<Props> = ({ fieldId }) => {
   const fetchGames = async () => {
     setLoading(true);
     const res = await authFetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/fieldId/${fieldId}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/${fieldId}/allGames`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" },
@@ -35,6 +35,8 @@ const FieldGameList: React.FC<Props> = ({ fieldId }) => {
     );
 
     const data = await res.json();
+    console.log(data);
+
     if (Array.isArray(data)) {
       // מיון לפי תאריך סיום מהישן לחדש
       const sorted = data.sort(
@@ -121,11 +123,7 @@ const FieldGameList: React.FC<Props> = ({ fieldId }) => {
       ) : (
         <div>
           {filteredGames.map((game) => (
-            <GameItem
-              key={game.gameId}
-              game={game}
-              onStatusChange={fetchGames}
-            />
+            <GameItem key={game.gameId} game={game} />
           ))}
         </div>
       )}

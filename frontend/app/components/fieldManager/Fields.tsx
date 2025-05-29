@@ -13,17 +13,28 @@ const Fields: React.FC<Props> = ({ fields }) => {
   return (
     <div className="p-4">
       <div className="flex w-full flex-col items-center gap-6">
-        {fields.length === 0 ? (
-          <Card className="flex flex-col items-center gap-3">
-            <h1 className="text-center">המגרשים שלך</h1>
-            <p>אין מגרשים להצגה</p>
-            <Link href={"/field-manager/field/create"}>
-              <Button variant={"submit"}>הוסף מגרש</Button>
-            </Link>
-          </Card>
-        ) : (
-          fields.map((field) => <FieldCard key={field.fieldId} field={field} />)
-        )}
+        <Card className="flex flex-col">
+          <h1 className="text-center">המגרשים שלך</h1>
+
+          {fields.length === 0 ? (
+            <div>
+              <p>אין מגרשים להצגה</p>
+              <Link href={"/field-manager/field/create"}>
+                <Button variant={"submit"}>הוסף מגרש</Button>
+              </Link>
+            </div>
+          ) : (
+            <div className="scrollbar-none max-h-[600px] overflow-y-scroll">
+              {fields.map((field, idx) => (
+                <FieldCard
+                  key={field.fieldId}
+                  field={field}
+                  border={idx < fields.length - 1}
+                />
+              ))}
+            </div>
+          )}
+        </Card>
       </div>
     </div>
   );
