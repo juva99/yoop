@@ -2,8 +2,10 @@
 
 import { redirect } from "next/navigation";
 import { BACKEND_URL } from "./constants";
-import { createSession, updateTokens } from "./session";
+import { createSession, updateTokens, updateSessionUser } from "./session";
 import { SignupFormValues } from "@/app/auth/signup/signupForm";
+import { ProfileUpdateFormValues } from "./schemas/profile_update_schema";
+import { authFetch } from "./authFetch";
 
 export async function signup(formData: SignupFormValues): Promise<any> {
   const response = await fetch(`${BACKEND_URL}/auth/signup`, {
@@ -152,3 +154,34 @@ export const resetPassword = async (token: string, password: string) => {
     return { error: true, message: "שגיאה בחיבור לשרת" };
   }
 };
+
+export async function updateProfile(
+  userId: string,
+  formData: ProfileUpdateFormValues,
+): Promise<any> {
+  try {
+    const response = await authFetch(`${BACKEND_URL}/users/update/${userId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+
+    if (!response.ok) {
+      const data = await response.json();
+      return {
+        error: true,
+        message: data.message || "שגיאה בעדכון הפרטים",
+      };
+    }
+
+    // Update session with new user name
+    const fullName = `${formData.firstName} ${formData.lastName}`;
+    await updateSessionUser({ name: fullName });
+
+    return { success: true };
+  } catch (error) {
+    return { error: true, message: "שגיאה בחיבור לשרת" };
+  }
+}
