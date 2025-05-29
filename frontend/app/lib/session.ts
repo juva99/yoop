@@ -93,6 +93,39 @@ export async function updateTokens({
   }
 }
 
+export async function updateSessionUser({
+  name,
+}: {
+  name?: string;
+}): Promise<void | null> {
+  const cookieStore = await cookies();
+  const cookie = cookieStore.get("session")?.value;
+  if (!cookie) return null;
+
+  try {
+    const { payload } = await jwtVerify(cookie, encodedKey);
+
+    if (!payload) throw new Error("Session not found");
+
+    const currentUser = payload.user as Session["user"];
+
+    const newPayload: Session = {
+      user: {
+        uid: currentUser.uid,
+        name: name || currentUser.name,
+        role: currentUser.role,
+      },
+      accessToken: (payload as Session).accessToken,
+      refreshToken: (payload as Session).refreshToken,
+    };
+
+    await createSession(newPayload);
+  } catch (error) {
+    console.error("Failed to update the session user", error);
+    redirect("/auth/login");
+  }
+}
+
 export async function isExpired(): Promise<boolean> {
   const session = await getSession();
   if (!session) return true;
