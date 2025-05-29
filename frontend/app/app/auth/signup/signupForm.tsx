@@ -17,8 +17,9 @@ import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { he } from "date-fns/locale";
 import { cn } from "@/lib/utils";
-import { FaRegEye } from "react-icons/fa";
-import { LuEyeClosed } from "react-icons/lu";
+
+import { TbEyeOff } from "react-icons/tb";
+import { TbEyeCheck } from "react-icons/tb";
 import { toast } from "sonner";
 
 import {
@@ -129,7 +130,7 @@ const SignupForm = () => {
                     onClick={() => setShowPassword((prev) => !prev)}
                     className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500"
                   >
-                    {showPassword ? <FaRegEye /> : <LuEyeClosed />}
+                    {showPassword ? <TbEyeCheck /> : <TbEyeOff />}
                   </button>
                 </div>
               </FormControl>
