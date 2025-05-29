@@ -20,6 +20,7 @@ import { formSchema } from "@/lib/schemas/manager_signup_schema";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import AuthWrapper from "@/app/auth/authWrapper";
 
 type Props = {};
 
@@ -61,7 +62,8 @@ const ContactForm: React.FC<Props> = ({}) => {
     form.reset();
   }
   return (
-    <div className="h-full w-full">
+    <AuthWrapper>
+      {" "}
       <div className="flex flex-col justify-center gap-1">
         <h1 className="text-center">איזה כיף, עוד מגרשים לאוסף</h1>
         <h2 className="text-center">תשאיר לנו פרטים ונחזור אלייך בהקדם</h2>
@@ -175,7 +177,7 @@ const ContactForm: React.FC<Props> = ({}) => {
           </Button>
         </form>
       </Form>
-    </div>
+    </AuthWrapper>
   );
 };
 
