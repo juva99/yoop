@@ -11,7 +11,6 @@ import { ParticipationStatus } from "@/app/enums/participation-status.enum";
 import { GameParticipant } from "@/app/types/GameParticipant";
 
 import ChangeParticipationButton from "./changeParticipationButton";
-import { is } from "date-fns/locale";
 
 interface Props {
   gameId: string;
