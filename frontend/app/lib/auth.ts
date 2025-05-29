@@ -56,7 +56,7 @@ export async function login(userMail: string, pass: string): Promise<any> {
     const roleRedirectMap: Record<string, string> = {
       user: "/",
       field_manager: "/field-manager/fields",
-      admin: "/field-manager/fields",
+      admin: "/admin",
     };
 
     const redirectPath = roleRedirectMap[result.role] ?? "/";
