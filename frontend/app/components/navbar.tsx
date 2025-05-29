@@ -75,12 +75,6 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
           />
         </Link>
 
-        <Link href={"/field-manager/field/games"}>
-          <RiFunctionAddFill
-            className={`size-[25px] ${pathname === "/field-manager/field/games" ? "text-neutral-900" : "text-elements"}`}
-          />
-        </Link>
-
         <a href={"/api/auth/signout"}>
           <VscSignOut
             className={`size-[25px] ${pathname === "/api/auth/signout" ? "text-neutral-900" : "text-elements"}`}

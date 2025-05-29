@@ -23,7 +23,7 @@ const GameCardContent: React.FC<Props> = ({ game }) => {
     weatherIcon,
   } = game;
 
-  const users = gameParticipants
+  const approvedPlayers = gameParticipants
     .filter((gp) => gp.status === ParticipationStatus.APPROVED)
     .map((participant) => participant.user);
 
@@ -88,9 +88,9 @@ const GameCardContent: React.FC<Props> = ({ game }) => {
       </div>
 
       <p className="text-sm text-gray-600">
-        רשומים: {game.gameParticipants.length}/{game.maxParticipants}
+        רשומים: {approvedPlayers.length}/{game.maxParticipants}
       </p>
-      <AvatarGroup players={users} />
+      <AvatarGroup players={approvedPlayers} />
     </div>
   );
 };
