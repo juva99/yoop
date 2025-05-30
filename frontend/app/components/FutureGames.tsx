@@ -13,10 +13,10 @@ const FutureGames: React.FC<Props> = ({ games }) => {
   const [currentGame, setCurrentGame] = useState(0);
 
   const handlers = useSwipeable({
-    onSwipedDown: (eventData) => {
+    onSwipedDown: () => {
       upHandler();
     },
-    onSwipedUp: (eventData) => {
+    onSwipedUp: () => {
       downHandler();
     },
     preventScrollOnSwipe: true,
@@ -43,7 +43,7 @@ const FutureGames: React.FC<Props> = ({ games }) => {
   return (
     <div
       {...handlers}
-      className="relative flex max-h-[110px] w-full justify-between overflow-hidden"
+      className="relative flex max-h-[100px] w-full justify-between overflow-hidden"
     >
       {games.length === 0 ? (
         <span className="flex text-center">אין משחקים עתידיים</span>
@@ -52,17 +52,17 @@ const FutureGames: React.FC<Props> = ({ games }) => {
           {" "}
           <div
             className="transition-transform duration-300"
-            style={{ transform: `translateY(-${currentGame * 110}px)` }}
+            style={{ transform: `translateY(-${currentGame * 100}px)` }}
           >
             {games.slice(0, 5).map((game, i) => (
-              <div key={i} className="flex h-[110px] w-full items-center">
+              <div key={i} className="flex h-[100px] w-full items-center">
                 <Link href={`/game/${game.gameId}`}>
                   <GameCardContent game={game} />
                 </Link>
               </div>
             ))}
           </div>
-          <div className="bullets-container left-0 flex h-[110px] items-center pl-5">
+          <div className="bullets-container left-0 flex h-[100px] items-center">
             <ul className="space-y-2">
               {games.slice(0, 5).map((game, i) => (
                 <li key={i}>

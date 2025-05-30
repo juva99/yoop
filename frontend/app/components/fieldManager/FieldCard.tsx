@@ -21,8 +21,8 @@ const FieldCard: React.FC<Props> = ({ field, border }) => {
       <div className="flex flex-col">
         <div className="text-title flex items-center gap-2">
           <span>{field.fieldName}</span>
-          {icons.map((icon) => (
-            <div>{icon}</div>
+          {icons.map((icon, i) => (
+            <div key={i}>{icon}</div>
           ))}
         </div>
         <span className="font-bold text-gray-500">{field.city}</span>

@@ -48,9 +48,9 @@ const GameCardContent: React.FC<Props> = ({ game }) => {
     hour12: false,
   });
   return (
-    <div className="flex w-full flex-col gap-1 text-right">
+    <div className="flex w-full flex-col gap-1 text-right text-sm">
       {/* כותרת */}
-      <div className="text-title flex items-center gap-2 text-base font-semibold">
+      <div className="text-title flex items-center gap-2 font-semibold">
         {gameType === GameType.BasketBall ? (
           <PiBasketball className="text-lg" />
         ) : (
@@ -60,7 +60,7 @@ const GameCardContent: React.FC<Props> = ({ game }) => {
       </div>
 
       {/* שורת מידע אחת */}
-      <div className="flex flex-wrap items-center gap-2 text-sm text-gray-600">
+      <div className="flex flex-wrap items-center gap-2 text-gray-600">
         <span>{formattedDate}</span>
         <span>|</span>
         <span>{`${formattedStartTime} - ${formattedEndTime}`}</span>
@@ -86,11 +86,13 @@ const GameCardContent: React.FC<Props> = ({ game }) => {
           </>
         )}
       </div>
-
-      <p className="text-sm text-gray-600">
-        רשומים: {approvedPlayers.length}/{game.maxParticipants}
-      </p>
-      <AvatarGroup players={approvedPlayers} />
+      <div className="flex items-center gap-2">
+        <p className="text-gray-600">
+          רשומים: {approvedPlayers.length}/{game.maxParticipants}
+        </p>
+        <span>|</span>
+        <AvatarGroup players={approvedPlayers} />
+      </div>
     </div>
   );
 };

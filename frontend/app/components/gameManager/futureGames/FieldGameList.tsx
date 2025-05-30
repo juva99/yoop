@@ -109,7 +109,7 @@ const FieldGameList: React.FC<Props> = ({ fieldId }) => {
   }, []);
 
   return (
-    <div className="field__game-list p-4">
+    <div>
       <FieldGamesFilters
         onFilterChange={handleFilterChange}
         availableCount={availableCount}

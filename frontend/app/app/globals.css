@@ -167,6 +167,7 @@ h2 {
 h3 {
   @apply mb-3 font-semibold;
 }
+
 .primary-btn {
   @apply bg-title my-5 h-10 w-[100%] rounded-3xl text-xl text-white;
 }

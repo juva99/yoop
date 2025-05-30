@@ -83,9 +83,17 @@ const UserItem: React.FC<Props> = ({ user, border = true }) => {
       </div>
 
       <div className="text-sm text-gray-600">
-        {user.address && <p>{user.address}</p>}
         <div className="flex items-center gap-2">
-          {user.phoneNum && <p>{user.phoneNum}</p>}
+          <p>עיר:</p>
+          {user.address ? <p>{user.address}</p> : <p>אין כתובת במערכת</p>}
+        </div>
+        <div className="flex items-center gap-2">
+          <p>מספר פלאפון:</p>
+          {user.phoneNum ? (
+            <p>{user.phoneNum}</p>
+          ) : (
+            <p>אין מספר פלאפון במערכת</p>
+          )}
           {user.phoneNum && (
             <Link
               href={`https://wa.me/${formatPhoneNumber(user.phoneNum)}`}

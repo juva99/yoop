@@ -26,7 +26,7 @@ export default async function Home() {
       </div>
       <div>
         <Card>
-          <h3>משחקים עתידיים</h3>
+          <span className="font-semibold">משחקים עתידיים</span>
           <FutureGames games={data} />
         </Card>
       </div>

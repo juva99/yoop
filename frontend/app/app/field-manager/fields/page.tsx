@@ -19,18 +19,11 @@ const FieldsPage = async () => {
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/${userId}`,
       );
       user = await userRes.json();
-      console.log("User details: ", user);
 
       const fieldsRes = await authFetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/fields/${userId}/allFields`,
       );
-
-      if (fieldsRes.ok) {
-        fields = await fieldsRes.json();
-        console.log(" Fields: ", fields);
-      } else {
-        console.error(" שגיאה בשליפת מגרשים");
-      }
+      fields = await fieldsRes.json();
     }
   } catch (error) {
     console.error(" שגיאה :", error);

@@ -24,7 +24,7 @@ const Page: React.FC<Props> = async ({ params }) => {
   const field: Field = await fieldResponse.json();
 
   return (
-    <div className="p-5">
+    <div className="flex flex-col gap-y-3 px-5 py-10">
       <h1>משחקים ב{field.fieldName}</h1>
       <FieldGameList fieldId={field.fieldId} />
     </div>

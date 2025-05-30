@@ -17,7 +17,6 @@ import { Input } from "@/components/ui/input";
 
 import React from "react";
 import { formSchema } from "@/lib/schemas/manager_signup_schema";
-import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import AuthWrapper from "@/app/auth/authWrapper";
