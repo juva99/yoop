@@ -8,13 +8,12 @@ import { authFetch } from "@/lib/authFetch";
 import { GameStatus } from "@/app/enums/game-status.enum";
 
 type Props = {
-  fieldId: string;
+  games: Game[];
 };
 
-const FieldGameList: React.FC<Props> = ({ fieldId }) => {
+const FieldGameList: React.FC<Props> = ({ games }) => {
   const [allGames, setAllGames] = useState<Game[]>([]);
   const [filteredGames, setFilteredGames] = useState<Game[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
 
   const [filters, setFilters] = useState({
     available: true,
@@ -23,35 +22,6 @@ const FieldGameList: React.FC<Props> = ({ fieldId }) => {
   });
 
   const currentDate = new Date();
-
-  const fetchGames = async () => {
-    setLoading(true);
-    const res = await authFetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/${fieldId}/allGames`,
-      {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      },
-    );
-
-    const data = await res.json();
-    console.log(data);
-
-    if (Array.isArray(data)) {
-      // מיון לפי תאריך סיום מהישן לחדש
-      const sorted = data.sort(
-        (a, b) => new Date(a.endDate).getTime() - new Date(b.endDate).getTime(),
-      );
-      setAllGames(sorted);
-      applyFilters(sorted, filters); // הפעלת פילטר ראשונית
-    } else {
-      console.error("Expected array, got:", data);
-      setAllGames([]);
-      setFilteredGames([]);
-    }
-    setLoading(false);
-  };
-
   const applyFilters = (
     games: Game[],
     {
@@ -80,6 +50,20 @@ const FieldGameList: React.FC<Props> = ({ fieldId }) => {
     setFilteredGames(filtered);
   };
 
+  useEffect(() => {
+    if (Array.isArray(games)) {
+      const sorted = [...games].sort(
+        (a, b) => new Date(a.endDate).getTime() - new Date(b.endDate).getTime(),
+      );
+      setAllGames(sorted);
+      applyFilters(sorted, filters);
+    } else {
+      console.error("Expected array, got:", games);
+      setAllGames([]);
+      setFilteredGames([]);
+    }
+  }, [games]);
+
   const handleFilterChange = (
     showAvailable: boolean,
     showPending: boolean,
@@ -104,10 +88,6 @@ const FieldGameList: React.FC<Props> = ({ fieldId }) => {
     (g) => new Date(g.endDate) < currentDate,
   ).length;
 
-  useEffect(() => {
-    fetchGames();
-  }, []);
-
   return (
     <div>
       <FieldGamesFilters
@@ -116,9 +96,7 @@ const FieldGameList: React.FC<Props> = ({ fieldId }) => {
         pendingCount={pendingCount}
         finishedCount={finishedCount}
       />
-      {loading ? (
-        <p>טוען משחקים...</p>
-      ) : filteredGames.length === 0 ? (
+      {filteredGames.length === 0 ? (
         <p>אין משחקים להצגה</p>
       ) : (
         <div>

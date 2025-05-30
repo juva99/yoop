@@ -4,11 +4,14 @@ import React from "react";
 import { GoCheckCircle } from "react-icons/go";
 import { GoXCircle } from "react-icons/go";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+
 type Props = {
   gameId: string;
 };
 
 const ApproveRejectGame: React.FC<Props> = ({ gameId }) => {
+  const router = useRouter();
   const onAction = async (action: "decline" | "approve") => {
     const method = action === "approve" ? "PATCH" : "DELETE";
     const response = await authFetch(
@@ -24,6 +27,7 @@ const ApproveRejectGame: React.FC<Props> = ({ gameId }) => {
     if (!response.ok) {
       toast.error("אירעה שגיאה");
     } else {
+      router.refresh();
       if (action === "approve") {
         toast.success("המשחק אושר");
       } else {

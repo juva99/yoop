@@ -1,10 +1,7 @@
 "use client";
 import { Game } from "@/app/types/Game";
-import React, { useState } from "react";
+import React from "react";
 import GameCard from "../GameCard";
-import ExpandableGameCard from "../ExpandableGameCard";
-import { Card } from "../ui/card";
-
 type Props = {
   games: Game[];
 };

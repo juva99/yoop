@@ -1,6 +1,7 @@
 import { authFetch } from "@/lib/authFetch";
 import { Field } from "@/app/types/Field";
 import FieldGameList from "@/components/gameManager/futureGames/FieldGameList";
+import { Game } from "@/app/types/Game";
 
 type Props = {
   params: Promise<{
@@ -20,13 +21,24 @@ const Page: React.FC<Props> = async ({ params }) => {
       },
     },
   );
-
   const field: Field = await fieldResponse.json();
+
+  const res = await authFetch(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/${field_id}/allGames`,
+    {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    },
+  );
+  let games: Game[] = [];
+  if (res.ok) {
+    games = await res.json();
+  }
 
   return (
     <div className="flex flex-col gap-y-3 px-5 py-10">
       <h1>משחקים ב{field.fieldName}</h1>
-      <FieldGameList fieldId={field.fieldId} />
+      <FieldGameList games={games} />
     </div>
   );
 };

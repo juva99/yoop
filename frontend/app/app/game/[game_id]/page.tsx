@@ -17,7 +17,6 @@ import JoinGameButton from "@/components/JoinGameButton";
 import { ParticipationStatus } from "@/app/enums/participation-status.enum";
 import LeaveGameButton from "@/components/LeaveGameButton";
 import { authFetch } from "@/lib/authFetch";
-import { Card } from "@/components/ui/card";
 
 async function getGame(gameId: string): Promise<Game | null> {
   try {

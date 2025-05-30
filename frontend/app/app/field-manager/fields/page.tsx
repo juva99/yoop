@@ -30,7 +30,7 @@ const FieldsPage = async () => {
   }
 
   return (
-    <div className="bg-[url('/search-friends-background.png')] bg-cover bg-top bg-no-repeat px-7 py-10">
+    <div className="h-full bg-[url('/search-friends-background.png')] bg-cover bg-top bg-no-repeat px-7 py-10">
       <Fields fields={fields} />
     </div>
   );
