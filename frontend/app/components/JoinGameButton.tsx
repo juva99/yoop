@@ -2,6 +2,8 @@
 
 import { joinGame } from "@/lib/actions";
 import { useRouter } from "next/navigation";
+import { Button } from "./ui/button";
+import { toast } from "sonner";
 
 interface Props {
   gameId: string;
@@ -11,16 +13,22 @@ export default function JoinGameButton({ gameId }: Props) {
   const router = useRouter();
 
   async function clickedJoin(gameId: string) {
-    await joinGame(gameId);
+    let res = await joinGame(gameId);
+    if (!res.ok) {
+      toast.error(res.message || "אירעה שגיאה");
+      return;
+    }
+    toast.success("הצטרפת למשחק בהצלחה");
     router.refresh();
   }
 
   return (
-    <button
+    <Button
+      variant="submit"
       onClick={() => clickedJoin(gameId)}
-      className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+      className="w-40 bg-blue-500"
     >
       הצטרף למשחק
-    </button>
+    </Button>
   );
 }

@@ -13,13 +13,13 @@ export default function LeaveGameButton({ gameId }: Props) {
   const router = useRouter();
 
   async function clickedLeave(gameId: string) {
-    try {
-      await leaveGame(gameId);
-      toast.success("יצאת מהמשחק בהצלחה");
-      router.refresh();
-    } catch (error) {
-      toast.error((error as Error).message || "אירעה שגיאה");
+    let res = await leaveGame(gameId);
+    if (!res.ok) {
+      toast.error(res.message || "אירעה שגיאה");
+      return;
     }
+    toast.success("יצאת מהמשחק בהצלחה");
+    router.refresh();
   }
 
   return (
