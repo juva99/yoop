@@ -4,8 +4,6 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { getSession } from "@/lib/session";
-import { redirect } from "next/navigation";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -31,11 +29,6 @@ export default async function ManagerLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getSession();
-  if (!session?.user?.uid) {
-    redirect("/auth/login");
-  }
-
   return (
     <SidebarProvider>
       <SidebarTrigger className="fixed top-0 right-0 z-50 h-10 w-10 rounded-none rounded-bl-3xl bg-white shadow" />
