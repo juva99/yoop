@@ -310,4 +310,15 @@ export class GamesService {
 
     await this.gameRepository.remove(game);
   }
+
+  async setGameCreator(gameId: string, userId: string): Promise<Game> {
+    const game = await this.findById(gameId);
+    const newCreator = (
+      await this.gameParticipantService.findGameParticipant(gameId, userId)
+    ).user;
+
+    game.creator = newCreator;
+
+    return await this.gameRepository.save(game);
+  }
 }

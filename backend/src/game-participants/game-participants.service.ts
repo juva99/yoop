@@ -143,4 +143,22 @@ export class GameParticipantsService {
 
     return newParticipation;
   }
+
+  async findGameParticipant(
+    gameId: string,
+    userId: string,
+  ): Promise<GameParticipant> {
+    const gameParticipant = await this.gameParticipantRepository.findOne({
+      where: {
+        game: { gameId: gameId },
+        user: { uid: userId },
+      },
+    });
+
+    if (!gameParticipant) {
+      throw new ConflictException('השחקן אינו משתתף במשחק הזה');
+    }
+
+    return gameParticipant;
+  }
 }
