@@ -70,11 +70,11 @@ const CreateFieldForm = () => {
 
     const allResponses = await Promise.all(
       fieldsToCreate.map(async (field, idx) => {
-        const name = field.fieldNameOptional?.trim()
-          ? `${data.fieldName} - ${field.fieldNameOptional.trim()}`
-          : data.hasMultipleFields
-            ? `${data.fieldName} ${idx + 1}` //adding serial num to name if undefined
-            : data.fieldName;
+        const name = !data.hasMultipleFields
+          ? data.fieldName
+          : field.fieldNameOptional?.trim()
+            ? `${data.fieldName} - ${field.fieldNameOptional.trim()}`
+            : `${data.fieldName} ${idx + 1}`; //adding serial num to name if undefined
 
         const payload = {
           fieldName: name,
