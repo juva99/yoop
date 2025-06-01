@@ -66,11 +66,12 @@ const CreateFieldForm = () => {
   const onSubmit = async (data: FormSchema) => {
     if (data.hasMultipleFields) {
       const allResponses = await Promise.all(
-        data.fields.map(async (field) => {
-          const name =
-            field.fieldNameOptional && field.fieldNameOptional.trim() !== ""
+        data.fields.map(async (field, idx) => {
+          const name = field.fieldNameOptional
+            ? field.fieldNameOptional.trim() !== ""
               ? `${data.fieldName} - ${field.fieldNameOptional.trim()}`
-              : data.fieldName;
+              : data.fieldName + " " + idx
+            : data.fieldName;
 
           const payload = {
             fieldName: name,
