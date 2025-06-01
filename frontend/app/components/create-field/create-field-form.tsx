@@ -25,7 +25,6 @@ import GameTypeOption from "./game-type-option";
 import { Combobox } from "../ui/combobox";
 import { Map, Marker } from "pigeon-maps";
 import { Switch } from "../ui/switch";
-import { Card } from "../ui/card";
 import { authFetch } from "@/lib/authFetch";
 import { toast } from "sonner";
 
@@ -64,81 +63,49 @@ const CreateFieldForm = () => {
     control: form.control,
   });
   const onSubmit = async (data: FormSchema) => {
-    if (data.hasMultipleFields) {
-      const allResponses = await Promise.all(
-        data.fields.map(async (field, idx) => {
-          const name = field.fieldNameOptional
-            ? field.fieldNameOptional.trim() !== ""
-              ? `${data.fieldName} - ${field.fieldNameOptional.trim()}`
-              : data.fieldName + " " + idx
+    //adapt data to single and multiple fields
+    const fieldsToCreate = data.hasMultipleFields
+      ? data.fields
+      : [{ gameType: data.fieldInfo.gameType, fieldNameOptional: null }];
+
+    const allResponses = await Promise.all(
+      fieldsToCreate.map(async (field, idx) => {
+        const name = field.fieldNameOptional?.trim()
+          ? `${data.fieldName} - ${field.fieldNameOptional.trim()}`
+          : data.hasMultipleFields
+            ? `${data.fieldName} ${idx + 1}` //adding serial num to name if undefined
             : data.fieldName;
 
-          const payload = {
-            fieldName: name,
-            fieldLat: data.fieldLat,
-            fieldLng: data.fieldLng,
-            city: data.city,
-            fieldAddress: data.fieldAddress,
-            gameTypes: field.gameType,
-            isManaged: true,
-          };
+        const payload = {
+          fieldName: name,
+          fieldLat: data.fieldLat,
+          fieldLng: data.fieldLng,
+          city: data.city,
+          fieldAddress: data.fieldAddress,
+          gameTypes: field.gameType,
+          isManaged: true,
+        };
 
-          const res = await authFetch(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/fields`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(payload),
-            },
-          );
-
-          return res;
-        }),
-      );
-
-      const failed = allResponses.filter((r) => !r.ok);
-      if (failed.length > 0) {
-        toast.error(
-          `נכשלו ${failed.length} מתוך ${allResponses.length} מגרשים`,
+        const res = await authFetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/fields`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          },
         );
-      } else {
-        toast.success("כל המגרשים נוצרו בהצלחה");
-      }
 
-      return;
-    }
-
-    //single field
-    const payload = {
-      fieldName: data.fieldName,
-      fieldLat: data.fieldLat,
-      fieldLng: data.fieldLng,
-      city: data.city,
-      fieldAddress: data.fieldAddress,
-      gameTypes: data.fieldInfo.gameType,
-      isManaged: true,
-    };
-
-    const response = await authFetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/fields`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      },
+        return res;
+      }),
     );
 
-    if (!response.ok) {
-      toast.error("שגיאה ביצירת המגרש");
+    const failed = allResponses.filter((r: Response) => !r.ok);
+    if (failed.length > 0) {
+      toast.error(`נכשלו ${failed.length} מתוך ${allResponses.length} מגרשים`);
     } else {
-      toast.success("המגרש נוצר בהצלחה");
+      toast.success("כל המגרשים נוצרו בהצלחה");
     }
   };
-
   // Update map center when selectedCity changes
   useEffect(() => {
     if (selectedCity && cityCoordinates[selectedCity as City]) {
