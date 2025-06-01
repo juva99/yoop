@@ -156,7 +156,7 @@ export class GameParticipantsService {
     });
 
     if (!gameParticipant) {
-      throw new ConflictException('השחקן אינו משתתף במשחק הזה');
+      throw new NotFoundException('השחקן אינו משתתף במשחק הזה');
     }
 
     return gameParticipant;

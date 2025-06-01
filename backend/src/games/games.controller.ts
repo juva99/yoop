@@ -155,7 +155,12 @@ export class GamesController {
   async setGameCreator(
     @Param('gameId') gameId: string,
     @Param('userId') userId: string,
+    @GetUser() requestingUser: User,
   ): Promise<Game> {
-    return await this.gameService.setGameCreator(gameId, userId);
+    return await this.gameService.setGameCreator(
+      gameId,
+      userId,
+      requestingUser,
+    );
   }
 }

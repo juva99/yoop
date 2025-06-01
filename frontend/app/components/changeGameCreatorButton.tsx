@@ -14,7 +14,7 @@ export default function ChangeGameCreatorButton(prop: Props) {
   const router = useRouter();
 
   async function clickChange({ gameId, uid }: Props) {
-    await setGameCreator(gameId, uid,);
+    await setGameCreator(gameId, uid);
     router.refresh();
   }
 
