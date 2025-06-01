@@ -25,7 +25,7 @@ export const joinGame = async (gameId: string) => {
     console.error("Failed to join game");
     return { ok: false, message: "Failed to join game" };
   }
-  return { ok: true, message: "Successfully joined game"};
+  return { ok: true, message: "Successfully joined game" };
 };
 
 export const leaveGame = async (gameId: string) => {
@@ -43,7 +43,7 @@ export const leaveGame = async (gameId: string) => {
     }
     return { ok: false, message: errorMessage };
   }
-  return { ok: true, message: "Successfully left game"};
+  return { ok: true, message: "Successfully left game" };
 };
 
 export const changeParticipationStatus = async (
@@ -82,4 +82,17 @@ export const getMyGames = async (): Promise<Game[]> => {
   const games = await response.json();
 
   return games;
+};
+
+export const setGameCreator = async (gameId: string, userId: string) => {
+  const res = await authFetch(
+    `${BACKEND_URL}/games/${gameId}/setGameCreator/${userId}`,
+    {
+      method: "PATCH",
+    },
+  );
+
+  if (!res.ok) {
+    console.error("שינוי מנהל משחק נכשל");
+  }
 };

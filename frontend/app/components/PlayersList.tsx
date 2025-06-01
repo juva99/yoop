@@ -11,6 +11,7 @@ import { ParticipationStatus } from "@/app/enums/participation-status.enum";
 import { GameParticipant } from "@/app/types/GameParticipant";
 
 import ChangeParticipationButton from "./changeParticipationButton";
+import ChangeGameCreatorButton from "./changeGameCreatorButton";
 
 interface Props {
   gameId: string;
@@ -64,13 +65,20 @@ const PlayersList: React.FC<Props> = ({
                 {player.uid === creatorUID ? (
                   <PiCrownSimpleBold className="" />
                 ) : (
-                  !isCurrentUser &&
+                  isCreator &&
+                  player.uid !== creatorUID &&
                   status === ParticipationStatus.APPROVED && (
-                    <img
-                      src="/add_creator.png"
-                      alt="Crown Plus Icon"
-                      width={22}
-                      height={22}
+                    <ChangeGameCreatorButton
+                      gameId={gameId}
+                      uid={player.uid}
+                      icon={
+                        <img
+                          src="/add_creator.png"
+                          alt="Crown Plus Icon"
+                          width={22}
+                          height={22}
+                        />
+                      }
                     />
                   )
                 )}
