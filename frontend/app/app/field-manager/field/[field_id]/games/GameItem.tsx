@@ -9,10 +9,9 @@ import AproveRejectGame from "./AproveRejectGame";
 
 interface Props {
   game: Game;
-  onStatusChange: () => void;
 }
 
-const GameItem: React.FC<Props> = ({ game, onStatusChange }) => {
+const GameItem: React.FC<Props> = ({ game }) => {
   const formatDate = (date: Date) =>
     new Date(date).toLocaleDateString("he-IL", {
       day: "2-digit",
@@ -69,10 +68,7 @@ const GameItem: React.FC<Props> = ({ game, onStatusChange }) => {
       </div>
       <div className="flex items-center gap-2">
         {game.status === GameStatus.PENDING && (
-          <AproveRejectGame
-            gameId={game.gameId}
-            onStatusChange={() => onStatusChange()}
-          />
+          <AproveRejectGame gameId={game.gameId} />
         )}
       </div>
     </div>

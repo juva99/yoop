@@ -60,12 +60,6 @@ export default function CreateGameForm() {
   async function onSubmit(data: z.infer<typeof FormDataSchema>) {
     setIsSubmitting(true);
 
-    const session = await getSession();
-    const token = session?.accessToken;
-    if (!token) {
-      throw new Error("Authentication token not found.");
-    }
-
     const year = data.date.getFullYear();
     const month = data.date.getMonth();
     const day = data.date.getDate();
@@ -82,7 +76,6 @@ export default function CreateGameForm() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           gameType: data.gameType,
@@ -137,16 +130,13 @@ export default function CreateGameForm() {
   const CurrentStepComponent = steps[currentStep]?.component;
 
   return (
-    <div className="pt-5">
+    <Card>
       {currentStep !== steps.length && <h1>יצירת משחק חדש</h1>}
       <Form {...form}>
         <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
           {CurrentStepComponent && (
             <motion.div
               key={currentStep}
-              initial={{ x: delta >= 0 ? "50%" : "-50%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
               className="flex flex-col justify-center space-y-5"
             >
               <CurrentStepComponent form={form as any} />
@@ -163,14 +153,14 @@ export default function CreateGameForm() {
       </Form>
 
       {/* Navigation */}
-      <div className="mt-12 flex justify-between py-12">
+      <div className="flex justify-between py-12">
         {!isSubmitting && (
-          <button type="button" onClick={prev} disabled={currentStep === 0}>
+          <Button type="button" onClick={prev} disabled={currentStep === 0}>
             חזור
-          </button>
+          </Button>
         )}
         {currentStep < steps.length && (
-          <Button type="button" onClick={next}>
+          <Button type="button" className="bg-title" onClick={next}>
             {currentStep === steps.length - 1 ? (
               <span>סיים</span>
             ) : (
@@ -179,6 +169,6 @@ export default function CreateGameForm() {
           </Button>
         )}
       </div>
-    </div>
+    </Card>
   );
 }

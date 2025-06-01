@@ -25,10 +25,7 @@ const Login = () => {
           </Link>
         </div>
         או{" "}
-        <Link
-          href="/field-manager/contact"
-          className="text-title font-medium underline"
-        >
+        <Link href="/contact" className="text-title font-medium underline">
           כמנהל מגרש{" "}
         </Link>
       </div>

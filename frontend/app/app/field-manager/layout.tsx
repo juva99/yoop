@@ -4,8 +4,6 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { getSession } from "@/lib/session";
-import { redirect } from "next/navigation";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -26,29 +24,26 @@ const SidebarLink = ({
   </Link>
 );
 
-export default async function AdminLayout({
+export default async function ManagerLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getSession();
-  if (!session?.user?.uid) {
-    redirect("/auth/login");
-  }
-
   return (
     <SidebarProvider>
       <SidebarTrigger className="fixed top-0 right-0 z-50 h-10 w-10 rounded-none rounded-bl-3xl bg-white shadow" />
       <div dir="rtl" className="relative flex min-h-screen w-full bg-white">
         <Sidebar side="right" className="border-l bg-gray-100 shadow-md">
           <div className="p-4">
-            <h2 className="mb-6 text-right text-lg font-bold">לוח ניהול</h2>
+            <h2 className="mb-6 text-right text-lg font-bold">תפריט</h2>
             <nav className="space-y-2 text-right">
-              <SidebarLink href="/admin">דף הבית</SidebarLink>
-              <SidebarLink href="/admin/requests">
-                בקשות מנהלי מגרשים
+              <SidebarLink href="/field-manager">דף הבית</SidebarLink>
+              <SidebarLink href="/field-manager/fields">
+                המגרשים שלי{" "}
               </SidebarLink>
-              <SidebarLink href="/admin/users">ניהול משתמשים</SidebarLink>
+              <SidebarLink href="/field-manager/field/create">
+                הוספת מגרש
+              </SidebarLink>
               <SidebarLink href="/api/auth/signout">התנתק</SidebarLink>
             </nav>
           </div>

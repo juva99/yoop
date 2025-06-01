@@ -1,22 +1,23 @@
 "use client";
-import { GameStatus } from "@/app/enums/game-status.enum";
-import { Button } from "@/components/ui/button";
 import { authFetch } from "@/lib/authFetch";
 import React from "react";
 import { GoCheckCircle } from "react-icons/go";
 import { GoXCircle } from "react-icons/go";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 type Props = {
   gameId: string;
-  onStatusChange: () => void;
 };
 
-const ApproveRejectGame: React.FC<Props> = ({ gameId, onStatusChange }) => {
-  const approve = async () => {
+const ApproveRejectGame: React.FC<Props> = ({ gameId }) => {
+  const router = useRouter();
+  const onAction = async (action: "decline" | "approve") => {
+    const method = action === "approve" ? "PATCH" : "DELETE";
     const response = await authFetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/${gameId}/approve`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/${gameId}/${action}`,
       {
-        method: "PATCH",
+        method,
         headers: {
           "Content-Type": "application/json",
         },
@@ -24,40 +25,25 @@ const ApproveRejectGame: React.FC<Props> = ({ gameId, onStatusChange }) => {
     );
 
     if (!response.ok) {
-      console.error("Failed to approve the game");
+      toast.error("אירעה שגיאה");
+    } else {
+      router.refresh();
+      if (action === "approve") {
+        toast.success("המשחק אושר");
+      } else {
+        toast.error("בקשת המשחק נדחתה");
+      }
     }
-    onStatusChange();
   };
-
-  // const onAction = async (action: GameStatus) => {
-  //   const response = await authFetch(
-  //     `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/${gameId}/${action}`,
-  //     {
-  //       method: "PATCH",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     },
-  //   );
-
-  //   if (!response.ok) {
-  //     console.error("Failed to approve the game");
-  //   }
-  //   onStatusChange();
-  // };
 
   return (
     <div className="flex gap-2">
       <GoCheckCircle
         color="#25D366"
         size={22}
-        // onClick={() => onAction(GameStatus.AVAILABLE)}
+        onClick={() => onAction("approve")}
       />
-      <GoXCircle
-        color="red"
-        size={22}
-        // onClick={() => onAction(GameStatus.REJECTED)}
-      />
+      <GoXCircle color="red" size={22} onClick={() => onAction("decline")} />
     </div>
   );
 };
