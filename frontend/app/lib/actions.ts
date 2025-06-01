@@ -94,5 +94,8 @@ export const setGameCreator = async (gameId: string, userId: string) => {
 
   if (!res.ok) {
     console.error("שינוי מנהל משחק נכשל");
+    return { ok: false, message: "שינוי מנהל משחק נכשל" };
   }
+
+  return { ok: true, message: "המנהל שונה בהצלחה" };
 };
