@@ -13,13 +13,21 @@ export default function JoinGameButton({ gameId }: Props) {
   const router = useRouter();
 
   async function clickedJoin(gameId: string) {
-    await joinGame(gameId);
-    toast.success("הצטרפת לרשימת ההמתנה");
+    let res = await joinGame(gameId);
+    if (!res.ok) {
+      toast.error(res.message || "אירעה שגיאה");
+      return;
+    }
+    toast.success("הצטרפת למשחק בהצלחה");
     router.refresh();
   }
 
   return (
-    <Button onClick={() => clickedJoin(gameId)} variant={"submit"}>
+    <Button
+      variant="submit"
+      onClick={() => clickedJoin(gameId)}
+      className="w-40 bg-blue-500"
+    >
       הצטרף למשחק
     </Button>
   );
