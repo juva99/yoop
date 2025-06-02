@@ -19,9 +19,9 @@ export default function ChangeGameCreatorButton(prop: Props) {
 
     if (!res.ok) {
       toast.error(res.message || "אירעה שגיאה");
+    } else {
+      toast.success(res.message);
     }
-    toast.success(res.message);
-
     router.refresh();
   }
 
