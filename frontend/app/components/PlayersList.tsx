@@ -6,13 +6,14 @@ import { FaWhatsapp } from "react-icons/fa";
 import { CiCircleRemove } from "react-icons/ci";
 import { CiCircleCheck } from "react-icons/ci";
 import { PiCrownSimpleBold } from "react-icons/pi";
-
+import { useRouter } from "next/navigation";
 import { ParticipationStatus } from "@/app/enums/participation-status.enum";
 import { GameParticipant } from "@/app/types/GameParticipant";
 
 import ChangeParticipationButton from "./changeParticipationButton";
 import ChangeCreatorDialog from "@/app/game/[game_id]/ChangeCreatorDialog";
 import { authFetch } from "@/lib/authFetch";
+import { toast } from "sonner";
 
 interface Props {
   gameId: string;
@@ -31,6 +32,7 @@ const PlayersList: React.FC<Props> = ({
   deleteEnable,
   status,
 }) => {
+  const router = useRouter();
   const formatPhoneNumber = (phoneNum: string) => {
     return `972${phoneNum.substring(1)}`;
   };
@@ -58,8 +60,10 @@ const PlayersList: React.FC<Props> = ({
       if (!res.ok) throw new Error("Failed to change creator");
     } catch (err) {
       console.error(err);
-      alert("שגיאה בהעברת בעלות");
+      toast.error("שגיאה בהגדרת השחקן כמנהל");
     }
+    router.refresh();
+    toast.success("מנהל המשחק הוחלף בהצלחה");
   };
 
   const isCreator = creatorUID === currUserUID;
