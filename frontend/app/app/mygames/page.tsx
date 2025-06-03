@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import ExpandableGameCard from "@/components/ExpandableGameCard";
 import { getMyGames } from "@/lib/actions";
 import { getSession } from "@/lib/session";
 import { redirect } from "next/navigation";

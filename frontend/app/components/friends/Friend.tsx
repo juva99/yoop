@@ -62,7 +62,7 @@ const Friend: React.FC<Props> = ({ friend, action, onClick }) => {
           ))}
       </div>
       {action === "remove" && (
-        <div>
+        <div onClick={onClick}>
           <FaUserXmark size="20px" />
         </div>
       )}
