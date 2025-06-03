@@ -12,6 +12,7 @@ import { GameParticipant } from "@/app/types/GameParticipant";
 
 import ChangeParticipationButton from "./changeParticipationButton";
 import ChangeCreatorDialog from "@/app/game/[game_id]/ChangeCreatorDialog";
+import { authFetch } from "@/lib/authFetch";
 
 interface Props {
   gameId: string;
@@ -43,8 +44,8 @@ const PlayersList: React.FC<Props> = ({
 
   const changeCreator = async (newCreatorUID: string) => {
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/${gameId}/set-creator`,
+      const res = await authFetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/${gameId}/setGameCreator/${newCreatorUID}`,
         {
           method: "PATCH",
           headers: {
@@ -55,9 +56,6 @@ const PlayersList: React.FC<Props> = ({
       );
 
       if (!res.ok) throw new Error("Failed to change creator");
-
-      // Optional: show toast or refresh state
-      window.location.reload(); // or router.refresh()
     } catch (err) {
       console.error(err);
       alert("שגיאה בהעברת בעלות");
@@ -68,6 +66,7 @@ const PlayersList: React.FC<Props> = ({
   if (!filteredParticipants || filteredParticipants.length === 0) {
     return <span className="text-sm text-gray-500">אין שחקנים לתצוגה</span>;
   }
+
   return (
     <div className="players flex flex-col items-start gap-2">
       <div className="flex w-full flex-col space-y-1">

@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useMemo } from "react";
 import { useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import { Game } from "@/app/types/Game";
@@ -11,6 +11,16 @@ type Props = {
 
 const FutureGames: React.FC<Props> = ({ games }) => {
   const [currentGame, setCurrentGame] = useState(0);
+
+  const futureGames = useMemo(() => {
+    const now = new Date();
+    return games
+      .filter((game) => new Date(game.startDate) > now)
+      .sort(
+        (a, b) =>
+          new Date(a.startDate).getTime() - new Date(b.startDate).getTime(),
+      );
+  }, [games]);
 
   const handlers = useSwipeable({
     onSwipedDown: () => {
@@ -54,7 +64,7 @@ const FutureGames: React.FC<Props> = ({ games }) => {
             className="transition-transform duration-300"
             style={{ transform: `translateY(-${currentGame * 100}px)` }}
           >
-            {games.slice(0, 5).map((game, i) => (
+            {futureGames.slice(0, 5).map((game, i) => (
               <div key={i} className="flex h-[100px] w-full items-center">
                 <Link href={`/game/${game.gameId}`}>
                   <GameCardContent game={game} />
@@ -64,7 +74,7 @@ const FutureGames: React.FC<Props> = ({ games }) => {
           </div>
           <div className="bullets-container left-0 flex h-[100px] items-center">
             <ul className="space-y-2">
-              {games.slice(0, 5).map((game, i) => (
+              {futureGames.slice(0, 5).map((game, i) => (
                 <li key={i}>
                   <div
                     className={`h-3 w-3 cursor-pointer rounded-full ${currentGame == i ? "bg-black" : "bg-gray-200"}`}
