@@ -150,4 +150,17 @@ export class GamesController {
   async deleteGame(@Param('gameId') gameId: string): Promise<void> {
     await this.gameService.deleteOne(gameId);
   }
+
+  @Patch('/:gameId/setGameCreator/:userId')
+  async setGameCreator(
+    @Param('gameId') gameId: string,
+    @Param('userId') userId: string,
+    @GetUser() requestingUser: User,
+  ): Promise<Game> {
+    return await this.gameService.setGameCreator(
+      gameId,
+      userId,
+      requestingUser,
+    );
+  }
 }
