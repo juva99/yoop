@@ -11,6 +11,7 @@ import { ParticipationStatus } from "@/app/enums/participation-status.enum";
 import { GameParticipant } from "@/app/types/GameParticipant";
 
 import ChangeParticipationButton from "./changeParticipationButton";
+import ChangeCreatorDialog from "@/app/game/[game_id]/ChangeCreatorDialog";
 
 interface Props {
   gameId: string;
@@ -40,6 +41,29 @@ const PlayersList: React.FC<Props> = ({
       return 0;
     });
 
+  const changeCreator = async (newCreatorUID: string) => {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/${gameId}/set-creator`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ newCreatorUID }),
+        },
+      );
+
+      if (!res.ok) throw new Error("Failed to change creator");
+
+      // Optional: show toast or refresh state
+      window.location.reload(); // or router.refresh()
+    } catch (err) {
+      console.error(err);
+      alert("שגיאה בהעברת בעלות");
+    }
+  };
+
   const isCreator = creatorUID === currUserUID;
   if (!filteredParticipants || filteredParticipants.length === 0) {
     return <span className="text-sm text-gray-500">אין שחקנים לתצוגה</span>;
@@ -66,11 +90,8 @@ const PlayersList: React.FC<Props> = ({
                 ) : (
                   !isCurrentUser &&
                   status === ParticipationStatus.APPROVED && (
-                    <img
-                      src="/add_creator.png"
-                      alt="Crown Plus Icon"
-                      width={22}
-                      height={22}
+                    <ChangeCreatorDialog
+                      onConfirm={() => changeCreator(player.uid)}
                     />
                   )
                 )}

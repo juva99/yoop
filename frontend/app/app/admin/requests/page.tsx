@@ -34,7 +34,7 @@ const page = async () => {
   const requests = await getContactRequests();
 
   return (
-    <div className="h-[100vh] bg-[url('/search-friends-background.png')] bg-top bg-no-repeat p-3">
+    <div className="h-[100vh] bg-[url('/search-friends-background.png')] bg-top bg-no-repeat px-5 py-12">
       <Card className="scrollbar-none max-h-full overflow-y-scroll p-4">
         <h1>בקשות מנהלי מגרשים</h1>{" "}
         <div className="">
