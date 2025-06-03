@@ -88,7 +88,8 @@ const PlayersList: React.FC<Props> = ({
                 {player.uid === creatorUID ? (
                   <PiCrownSimpleBold className="" />
                 ) : (
-                  !isCurrentUser &&
+                  isCreator &&
+                  player.uid !== creatorUID &&
                   status === ParticipationStatus.APPROVED && (
                     <ChangeCreatorDialog
                       onConfirm={() => changeCreator(player.uid)}

@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -309,5 +310,24 @@ export class GamesService {
     }
 
     await this.gameRepository.remove(game);
+  }
+
+  async setGameCreator(
+    gameId: string,
+    userId: string,
+    requestingUser: User,
+  ): Promise<Game> {
+    const game = await this.findById(gameId);
+
+    if (game.creator.uid !== requestingUser.uid) {
+      throw new ForbiddenException('אינך רשאי לערוך מנהל משחק');
+    }
+    const newCreator = (
+      await this.gameParticipantService.findGameParticipant(gameId, userId)
+    ).user;
+
+    game.creator = newCreator;
+
+    return await this.gameRepository.save(game);
   }
 }
