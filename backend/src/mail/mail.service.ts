@@ -91,7 +91,7 @@ export class MailService {
     }
   }
 
-    async sendPasswordReset(to: string, token: string, name?: string) {
+  async sendPasswordReset(to: string, token: string, name?: string) {
     const fromEmail = process.env.MAIL_FROM;
     const fromName = process.env.MAIL_FROM_NAME;
     try {
@@ -113,7 +113,8 @@ export class MailService {
               Subject: 'איפוס סיסמא לאפליקציית Yoop',
               HTMLPart: `<div dir="rtl" style="text-align:right;font-family:Arial,Helvetica,sans-serif;">
               <h3> שלום ${name || ''},<h3>
-                            <p>איפוס הסיסמא שלך יתבצע בקישור הבא:${process.env.FRONTEND_URL}auth/reset-password/?resetToken=${token}</p>
+                            <p>איפוס הסיסמא שלך יתבצע בקישור הבא:</p>
+                            <p>${process.env.FRONTEND_URL}/auth/reset-password/?resetToken=${token}</p>
                             <p> הקישור תקף לשעה בלבד. אם לא ביקשת לאפס את סיסמתך אל תבצע כל פעולה וראה מייל זה כמבוטל.</p></div>`,
             },
           ],
@@ -123,7 +124,7 @@ export class MailService {
       console.error('Mailjet error:', error.response?.body || error);
     }
   }
-    async sendManagerInvite(to: string, token: string, name?: string) {
+  async sendManagerInvite(to: string, token: string, name?: string) {
     const fromEmail = process.env.MAIL_FROM;
     const fromName = process.env.MAIL_FROM_NAME;
     try {

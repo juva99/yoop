@@ -32,7 +32,12 @@ const ForgotPasswordForm = () => {
       if (result?.error) {
         toast.error(result.message || "שגיאה בשליחת בקשת איפוס סיסמה");
       } else {
-        toast.success("אם האימייל קיים במערכת, נשלח אליך קישור לאיפוס סיסמה");
+        toast.success(
+          <div className="flex flex-col">
+            <span>אם האימייל קיים במערכת, נשלח אליך קישור לאיפוס סיסמה.</span>
+            <span>מומלץ לבדוק בתיקיית הספאם.</span>
+          </div>,
+        );
       }
     } catch (error) {
       toast.error("שגיאה בשליחת בקשת איפוס סיסמה");
