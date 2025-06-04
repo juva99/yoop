@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import FieldGamesFilters from "./FieldGamesFilters";
 import GameItem from "@/app/field-manager/field/[field_id]/games/GameItem";
 import { Game } from "@/app/types/Game";
-import { authFetch } from "@/lib/authFetch";
 import { GameStatus } from "@/app/enums/game-status.enum";
 
 type Props = {
@@ -79,10 +78,11 @@ const FieldGameList: React.FC<Props> = ({ games }) => {
   };
 
   const availableCount = allGames.filter(
-    (g) => g.status === GameStatus.APPROVED,
+    (g) =>
+      g.status === GameStatus.APPROVED && new Date(g.endDate) > currentDate,
   ).length;
   const pendingCount = allGames.filter(
-    (g) => g.status === GameStatus.PENDING,
+    (g) => g.status === GameStatus.PENDING && new Date(g.endDate) > currentDate,
   ).length;
   const finishedCount = allGames.filter(
     (g) => new Date(g.endDate) < currentDate,
