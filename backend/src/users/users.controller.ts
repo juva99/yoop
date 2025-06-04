@@ -30,6 +30,12 @@ export class UsersController {
     return await this.userService.findById(id);
   }
 
+  @Public()
+  @Get('/byEmail/:email')
+  async getByEmail(@Param('email') email: string): Promise<User | null> {
+    return await this.userService.findByEmail(email);
+  }
+
   @Get('search_friends/:name')
   async getByName(
     @Param('name') name: string,
@@ -59,8 +65,7 @@ export class UsersController {
 
   @Public()
   @Post(`reset-password/:token`)
-  async resetPass(@Param('token') token: string, @Body() body){
+  async resetPass(@Param('token') token: string, @Body() body) {
     return this.userService.changePassword(token, body.password);
-  } 
-
+  }
 }

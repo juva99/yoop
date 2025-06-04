@@ -35,31 +35,57 @@ const ContactForm: React.FC<Props> = ({}) => {
       message: "",
     },
   });
-
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/manager-signup/create`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-      },
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      toast.error(
-        errorData.message ||
-          "אירעה שגיאה בשליחת הפרטים, אנא נסה שוב מאוחר יותר.",
+    try {
+      const emailExistResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/byEmail/${values.email}`,
       );
-      return;
+
+      let emailExist = null;
+
+      const contentType = emailExistResponse.headers.get("content-type");
+      if (emailExistResponse.ok && contentType?.includes("application/json")) {
+        emailExist = await emailExistResponse.json();
+      }
+
+      if (emailExist) {
+        toast.error("המייל כבר קיים במערכת, נסה עם מייל אחר");
+        return;
+      }
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/manager-signup/create`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values),
+        },
+      );
+
+      if (!response.ok) {
+        let errorData = { message: "" };
+        try {
+          errorData = await response.json();
+        } catch {
+          // במקרה שאין json – מדלגים
+        }
+        toast.error(
+          errorData.message ||
+            "אירעה שגיאה בשליחת הפרטים, אנא נסה שוב מאוחר יותר.",
+        );
+        return;
+      }
+
+      toast.success("הפרטים נשלחו בהצלחה, נחזור אלייך בהקדם!");
+      form.reset();
+    } catch (err) {
+      console.error("שגיאה כללית:", err);
+      toast.error("שגיאה בלתי צפויה, נסה שוב מאוחר יותר");
     }
-    const data = await response.json();
-    toast.success("הפרטים נשלחו בהצלחה, נחזור אלייך בהקדם!");
-    form.reset();
   }
+
   return (
     <AuthWrapper>
       {" "}
