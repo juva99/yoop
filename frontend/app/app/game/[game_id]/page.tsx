@@ -17,7 +17,7 @@ import JoinGameButton from "@/components/JoinGameButton";
 import { ParticipationStatus } from "@/app/enums/participation-status.enum";
 import LeaveGameButton from "@/components/LeaveGameButton";
 import { authFetch } from "@/lib/authFetch";
-import GoogleCalendarLink from "@/components/ui/google-calendar-link";
+import CalendarLink from "@/components/ui/calendar-link";
 
 async function getGame(gameId: string): Promise<Game | null> {
   try {
@@ -144,8 +144,8 @@ export default async function Page({
             <p>{price === null ? "חינם" : `${price} ₪`}</p>{" "}
           </div>
         )}
-        <div>
-          <GoogleCalendarLink game={game} />
+        <div className="flex items-center gap-2">
+          <CalendarLink game={game} />
         </div>
       </div>
       <div>

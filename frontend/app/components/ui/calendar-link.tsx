@@ -1,13 +1,14 @@
 import { GameType } from "@/app/enums/game-type.enum";
 import { Game } from "@/app/types/Game";
 import { FRONTEND_URL } from "@/lib/constants";
-import { CalendarEvent, google } from "calendar-link";
+import { CalendarEvent, ics } from "calendar-link";
+import { FaCalendarPlus } from "react-icons/fa6";
 
 type Props = {
   game: Game;
 };
 
-const GoogleCalendarLink: React.FC<Props> = ({ game }) => {
+const CalendarLink: React.FC<Props> = ({ game }) => {
   const {
     gameId,
     gameType,
@@ -31,15 +32,15 @@ ${FRONTEND_URL}/game/${gameId}`,
   };
 
   return (
-    <a href={google(calendarEvent)} target="_blank" rel="noopener noreferrer">
-      <img
-        src="/google-calendar.png"
-        alt="Google Calendar Icon"
-        width={35}
-        height={35}
-      />
+    <a
+      href={ics(calendarEvent)}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex"
+    >
+      <FaCalendarPlus />
     </a>
   );
 };
 
-export default GoogleCalendarLink;
+export default CalendarLink;
