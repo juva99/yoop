@@ -1,6 +1,5 @@
 import { GameType } from "@/app/enums/game-type.enum";
 import { Game } from "@/app/types/Game";
-import { FRONTEND_URL } from "@/lib/constants";
 import { CalendarEvent, ics } from "calendar-link";
 import { FaRegCalendarPlus } from "react-icons/fa6";
 
@@ -27,7 +26,7 @@ const CalendarLink: React.FC<Props> = ({ game }) => {
     start: startDate,
     end: endDate,
     description: `לעוד פרטים על המשחק, לחץ כאן:
-${FRONTEND_URL}/game/${gameId}`,
+${process.env.NEXT_PUBLIC_FRONTEND_URL}/game/${gameId}`,
     location: field.fieldAddress,
   };
 
