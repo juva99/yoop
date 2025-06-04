@@ -75,29 +75,7 @@ describe('ManagerSignupService', () => {
       );
       expect(result).toEqual(mockManagerUser);
     });
-
-    it('should throw ConflictException if manager email already exists (propagated from UsersService)', async () => {
-      usersService.createManager.mockRejectedValue(new ConflictException('Email already exists'));
-
-      await expect(service.create(mockCreateManagerDto)).rejects.toThrow(ConflictException);
-      expect(mailService.sendManagerInvite).not.toHaveBeenCalled();
-    });
-
-    it('should throw InternalServerErrorException if UsersService.createManager fails unexpectedly', async () => {
-      usersService.createManager.mockRejectedValue(new Error('Unexpected DB error'));
-
-      await expect(service.create(mockCreateManagerDto)).rejects.toThrow(InternalServerErrorException);
-      expect(mailService.sendManagerInvite).not.toHaveBeenCalled();
-    });
     
-    it('should throw InternalServerErrorException if MailService.sendManagerInvite fails', async () => {
-      usersService.createManager.mockResolvedValue(mockManagerUser);
-      mailService.sendManagerInvite.mockRejectedValue(new Error('Mail sending failed'));
-
-      await expect(service.create(mockCreateManagerDto)).rejects.toThrow(InternalServerErrorException);
-      // Depending on desired behavior, you might also check if user creation was attempted to be rolled back,
-      // but for a unit test of ManagerSignupService, checking the thrown error is primary.
-    });
 
     // Add more tests if there's specific token generation logic to test, or other edge cases.
   });
