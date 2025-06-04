@@ -31,7 +31,7 @@ import FilteredGames from "./filtered-games";
 import MapView from "../MapView";
 import { Game } from "@/app/types/Game";
 import { authFetch } from "@/lib/authFetch";
-import { Card } from "../ui/card";
+import { GameStatus } from "@/app/enums/game-status.enum";
 
 const cityOptions = Object.values(City).map((city) => ({
   label: city,
@@ -53,6 +53,8 @@ const getDateWithTime = (baseDate: Date, hourDecimal: number): Date => {
 
 const SearchGames = () => {
   const [filteredGames, setFilteredGames] = useState<Game[]>([]);
+  const [searchClicked, setSearchClicked] = useState<boolean>(false);
+  const [availablesCount, setAvailablesCount] = useState<number>(0);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -80,7 +82,6 @@ const SearchGames = () => {
         params.set("startDate", startDate.toISOString());
         params.set("endDate", endDate.toISOString());
       }
-
       const response = await authFetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/query?${params.toString()}`,
         {
@@ -89,7 +90,16 @@ const SearchGames = () => {
       );
 
       if (response.ok) {
+        setSearchClicked(true);
         const data = await response.json();
+        data.forEach((game: Game) => {
+          let availables = 0;
+          if (game.maxParticipants > game.gameParticipants.length) {
+            console.log("test");
+            availables++;
+          }
+          setAvailablesCount(availables);
+        });
         setFilteredGames(data);
       }
     } catch (error) {
@@ -247,6 +257,12 @@ const SearchGames = () => {
         />
       ) : (
         ""
+      )}
+      {searchClicked && (
+        <p className="text-sm font-semibold">
+          <span className="text-title">{filteredGames.length} נמצאו</span>{" "}
+          <span className="text-subtitle">{availablesCount} פנוים להרשמה</span>
+        </p>
       )}
       <FilteredGames games={filteredGames} />
     </div>

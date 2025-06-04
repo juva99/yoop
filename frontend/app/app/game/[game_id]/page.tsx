@@ -17,6 +17,7 @@ import JoinGameButton from "@/components/JoinGameButton";
 import { ParticipationStatus } from "@/app/enums/participation-status.enum";
 import LeaveGameButton from "@/components/LeaveGameButton";
 import { authFetch } from "@/lib/authFetch";
+import { GameStatus } from "@/app/enums/game-status.enum";
 
 async function getGame(gameId: string): Promise<Game | null> {
   try {
@@ -143,6 +144,19 @@ export default async function Page({
             <p>{price === null ? "חינם" : `${price} ₪`}</p>{" "}
           </div>
         )}
+        <span>
+          {status === GameStatus.APPROVED ? (
+            <div className="flex items-center gap-2">
+              <span>🟢</span>
+              <span>פתוח להרשמה</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <span>🟠</span>
+              <span>בהמתנה לאישור מנהל המגרש</span>
+            </div>
+          )}
+        </span>
       </div>
       <div>
         <h3>
