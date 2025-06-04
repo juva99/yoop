@@ -2,7 +2,7 @@ import { GameType } from "@/app/enums/game-type.enum";
 import { Game } from "@/app/types/Game";
 import { FRONTEND_URL } from "@/lib/constants";
 import { CalendarEvent, ics } from "calendar-link";
-import { FaCalendarPlus } from "react-icons/fa6";
+import { FaRegCalendarPlus } from "react-icons/fa6";
 
 type Props = {
   game: Game;
@@ -36,9 +36,12 @@ ${FRONTEND_URL}/game/${gameId}`,
       href={ics(calendarEvent)}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex"
+      className="flex items-center text-sm text-blue-500"
     >
-      <FaCalendarPlus />
+      <>
+        <FaRegCalendarPlus className="ml-2" />
+        הוסף ליומן
+      </>
     </a>
   );
 };
