@@ -2,10 +2,8 @@
 
 import * as React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import ExpandableGameCard from "@/components/ExpandableGameCard";
 import { getMyGames } from "@/lib/actions";
 import { getSession } from "@/lib/session";
-import { redirect } from "next/navigation";
 import { ParticipationStatus } from "../enums/participation-status.enum";
 import { useEffect, useState } from "react";
 import { Game } from "../types/Game";
@@ -20,11 +18,7 @@ export default function MyGames() {
   useEffect(() => {
     (async () => {
       const session = await getSession();
-      if (!session?.user?.uid) {
-        console.error("Invalid session or user credentials");
-        redirect("/auth/login");
-      }
-      const currUserUID = session.user.uid;
+      const currUserUID = session!.user.uid;
       const games = await getMyGames();
 
       setManagedGames(games.filter((game) => game.creator.uid === currUserUID));

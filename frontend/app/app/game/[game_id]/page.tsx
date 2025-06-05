@@ -12,7 +12,6 @@ import MapView from "@/components/MapView";
 import { notFound } from "next/navigation"; // Import notFound
 import { GameType } from "@/app/enums/game-type.enum";
 import { getSession } from "@/lib/session";
-import { redirect } from "next/navigation";
 import JoinGameButton from "@/components/JoinGameButton";
 import { ParticipationStatus } from "@/app/enums/participation-status.enum";
 import LeaveGameButton from "@/components/LeaveGameButton";
@@ -89,12 +88,8 @@ export default async function Page({
   });
 
   const session = await getSession();
-  if (!session?.user?.uid) {
-    console.error("Invalid session or user credentials");
-    redirect("/auth/login");
-  }
 
-  const currUserUID = session.user.uid;
+  const currUserUID = session!.user.uid;
 
   const approvedCount = gameParticipants.filter(
     (gp) => gp.status === ParticipationStatus.APPROVED,

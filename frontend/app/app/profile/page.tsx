@@ -6,12 +6,8 @@ import { Role } from "@/app/enums/role.enum";
 
 const ProfilePage = async () => {
   const session = await getSession();
-  if (!session?.user?.uid) {
-    console.error("Invalid session or user credentials");
-    return null;
-  }
 
-  const userId = session.user.uid;
+  const userId = session!.user.uid;
   const response = await authFetch(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/${userId}`,
   );

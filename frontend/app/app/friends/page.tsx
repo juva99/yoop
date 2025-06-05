@@ -13,12 +13,7 @@ export default async function SearchPage({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const session = await getSession();
-  if (!session?.user?.uid) {
-    console.error("Invalid session or user credentials");
-    return null;
-  }
-
-  const userId = session.user.uid;
+  const userId = session!.user.uid;
   const query = (await searchParams).query;
 
   const response = await authFetch(
