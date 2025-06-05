@@ -17,6 +17,7 @@ import JoinGameButton from "@/components/JoinGameButton";
 import { ParticipationStatus } from "@/app/enums/participation-status.enum";
 import LeaveGameButton from "@/components/LeaveGameButton";
 import { authFetch } from "@/lib/authFetch";
+import Share from "@/components/ui/share";
 
 async function getGame(gameId: string): Promise<Game | null> {
   try {
@@ -145,9 +146,14 @@ export default async function Page({
         )}
       </div>
       <div>
-        <h3>
-          משתתפים ({approvedCount}/{maxParticipants})
-        </h3>
+        <div className="flex items-center justify-between">
+          <h3>
+            משתתפים ({approvedCount}/{maxParticipants})
+          </h3>
+          <Share
+            gameLink={`${process.env.NEXT_PUBLIC_FRONTEND_URL}/game/${gameId}`}
+          />
+        </div>
         <PlayersList
           gameId={gameId}
           creatorUID={creator.uid}
