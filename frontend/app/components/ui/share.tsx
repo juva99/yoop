@@ -1,20 +1,16 @@
 "use client";
 
 import { Button } from "./button";
-import { Share2, Copy } from "lucide-react";
-import { useState } from "react";
+import { Share2 } from "lucide-react";
 import { toast } from "sonner";
 
-interface Props {
-  gameLink: string;
-}
 
-const Share = (prop: Props) => {
+const Share = () => {
 
   const shareData = {
     title: "Yoop Sports",
     text: "הצטרפו למשחק שלי ב-Yoop Sports!",
-    url: prop.gameLink || window.location.href,
+    url: window.location.href,
   };
 
   const handleShare = async () => {

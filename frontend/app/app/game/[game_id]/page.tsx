@@ -150,9 +150,7 @@ export default async function Page({
           <h3>
             משתתפים ({approvedCount}/{maxParticipants})
           </h3>
-          <Share
-            gameLink={`${process.env.NEXT_PUBLIC_FRONTEND_URL}/game/${gameId}`}
-          />
+          <Share />
         </div>
         <PlayersList
           gameId={gameId}
