@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Combobox } from "../ui/combobox";
 import { Button } from "@/components/ui/button";
 import { City, cityCoordinates } from "@/app/enums/city.enum";

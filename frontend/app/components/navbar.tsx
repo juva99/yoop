@@ -8,10 +8,6 @@ import { MdAssignmentAdd } from "react-icons/md";
 import { usePathname } from "next/navigation";
 import { TbLayoutGridAdd } from "react-icons/tb";
 import { Role } from "@/app/enums/role.enum";
-import { GiSoccerField } from "react-icons/gi";
-import { RiFunctionAddFill } from "react-icons/ri";
-import { VscSignOut } from "react-icons/vsc";
-import { CgProfile } from "react-icons/cg";
 
 const HIDDEN_PATHS = [
   "/auth/login",

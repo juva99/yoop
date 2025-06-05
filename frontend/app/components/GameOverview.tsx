@@ -1,5 +1,5 @@
 import React from "react";
-import { PiBasketball, PiPlus, PiSoccerBall } from "react-icons/pi";
+import { PiPlus } from "react-icons/pi";
 import { Game } from "@/app/types/Game";
 import GameCard from "./GameCard";
 
