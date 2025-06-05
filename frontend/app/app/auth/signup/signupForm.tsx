@@ -34,7 +34,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { City } from "@/app/enums/city.enum";
-import { Role } from "@/app/enums/role.enum";
 
 export type SignupFormValues = z.infer<typeof SignupFormSchema>;
 

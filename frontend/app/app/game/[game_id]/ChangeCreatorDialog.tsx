@@ -11,8 +11,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useState } from "react";
-import { PiCrownSimpleBold } from "react-icons/pi";
 
 interface Props {
   onConfirm: () => void;

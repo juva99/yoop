@@ -1,17 +1,13 @@
-"use client";
-
 import React from "react";
-import { FcGoogle } from "react-icons/fc";
-import Image from "next/image";
 import SignupForm from "./signupForm";
 import Link from "next/link";
-import { Card } from "@/components/ui/card";
 import AuthWrapper from "../authWrapper";
 
 const SignUp = () => {
   return (
     <AuthWrapper>
-      <div className="w-full">
+      <h2>כמה פרטים קטנים ואתה על המגרש</h2>
+      <div className="mt-4 w-full">
         <SignupForm />
       </div>
 
