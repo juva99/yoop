@@ -57,7 +57,7 @@ export async function login(userMail: string, pass: string): Promise<any> {
 
     const roleRedirectMap: Record<string, string> = {
       user: "/",
-      field_manager: "/field-manager/fields",
+      field_manager: "/field-manager",
       admin: "/admin",
     };
 
