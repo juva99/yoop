@@ -17,6 +17,7 @@ import JoinGameButton from "@/components/JoinGameButton";
 import { ParticipationStatus } from "@/app/enums/participation-status.enum";
 import LeaveGameButton from "@/components/LeaveGameButton";
 import { authFetch } from "@/lib/authFetch";
+import CalendarLink from "@/components/ui/calendar-link";
 import Share from "@/components/ui/share";
 
 async function getGame(gameId: string): Promise<Game | null> {
@@ -144,6 +145,9 @@ export default async function Page({
             <p>{price === null ? "חינם" : `${price} ₪`}</p>{" "}
           </div>
         )}
+        <div className="flex items-center gap-2">
+          <CalendarLink game={game} />
+        </div>
       </div>
       <div>
         <div className="flex items-center justify-between">
