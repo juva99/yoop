@@ -7,21 +7,23 @@ import { toast } from "sonner";
 
 const Share = () => {
 
-  const shareData = {
-    title: "Yoop Sports",
-    text: "הצטרפו למשחק שלי ב-Yoop Sports!",
-    url: window.location.href,
-  };
-
   const handleShare = async () => {
+    const shareData = {
+        title: "Yoop Sports",
+        text: "הצטרפו למשחק שלי ב-Yoop Sports!",
+        url: window.location.href,
+    };
+
+
     try {
         await navigator.share(shareData);
     } catch (error) {
       // If share fails, try to copy to clipboard
-      await handleCopyToClipboard();
+      await handleCopyToClipboard(shareData);
     }
   };
-  const handleCopyToClipboard = async () => {
+
+  const handleCopyToClipboard = async (shareData: { title: string; text: string; url: string; }) => {
     const shareText = `${shareData.text}\n${shareData.url}`;
     
     try {
