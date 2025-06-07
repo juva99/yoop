@@ -59,7 +59,6 @@ const SignupForm = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = async (values: SignupFormValues) => {
-    values.userEmail = values.userEmail.toLowerCase();
     const result = await signup(values);
 
     if (result?.error) {
