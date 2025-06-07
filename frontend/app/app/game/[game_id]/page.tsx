@@ -18,6 +18,7 @@ import { ParticipationStatus } from "@/app/enums/participation-status.enum";
 import LeaveGameButton from "@/components/LeaveGameButton";
 import { authFetch } from "@/lib/authFetch";
 import CalendarLink from "@/components/ui/calendar-link";
+import Share from "@/components/ui/share";
 
 async function getGame(gameId: string): Promise<Game | null> {
   try {
@@ -149,9 +150,12 @@ export default async function Page({
         </div>
       </div>
       <div>
-        <h3>
-          משתתפים ({approvedCount}/{maxParticipants})
-        </h3>
+        <div className="flex items-center justify-between">
+          <h3>
+            משתתפים ({approvedCount}/{maxParticipants})
+          </h3>
+          <Share />
+        </div>
         <PlayersList
           gameId={gameId}
           creatorUID={creator.uid}
