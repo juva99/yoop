@@ -39,7 +39,7 @@ export class UsersService {
       return await this.userRepository.save({
         pass: hashedPass,
         ...user,
-        role: Role.USER
+        role: Role.USER,
       });
     } catch (error) {
       throw new Error(error);
@@ -109,10 +109,7 @@ export class UsersService {
     uid: string,
     hashedRefreshToken: string,
   ): Promise<void> {
-    await this.userRepository.update(
-      { uid },
-      { hashedRefreshToken },
-    );
+    await this.userRepository.update({ uid }, { hashedRefreshToken });
   }
 
   async updateUser(id: string, updatedFields: Partial<User>): Promise<User> {
@@ -125,24 +122,28 @@ export class UsersService {
   }
 
   //create reset token for user by id, set token vlaid for hours provided
-  async createPasswordResetToken(uid: string, hours: number): Promise<string>{
-        const resetToken = crypto.randomBytes(32).toString('hex');
-        const passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+  async createPasswordResetToken(uid: string, hours: number): Promise<string> {
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const passwordResetToken = crypto
+      .createHash('sha256')
+      .update(resetToken)
+      .digest('hex');
 
-        const passwordResetExpires = new Date(Date.now() + hours * 60 * 60 * 1000);
+    const passwordResetExpires = new Date(Date.now() + hours * 60 * 60 * 1000);
 
-        await this.userRepository.update({uid}, 
-          { 
-            passwordResetToken,
-            passwordResetExpires,
-          }
-        );
+    await this.userRepository.update(
+      { uid },
+      {
+        passwordResetToken,
+        passwordResetExpires,
+      },
+    );
 
-        return resetToken;
+    return resetToken;
   }
 
   //change password by token
-  async changePassword(token: string, newPassword: string): Promise<void>{
+  async changePassword(token: string, newPassword: string): Promise<void> {
     //get user based on token
     const hashedtoken = crypto.createHash('sha256').update(token).digest('hex');
 
@@ -150,36 +151,38 @@ export class UsersService {
       where: {
         passwordResetToken: hashedtoken,
         passwordResetExpires: MoreThan(new Date()),
-      }
+      },
     });
 
     //if found and token isnt expired set new password and delete refreshtoken
-    if(!user){
+    if (!user) {
       throw new NotFoundException(`password reset token isn't valid`);
     }
-      const salt = await bcrypt.genSalt(10);
-      const hashedPass = await bcrypt.hash(newPassword, salt);
-    
-    const updateduser = await this.userRepository.update(user.uid,
-      {
-        pass: hashedPass,
-        passwordResetToken: null,
-        hashedRefreshToken: null,
-      }
-    );
+    const salt = await bcrypt.genSalt(10);
+    const hashedPass = await bcrypt.hash(newPassword, salt);
+
+    const updateduser = await this.userRepository.update(user.uid, {
+      pass: hashedPass,
+      passwordResetToken: null,
+      hashedRefreshToken: null,
+    });
     //log user in
   }
 
   //create manager user with generated random password.
-  async createManager(createManagerDto: CreateManagerDto): Promise<User>{
-    const password = crypto.randomBytes(Math.ceil(12 * 1.5)).toString('base64').replace(/[^a-zA-Z0-9]/g, '').slice(0, 12);
+  async createManager(createManagerDto: CreateManagerDto): Promise<User> {
+    const password = crypto
+      .randomBytes(Math.ceil(12 * 1.5))
+      .toString('base64')
+      .replace(/[^a-zA-Z0-9]/g, '')
+      .slice(0, 12);
     const salt = await bcrypt.genSalt(10);
     const hashedPass = await bcrypt.hash(password, salt);
-    const {pass, ...user } = this.userRepository.create(createManagerDto);
+    const { pass, ...user } = this.userRepository.create(createManagerDto);
     return await this.userRepository.save({
-        pass: hashedPass,
-        ...user,
-        role: Role.FIELD_MANAGER
-      });
-    } 
+      pass: hashedPass,
+      ...user,
+      role: Role.FIELD_MANAGER,
+    });
+  }
 }

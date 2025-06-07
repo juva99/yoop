@@ -41,6 +41,15 @@ export class ManagerSignupService {
     }
     return managerSignup;
   }
+  async findById(id: string): Promise<ManagerSignup> {
+    const managerSignup = await this.managerSignupRepository.findOne({
+      where: { id },
+    });
+    if (!managerSignup) {
+      throw new NotFoundException(`no contact with id ${id} found`);
+    }
+    return managerSignup;
+  }
 
   async delete(id: string): Promise<void> {
     const results = await this.managerSignupRepository.delete(id);
@@ -48,7 +57,17 @@ export class ManagerSignupService {
       throw new NotFoundException(`no contact with id ${id} not found`);
     }
   }
+  async delete(id: string): Promise<void> {
+    const results = await this.managerSignupRepository.delete(id);
+    if (results.affected === 0) {
+      throw new NotFoundException(`no contact with id ${id} not found`);
+    }
+  }
 
+  async getAll(): Promise<ManagerSignup[]> {
+    const result = await this.managerSignupRepository.find();
+    return result;
+  }
   async getAll(): Promise<ManagerSignup[]> {
     const result = await this.managerSignupRepository.find();
     return result;

@@ -59,13 +59,12 @@ export class AuthController {
 
   @Public()
   @Post('forgot-password')
-  async forgotPass(@Body() body){
+  async forgotPass(@Body() body) {
     return this.authService.forgotPassword(body.email);
   }
 
   @Post('/approve-manager/:id')
-  async approveManager(@Param("id") managerSignupId: string): Promise<User>{
+  async approveManager(@Param('id') managerSignupId: string): Promise<User> {
     return this.authService.approveManager(managerSignupId);
   }
-
 }
