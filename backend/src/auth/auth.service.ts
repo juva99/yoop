@@ -143,10 +143,7 @@ export class AuthService {
       refreshToken,
       user.hashedRefreshToken,
     );
-    const refreshTokenMatched = await bcrypt.compare(
-      refreshToken,
-      user.hashedRefreshToken,
-    );
+
     if (!refreshTokenMatched) {
       throw new UnauthorizedException('Invalid Refresh Token!');
     }
@@ -194,39 +191,6 @@ export class AuthService {
   }
 
   //replace dto to contact-id
-  async approveManager(managerSignupId: string): Promise<User> {
-    // Get manager contact form by ID
-    const managerSignup =
-      await this.managerSignupService.findById(managerSignupId);
-    //Set managerDto with details from contact signup form
-    const createManagerDto: CreateManagerDto = {
-      firstName: managerSignup.firstName,
-      lastName: managerSignup.lastName,
-      userEmail: managerSignup.email,
-      phoneNum: managerSignup.phoneNum,
-    };
-
-    //try to create user by form, if cant throw error
-    try {
-      const manager = await this.usersService.createManager(createManagerDto);
-      const token = await this.usersService.createPasswordResetToken(
-        manager.uid,
-        72,
-      );
-      //if succeeded delete signup form and return user
-      await this.mailService.sendManagerInvite(
-        manager.userEmail,
-        token,
-        manager.firstName + ' ' + manager.lastName,
-      );
-      await this.managerSignupService.delete(managerSignupId);
-      return manager;
-    } catch (error) {
-      throw new BadRequestException(
-        'Failed to approve manager: ' + error.message,
-      );
-    }
-  }
   async approveManager(managerSignupId: string): Promise<User> {
     // Get manager contact form by ID
     const managerSignup =

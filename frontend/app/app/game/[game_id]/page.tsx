@@ -146,9 +146,6 @@ export default async function Page({
             <p>{price === null ? "חינם" : `${price} ₪`}</p>{" "}
           </div>
         )}
-        <div className="flex items-center gap-2">
-          <CalendarLink game={game} />
-        </div>
         <span>
           {status === GameStatus.APPROVED ? (
             <div className="flex items-center gap-2">
@@ -162,6 +159,9 @@ export default async function Page({
             </div>
           )}
         </span>
+        <div className="flex items-center gap-2">
+          <CalendarLink game={game} />
+        </div>
       </div>
       <div>
         <div className="flex items-center justify-between">
