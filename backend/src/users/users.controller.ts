@@ -59,8 +59,7 @@ export class UsersController {
 
   @Public()
   @Post(`reset-password/:token`)
-  async resetPass(@Param('token') token: string, @Body() body){
+  async resetPass(@Param('token') token: string, @Body() body) {
     return this.userService.changePassword(token, body.password);
-  } 
-
+  }
 }

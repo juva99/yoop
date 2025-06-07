@@ -128,7 +128,7 @@ export class AuthService {
     refreshToken: string,
   ): Promise<{ uid: string; role: Role; name?: string }> {
     const user = await this.usersService.findById(userId);
-    
+
     if (!user) {
       throw new UnauthorizedException('המשתמש לא נמצא!');
     }
@@ -137,7 +137,10 @@ export class AuthService {
         'Invalid refresh token or user not logged in',
       );
     }
-    const refreshTokenMatched = await bcrypt.compare(refreshToken, user.hashedRefreshToken);
+    const refreshTokenMatched = await bcrypt.compare(
+      refreshToken,
+      user.hashedRefreshToken,
+    );
     if (!refreshTokenMatched) {
       throw new UnauthorizedException('Invalid Refresh Token!');
     }
@@ -171,46 +174,51 @@ export class AuthService {
   async signOut(uid: string): Promise<void> {
     return await this.usersService.updateRefreshToken(uid, 'null');
   }
-  
-  async forgotPassword(email: string): Promise<any>{
-        // get user based on posted email
-        const user= await this.usersService.findByEmail(email);
-        if (!user){
-          throw new NotFoundException(`user with email address${email} not found`);
-        }
-        // generate random reset token
-        const token = await this.usersService.createPasswordResetToken(user.uid, 1);
-        
-        this.mailService.sendPasswordReset(email, token, user.firstName);
 
+  async forgotPassword(email: string): Promise<any> {
+    // get user based on posted email
+    const user = await this.usersService.findByEmail(email);
+    if (!user) {
+      throw new NotFoundException(`user with email address${email} not found`);
+    }
+    // generate random reset token
+    const token = await this.usersService.createPasswordResetToken(user.uid, 1);
+
+    this.mailService.sendPasswordReset(email, token, user.firstName);
   }
 
   //replace dto to contact-id
-async approveManager(managerSignupId: string): Promise<User> {
-  // Get manager contact form by ID
-  const managerSignup = await this.managerSignupService.findById(managerSignupId);
-  //Set managerDto with details from contact signup form
-  const createManagerDto: CreateManagerDto = {
-    firstName: managerSignup.firstName,
-    lastName: managerSignup.lastName,
-    userEmail: managerSignup.email,
-    phoneNum: managerSignup.phoneNum,
-  };
-  
-  //try to create user by form, if cant throw error
-  try {
-    const manager = await this.usersService.createManager(createManagerDto);
-    const token = await this.usersService.createPasswordResetToken(manager.uid, 72);
-    //if succeeded delete signup form and return user
-    await this.mailService.sendManagerInvite(
-      manager.userEmail,
-      token,
-      manager.firstName + " " + manager.lastName
-    );
-    await this.managerSignupService.delete(managerSignupId);
-    return manager;
-  } catch (error) {
-    throw new BadRequestException('Failed to approve manager: ' + error.message);
+  async approveManager(managerSignupId: string): Promise<User> {
+    // Get manager contact form by ID
+    const managerSignup =
+      await this.managerSignupService.findById(managerSignupId);
+    //Set managerDto with details from contact signup form
+    const createManagerDto: CreateManagerDto = {
+      firstName: managerSignup.firstName,
+      lastName: managerSignup.lastName,
+      userEmail: managerSignup.email,
+      phoneNum: managerSignup.phoneNum,
+    };
+
+    //try to create user by form, if cant throw error
+    try {
+      const manager = await this.usersService.createManager(createManagerDto);
+      const token = await this.usersService.createPasswordResetToken(
+        manager.uid,
+        72,
+      );
+      //if succeeded delete signup form and return user
+      await this.mailService.sendManagerInvite(
+        manager.userEmail,
+        token,
+        manager.firstName + ' ' + manager.lastName,
+      );
+      await this.managerSignupService.delete(managerSignupId);
+      return manager;
+    } catch (error) {
+      throw new BadRequestException(
+        'Failed to approve manager: ' + error.message,
+      );
+    }
   }
-}
 }

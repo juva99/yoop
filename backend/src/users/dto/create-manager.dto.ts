@@ -1,9 +1,4 @@
-import {
-  IsEmail,
-  IsOptional,
-  IsString,
-  Matches,
-} from 'class-validator';
+import { IsEmail, IsOptional, IsString, Matches } from 'class-validator';
 
 export class CreateManagerDto {
   @IsString()
@@ -28,5 +23,4 @@ export class CreateManagerDto {
   @IsOptional()
   @IsString()
   profilePic?: string;
-
 }

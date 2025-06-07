@@ -24,7 +24,7 @@ import { ManagerSignupModule } from 'src/manager-signup/manager-signup.module';
     ConfigModule.forFeature(jwtConfig),
     ConfigModule.forFeature(refreshConfig),
     MailModule,
-    ManagerSignupModule
+    ManagerSignupModule,
   ],
   controllers: [AuthController],
   providers: [
