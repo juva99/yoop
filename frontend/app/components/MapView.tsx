@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { Map, Marker } from "pigeon-maps";
 import { Game } from "@/app/types/Game";
 import GameCard from "./GameCard";

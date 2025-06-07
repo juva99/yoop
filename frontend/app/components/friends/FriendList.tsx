@@ -60,7 +60,7 @@ const FriendList: React.FC<Props> = ({ currentUserUid, relations }) => {
       ) : (
         <ul className="text-sm text-gray-700">
           {friendsWithRelation.map(({ friend, relationId }, index) => (
-            <React.Fragment key={friend.uid}>
+            <React.Fragment key={relationId}>
               <li className="flex items-center justify-between">
                 <Friend
                   action="remove"

@@ -1,4 +1,3 @@
-import { refreshToken } from "./auth";
 import { getSession } from "./session";
 
 export interface FetchOptions extends RequestInit {

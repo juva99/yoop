@@ -1,5 +1,4 @@
 import ResetPasswordForm from "@/app/auth/reset-password/reset-password-form";
-import Image from "next/image";
 import Link from "next/link";
 import AuthWrapper from "../authWrapper";
 

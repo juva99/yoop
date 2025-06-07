@@ -19,6 +19,7 @@ import LeaveGameButton from "@/components/LeaveGameButton";
 import { authFetch } from "@/lib/authFetch";
 import CalendarLink from "@/components/ui/calendar-link";
 import Share from "@/components/ui/share";
+import { GameStatus } from "@/app/enums/game-status.enum";
 
 async function getGame(gameId: string): Promise<Game | null> {
   try {
@@ -145,6 +146,19 @@ export default async function Page({
             <p>{price === null ? "חינם" : `${price} ₪`}</p>{" "}
           </div>
         )}
+        <span>
+          {status === GameStatus.APPROVED ? (
+            <div className="flex items-center gap-2">
+              <span>🟢</span>
+              <span>פתוח להרשמה</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <span>🟠</span>
+              <span>בהמתנה לאישור מנהל המגרש</span>
+            </div>
+          )}
+        </span>
         <div className="flex items-center gap-2">
           <CalendarLink game={game} />
         </div>

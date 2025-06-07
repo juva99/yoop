@@ -37,28 +37,29 @@ const ContactForm: React.FC<Props> = ({}) => {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/manager-signup/create`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/manager-signup/create`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values),
         },
-        body: JSON.stringify(values),
-      },
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      toast.error(
-        errorData.message ||
-          "אירעה שגיאה בשליחת הפרטים, אנא נסה שוב מאוחר יותר.",
       );
-      return;
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        toast.error(errorData.message || "אירעה שגיאה, נסה שוב מאוחר יותר.");
+        return;
+      }
+
+      toast.success("הפרטים נשלחו בהצלחה, נחזור אלייך בהקדם!");
+      form.reset();
+    } catch (error) {
+      toast.error("אירעה שגיאה");
     }
-    const data = await response.json();
-    toast.success("הפרטים נשלחו בהצלחה, נחזור אלייך בהקדם!");
-    form.reset();
   }
   return (
     <AuthWrapper>

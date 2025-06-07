@@ -4,7 +4,7 @@ import { Game } from "@/app/types/Game";
 import AvatarGroup from "./AvatarGroup";
 import { ParticipationStatus } from "@/app/enums/participation-status.enum";
 import { GameType } from "@/app/enums/game-type.enum";
-import { Card } from "./ui/card";
+import { GameStatus } from "@/app/enums/game-status.enum";
 
 type Props = {
   game: Game;
@@ -19,6 +19,7 @@ const GameCardContent: React.FC<Props> = ({ game }) => {
     gameParticipants,
     field,
     price,
+    status,
     weatherTemp,
     weatherIcon,
   } = game;
@@ -85,13 +86,20 @@ const GameCardContent: React.FC<Props> = ({ game }) => {
             </span>
           </>
         )}
-      </div>
-      <div className="flex items-center gap-2">
-        <p className="text-gray-600">
-          רשומים: {approvedPlayers.length}/{game.maxParticipants}
-        </p>
-        <span>|</span>
-        <AvatarGroup players={approvedPlayers} />
+        {status === GameStatus.PENDING ? (
+          <div className="flex flex-row gap-2">
+            <span>🟠</span>
+            <span>בהמתנה לאישור מנהל</span>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <p className="text-gray-600">
+              רשומים: {approvedPlayers.length}/{game.maxParticipants}
+            </p>
+            <span>|</span>
+            <AvatarGroup players={approvedPlayers} />
+          </div>
+        )}
       </div>
     </div>
   );

@@ -6,12 +6,14 @@ import { FaWhatsapp } from "react-icons/fa";
 import { CiCircleRemove } from "react-icons/ci";
 import { CiCircleCheck } from "react-icons/ci";
 import { PiCrownSimpleBold } from "react-icons/pi";
-
+import { useRouter } from "next/navigation";
 import { ParticipationStatus } from "@/app/enums/participation-status.enum";
 import { GameParticipant } from "@/app/types/GameParticipant";
 
 import ChangeParticipationButton from "./changeParticipationButton";
-import ChangeGameCreatorButton from "./changeGameCreatorButton";
+import ChangeCreatorDialog from "@/app/game/[game_id]/ChangeCreatorDialog";
+import { authFetch } from "@/lib/authFetch";
+import { toast } from "sonner";
 
 interface Props {
   gameId: string;
@@ -30,6 +32,7 @@ const PlayersList: React.FC<Props> = ({
   deleteEnable,
   status,
 }) => {
+  const router = useRouter();
   const formatPhoneNumber = (phoneNum: string) => {
     return `972${phoneNum.substring(1)}`;
   };
@@ -41,10 +44,33 @@ const PlayersList: React.FC<Props> = ({
       return 0;
     });
 
+  const changeCreator = async (newCreatorUID: string) => {
+    try {
+      const res = await authFetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/${gameId}/setGameCreator/${newCreatorUID}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ newCreatorUID }),
+        },
+      );
+
+      if (!res.ok) throw new Error("Failed to change creator");
+    } catch (err) {
+      console.error(err);
+      toast.error("שגיאה בהגדרת השחקן כמנהל");
+    }
+    router.refresh();
+    toast.success("מנהל המשחק הוחלף בהצלחה");
+  };
+
   const isCreator = creatorUID === currUserUID;
   if (!filteredParticipants || filteredParticipants.length === 0) {
     return <span className="text-sm text-gray-500">אין שחקנים לתצוגה</span>;
   }
+
   return (
     <div className="players flex flex-col items-start gap-2">
       <div className="flex w-full flex-col space-y-1">
@@ -68,17 +94,8 @@ const PlayersList: React.FC<Props> = ({
                   isCreator &&
                   player.uid !== creatorUID &&
                   status === ParticipationStatus.APPROVED && (
-                    <ChangeGameCreatorButton
-                      gameId={gameId}
-                      uid={player.uid}
-                      icon={
-                        <img
-                          src="/add_creator.png"
-                          alt="Crown Plus Icon"
-                          width={22}
-                          height={22}
-                        />
-                      }
+                    <ChangeCreatorDialog
+                      onConfirm={() => changeCreator(player.uid)}
                     />
                   )
                 )}

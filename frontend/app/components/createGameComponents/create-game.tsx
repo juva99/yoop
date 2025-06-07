@@ -10,7 +10,6 @@ import GameInfoStep from "./GameInfoStep";
 import FieldInfoStep from "./FieldInfoStep";
 import StartTimeStep from "./StartTimeStep";
 import EndTimeStep from "./EndTimeStep";
-import { getSession } from "@/lib/session";
 import { useRouter } from "next/navigation";
 import { Form } from "../ui/form";
 import { authFetch } from "@/lib/authFetch";
@@ -50,7 +49,6 @@ export default function CreateGameForm() {
   const [previousStep, setPreviousStep] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const delta = currentStep - previousStep;
   const router = useRouter();
 
   const form = useForm<Inputs>({
