@@ -10,12 +10,15 @@ import { cn } from "@/lib/utils";
 const SidebarLink = ({
   href,
   children,
+  prefetch,
 }: {
   href: string;
   children: React.ReactNode;
+  prefetch: boolean;
 }) => (
   <Link
     href={href}
+    prefetch={prefetch}
     className={cn(
       "block w-full rounded-md px-3 py-2 text-sm font-medium transition hover:bg-gray-200",
     )}
@@ -37,14 +40,18 @@ export default async function ManagerLayout({
           <div className="p-4">
             <h2 className="mb-6 text-right text-lg font-bold">תפריט</h2>
             <nav className="space-y-2 text-right">
-              <SidebarLink href="/field-manager">דף הבית</SidebarLink>
-              <SidebarLink href="/field-manager/fields">
+              <SidebarLink prefetch={true} href="/field-manager">
+                דף הבית
+              </SidebarLink>
+              <SidebarLink prefetch={true} href="/field-manager/fields">
                 המגרשים שלי{" "}
               </SidebarLink>
-              <SidebarLink href="/field-manager/field/create">
+              <SidebarLink prefetch={true} href="/field-manager/field/create">
                 הוספת מגרש
               </SidebarLink>
-              <SidebarLink href="/api/auth/signout">התנתק</SidebarLink>
+              <SidebarLink prefetch={false} href="/api/auth/signout">
+                התנתק
+              </SidebarLink>
             </nav>
           </div>
         </Sidebar>

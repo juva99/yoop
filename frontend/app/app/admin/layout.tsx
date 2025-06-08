@@ -10,14 +10,17 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 const SidebarLink = ({
-  href,
   children,
+  href,
+  prefetch,
 }: {
   href: string;
   children: React.ReactNode;
+  prefetch: boolean;
 }) => (
   <Link
     href={href}
+    prefetch={prefetch}
     className={cn(
       "block w-full rounded-md px-3 py-2 text-sm font-medium transition hover:bg-gray-200",
     )}
@@ -31,11 +34,6 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getSession();
-  if (!session?.user?.uid) {
-    redirect("/auth/login");
-  }
-
   return (
     <SidebarProvider>
       <SidebarTrigger className="fixed top-0 right-0 z-50 h-10 w-10 rounded-none rounded-bl-3xl bg-white shadow" />
@@ -44,12 +42,18 @@ export default async function AdminLayout({
           <div className="p-4">
             <h2 className="mb-6 text-right text-lg font-bold">לוח ניהול</h2>
             <nav className="space-y-2 text-right">
-              <SidebarLink href="/admin">דף הבית</SidebarLink>
-              <SidebarLink href="/admin/requests">
+              <SidebarLink prefetch={true} href="/admin">
+                דף הבית
+              </SidebarLink>
+              <SidebarLink prefetch={true} href="/admin/requests">
                 בקשות מנהלי מגרשים
               </SidebarLink>
-              <SidebarLink href="/admin/users">ניהול משתמשים</SidebarLink>
-              <SidebarLink href="/api/auth/signout">התנתק</SidebarLink>
+              <SidebarLink prefetch={true} href="/admin/users">
+                ניהול משתמשים
+              </SidebarLink>
+              <SidebarLink prefetch={false} href="/api/auth/signout">
+                התנתק
+              </SidebarLink>
             </nav>
           </div>
         </Sidebar>
