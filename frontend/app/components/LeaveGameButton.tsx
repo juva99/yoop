@@ -1,15 +1,17 @@
 "use client";
 
 import { leaveGame } from "@/lib/actions";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
 
 interface Props {
   gameId: string;
+  text: string;
+  isCreator: boolean;
 }
 
-export default function LeaveGameButton({ gameId }: Props) {
+export default function LeaveGameButton({ gameId, text, isCreator }: Props) {
   const router = useRouter();
 
   async function clickedLeave(gameId: string) {
@@ -19,6 +21,9 @@ export default function LeaveGameButton({ gameId }: Props) {
       return;
     }
     toast.success("יצאת מהמשחק בהצלחה");
+    if (isCreator) {
+      redirect("/");
+    }
     router.refresh();
   }
 
@@ -29,7 +34,7 @@ export default function LeaveGameButton({ gameId }: Props) {
         onClick={() => clickedLeave(gameId)}
         className="w-40 bg-red-400"
       >
-        עזוב משחק
+        {text}
       </Button>
     </div>
   );

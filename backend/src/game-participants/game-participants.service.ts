@@ -1,6 +1,8 @@
 import {
   BadRequestException,
   ConflictException,
+  forwardRef,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -12,6 +14,7 @@ import { User } from 'src/users/users.entity';
 import { ParticipationStatus } from 'src/enums/participation-status.enum';
 import { SetStatusDto } from './dto/set-status.dto';
 import { UsersService } from 'src/users/users.service';
+import { GamesService } from 'src/games/games.service';
 @Injectable()
 export class GameParticipantsService {
   constructor(
@@ -20,6 +23,8 @@ export class GameParticipantsService {
     @InjectRepository(GameParticipant)
     private gameParticipantRepository: Repository<GameParticipant>,
     private readonly userService: UsersService,
+    @Inject(forwardRef(() => GamesService))
+    private readonly gamesService: GamesService,
   ) {}
   async joinGame(
     gameId: string,
@@ -119,10 +124,14 @@ export class GameParticipantsService {
     }
 
     if (game.creator.uid === user.uid) {
-      throw new ConflictException('המנהל אינו יכול לעזוב את המשחק');
+      if (game.gameParticipants.length === 1) {
+        await this.gamesService.declineGame(game.gameId);
+      } else {
+        throw new ConflictException('המנהל אינו יכול לעזוב את המשחק');
+      }
+    } else {
+      await this.gameParticipantRepository.delete(existingParticipation.id);
     }
-
-    await this.gameParticipantRepository.delete(existingParticipation.id);
   }
 
   async inviteFriendToGame(gameId: string, inviter: User, invited: User) {

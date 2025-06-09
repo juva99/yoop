@@ -55,8 +55,8 @@ const FutureGames: React.FC<Props> = ({ games }) => {
       {...handlers}
       className="relative flex max-h-[100px] w-full justify-between overflow-hidden"
     >
-      {games.length === 0 ? (
-        <span className="flex text-center">אין משחקים עתידיים</span>
+      {futureGames.length === 0 ? (
+        <span className="flex text-center">אין משחקים לתצוגה</span>
       ) : (
         <>
           {" "}
