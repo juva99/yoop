@@ -125,7 +125,7 @@ export class GameParticipantsService {
 
     if (game.creator.uid === user.uid) {
       if (game.gameParticipants.length === 1) {
-        await this.gamesService.declineGame(game.gameId);
+        await this.gamesService.deleteOne(gameId);
       } else {
         throw new ConflictException('המנהל אינו יכול לעזוב את המשחק');
       }
