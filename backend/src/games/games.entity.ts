@@ -50,7 +50,10 @@ export class Game {
   gameParticipants: GameParticipant[];
 
   //game creator
-  @ManyToOne(() => User, (creator) => creator.createdGames, { eager: true })
+  @ManyToOne(() => User, (creator) => creator.createdGames, {
+    eager: true,
+    onDelete: 'CASCADE',
+  })
   creator: User;
 
   //field where game happens
