@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -132,10 +131,14 @@ export class GameParticipantsService {
     }
 
     if (game.creator.uid === user.uid) {
-      throw new ConflictException('המנהל אינו יכול לעזוב את המשחק');
+      if (game.gameParticipants.length === 1) {
+        this.gameRepository.delete(gameId);
+      } else {
+        throw new ConflictException('המנהל אינו יכול לעזוב את המשחק');
+      }
+    } else {
+      await this.gameParticipantRepository.delete(existingParticipation.id);
     }
-
-    await this.gameParticipantRepository.delete(existingParticipation.id);
   }
 
   async inviteFriendToGame(gameId: string, inviter: User, invited: User) {

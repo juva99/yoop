@@ -102,7 +102,6 @@ export class GamesController {
     );
   }
 
-  //join game by id and add user to pending list
   @Delete('/:gameId/leave')
   async leaveGame(
     @Param('gameId') gameId: string,

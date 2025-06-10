@@ -21,7 +21,6 @@ async function fetchAvailableSlots(
   field: string,
   date: Date,
 ): Promise<string[]> {
-  console.log("Fetching available slots for field:", field, "on date:", date);
   const date_fixed = new Date(date);
   date_fixed.setHours(
     date_fixed.getHours() - date_fixed.getTimezoneOffset() / 60,
@@ -35,8 +34,22 @@ async function fetchAvailableSlots(
   if (!response.ok) {
     throw new Error(`Failed to fetch fields: ${response.statusText}`);
   }
-  const data: string[] = await response.json();
-  return data.sort();
+  const allSlots: string[] = await response.json();
+
+  //if same day , filter the relevant hours
+  const now = new Date();
+  const isToday =
+    now.toISOString().split("T")[0] === date_fixed.toISOString().split("T")[0];
+
+  const futureSlots = allSlots.filter((slot) => {
+    if (!isToday) return true;
+    const [hourStr, minuteStr] = slot.split(":");
+    const slotDate = new Date(date_fixed);
+    slotDate.setHours(parseInt(hourStr), parseInt(minuteStr), 0, 0);
+    return slotDate > now;
+  });
+
+  return futureSlots.sort();
 }
 
 export default function StartTimeStep({ form }: TimeSlotStepProps) {
