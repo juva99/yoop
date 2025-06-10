@@ -12,7 +12,7 @@ import { MailModule } from 'src/mail/mail.module';
   imports: [
     TypeOrmModule.forFeature([Game]),
     WeatherApiModule,
-    forwardRef(() => GameParticipantsModule),
+    GameParticipantsModule,
     FieldsModule,
     MailModule,
   ],

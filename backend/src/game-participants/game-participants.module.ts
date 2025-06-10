@@ -8,11 +8,7 @@ import { UsersModule } from 'src/users/users.module';
 import { GamesModule } from 'src/games/games.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([GameParticipant, Game]),
-    UsersModule,
-    forwardRef(() => GamesModule),
-  ],
+  imports: [TypeOrmModule.forFeature([GameParticipant, Game]), UsersModule],
   exports: [TypeOrmModule, GameParticipantsService],
   controllers: [GameParticipantsController],
   providers: [GameParticipantsService],
