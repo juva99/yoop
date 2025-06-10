@@ -132,7 +132,6 @@ export class GameParticipantsService {
 
     if (game.creator.uid === user.uid) {
       if (game.gameParticipants.length === 1) {
-        console.log('delete with repository');
         this.gameRepository.delete(gameId);
       } else {
         throw new ConflictException('המנהל אינו יכול לעזוב את המשחק');
