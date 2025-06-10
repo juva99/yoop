@@ -62,6 +62,30 @@ export class FieldsService {
     return await this.fieldRepository.save(fields);
   }
 
+  async upsertMany(createFieldDtos: CreateFieldDto[]): Promise<Field[]> {
+    const savedFields: Field[] = [];
+
+    for (const dto of createFieldDtos) {
+      let field = await this.fieldRepository.findOneBy({
+        fieldName: dto.fieldName,
+        fieldLat: dto.fieldLat,
+        fieldLng: dto.fieldLng,
+      });
+
+      if (field) {
+        // Update the existing field
+        field = this.fieldRepository.merge(field, dto);
+      } else {
+        // Create a new field
+        field = this.fieldRepository.create(dto);
+      }
+
+      savedFields.push(await this.fieldRepository.save(field));
+    }
+
+    return savedFields;
+  }
+
   async setManagerToField(fieldId: string, userId: string): Promise<Field> {
     const field = await this.findById(fieldId);
     const newManager = await this.usersService.findById(userId);

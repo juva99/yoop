@@ -6,6 +6,7 @@ import { convertXYService } from './convertXY.service';
 import { GameType } from 'src/enums/game-type.enum';
 import { City } from 'src/enums/city.enum';
 import { FieldsService } from 'src/fields/fields.service';
+import { Field } from 'src/fields/fields.entity';
 
 @Injectable()
 export class FieldFetchApiService {
@@ -15,7 +16,7 @@ export class FieldFetchApiService {
     private readonly fieldService: FieldsService,
   ) {}
 
-  async getFields(): Promise<void> {
+  async getFields(): Promise<Field[]> {
     let lat;
     let lon;
     const gameTypes: GameType[] = [];
@@ -104,7 +105,7 @@ export class FieldFetchApiService {
       }
     });
 
-    this.fieldService.createMany(createFieldDtos);
+    return this.fieldService.upsertMany(createFieldDtos);
   }
 
   async getCities(): Promise<any> {
