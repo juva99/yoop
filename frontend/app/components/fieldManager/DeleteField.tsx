@@ -13,11 +13,13 @@ import {
 import { Field } from "@/app/types/Field";
 import { toast } from "sonner";
 import { authFetch } from "@/lib/authFetch";
+import { useRouter } from "next/navigation";
 type Props = {
   field: Field;
 };
 
 const DeleteField: React.FC<Props> = ({ field }) => {
+  const router = useRouter();
   const deleteField = async () => {
     try {
       const response = await authFetch(
@@ -34,6 +36,7 @@ const DeleteField: React.FC<Props> = ({ field }) => {
       }
 
       toast.success("המגרש נמחק בהצלחה");
+      router.refresh();
     } catch (error) {
       toast.error("אירעה שגיאה");
     }
