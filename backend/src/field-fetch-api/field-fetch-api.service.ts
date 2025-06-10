@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { Cron } from '@nestjs/schedule';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { CreateFieldDto } from 'src/fields/dto/create-field.dto';
@@ -6,6 +7,7 @@ import { convertXYService } from './convertXY.service';
 import { GameType } from 'src/enums/game-type.enum';
 import { City } from 'src/enums/city.enum';
 import { FieldsService } from 'src/fields/fields.service';
+import { Field } from 'src/fields/fields.entity';
 
 @Injectable()
 export class FieldFetchApiService {
@@ -15,7 +17,20 @@ export class FieldFetchApiService {
     private readonly fieldService: FieldsService,
   ) {}
 
-  async getFields(): Promise<void> {
+  private readonly logger = new Logger(FieldFetchApiService.name);
+
+  @Cron('0 30 2 1 * *') // Runs at 2:30AM on the 1st day of every month
+  async handleMonthlyFieldUpdate() {
+    this.logger.log('Starting monthly field sync...');
+    try {
+      await this.getFields();
+      this.logger.log('Field sync complete.');
+    } catch (error) {
+      this.logger.error('Error during field sync', error);
+    }
+  }
+
+  async getFields(): Promise<Field[]> {
     let lat;
     let lon;
     const gameTypes: GameType[] = [];
@@ -104,7 +119,7 @@ export class FieldFetchApiService {
       }
     });
 
-    this.fieldService.createMany(createFieldDtos);
+    return this.fieldService.upsertMany(createFieldDtos);
   }
 
   async getCities(): Promise<any> {
