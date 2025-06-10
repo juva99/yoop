@@ -57,6 +57,9 @@ export class Game {
   creator: User;
 
   //field where game happens
-  @ManyToOne(() => Field, (field) => field.gamesInField, { eager: true })
+  @ManyToOne(() => Field, (field) => field.gamesInField, {
+    eager: true,
+    onDelete: 'CASCADE',
+  })
   field: Field;
 }
