@@ -11,13 +11,32 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Field } from "@/app/types/Field";
+import { toast } from "sonner";
+import { authFetch } from "@/lib/authFetch";
 type Props = {
   field: Field;
 };
 
 const DeleteField: React.FC<Props> = ({ field }) => {
   const deleteField = async () => {
-    console.log("פה נחבר את המחיקה בתכלס של: " + field.fieldName);
+    try {
+      const response = await authFetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/fields/${field.fieldId}`,
+        {
+          method: "DELETE",
+        },
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        toast.error(errorData.message || "אירעה שגיאה, נסה שוב מאוחר יותר.");
+        return;
+      }
+
+      toast.success("המגרש נמחק בהצלחה");
+    } catch (error) {
+      toast.error("אירעה שגיאה");
+    }
   };
   return (
     <div>
