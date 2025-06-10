@@ -15,6 +15,8 @@ import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { User } from './users.entity';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { Public } from 'src/auth/decorators/public.decorator';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Role } from 'src/enums/role.enum';
 
 @Controller('users')
 export class UsersController {
@@ -49,6 +51,7 @@ export class UsersController {
     return await this.userService.create(createUserDto);
   }
 
+  @Roles(Role.ADMIN)
   @Delete('/:id')
   async deleteOne(@Param('id') id: string): Promise<void> {
     return await this.userService.deleteOne(id);

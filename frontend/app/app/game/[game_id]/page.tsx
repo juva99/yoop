@@ -5,6 +5,7 @@ import {
   PiCalendarDots,
   PiClock,
 } from "react-icons/pi";
+import { TiWeatherPartlySunny } from "react-icons/ti";
 import { IoMdPin } from "react-icons/io";
 import { Game } from "@/app/types/Game";
 import PlayersList from "@/components/PlayersList";
@@ -67,6 +68,8 @@ export default async function Page({
     creator,
     field,
     price, // Use optional price from fetched data
+    weatherTemp,
+    weatherIcon,
   } = game;
 
   // Ensure dates are Date objects if they aren't already (TypeORM might return strings)
@@ -133,6 +136,15 @@ export default async function Page({
           <p>
             {formattedTime}-{formattedEndTime}
           </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <TiWeatherPartlySunny />
+          {weatherTemp && (
+            <div className="flex items-center gap-0">
+              <p>{weatherTemp}°</p>
+              <img src={weatherIcon} alt="Weather Icon" className="h-6 w-6" />
+            </div>
+          )}
         </div>
         {price !== undefined && (
           <div className="flex items-center gap-2">

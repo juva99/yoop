@@ -29,7 +29,7 @@ const UserItem: React.FC<Props> = ({ user, border = true }) => {
   const router = useRouter();
 
   const handleDeleteUser = async () => {
-    if (user.role === Role.USER) {
+    if (user.role !== Role.ADMIN) {
       const response = await authFetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/${user.uid}`,
         {
@@ -43,7 +43,7 @@ const UserItem: React.FC<Props> = ({ user, border = true }) => {
         router.refresh();
       }
     } else {
-      toast.error("לא ניתן למחוק מנהל מגרש, קיימים משחקים פתוחים");
+      toast.error("לא ניתן למחוק משתמש מנהל");
     }
   };
 

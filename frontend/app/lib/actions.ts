@@ -67,8 +67,21 @@ export const changeParticipationStatus = async (
   );
 
   if (!response.ok) {
-    console.error("Failed to join game");
+    let errorMessage = "Failed to change status";
+    try {
+      const errorData = await response.json();
+      errorMessage = errorData.message || errorMessage;
+    } catch (e) {
+      console.error("Failed to parse error JSON:", e);
+    }
+    console.error(errorMessage);
+    return { ok: false, message: errorMessage };
   }
+
+  if (status === ParticipationStatus.APPROVED) {
+    return { ok: true, message: "השחקן אושר!" };
+  }
+  return { ok: true, message: "השחקן הוסר!" };
 };
 
 export const getMyGames = async (): Promise<Game[]> => {
