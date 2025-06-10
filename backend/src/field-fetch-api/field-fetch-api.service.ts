@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { Cron } from '@nestjs/schedule';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { CreateFieldDto } from 'src/fields/dto/create-field.dto';
@@ -15,6 +16,19 @@ export class FieldFetchApiService {
     private readonly convertXYService: convertXYService,
     private readonly fieldService: FieldsService,
   ) {}
+
+  private readonly logger = new Logger(FieldFetchApiService.name);
+
+  @Cron('0 30 2 1 * *') // Runs at 2:30AM on the 1st day of every month
+  async handleMonthlyFieldUpdate() {
+    this.logger.log('Starting monthly field sync...');
+    try {
+      await this.getFields();
+      this.logger.log('Field sync complete.');
+    } catch (error) {
+      this.logger.error('Error during field sync', error);
+    }
+  }
 
   async getFields(): Promise<Field[]> {
     let lat;
