@@ -83,14 +83,19 @@ describe('GamesController', () => {
     it('should return a game by id', async () => {
       mockGamesService.findById.mockResolvedValue(mockGame);
 
-      const result = await controller.getById('123e4567-e89b-12d3-a456-426614174000');
+      const result = await controller.getById(
+        '123e4567-e89b-12d3-a456-426614174000',
+      );
 
       expect(result).toEqual(mockGame);
-      expect(mockGamesService.findById).toHaveBeenCalledWith('123e4567-e89b-12d3-a456-426614174000');
+      expect(mockGamesService.findById).toHaveBeenCalledWith(
+        '123e4567-e89b-12d3-a456-426614174000',
+      );
     });
   });
 
-  describe('create', () => {    const createGameDto: CreateGameDto = {
+  describe('create', () => {
+    const createGameDto: CreateGameDto = {
       gameType: GameType.FootBall,
       startDate: new Date('2025-06-01T10:00:00Z'),
       endDate: new Date('2025-06-01T12:00:00Z'),
@@ -105,7 +110,10 @@ describe('GamesController', () => {
       const result = await controller.create(createGameDto, mockUser as any);
 
       expect(result).toEqual(mockGame);
-      expect(mockGamesService.create).toHaveBeenCalledWith(createGameDto, mockUser);
+      expect(mockGamesService.create).toHaveBeenCalledWith(
+        createGameDto,
+        mockUser,
+      );
     });
   });
   describe('queryGames', () => {
@@ -131,10 +139,16 @@ describe('GamesController', () => {
       const successMessage = { message: 'Successfully joined the game' };
       mockGamesService.joinGame.mockResolvedValue(successMessage);
 
-      const result = await controller.joinGame('123e4567-e89b-12d3-a456-426614174000', mockUser as any);
+      const result = await controller.joinGame(
+        '123e4567-e89b-12d3-a456-426614174000',
+        mockUser as any,
+      );
 
       expect(result).toEqual(successMessage);
-      expect(mockGamesService.joinGame).toHaveBeenCalledWith('123e4567-e89b-12d3-a456-426614174000', mockUser);
+      expect(mockGamesService.joinGame).toHaveBeenCalledWith(
+        '123e4567-e89b-12d3-a456-426614174000',
+        mockUser,
+      );
     });
   });
 
@@ -143,22 +157,37 @@ describe('GamesController', () => {
       const successMessage = { message: 'Successfully left the game' };
       mockGamesService.leaveGame.mockResolvedValue(successMessage);
 
-      const result = await controller.leaveGame('123e4567-e89b-12d3-a456-426614174000', mockUser as any);
+      const result = await controller.leaveGame(
+        '123e4567-e89b-12d3-a456-426614174000',
+        mockUser as any,
+      );
 
       expect(result).toEqual(successMessage);
-      expect(mockGamesService.leaveGame).toHaveBeenCalledWith('123e4567-e89b-12d3-a456-426614174000', mockUser);
+      expect(mockGamesService.leaveGame).toHaveBeenCalledWith(
+        '123e4567-e89b-12d3-a456-426614174000',
+        mockUser,
+      );
     });
   });
   describe('getAvailableSlots', () => {
     it('should return available slots for a field', async () => {
       const availableSlots = ['10:00', '11:00', '12:00'];
       const queryDto = { date: '2025-06-01', timezone: 0 };
-      mockGamesService.calculateAvailableSlots.mockResolvedValue(availableSlots);
+      mockGamesService.calculateAvailableSlots.mockResolvedValue(
+        availableSlots,
+      );
 
-      const result = await controller.getAvailableSlots('123e4567-e89b-12d3-a456-426614174000', queryDto);
+      const result = await controller.getAvailableSlots(
+        '123e4567-e89b-12d3-a456-426614174000',
+        queryDto,
+      );
 
       expect(result).toEqual(availableSlots);
-      expect(mockGamesService.calculateAvailableSlots).toHaveBeenCalledWith('123e4567-e89b-12d3-a456-426614174000', '2025-06-01', 0);
+      expect(mockGamesService.calculateAvailableSlots).toHaveBeenCalledWith(
+        '123e4567-e89b-12d3-a456-426614174000',
+        '2025-06-01',
+        0,
+      );
     });
   });
 });

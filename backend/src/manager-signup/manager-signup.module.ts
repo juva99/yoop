@@ -8,6 +8,6 @@ import { ManagerSignup } from './manager-signup.entity';
   imports: [TypeOrmModule.forFeature([ManagerSignup])],
   controllers: [ManagerSignupController],
   providers: [ManagerSignupService],
-  exports: [ManagerSignupService]
+  exports: [ManagerSignupService],
 })
 export class ManagerSignupModule {}

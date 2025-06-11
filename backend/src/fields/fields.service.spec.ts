@@ -107,10 +107,10 @@ describe('FieldsService', () => {
     it('should throw NotFoundException when field not found', async () => {
       mockRepository.findOne.mockResolvedValue(null);
 
-      await expect(
-        service.findById('non-existent-id'),
-      ).rejects.toThrow(NotFoundException);
-      
+      await expect(service.findById('non-existent-id')).rejects.toThrow(
+        NotFoundException,
+      );
+
       expect(mockRepository.findOne).toHaveBeenCalledWith({
         where: { fieldId: 'non-existent-id' },
       });
@@ -120,7 +120,7 @@ describe('FieldsService', () => {
     const createFieldDto: CreateFieldDto = {
       fieldName: 'New Football Field',
       fieldAddress: '456 Sports Avenue, City',
-      fieldLat: 40.7580,
+      fieldLat: 40.758,
       fieldLng: -73.9855,
       gameTypes: [GameType.FootBall],
       city: City.TEL_AVIV_YAFO,
@@ -144,7 +144,9 @@ describe('FieldsService', () => {
       mockRepository.create.mockReturnValue(mockField);
       mockRepository.save.mockRejectedValue(new Error('Database error'));
 
-      await expect(service.create(createFieldDto)).rejects.toThrow('Database error');
+      await expect(service.create(createFieldDto)).rejects.toThrow(
+        'Database error',
+      );
     });
   });
 
@@ -153,7 +155,7 @@ describe('FieldsService', () => {
       {
         fieldName: 'Field 1',
         fieldAddress: 'Address 1',
-        fieldLat: 40.7580,
+        fieldLat: 40.758,
         fieldLng: -73.9855,
         gameTypes: [GameType.FootBall],
         city: City.TEL_AVIV_YAFO,
@@ -162,7 +164,7 @@ describe('FieldsService', () => {
       {
         fieldName: 'Field 2',
         fieldAddress: 'Address 2',
-        fieldLat: 40.7590,
+        fieldLat: 40.759,
         fieldLng: -73.9865,
         gameTypes: [GameType.BasketBall],
         city: City.TEL_AVIV_YAFO,
@@ -171,7 +173,11 @@ describe('FieldsService', () => {
     ];
 
     it('should create multiple fields successfully', async () => {
-      const createdFields = createFieldDtos.map((dto, index) => ({ ...mockField, ...dto, fieldId: `field-${index}` }));
+      const createdFields = createFieldDtos.map((dto, index) => ({
+        ...mockField,
+        ...dto,
+        fieldId: `field-${index}`,
+      }));
       mockRepository.create.mockReturnValue(createdFields);
       mockRepository.save.mockResolvedValue(createdFields);
 
@@ -199,9 +205,9 @@ describe('FieldsService', () => {
     it('should throw NotFoundException when no fields found in city', async () => {
       mockRepository.find.mockResolvedValue([]);
 
-      await expect(
-        service.findByCity('TEL_AVIV_YAFO'),
-      ).rejects.toThrow(NotFoundException);
+      await expect(service.findByCity('TEL_AVIV_YAFO')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -217,13 +223,19 @@ describe('FieldsService', () => {
     it('should throw NotFoundException when field not found', async () => {
       mockRepository.delete.mockResolvedValue({ affected: 0 });
 
-      await expect(service.deleteOne('non-existent-id')).rejects.toThrow(NotFoundException);
+      await expect(service.deleteOne('non-existent-id')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
   describe('setManagerToField', () => {
     it('should set manager to field successfully', async () => {
-      const fieldWithManager = { ...mockField, isManaged: true, manager: mockUser };
+      const fieldWithManager = {
+        ...mockField,
+        isManaged: true,
+        manager: mockUser,
+      };
       mockRepository.findOne.mockResolvedValue(mockField);
       mockUsersService.findById.mockResolvedValue(mockUser);
       mockRepository.save.mockResolvedValue(fieldWithManager);

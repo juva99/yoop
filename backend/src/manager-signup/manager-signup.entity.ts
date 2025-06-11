@@ -7,23 +7,22 @@ import {
 } from 'typeorm';
 
 @Entity('manager-signup')
-export class ManagerSignup{
+export class ManagerSignup {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
+  @Column()
+  firstName: string;
 
-    @Column()
-    firstName: string;
+  @Column()
+  lastName: string;
 
-    @Column()
-    lastName: string;
+  @Column()
+  email: string;
 
-    @Column()
-    email: string;
+  @Column()
+  phoneNum: string;
 
-    @Column()
-    phoneNum: string;
-
-    @Column()
-    message: string;
+  @Column()
+  message: string;
 }

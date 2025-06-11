@@ -47,7 +47,8 @@ describe('ManagerSignupController', () => {
     }).compile();
 
     controller = module.get<ManagerSignupController>(ManagerSignupController);
-    managerSignupService = module.get<ManagerSignupService>(ManagerSignupService);
+    managerSignupService =
+      module.get<ManagerSignupService>(ManagerSignupService);
 
     jest.clearAllMocks();
   });
@@ -83,17 +84,24 @@ describe('ManagerSignupController', () => {
       const result = await controller.getById(mockManagerSignup.id);
 
       expect(result).toEqual(mockManagerSignup);
-      expect(mockManagerSignupService.findById).toHaveBeenCalledWith(mockManagerSignup.id);
+      expect(mockManagerSignupService.findById).toHaveBeenCalledWith(
+        mockManagerSignup.id,
+      );
     });
 
     it('should handle non-existent signup', async () => {
-      mockManagerSignupService.findById.mockRejectedValue(new Error('Manager signup not found'));
+      mockManagerSignupService.findById.mockRejectedValue(
+        new Error('Manager signup not found'),
+      );
 
-      await expect(controller.getById('non-existent-id')).rejects.toThrow('Manager signup not found');
+      await expect(controller.getById('non-existent-id')).rejects.toThrow(
+        'Manager signup not found',
+      );
     });
   });
 
-  describe('create', () => {    it('should create a new manager signup', async () => {
+  describe('create', () => {
+    it('should create a new manager signup', async () => {
       const managerContactDto: ManagerContactDto = {
         firstName: 'Alice',
         lastName: 'NewManager',
@@ -108,7 +116,9 @@ describe('ManagerSignupController', () => {
       const result = await controller.create(managerContactDto);
 
       expect(result).toEqual(createdSignup);
-      expect(mockManagerSignupService.create).toHaveBeenCalledWith(managerContactDto);
+      expect(mockManagerSignupService.create).toHaveBeenCalledWith(
+        managerContactDto,
+      );
     });
 
     it('should handle creation errors', async () => {
@@ -120,9 +130,13 @@ describe('ManagerSignupController', () => {
         message: '',
       };
 
-      mockManagerSignupService.create.mockRejectedValue(new Error('Invalid signup data'));
+      mockManagerSignupService.create.mockRejectedValue(
+        new Error('Invalid signup data'),
+      );
 
-      await expect(controller.create(invalidDto)).rejects.toThrow('Invalid signup data');
+      await expect(controller.create(invalidDto)).rejects.toThrow(
+        'Invalid signup data',
+      );
     });
 
     it('should handle duplicate email registration', async () => {
@@ -134,9 +148,13 @@ describe('ManagerSignupController', () => {
         message: 'Some experience in field management',
       };
 
-      mockManagerSignupService.create.mockRejectedValue(new Error('Email already registered'));
+      mockManagerSignupService.create.mockRejectedValue(
+        new Error('Email already registered'),
+      );
 
-      await expect(controller.create(duplicateDto)).rejects.toThrow('Email already registered');
+      await expect(controller.create(duplicateDto)).rejects.toThrow(
+        'Email already registered',
+      );
     });
   });
 
@@ -147,13 +165,19 @@ describe('ManagerSignupController', () => {
       const result = await controller.deleteContact(mockManagerSignup.id);
 
       expect(result).toBeUndefined();
-      expect(mockManagerSignupService.delete).toHaveBeenCalledWith(mockManagerSignup.id);
+      expect(mockManagerSignupService.delete).toHaveBeenCalledWith(
+        mockManagerSignup.id,
+      );
     });
 
     it('should handle deletion of non-existent signup', async () => {
-      mockManagerSignupService.delete.mockRejectedValue(new Error('Manager signup not found'));
+      mockManagerSignupService.delete.mockRejectedValue(
+        new Error('Manager signup not found'),
+      );
 
-      await expect(controller.deleteContact('non-existent-id')).rejects.toThrow('Manager signup not found');
+      await expect(controller.deleteContact('non-existent-id')).rejects.toThrow(
+        'Manager signup not found',
+      );
     });
   });
 });

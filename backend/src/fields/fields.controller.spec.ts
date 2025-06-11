@@ -14,8 +14,8 @@ describe('FieldsController', () => {
     name: 'Central Football Field',
     address: '123 Main St, Berlin',
     city: 'Berlin',
-    latitude: 52.5200,
-    longitude: 13.4050,
+    latitude: 52.52,
+    longitude: 13.405,
     isPublic: true,
     price: 50,
     manager: {
@@ -37,7 +37,7 @@ describe('FieldsController', () => {
       address: '456 Sports Ave, Munich',
       city: 'Munich',
       latitude: 48.1351,
-      longitude: 11.5820,
+      longitude: 11.582,
       isPublic: false,
       price: 75,
       manager: null,
@@ -102,7 +102,7 @@ describe('FieldsController', () => {
     it('should return fields in specified city', async () => {
       const city = 'Berlin';
       const berlinFields = [mockFields[0]];
-      
+
       mockFieldsService.findByCity.mockResolvedValue(berlinFields);
 
       const result = await controller.getByCity(city);
@@ -113,7 +113,7 @@ describe('FieldsController', () => {
 
     it('should return empty array when no fields in city', async () => {
       const city = 'Hamburg';
-      
+
       mockFieldsService.findByCity.mockResolvedValue([]);
 
       const result = await controller.getByCity(city);
@@ -130,13 +130,19 @@ describe('FieldsController', () => {
       const result = await controller.getById(mockField.fieldId);
 
       expect(result).toEqual(mockField);
-      expect(mockFieldsService.findById).toHaveBeenCalledWith(mockField.fieldId);
+      expect(mockFieldsService.findById).toHaveBeenCalledWith(
+        mockField.fieldId,
+      );
     });
 
     it('should handle non-existent field', async () => {
-      mockFieldsService.findById.mockRejectedValue(new Error('Field not found'));
+      mockFieldsService.findById.mockRejectedValue(
+        new Error('Field not found'),
+      );
 
-      await expect(controller.getById('non-existent-id')).rejects.toThrow('Field not found');
+      await expect(controller.getById('non-existent-id')).rejects.toThrow(
+        'Field not found',
+      );
     });
   });
 
@@ -170,9 +176,13 @@ describe('FieldsController', () => {
         price: -10,
       };
 
-      mockFieldsService.create.mockRejectedValue(new Error('Invalid field data'));
+      mockFieldsService.create.mockRejectedValue(
+        new Error('Invalid field data'),
+      );
 
-      await expect(controller.create(createFieldDto)).rejects.toThrow('Invalid field data');
+      await expect(controller.create(createFieldDto)).rejects.toThrow(
+        'Invalid field data',
+      );
     });
   });
 
@@ -183,13 +193,19 @@ describe('FieldsController', () => {
       const result = await controller.deleteOne(mockField.fieldId);
 
       expect(result).toBeUndefined();
-      expect(mockFieldsService.deleteOne).toHaveBeenCalledWith(mockField.fieldId);
+      expect(mockFieldsService.deleteOne).toHaveBeenCalledWith(
+        mockField.fieldId,
+      );
     });
 
     it('should handle deletion of non-existent field', async () => {
-      mockFieldsService.deleteOne.mockRejectedValue(new Error('Field not found'));
+      mockFieldsService.deleteOne.mockRejectedValue(
+        new Error('Field not found'),
+      );
 
-      await expect(controller.deleteOne('non-existent-id')).rejects.toThrow('Field not found');
+      await expect(controller.deleteOne('non-existent-id')).rejects.toThrow(
+        'Field not found',
+      );
     });
   });
 
@@ -197,7 +213,7 @@ describe('FieldsController', () => {
     it('should assign a manager to a field', async () => {
       const fieldId = mockField.fieldId;
       const userId = 'manager-456';
-      
+
       const updatedField = {
         ...mockField,
         manager: { uid: userId, role: Role.FIELD_MANAGER } as any,
@@ -208,13 +224,20 @@ describe('FieldsController', () => {
       const result = await controller.setManagerToField(fieldId, userId);
 
       expect(result).toEqual(updatedField);
-      expect(mockFieldsService.setManagerToField).toHaveBeenCalledWith(fieldId, userId);
+      expect(mockFieldsService.setManagerToField).toHaveBeenCalledWith(
+        fieldId,
+        userId,
+      );
     });
 
     it('should handle invalid field or user', async () => {
-      mockFieldsService.setManagerToField.mockRejectedValue(new Error('Field or user not found'));
+      mockFieldsService.setManagerToField.mockRejectedValue(
+        new Error('Field or user not found'),
+      );
 
-      await expect(controller.setManagerToField('invalid-field', 'invalid-user')).rejects.toThrow('Field or user not found');
+      await expect(
+        controller.setManagerToField('invalid-field', 'invalid-user'),
+      ).rejects.toThrow('Field or user not found');
     });
   });
 
@@ -232,9 +255,13 @@ describe('FieldsController', () => {
     });
 
     it('should handle non-existent field', async () => {
-      mockFieldsService.setFieldPublic.mockRejectedValue(new Error('Field not found'));
+      mockFieldsService.setFieldPublic.mockRejectedValue(
+        new Error('Field not found'),
+      );
 
-      await expect(controller.setFieldPublic('non-existent-id')).rejects.toThrow('Field not found');
+      await expect(
+        controller.setFieldPublic('non-existent-id'),
+      ).rejects.toThrow('Field not found');
     });
   });
 

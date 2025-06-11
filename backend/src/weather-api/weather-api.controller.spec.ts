@@ -42,8 +42,8 @@ describe('WeatherApiController', () => {
   describe('getWeather', () => {
     it('should return weather data for given coordinates and time', async () => {
       const getWeatherDto: GetWeatherDto = {
-        lat: 52.5200,
-        lon: 13.4050,
+        lat: 52.52,
+        lon: 13.405,
         dt: '2025-06-01',
         hour: 14,
       };
@@ -53,21 +53,29 @@ describe('WeatherApiController', () => {
       const result = await controller.getWeather(getWeatherDto);
 
       expect(result).toEqual(mockWeatherData);
-      expect(mockWeatherApiService.getWeather).toHaveBeenCalledWith(getWeatherDto);
+      expect(mockWeatherApiService.getWeather).toHaveBeenCalledWith(
+        getWeatherDto,
+      );
     });
 
     it('should handle weather service errors', async () => {
       const getWeatherDto: GetWeatherDto = {
-        lat: 52.5200,
-        lon: 13.4050,
+        lat: 52.52,
+        lon: 13.405,
         dt: '2025-06-01',
         hour: 14,
       };
 
-      mockWeatherApiService.getWeather.mockRejectedValue(new Error('Weather API unavailable'));
+      mockWeatherApiService.getWeather.mockRejectedValue(
+        new Error('Weather API unavailable'),
+      );
 
-      await expect(controller.getWeather(getWeatherDto)).rejects.toThrow('Weather API unavailable');
-      expect(mockWeatherApiService.getWeather).toHaveBeenCalledWith(getWeatherDto);
+      await expect(controller.getWeather(getWeatherDto)).rejects.toThrow(
+        'Weather API unavailable',
+      );
+      expect(mockWeatherApiService.getWeather).toHaveBeenCalledWith(
+        getWeatherDto,
+      );
     });
 
     it('should handle invalid coordinates', async () => {
@@ -78,9 +86,13 @@ describe('WeatherApiController', () => {
         hour: 14,
       };
 
-      mockWeatherApiService.getWeather.mockRejectedValue(new Error('Invalid coordinates'));
+      mockWeatherApiService.getWeather.mockRejectedValue(
+        new Error('Invalid coordinates'),
+      );
 
-      await expect(controller.getWeather(invalidDto)).rejects.toThrow('Invalid coordinates');
+      await expect(controller.getWeather(invalidDto)).rejects.toThrow(
+        'Invalid coordinates',
+      );
     });
   });
 });

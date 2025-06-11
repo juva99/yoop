@@ -127,7 +127,9 @@ describe('Games Integration Tests', () => {
     app = moduleFixture.createNestApplication();
     await app.init();
 
-    gameRepository = moduleFixture.get<Repository<Game>>(getRepositoryToken(Game));
+    gameRepository = moduleFixture.get<Repository<Game>>(
+      getRepositoryToken(Game),
+    );
     gamesService = moduleFixture.get<GamesService>(GamesService);
 
     jest.clearAllMocks();
@@ -244,7 +246,7 @@ describe('Games Integration Tests', () => {
         game: mockGame,
         status: 'confirmed',
       };
-      
+
       mockGameRepository.findOne.mockResolvedValue(mockGame);
       mockGameParticipantsService.addParticipant.mockResolvedValue(participant);
       mockGameParticipantsService.getParticipantCount.mockResolvedValue(5);
@@ -268,7 +270,9 @@ describe('Games Integration Tests', () => {
   describe('DELETE /games/:id/leave', () => {
     it('should allow user to leave a game', async () => {
       mockGameRepository.findOne.mockResolvedValue(mockGame);
-      mockGameParticipantsService.removeParticipant.mockResolvedValue(undefined);
+      mockGameParticipantsService.removeParticipant.mockResolvedValue(
+        undefined,
+      );
 
       await request(app.getHttpServer())
         .delete('/games/123e4567-e89b-12d3-a456-426614174000/leave')
@@ -278,17 +282,15 @@ describe('Games Integration Tests', () => {
 
   describe('Error Handling', () => {
     it('should handle database connection errors', async () => {
-      mockGameRepository.find.mockRejectedValue(new Error('Database connection failed'));
+      mockGameRepository.find.mockRejectedValue(
+        new Error('Database connection failed'),
+      );
 
-      await request(app.getHttpServer())
-        .get('/games')
-        .expect(500);
+      await request(app.getHttpServer()).get('/games').expect(500);
     });
 
     it('should handle invalid UUID format', async () => {
-      await request(app.getHttpServer())
-        .get('/games/invalid-uuid')
-        .expect(400); // Assuming you have UUID validation
+      await request(app.getHttpServer()).get('/games/invalid-uuid').expect(400); // Assuming you have UUID validation
     });
   });
 
@@ -299,23 +301,29 @@ describe('Games Integration Tests', () => {
         condition: 'sunny',
         humidity: 60,
       };
-      
+
       mockWeatherApiService.getWeather.mockResolvedValue(weatherData);
       mockGameRepository.findOne.mockResolvedValue(mockGame);
 
       // Test the weather integration through the service
-      const result = await gamesService.findById('123e4567-e89b-12d3-a456-426614174000');
-      
+      const result = await gamesService.findById(
+        '123e4567-e89b-12d3-a456-426614174000',
+      );
+
       expect(mockWeatherApiService.getWeather).toHaveBeenCalled();
       expect(result).toHaveProperty('weather', weatherData);
     });
 
     it('should handle weather service failures gracefully', async () => {
-      mockWeatherApiService.getWeather.mockRejectedValue(new Error('Weather API unavailable'));
+      mockWeatherApiService.getWeather.mockRejectedValue(
+        new Error('Weather API unavailable'),
+      );
       mockGameRepository.findOne.mockResolvedValue(mockGame);
 
-      const result = await gamesService.findById('123e4567-e89b-12d3-a456-426614174000');
-      
+      const result = await gamesService.findById(
+        '123e4567-e89b-12d3-a456-426614174000',
+      );
+
       // Should return game without weather data when weather service fails
       expect(result).toEqual(mockGame);
       expect(result).not.toHaveProperty('weather');

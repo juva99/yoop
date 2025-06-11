@@ -22,7 +22,8 @@ describe('GamesService', () => {
   let gameParticipantsService: GameParticipantsService;
   let weatherApiService: WeatherApiService;
   let mailService: MailService;
-  const mockGame: Game = {    gameId: '123e4567-e89b-12d3-a456-426614174000',
+  const mockGame: Game = {
+    gameId: '123e4567-e89b-12d3-a456-426614174000',
     gameType: GameType.FootBall,
     startDate: new Date('2025-06-01T10:00:00Z'),
     endDate: new Date('2025-06-01T12:00:00Z'),
@@ -99,7 +100,9 @@ describe('GamesService', () => {
     service = module.get<GamesService>(GamesService);
     gameRepository = module.get<Repository<Game>>(getRepositoryToken(Game));
     fieldsService = module.get<FieldsService>(FieldsService);
-    gameParticipantsService = module.get<GameParticipantsService>(GameParticipantsService);
+    gameParticipantsService = module.get<GameParticipantsService>(
+      GameParticipantsService,
+    );
     weatherApiService = module.get<WeatherApiService>(WeatherApiService);
     mailService = module.get<MailService>(MailService);
   });
@@ -138,7 +141,9 @@ describe('GamesService', () => {
     it('should return a game when found', async () => {
       mockRepository.findOne.mockResolvedValue(mockGame);
 
-      const result = await service.findById('123e4567-e89b-12d3-a456-426614174000');
+      const result = await service.findById(
+        '123e4567-e89b-12d3-a456-426614174000',
+      );
 
       expect(result).toEqual(mockGame);
       expect(mockRepository.findOne).toHaveBeenCalledWith({
@@ -149,10 +154,10 @@ describe('GamesService', () => {
     it('should throw NotFoundException when game not found', async () => {
       mockRepository.findOne.mockResolvedValue(null);
 
-      await expect(
-        service.findById('non-existent-id'),
-      ).rejects.toThrow(NotFoundException);
-      
+      await expect(service.findById('non-existent-id')).rejects.toThrow(
+        NotFoundException,
+      );
+
       expect(mockRepository.findOne).toHaveBeenCalledWith({
         where: { gameId: 'non-existent-id' },
       });
@@ -214,12 +219,16 @@ describe('GamesService', () => {
 
       const result = await service.create(createGameDto, mockUser);
 
-      expect(mockFieldsService.findById).toHaveBeenCalledWith(createGameDto.field);
+      expect(mockFieldsService.findById).toHaveBeenCalledWith(
+        createGameDto.field,
+      );
       expect(mockWeatherApiService.getWeather).toHaveBeenCalledWith({
         lat: mockField.fieldLat,
         lon: mockField.fieldLng,
         dt: createGameDto.startDate.toISOString().split('T')[0],
-        hour: parseInt(createGameDto.startDate.toISOString().split('T')[1].split(':')[0]),
+        hour: parseInt(
+          createGameDto.startDate.toISOString().split('T')[1].split(':')[0],
+        ),
       });
       expect(mockRepository.create).toHaveBeenCalledWith(gameData);
       expect(mockRepository.save).toHaveBeenCalledWith(gameData);
@@ -266,26 +275,30 @@ describe('GamesService', () => {
       mockRepository.create.mockReturnValue({} as any);
       mockRepository.save.mockRejectedValue(new Error('Database error'));
 
-      await expect(
-        service.create(createGameDto, mockUser),
-      ).rejects.toThrow('Database error');
+      await expect(service.create(createGameDto, mockUser)).rejects.toThrow(
+        'Database error',
+      );
     });
 
     it('should throw error if field not found', async () => {
-      mockFieldsService.findById.mockRejectedValue(new NotFoundException('Field not found'));
+      mockFieldsService.findById.mockRejectedValue(
+        new NotFoundException('Field not found'),
+      );
 
-      await expect(
-        service.create(createGameDto, mockUser),
-      ).rejects.toThrow(NotFoundException);
+      await expect(service.create(createGameDto, mockUser)).rejects.toThrow(
+        NotFoundException,
+      );
     });
 
     it('should throw error if weather service fails', async () => {
       mockFieldsService.findById.mockResolvedValue(mockField);
-      mockWeatherApiService.getWeather.mockRejectedValue(new Error('Weather service error'));
+      mockWeatherApiService.getWeather.mockRejectedValue(
+        new Error('Weather service error'),
+      );
 
-      await expect(
-        service.create(createGameDto, mockUser),
-      ).rejects.toThrow('Weather service error');
+      await expect(service.create(createGameDto, mockUser)).rejects.toThrow(
+        'Weather service error',
+      );
     });
   });
 });

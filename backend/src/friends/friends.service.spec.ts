@@ -44,7 +44,6 @@ describe('FriendsService', () => {
   let mockFriend: User;
   let mockFriendRelation: FriendRelation;
 
-
   beforeEach(async () => {
     // Re-initialize mock objects for each test to ensure clean state
     mockRepository = {
@@ -63,8 +62,11 @@ describe('FriendsService', () => {
     // For simplicity, re-assigning from base mocks here.
     mockUser = { ...baseMockUser };
     mockFriend = { ...baseMockFriend };
-    mockFriendRelation = { ...baseMockFriendRelation, user1: mockUser, user2: mockFriend };
-
+    mockFriendRelation = {
+      ...baseMockFriendRelation,
+      user1: mockUser,
+      user2: mockFriend,
+    };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -100,9 +102,16 @@ describe('FriendsService', () => {
 
     it('should send friend request successfully', async () => {
       mockUsersService.findById.mockResolvedValue(mockFriend);
-      const createdRelation = { user1: mockUser, user2: mockFriend, status: FriendReqStatus.PENDING };
+      const createdRelation = {
+        user1: mockUser,
+        user2: mockFriend,
+        status: FriendReqStatus.PENDING,
+      };
       mockRepository.create.mockReturnValue(createdRelation);
-      mockRepository.save.mockResolvedValue({ ...createdRelation, id: 'new-relation-id' } as FriendRelation);
+      mockRepository.save.mockResolvedValue({
+        ...createdRelation,
+        id: 'new-relation-id',
+      } as FriendRelation);
 
       const result = await service.sendReq(friendReqDto, mockUser);
 
@@ -125,17 +134,25 @@ describe('FriendsService', () => {
       mockRepository.create.mockReturnValue(relationWithNullAddressee);
 
       // What the save operation would return
-      const savedRelationWithNullAddressee = { ...relationWithNullAddressee, id: 'saved-null-addressee-id', status: FriendReqStatus.PENDING } as unknown as FriendRelation;
+      const savedRelationWithNullAddressee = {
+        ...relationWithNullAddressee,
+        id: 'saved-null-addressee-id',
+        status: FriendReqStatus.PENDING,
+      } as unknown as FriendRelation;
       mockRepository.save.mockResolvedValue(savedRelationWithNullAddressee);
 
       const result = await service.sendReq(friendReqDto, mockUser);
 
-      expect(mockUsersService.findById).toHaveBeenCalledWith(friendReqDto.user_uid);
+      expect(mockUsersService.findById).toHaveBeenCalledWith(
+        friendReqDto.user_uid,
+      );
       expect(mockRepository.create).toHaveBeenCalledWith({
         user1: mockUser,
         user2: null, // Service passes null if user not found
       });
-      expect(mockRepository.save).toHaveBeenCalledWith(relationWithNullAddressee);
+      expect(mockRepository.save).toHaveBeenCalledWith(
+        relationWithNullAddressee,
+      );
       expect(result).toEqual(savedRelationWithNullAddressee);
     });
   });
@@ -152,7 +169,10 @@ describe('FriendsService', () => {
     };
 
     it('should accept friend request successfully', async () => {
-      const originalRelation = { ...mockFriendRelation, status: FriendReqStatus.PENDING };
+      const originalRelation = {
+        ...mockFriendRelation,
+        status: FriendReqStatus.PENDING,
+      };
       const updatedRelation = {
         ...mockFriendRelation,
         status: FriendReqStatus.APPROVED,
@@ -162,22 +182,35 @@ describe('FriendsService', () => {
 
       const result = await service.setStatus(setStatusDtoAccepted);
 
-      expect(mockRepository.findOne).toHaveBeenCalledWith({ where: { id: 'relation-123' } });
-      expect(mockRepository.save).toHaveBeenCalledWith({ ...originalRelation, status: FriendReqStatus.APPROVED });
+      expect(mockRepository.findOne).toHaveBeenCalledWith({
+        where: { id: 'relation-123' },
+      });
+      expect(mockRepository.save).toHaveBeenCalledWith({
+        ...originalRelation,
+        status: FriendReqStatus.APPROVED,
+      });
       expect(result).toEqual(updatedRelation);
       expect(mockRepository.remove).not.toHaveBeenCalled();
     });
 
     it('should reject (and remove) friend request successfully', async () => {
       // Ensure mockFriendRelation is fresh for this test if it could be mutated
-      const currentMockFriendRelation = { ...mockFriendRelation, user1: mockUser, user2: mockFriend };
+      const currentMockFriendRelation = {
+        ...mockFriendRelation,
+        user1: mockUser,
+        user2: mockFriend,
+      };
       mockRepository.findOne.mockResolvedValue(currentMockFriendRelation);
       mockRepository.remove.mockResolvedValue(currentMockFriendRelation); // remove returns the removed entity or void
 
       const result = await service.setStatus(setStatusDtoRejected);
 
-      expect(mockRepository.findOne).toHaveBeenCalledWith({ where: { id: 'relation-123' } });
-      expect(mockRepository.remove).toHaveBeenCalledWith(currentMockFriendRelation);
+      expect(mockRepository.findOne).toHaveBeenCalledWith({
+        where: { id: 'relation-123' },
+      });
+      expect(mockRepository.remove).toHaveBeenCalledWith(
+        currentMockFriendRelation,
+      );
       expect(mockRepository.save).not.toHaveBeenCalled();
       expect(result).toEqual(currentMockFriendRelation); // or expect(result).toBeUndefined() if remove returns void
     });
@@ -185,9 +218,9 @@ describe('FriendsService', () => {
     it('should throw NotFoundException if relation not found', async () => {
       mockRepository.findOne.mockResolvedValue(null);
 
-      await expect(
-        service.setStatus(setStatusDtoAccepted),
-      ).rejects.toThrow(NotFoundException);
+      await expect(service.setStatus(setStatusDtoAccepted)).rejects.toThrow(
+        NotFoundException,
+      );
       expect(mockRepository.save).not.toHaveBeenCalled();
       expect(mockRepository.remove).not.toHaveBeenCalled();
     });
@@ -195,7 +228,14 @@ describe('FriendsService', () => {
 
   describe('getAllFriends', () => {
     it('should return list of friends', async () => {
-      const friendsRelations = [{ ...mockFriendRelation, status: FriendReqStatus.APPROVED, user1: mockUser, user2: mockFriend }]; 
+      const friendsRelations = [
+        {
+          ...mockFriendRelation,
+          status: FriendReqStatus.APPROVED,
+          user1: mockUser,
+          user2: mockFriend,
+        },
+      ];
       mockRepository.find.mockResolvedValue(friendsRelations);
 
       const result = await service.getAllFriends(mockUser);
@@ -225,7 +265,7 @@ describe('FriendsService', () => {
         id: 'relation-pending-for-user',
         status: FriendReqStatus.PENDING,
         user1: mockFriend, // request is from mockFriend
-        user2: mockUser,   // request is to mockUser
+        user2: mockUser, // request is to mockUser
       };
       mockRepository.find.mockResolvedValue([pendingRequestForMockUser]);
 
@@ -244,14 +284,22 @@ describe('FriendsService', () => {
 
   describe('deleteReq', () => {
     it('should remove friend relationship successfully', async () => {
-      const currentMockFriendRelation = { ...mockFriendRelation, user1: mockUser, user2: mockFriend };
+      const currentMockFriendRelation = {
+        ...mockFriendRelation,
+        user1: mockUser,
+        user2: mockFriend,
+      };
       mockRepository.findOne.mockResolvedValue(currentMockFriendRelation);
       mockRepository.remove.mockResolvedValue(undefined); // Or the entity, depending on TypeORM version/config
 
       await service.deleteReq('relation-123');
 
-      expect(mockRepository.findOne).toHaveBeenCalledWith({ where: { id: 'relation-123' } });
-      expect(mockRepository.remove).toHaveBeenCalledWith(currentMockFriendRelation);
+      expect(mockRepository.findOne).toHaveBeenCalledWith({
+        where: { id: 'relation-123' },
+      });
+      expect(mockRepository.remove).toHaveBeenCalledWith(
+        currentMockFriendRelation,
+      );
     });
 
     it('should throw NotFoundException if relation not found for deletion', async () => {
@@ -267,21 +315,27 @@ describe('FriendsService', () => {
 
   describe('checkUser', () => {
     it('should return true if user is part of the relation', async () => {
-        const currentMockFriendRelation = { ...mockFriendRelation, user1: mockUser, user2: mockFriend };
-        mockRepository.find.mockResolvedValue([currentMockFriendRelation]);
-        const result = await service.checkUser(mockUser, 'relation-123');
-        expect(result).toBe(true);
-        expect(mockRepository.find).toHaveBeenCalledWith({
-            where: [
-                { user1: mockUser, id: 'relation-123' },
-                { user2: mockUser, id: 'relation-123' },
-            ],
-        });
+      const currentMockFriendRelation = {
+        ...mockFriendRelation,
+        user1: mockUser,
+        user2: mockFriend,
+      };
+      mockRepository.find.mockResolvedValue([currentMockFriendRelation]);
+      const result = await service.checkUser(mockUser, 'relation-123');
+      expect(result).toBe(true);
+      expect(mockRepository.find).toHaveBeenCalledWith({
+        where: [
+          { user1: mockUser, id: 'relation-123' },
+          { user2: mockUser, id: 'relation-123' },
+        ],
+      });
     });
 
     it('should throw NotFoundException if user is not part of the relation or relation does not exist', async () => {
-        mockRepository.find.mockResolvedValue([]);
-        await expect(service.checkUser(mockUser, 'other-relation-id')).rejects.toThrow(NotFoundException);
+      mockRepository.find.mockResolvedValue([]);
+      await expect(
+        service.checkUser(mockUser, 'other-relation-id'),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 });

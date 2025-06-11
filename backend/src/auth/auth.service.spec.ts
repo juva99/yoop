@@ -80,7 +80,10 @@ describe('AuthService', () => {
       mockUsersService.findByEmail.mockResolvedValue(mockUser);
       mockedBcrypt.compare.mockResolvedValue(true as never);
 
-      const result = await service.validateLocalUser('john@example.com', 'password123');
+      const result = await service.validateLocalUser(
+        'john@example.com',
+        'password123',
+      );
 
       expect(result).toEqual({
         uid: mockUser.uid,
@@ -89,14 +92,22 @@ describe('AuthService', () => {
         email: mockUser.email,
         role: mockUser.role,
       });
-      expect(mockUsersService.findByEmail).toHaveBeenCalledWith('john@example.com');
-      expect(mockedBcrypt.compare).toHaveBeenCalledWith('password123', 'hashedPassword');
+      expect(mockUsersService.findByEmail).toHaveBeenCalledWith(
+        'john@example.com',
+      );
+      expect(mockedBcrypt.compare).toHaveBeenCalledWith(
+        'password123',
+        'hashedPassword',
+      );
     });
 
     it('should return null when user is not found', async () => {
       mockUsersService.findByEmail.mockResolvedValue(null);
 
-      const result = await service.validateLocalUser('nonexistent@example.com', 'password123');
+      const result = await service.validateLocalUser(
+        'nonexistent@example.com',
+        'password123',
+      );
 
       expect(result).toBeNull();
       expect(mockedBcrypt.compare).not.toHaveBeenCalled();
@@ -106,10 +117,16 @@ describe('AuthService', () => {
       mockUsersService.findByEmail.mockResolvedValue(mockUser);
       mockedBcrypt.compare.mockResolvedValue(false as never);
 
-      const result = await service.validateLocalUser('john@example.com', 'wrongpassword');
+      const result = await service.validateLocalUser(
+        'john@example.com',
+        'wrongpassword',
+      );
 
       expect(result).toBeNull();
-      expect(mockedBcrypt.compare).toHaveBeenCalledWith('wrongpassword', 'hashedPassword');
+      expect(mockedBcrypt.compare).toHaveBeenCalledWith(
+        'wrongpassword',
+        'hashedPassword',
+      );
     });
   });
 
@@ -123,18 +140,22 @@ describe('AuthService', () => {
     it('should return access and refresh tokens', async () => {
       const accessToken = 'access.token.here';
       const refreshToken = 'refresh.token.here';
-      
+
       mockJwtService.signAsync
         .mockResolvedValueOnce(accessToken)
         .mockResolvedValueOnce(refreshToken);
-      
+
       mockConfigService.get
         .mockReturnValueOnce('access-secret')
         .mockReturnValueOnce('15m')
         .mockReturnValueOnce('refresh-secret')
         .mockReturnValueOnce('7d');
 
-      const result = await service.login(mockUser.uid, mockUser.role, mockUser.firstName);
+      const result = await service.login(
+        mockUser.uid,
+        mockUser.role,
+        mockUser.firstName,
+      );
 
       expect(result).toEqual({
         access_token: accessToken,
@@ -153,19 +174,23 @@ describe('AuthService', () => {
       const oldRefreshToken = 'old.refresh.token';
       const newAccessToken = 'new.access.token';
       const newRefreshToken = 'new.refresh.token';
-      
+
       mockUsersService.findById.mockResolvedValue({
         ...mockUser,
         refreshToken: oldRefreshToken,
       });
-      
+
       mockedBcrypt.compare.mockResolvedValue(true as never);
-      
+
       mockJwtService.signAsync
         .mockResolvedValueOnce(newAccessToken)
         .mockResolvedValueOnce(newRefreshToken);
 
-      const result = await service.refreshToken(mockUser.uid, mockUser.role, mockUser.firstName);
+      const result = await service.refreshToken(
+        mockUser.uid,
+        mockUser.role,
+        mockUser.firstName,
+      );
 
       expect(result).toEqual({
         access_token: newAccessToken,
@@ -186,7 +211,7 @@ describe('AuthService', () => {
         ...mockUser,
         refreshToken: 'stored.refresh.token',
       });
-      
+
       mockedBcrypt.compare.mockResolvedValue(false as never);
 
       await expect(

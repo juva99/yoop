@@ -8,31 +8,31 @@ import { Public } from 'src/auth/decorators/public.decorator';
 
 @Controller('manager-signup')
 export class ManagerSignupController {
-    constructor(
-    private readonly managerSignupService: ManagerSignupService
-    ){}
+  constructor(private readonly managerSignupService: ManagerSignupService) {}
 
-    @Roles(Role.ADMIN)
-    @Get()
-    async getAll(): Promise<ManagerSignup[]>{
-        return this.managerSignupService.getAll();
-    }
-    
-    @Roles(Role.ADMIN)
-    @Get('/:id')
-    async getById(@Param('id') id: string): Promise<ManagerSignup>{
-        return this.managerSignupService.findById(id);
-    }
+  @Roles(Role.ADMIN)
+  @Get()
+  async getAll(): Promise<ManagerSignup[]> {
+    return this.managerSignupService.getAll();
+  }
 
-    @Public()
-    @Post('/create')
-    async create(@Body() managerContactDto: ManagerContactDto): Promise<ManagerSignup>{
-        return this.managerSignupService.create(managerContactDto);
-    }
+  @Roles(Role.ADMIN)
+  @Get('/:id')
+  async getById(@Param('id') id: string): Promise<ManagerSignup> {
+    return this.managerSignupService.findById(id);
+  }
 
-    @Roles(Role.ADMIN)
-    @Delete('/delete/:id')
-    async deleteContact(@Param('id') id: string): Promise<void>{
-        return this.managerSignupService.delete(id);
-    }
+  @Public()
+  @Post('/create')
+  async create(
+    @Body() managerContactDto: ManagerContactDto,
+  ): Promise<ManagerSignup> {
+    return this.managerSignupService.create(managerContactDto);
+  }
+
+  @Roles(Role.ADMIN)
+  @Delete('/delete/:id')
+  async deleteContact(@Param('id') id: string): Promise<void> {
+    return this.managerSignupService.delete(id);
+  }
 }

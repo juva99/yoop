@@ -58,7 +58,7 @@ describe('AuthController', () => {
         access_token: 'access.token.here',
         refresh_token: 'refresh.token.here',
       };
-      
+
       mockAuthService.login.mockResolvedValue(tokens);
 
       const result = await controller.login(mockUser as any);
@@ -84,13 +84,14 @@ describe('AuthController', () => {
         access_token: 'new.access.token',
         refresh_token: 'new.refresh.token',
       };
-      
+
       const req = {
         user: {
           ...mockUser,
           refreshToken: 'old.refresh.token',
         },
-      };      mockAuthService.refreshToken.mockResolvedValue(newTokens);
+      };
+      mockAuthService.refreshToken.mockResolvedValue(newTokens);
 
       const result = await controller.refreshToken(req as any);
 
@@ -100,5 +101,6 @@ describe('AuthController', () => {
         mockUser.role,
         'John Doe',
       );
-    });  });
+    });
+  });
 });

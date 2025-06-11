@@ -118,7 +118,12 @@ describe('MailService', () => {
 
   describe('sendNewGameStatus', () => {
     it('should send game approved email successfully', async () => {
-      await service.sendNewGameStatus('john@example.com', 'John', GameStatus.APPROVED, 'Central Park');
+      await service.sendNewGameStatus(
+        'john@example.com',
+        'John',
+        GameStatus.APPROVED,
+        'Central Park',
+      );
 
       expect(mockPost).toHaveBeenCalledWith('send', { version: 'v3.1' });
       expect(mockRequest).toHaveBeenCalledWith({
@@ -142,7 +147,12 @@ describe('MailService', () => {
     });
 
     it('should send game pending/rejected email successfully', async () => {
-      await service.sendNewGameStatus('john@example.com', 'John', GameStatus.PENDING, 'Central Park');
+      await service.sendNewGameStatus(
+        'john@example.com',
+        'John',
+        GameStatus.PENDING,
+        'Central Park',
+      );
 
       expect(mockPost).toHaveBeenCalledWith('send', { version: 'v3.1' });
       expect(mockRequest).toHaveBeenCalledWith({
@@ -159,7 +169,9 @@ describe('MailService', () => {
               },
             ],
             Subject: 'המשחק סורב..',
-            HTMLPart: expect.stringContaining('המשחק שלך ב Central Park נדחה..'),
+            HTMLPart: expect.stringContaining(
+              'המשחק שלך ב Central Park נדחה..',
+            ),
           },
         ],
       });
@@ -168,7 +180,11 @@ describe('MailService', () => {
 
   describe('sendPasswordReset', () => {
     it('should send password reset email successfully', async () => {
-      await service.sendPasswordReset('john@example.com', 'reset-token-123', 'John');
+      await service.sendPasswordReset(
+        'john@example.com',
+        'reset-token-123',
+        'John',
+      );
 
       expect(mockPost).toHaveBeenCalledWith('send', { version: 'v3.1' });
       expect(mockRequest).toHaveBeenCalledWith({
@@ -217,7 +233,11 @@ describe('MailService', () => {
 
   describe('sendManagerInvite', () => {
     it('should send manager invite email successfully', async () => {
-      await service.sendManagerInvite('manager@example.com', 'invite-token-123', 'Manager Name');
+      await service.sendManagerInvite(
+        'manager@example.com',
+        'invite-token-123',
+        'Manager Name',
+      );
 
       expect(mockPost).toHaveBeenCalledWith('send', { version: 'v3.1' });
       expect(mockRequest).toHaveBeenCalledWith({
@@ -241,7 +261,10 @@ describe('MailService', () => {
     });
 
     it('should send manager invite email without name', async () => {
-      await service.sendManagerInvite('manager@example.com', 'invite-token-123');
+      await service.sendManagerInvite(
+        'manager@example.com',
+        'invite-token-123',
+      );
 
       expect(mockRequest).toHaveBeenCalledWith({
         Messages: [
@@ -271,7 +294,10 @@ describe('MailService', () => {
 
       await service.sendWelcomeEmail('john@example.com', 'John');
 
-      expect(consoleSpy).toHaveBeenCalledWith('Mailjet error:', expect.any(Error));
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Mailjet error:',
+        expect.any(Error),
+      );
       consoleSpy.mockRestore();
     });
 
@@ -279,9 +305,17 @@ describe('MailService', () => {
       const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
       mockRequest.mockRejectedValue(new Error('Mailjet API error'));
 
-      await service.sendNewGameStatus('john@example.com', 'John', GameStatus.APPROVED, 'Central Park');
+      await service.sendNewGameStatus(
+        'john@example.com',
+        'John',
+        GameStatus.APPROVED,
+        'Central Park',
+      );
 
-      expect(consoleSpy).toHaveBeenCalledWith('Mailjet error:', expect.any(Error));
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Mailjet error:',
+        expect.any(Error),
+      );
       consoleSpy.mockRestore();
     });
   });

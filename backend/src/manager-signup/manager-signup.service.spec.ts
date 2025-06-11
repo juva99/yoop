@@ -5,7 +5,10 @@ import { MailService } from '../mail/mail.service';
 import { ConfigService } from '@nestjs/config';
 import { User } from '../users/users.entity';
 import { Role } from '../enums/role.enum';
-import { ConflictException, InternalServerErrorException } from '@nestjs/common';
+import {
+  ConflictException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { ManagerContactDto } from './dto/manager-contact.dto';
 
 // Mock the external services
@@ -43,7 +46,7 @@ describe('ManagerSignupService', () => {
       providers: [
         ManagerSignupService,
         UsersService, // Use the mocked version
-        MailService,  // Use the mocked version
+        MailService, // Use the mocked version
         // { provide: ConfigService, useValue: { get: jest.fn() } }, // Example if ConfigService is used
       ],
     }).compile();
@@ -67,7 +70,9 @@ describe('ManagerSignupService', () => {
 
       const result = await service.create(mockCreateManagerDto);
 
-      expect(usersService.createManager).toHaveBeenCalledWith(mockCreateManagerDto);
+      expect(usersService.createManager).toHaveBeenCalledWith(
+        mockCreateManagerDto,
+      );
       expect(mailService.sendManagerInvite).toHaveBeenCalledWith(
         mockManagerUser.userEmail,
         expect.any(String), // For the generated token
@@ -75,7 +80,6 @@ describe('ManagerSignupService', () => {
       );
       expect(result).toEqual(mockManagerUser);
     });
-    
 
     // Add more tests if there's specific token generation logic to test, or other edge cases.
   });

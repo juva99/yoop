@@ -52,7 +52,29 @@ describe('UsersService', () => {
 
   describe('findAll', () => {
     it('should return all users', async () => {
-      const users = [{ uid: '123e4567-e89b-12d3-a456-426614174000', firstName: 'John', lastName: 'Doe', userEmail: 'john@example.com', birthDay: '1990-01-01', pass: 'hashedPassword', role: Role.USER, isMale: true, address: undefined, profilePic: undefined, phoneNum: undefined, fieldsManage: [], sentFriendRequests: [], receivedFriendRequests: [], gameParticipations: [], createdGames: [], passwordResetToken: null, passwordResetExpires: undefined, hashedRefreshToken: null }];
+      const users = [
+        {
+          uid: '123e4567-e89b-12d3-a456-426614174000',
+          firstName: 'John',
+          lastName: 'Doe',
+          userEmail: 'john@example.com',
+          birthDay: '1990-01-01',
+          pass: 'hashedPassword',
+          role: Role.USER,
+          isMale: true,
+          address: undefined,
+          profilePic: undefined,
+          phoneNum: undefined,
+          fieldsManage: [],
+          sentFriendRequests: [],
+          receivedFriendRequests: [],
+          gameParticipations: [],
+          createdGames: [],
+          passwordResetToken: null,
+          passwordResetExpires: undefined,
+          hashedRefreshToken: null,
+        },
+      ];
       mockRepository.find.mockResolvedValue(users);
 
       const result = await service.findAll();
@@ -87,13 +109,13 @@ describe('UsersService', () => {
       };
 
       // userWithoutPass is what we expect after removing pass and passConfirm for hashing
-      const { pass, passConfirm, ...userWithoutPass } = createUserDto; 
-      
+      const { pass, passConfirm, ...userWithoutPass } = createUserDto;
+
       // This is the object that the service will likely try to save.
       // It starts with what userRepository.create returns (which we mocked to include passConfirm),
       // and then the service updates the 'pass' field.
-      const userObjectFromCreateStep = {...createUserDto}; // What mockRepository.create returns
-      const userToSave = { 
+      const userObjectFromCreateStep = { ...createUserDto }; // What mockRepository.create returns
+      const userToSave = {
         ...userObjectFromCreateStep, // Includes original pass and passConfirm from DTO
         pass: 'hashedPassword', // Password is then updated to hashed version
       };
@@ -103,24 +125,26 @@ describe('UsersService', () => {
       // This is the final user object returned by the service after save (usually includes DB-generated ID)
       const createdUser = { uid: 'new-user-id', ...userToSave };
 
-
       mockedBcrypt.genSalt.mockResolvedValue('salt' as never);
       mockedBcrypt.hash.mockResolvedValue('hashedPassword' as never);
 
       // userRepository.create is called with the DTO (or similar)
       // It returns an entity instance that the service then modifies
-      mockRepository.create.mockReturnValue(userObjectFromCreateStep); 
+      mockRepository.create.mockReturnValue(userObjectFromCreateStep);
       mockRepository.save.mockResolvedValue(createdUser);
 
       const result = await service.create(createUserDto);
 
       expect(result).toEqual(createdUser);
       expect(mockedBcrypt.genSalt).toHaveBeenCalledWith(10);
-      expect(mockedBcrypt.hash).toHaveBeenCalledWith(createUserDto.pass, 'salt'); // Service uses createUserDto.pass
-      
+      expect(mockedBcrypt.hash).toHaveBeenCalledWith(
+        createUserDto.pass,
+        'salt',
+      ); // Service uses createUserDto.pass
+
       // Expect userRepository.create to be called with the DTO
-      expect(mockRepository.create).toHaveBeenCalledWith(createUserDto); 
-      
+      expect(mockRepository.create).toHaveBeenCalledWith(createUserDto);
+
       // Adjust userToSave to match what the error shows is being received
       // The error shows that the received object for save includes passConfirm
       const expectedObjectForSave = {
@@ -158,7 +182,7 @@ describe('UsersService', () => {
     it('should return user when found by email', async () => {
       const email = 'john@example.com';
       const mockUser = { uid: 'user-123', userEmail: email };
-      
+
       const mockQueryBuilder = {
         addSelect: jest.fn().mockReturnThis(),
         where: jest.fn().mockReturnThis(),
@@ -171,14 +195,20 @@ describe('UsersService', () => {
 
       expect(result).toEqual(mockUser);
       expect(mockRepository.createQueryBuilder).toHaveBeenCalledWith('user');
-      expect(mockQueryBuilder.addSelect).toHaveBeenCalledWith(['user.pass', 'user.hashedRefreshToken']);
-      expect(mockQueryBuilder.where).toHaveBeenCalledWith('user.userEmail = :email', { email });
+      expect(mockQueryBuilder.addSelect).toHaveBeenCalledWith([
+        'user.pass',
+        'user.hashedRefreshToken',
+      ]);
+      expect(mockQueryBuilder.where).toHaveBeenCalledWith(
+        'user.userEmail = :email',
+        { email },
+      );
       expect(mockQueryBuilder.getOne).toHaveBeenCalled();
     });
 
     it('should return null when user not found', async () => {
       const email = 'notfound@example.com';
-      
+
       const mockQueryBuilder = {
         addSelect: jest.fn().mockReturnThis(),
         where: jest.fn().mockReturnThis(),
@@ -205,14 +235,14 @@ describe('UsersService', () => {
       mockedBcrypt.genSalt.mockResolvedValue('salt' as never);
       mockedBcrypt.hash.mockResolvedValue('hashedPassword' as never);
       mockRepository.create.mockReturnValue(createManagerDto);
-      
+
       const createdManager = {
         uid: 'manager-123',
         ...createManagerDto,
         role: Role.FIELD_MANAGER,
         pass: 'hashedPassword',
       };
-      
+
       mockRepository.save.mockResolvedValue(createdManager);
 
       const result = await service.createManager(createManagerDto);
@@ -220,7 +250,10 @@ describe('UsersService', () => {
       expect(result).toEqual(createdManager);
       expect(mockedBcrypt.genSalt).toHaveBeenCalledWith(10);
       // The service generates a random password, so we expect any string
-      expect(mockedBcrypt.hash).toHaveBeenCalledWith(expect.any(String), 'salt');
+      expect(mockedBcrypt.hash).toHaveBeenCalledWith(
+        expect.any(String),
+        'salt',
+      );
       expect(mockRepository.create).toHaveBeenCalledWith(createManagerDto);
       expect(mockRepository.save).toHaveBeenCalledWith({
         pass: 'hashedPassword',

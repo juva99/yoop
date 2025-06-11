@@ -41,8 +41,12 @@ describe('GameParticipantsController', () => {
       ],
     }).compile();
 
-    controller = module.get<GameParticipantsController>(GameParticipantsController);
-    gameParticipantsService = module.get<GameParticipantsService>(GameParticipantsService);
+    controller = module.get<GameParticipantsController>(
+      GameParticipantsController,
+    );
+    gameParticipantsService = module.get<GameParticipantsService>(
+      GameParticipantsService,
+    );
 
     jest.clearAllMocks();
   });
@@ -63,12 +67,16 @@ describe('GameParticipantsController', () => {
         status: ParticipationStatus.CONFIRMED,
       };
 
-      mockGameParticipantsService.setStatus.mockResolvedValue(updatedParticipant);
+      mockGameParticipantsService.setStatus.mockResolvedValue(
+        updatedParticipant,
+      );
 
       const result = await controller.setStatus(setStatusDto);
 
       expect(result).toEqual(updatedParticipant);
-      expect(mockGameParticipantsService.setStatus).toHaveBeenCalledWith(setStatusDto);
+      expect(mockGameParticipantsService.setStatus).toHaveBeenCalledWith(
+        setStatusDto,
+      );
     });
 
     it('should handle status update to DECLINED', async () => {
@@ -82,12 +90,16 @@ describe('GameParticipantsController', () => {
         status: ParticipationStatus.DECLINED,
       };
 
-      mockGameParticipantsService.setStatus.mockResolvedValue(updatedParticipant);
+      mockGameParticipantsService.setStatus.mockResolvedValue(
+        updatedParticipant,
+      );
 
       const result = await controller.setStatus(setStatusDto);
 
       expect(result).toEqual(updatedParticipant);
-      expect(mockGameParticipantsService.setStatus).toHaveBeenCalledWith(setStatusDto);
+      expect(mockGameParticipantsService.setStatus).toHaveBeenCalledWith(
+        setStatusDto,
+      );
     });
 
     it('should handle non-existent participant', async () => {
@@ -96,10 +108,16 @@ describe('GameParticipantsController', () => {
         status: ParticipationStatus.CONFIRMED,
       };
 
-      mockGameParticipantsService.setStatus.mockRejectedValue(new Error('Participant not found'));
+      mockGameParticipantsService.setStatus.mockRejectedValue(
+        new Error('Participant not found'),
+      );
 
-      await expect(controller.setStatus(setStatusDto)).rejects.toThrow('Participant not found');
-      expect(mockGameParticipantsService.setStatus).toHaveBeenCalledWith(setStatusDto);
+      await expect(controller.setStatus(setStatusDto)).rejects.toThrow(
+        'Participant not found',
+      );
+      expect(mockGameParticipantsService.setStatus).toHaveBeenCalledWith(
+        setStatusDto,
+      );
     });
 
     it('should handle invalid status values', async () => {
@@ -108,9 +126,13 @@ describe('GameParticipantsController', () => {
         status: 'INVALID_STATUS' as ParticipationStatus,
       };
 
-      mockGameParticipantsService.setStatus.mockRejectedValue(new Error('Invalid status'));
+      mockGameParticipantsService.setStatus.mockRejectedValue(
+        new Error('Invalid status'),
+      );
 
-      await expect(controller.setStatus(setStatusDto)).rejects.toThrow('Invalid status');
+      await expect(controller.setStatus(setStatusDto)).rejects.toThrow(
+        'Invalid status',
+      );
     });
   });
 });

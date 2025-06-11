@@ -91,7 +91,7 @@ export class MailService {
     }
   }
 
-    async sendPasswordReset(to: string, token: string, name?: string) {
+  async sendPasswordReset(to: string, token: string, name?: string) {
     const fromEmail = process.env.MAIL_FROM;
     const fromName = process.env.MAIL_FROM_NAME;
     try {
@@ -123,7 +123,7 @@ export class MailService {
       console.error('Mailjet error:', error.response?.body || error);
     }
   }
-    async sendManagerInvite(to: string, token: string, name?: string) {
+  async sendManagerInvite(to: string, token: string, name?: string) {
     const fromEmail = process.env.MAIL_FROM;
     const fromName = process.env.MAIL_FROM_NAME;
     try {

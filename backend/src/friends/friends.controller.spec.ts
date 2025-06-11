@@ -95,7 +95,10 @@ describe('FriendsController', () => {
       const result = await controller.setStatus(setStatusDto, mockUser);
 
       expect(result).toEqual(acceptedRelation);
-      expect(mockFriendsService.checkUser).toHaveBeenCalledWith(mockUser, setStatusDto.req_uid);
+      expect(mockFriendsService.checkUser).toHaveBeenCalledWith(
+        mockUser,
+        setStatusDto.req_uid,
+      );
       expect(mockFriendsService.setStatus).toHaveBeenCalledWith(setStatusDto);
     });
 
@@ -116,7 +119,10 @@ describe('FriendsController', () => {
       const result = await controller.setStatus(setStatusDto, mockUser);
 
       expect(result).toEqual(declinedRelation);
-      expect(mockFriendsService.checkUser).toHaveBeenCalledWith(mockUser, setStatusDto.req_uid);
+      expect(mockFriendsService.checkUser).toHaveBeenCalledWith(
+        mockUser,
+        setStatusDto.req_uid,
+      );
       expect(mockFriendsService.setStatus).toHaveBeenCalledWith(setStatusDto);
     });
 
@@ -126,10 +132,17 @@ describe('FriendsController', () => {
         status: FriendReqStatus.ACCEPTED,
       };
 
-      mockFriendsService.checkUser.mockRejectedValue(new Error('Unauthorized access'));
+      mockFriendsService.checkUser.mockRejectedValue(
+        new Error('Unauthorized access'),
+      );
 
-      await expect(controller.setStatus(setStatusDto, mockUser)).rejects.toThrow('Unauthorized access');
-      expect(mockFriendsService.checkUser).toHaveBeenCalledWith(mockUser, setStatusDto.req_uid);
+      await expect(
+        controller.setStatus(setStatusDto, mockUser),
+      ).rejects.toThrow('Unauthorized access');
+      expect(mockFriendsService.checkUser).toHaveBeenCalledWith(
+        mockUser,
+        setStatusDto.req_uid,
+      );
     });
   });
 
@@ -144,7 +157,10 @@ describe('FriendsController', () => {
       const result = await controller.sendReq(friendReqDto, mockUser);
 
       expect(result).toEqual(mockFriendRelation);
-      expect(mockFriendsService.sendReq).toHaveBeenCalledWith(friendReqDto, mockUser);
+      expect(mockFriendsService.sendReq).toHaveBeenCalledWith(
+        friendReqDto,
+        mockUser,
+      );
     });
 
     it('should handle duplicate friend request', async () => {
@@ -152,9 +168,13 @@ describe('FriendsController', () => {
         addressee_uid: mockFriend.uid,
       };
 
-      mockFriendsService.sendReq.mockRejectedValue(new Error('Friend request already exists'));
+      mockFriendsService.sendReq.mockRejectedValue(
+        new Error('Friend request already exists'),
+      );
 
-      await expect(controller.sendReq(friendReqDto, mockUser)).rejects.toThrow('Friend request already exists');
+      await expect(controller.sendReq(friendReqDto, mockUser)).rejects.toThrow(
+        'Friend request already exists',
+      );
     });
 
     it('should handle sending request to non-existent user', async () => {
@@ -164,7 +184,9 @@ describe('FriendsController', () => {
 
       mockFriendsService.sendReq.mockRejectedValue(new Error('User not found'));
 
-      await expect(controller.sendReq(friendReqDto, mockUser)).rejects.toThrow('User not found');
+      await expect(controller.sendReq(friendReqDto, mockUser)).rejects.toThrow(
+        'User not found',
+      );
     });
   });
 
@@ -178,17 +200,27 @@ describe('FriendsController', () => {
       const result = await controller.deleteReq(mockUser, friendId);
 
       expect(result).toBeUndefined();
-      expect(mockFriendsService.checkUser).toHaveBeenCalledWith(mockUser, friendId);
+      expect(mockFriendsService.checkUser).toHaveBeenCalledWith(
+        mockUser,
+        friendId,
+      );
       expect(mockFriendsService.deleteReq).toHaveBeenCalledWith(friendId);
     });
 
     it('should handle unauthorized deletion attempt', async () => {
       const friendId = mockFriend.uid;
 
-      mockFriendsService.checkUser.mockRejectedValue(new Error('Unauthorized access'));
+      mockFriendsService.checkUser.mockRejectedValue(
+        new Error('Unauthorized access'),
+      );
 
-      await expect(controller.deleteReq(mockUser, friendId)).rejects.toThrow('Unauthorized access');
-      expect(mockFriendsService.checkUser).toHaveBeenCalledWith(mockUser, friendId);
+      await expect(controller.deleteReq(mockUser, friendId)).rejects.toThrow(
+        'Unauthorized access',
+      );
+      expect(mockFriendsService.checkUser).toHaveBeenCalledWith(
+        mockUser,
+        friendId,
+      );
     });
   });
 
@@ -196,12 +228,16 @@ describe('FriendsController', () => {
     it('should return pending friend requests for user', async () => {
       const pendingRequests = [mockFriendRelation];
 
-      mockFriendsService.getPendingRequestsForUser.mockResolvedValue(pendingRequests);
+      mockFriendsService.getPendingRequestsForUser.mockResolvedValue(
+        pendingRequests,
+      );
 
       const result = await controller.getPendingRequests(mockUser);
 
       expect(result).toEqual(pendingRequests);
-      expect(mockFriendsService.getPendingRequestsForUser).toHaveBeenCalledWith(mockUser);
+      expect(mockFriendsService.getPendingRequestsForUser).toHaveBeenCalledWith(
+        mockUser,
+      );
     });
 
     it('should return empty array when no pending requests', async () => {
@@ -210,7 +246,9 @@ describe('FriendsController', () => {
       const result = await controller.getPendingRequests(mockUser);
 
       expect(result).toEqual([]);
-      expect(mockFriendsService.getPendingRequestsForUser).toHaveBeenCalledWith(mockUser);
+      expect(mockFriendsService.getPendingRequestsForUser).toHaveBeenCalledWith(
+        mockUser,
+      );
     });
   });
 

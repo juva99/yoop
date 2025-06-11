@@ -25,31 +25,31 @@ describe('WeatherApiService', () => {
                 temp_c: 22.5,
                 condition: {
                   text: 'Clear',
-                  icon: '//cdn.weatherapi.com/weather/64x64/day/113.png'
+                  icon: '//cdn.weatherapi.com/weather/64x64/day/113.png',
                 },
                 wind_kph: 10.8,
                 humidity: 60,
-                chance_of_rain: 0
-              }
-            ]
-          }
-        ]
+                chance_of_rain: 0,
+              },
+            ],
+          },
+        ],
       },
       current: {
         temp_c: 22.5,
         condition: {
           text: 'Clear',
-          icon: '//cdn.weatherapi.com/weather/64x64/day/113.png'
+          icon: '//cdn.weatherapi.com/weather/64x64/day/113.png',
         },
         wind_kph: 10.8,
-        humidity: 60
+        humidity: 60,
       },
       location: {
         name: 'New York',
         country: 'United States of America',
         lat: 40.76,
-        lon: -73.98
-      }
+        lon: -73.98,
+      },
     },
   };
 
@@ -78,7 +78,7 @@ describe('WeatherApiService', () => {
       lat: 40.76,
       lon: -73.98,
       dt: '2023-12-01',
-      hour: 14
+      hour: 14,
     };
 
     it('should return weather data successfully', async () => {
@@ -96,7 +96,7 @@ describe('WeatherApiService', () => {
             dt: getWeatherDto.dt,
             hour: getWeatherDto.hour,
           },
-        }
+        },
       );
     });
 
@@ -109,14 +109,18 @@ describe('WeatherApiService', () => {
       };
       mockHttpService.get.mockReturnValue(throwError(() => errorResponse));
 
-      await expect(service.getWeather(getWeatherDto)).rejects.toThrow(HttpException);
+      await expect(service.getWeather(getWeatherDto)).rejects.toThrow(
+        HttpException,
+      );
     });
 
     it('should handle network errors', async () => {
       const networkError = new Error('Network error');
       mockHttpService.get.mockReturnValue(throwError(() => networkError));
 
-      await expect(service.getWeather(getWeatherDto)).rejects.toThrow(HttpException);
+      await expect(service.getWeather(getWeatherDto)).rejects.toThrow(
+        HttpException,
+      );
     });
 
     it('should make HTTP request with correct parameters', async () => {
@@ -133,7 +137,7 @@ describe('WeatherApiService', () => {
             dt: getWeatherDto.dt,
             hour: getWeatherDto.hour,
           },
-        }
+        },
       );
     });
 
@@ -141,9 +145,9 @@ describe('WeatherApiService', () => {
       const responseWithoutForecast = {
         data: {
           forecast: {
-            forecastday: []
-          }
-        }
+            forecastday: [],
+          },
+        },
       };
       mockHttpService.get.mockReturnValue(of(responseWithoutForecast));
 

@@ -11,8 +11,8 @@ describe('FieldFetchApiController', () => {
       id: 'external-field-1',
       name: 'Municipal Sports Center',
       address: '123 Sports Ave, Berlin',
-      latitude: 52.5200,
-      longitude: 13.4050,
+      latitude: 52.52,
+      longitude: 13.405,
       type: 'Football',
       amenities: ['Parking', 'Changing Rooms', 'Lighting'],
     },
@@ -21,7 +21,7 @@ describe('FieldFetchApiController', () => {
       name: 'Community Recreation Field',
       address: '456 Recreation Blvd, Munich',
       latitude: 48.1351,
-      longitude: 11.5820,
+      longitude: 11.582,
       type: 'Multi-purpose',
       amenities: ['Parking', 'Restrooms'],
     },
@@ -43,7 +43,8 @@ describe('FieldFetchApiController', () => {
     }).compile();
 
     controller = module.get<FieldFetchApiController>(FieldFetchApiController);
-    fieldFetchApiService = module.get<FieldFetchApiService>(FieldFetchApiService);
+    fieldFetchApiService =
+      module.get<FieldFetchApiService>(FieldFetchApiService);
 
     jest.clearAllMocks();
   });
@@ -72,23 +73,33 @@ describe('FieldFetchApiController', () => {
     });
 
     it('should handle external API errors', async () => {
-      mockFieldFetchApiService.getFields.mockRejectedValue(new Error('External API unavailable'));
+      mockFieldFetchApiService.getFields.mockRejectedValue(
+        new Error('External API unavailable'),
+      );
 
-      await expect(controller.getFields()).rejects.toThrow('External API unavailable');
+      await expect(controller.getFields()).rejects.toThrow(
+        'External API unavailable',
+      );
       expect(mockFieldFetchApiService.getFields).toHaveBeenCalled();
     });
 
     it('should handle network timeout errors', async () => {
-      mockFieldFetchApiService.getFields.mockRejectedValue(new Error('Request timeout'));
+      mockFieldFetchApiService.getFields.mockRejectedValue(
+        new Error('Request timeout'),
+      );
 
       await expect(controller.getFields()).rejects.toThrow('Request timeout');
       expect(mockFieldFetchApiService.getFields).toHaveBeenCalled();
     });
 
     it('should handle malformed API response', async () => {
-      mockFieldFetchApiService.getFields.mockRejectedValue(new Error('Invalid response format'));
+      mockFieldFetchApiService.getFields.mockRejectedValue(
+        new Error('Invalid response format'),
+      );
 
-      await expect(controller.getFields()).rejects.toThrow('Invalid response format');
+      await expect(controller.getFields()).rejects.toThrow(
+        'Invalid response format',
+      );
       expect(mockFieldFetchApiService.getFields).toHaveBeenCalled();
     });
   });

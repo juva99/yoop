@@ -157,7 +157,11 @@ export const createTestingModule = async (
 /**
  * Helper to mock HTTP requests for testing controllers
  */
-export const createMockRequest = (user: any = null, params: any = {}, body: any = {}) => ({
+export const createMockRequest = (
+  user: any = null,
+  params: any = {},
+  body: any = {},
+) => ({
   user,
   params,
   body,
@@ -194,7 +198,8 @@ export const createMockGuard = (shouldActivate = true, user: any = null) => ({
 /**
  * Async test helper to wait for promises
  */
-export const waitFor = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+export const waitFor = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
 
 /**
  * Helper to create mock date for consistent testing
@@ -215,10 +220,11 @@ export const restoreDate = () => {
 /**
  * Helper to assert that a function was called with partial arguments
  */
-export const expectCalledWithPartial = (mockFn: jest.Mock, partialArgs: any) => {
-  expect(mockFn).toHaveBeenCalledWith(
-    expect.objectContaining(partialArgs),
-  );
+export const expectCalledWithPartial = (
+  mockFn: jest.Mock,
+  partialArgs: any,
+) => {
+  expect(mockFn).toHaveBeenCalledWith(expect.objectContaining(partialArgs));
 };
 
 /**
