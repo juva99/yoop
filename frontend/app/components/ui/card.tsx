@@ -13,7 +13,7 @@ function Card({ className, variant = "default", ...props }: CardProps) {
     form: "bg-white h-full text-gray-900 shadow-lg px-8",
     game: "bg-card text-card-foreground border border-gray-100 shadow-sm w-full mt-3",
     friends:
-      "max-h-[400px] overflow-y-auto bg-card text-card-foreground border border-gray-100 shadow-sm w-full mt-3",
+      "max-h-[400px] overflow-y-auto bg-card text-card-foreground border border-gray-100 shadow-sm w-full mt-3 relative",
   };
 
   return (
