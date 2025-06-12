@@ -16,7 +16,7 @@ const page: React.FC = ({}) => {
             width={40}
             height={40}
           />
-          <span className="mt-2">חפש משחק</span>
+          <span className="mt-2">חיפוש משחק</span>
         </Link>
         <Link
           href={"/"}

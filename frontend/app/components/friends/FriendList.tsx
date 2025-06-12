@@ -17,17 +17,14 @@ type Props = {
 };
 
 const FriendList: React.FC<Props> = ({ currentUserUid, relations }) => {
-  // state עם כל הקשרים
   const [friendRelations, setFriendRelations] =
     useState<FriendRelation[]>(relations);
-
-  // נבנה את הרשימה רק מה-state
+  //filter the relevant user from each relation
   const friendsWithRelation = friendRelations.map((rel) => ({
     friend: rel.user1.uid === currentUserUid ? rel.user2 : rel.user1,
     relationId: rel.id,
   }));
 
-  // פעולת מחיקה גם מהשרת וגם מה-state
   const removeFriend = async (relationId: string) => {
     try {
       const response = await authFetch(
