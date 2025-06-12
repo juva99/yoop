@@ -1,9 +1,17 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  ManyToMany,
+} from 'typeorm';
 import { Field } from 'src/fields/fields.entity';
 import { Game } from 'src/games/games.entity';
 import { GameParticipant } from 'src/game-participants/game-participants.entity';
 import { FriendRelation } from 'src/friends/friends.entity';
 import { Role } from 'src/enums/role.enum';
+import { Group } from 'src/groups/groups.entity';
+import { GroupMember } from 'src/group-members/group-members.entity';
 
 @Entity('users')
 export class User {
@@ -69,4 +77,9 @@ export class User {
 
   @Column({ nullable: true, select: false, type: 'timestamptz' })
   passwordResetExpires?: Date;
+
+  @OneToMany(() => GroupMember, (groupMember) => groupMember.user, {
+    eager: true,
+  })
+  groupMemberIn: GroupMember[];
 }
