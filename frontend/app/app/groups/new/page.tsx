@@ -1,8 +1,8 @@
 import React from "react";
-import Groups from "./Groups";
+import NewGroupPage from "./NewGroupPage";
 
 const page: React.FC = () => {
-  return <Groups />;
+  return <NewGroupPage />;
 };
 
 export default page;
