@@ -19,7 +19,6 @@ import { FriendsCombobox } from "./FriendsCombobox";
 import { GameType } from "@/app/enums/game-type.enum";
 import GameTypeOption from "@/components/create-field/game-type-option";
 import { formSchema, FormSchema } from "@/lib/schemas/new-group.schema";
-import { Checkbox } from "@/components/ui/checkbox";
 import { User } from "@/app/types/User";
 type Friend = {
   id: string;
@@ -62,7 +61,6 @@ const NewGroupForm: React.FC<Props> = ({ relations, userId }) => {
     defaultValues: {
       groupName: "",
       gameType: [],
-      isPrivate: false,
       members: [],
     },
   });
@@ -125,24 +123,6 @@ const NewGroupForm: React.FC<Props> = ({ relations, userId }) => {
                 </div>
               </FormControl>
               <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="isPrivate"
-          render={({ field }) => (
-            <FormItem>
-              <div className="flex gap-2">
-                <FormControl>
-                  <Checkbox
-                    id="isPrivate"
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-                <FormLabel>אני מעוניין שהקבוצה תהיה פרטית</FormLabel>
-              </div>
             </FormItem>
           )}
         />

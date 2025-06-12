@@ -2,12 +2,14 @@ import { z } from "zod";
 import { GameType } from "@/app/enums/game-type.enum";
 
 export const formSchema = z.object({
-  groupName: z.string().min(1, "יש להזין שם קבוצה"),
+  groupName: z
+    .string()
+    .trim()
+    .min(2, { message: "שם הקבוצה חייב להכיל לפחות שתי אותיות" })
+    .regex(/^[א-ת]+$/, { message: "שם הקבוצה חייב להכיל אותיות בעברית בלבד" }),
   gameType: z
     .array(z.nativeEnum(GameType))
     .min(1, "יש לבחור לפחות סוג ספורט אחד"),
-  isPrivate: z.boolean().optional(),
-
   members: z.array(z.string()).optional(),
 });
 
