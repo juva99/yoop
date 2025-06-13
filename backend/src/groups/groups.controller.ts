@@ -26,8 +26,8 @@ export class GroupController {
   ) {}
 
   // get group by id
-  @Get('/:groudId')
-  async getGroupById(@Param('groupId') groupId: string) {
+  @Get('/:id')
+  async getGroupById(@Param('id') groupId: string) {
     return await this.groupsService.findGroupById(groupId);
   }
 
@@ -51,8 +51,8 @@ export class GroupController {
   }
 
   @Roles(Role.ADMIN)
-  @Delete('/delete/:groupId')
-  async deleteGroup(@Param('groupId') groupId: string): Promise<void> {
+  @Delete('/delete/:id')
+  async deleteGroup(@Param('id') groupId: string): Promise<void> {
     return await this.groupsService.deleteGroup(groupId);
   }
 
@@ -61,15 +61,13 @@ export class GroupController {
     return await this.groupsService.updateGroup(updateGroupDto);
   }
 
-  @Get('/:groupId/members')
-  async getGroupMembers(
-    @Param('groupId') groupId: string,
-  ): Promise<GroupMember[]> {
+  @Get('/:id/members')
+  async getGroupMembers(@Param('id') groupId: string): Promise<GroupMember[]> {
     return await this.groupMembersService.findAllGroupMembers(groupId);
   }
 
-  @Get('/:groupId/users')
-  async getGroupUsers(@Param('groupId') groupId: string): Promise<User[]> {
+  @Get('/:id/users')
+  async getGroupUsers(@Param('id') groupId: string): Promise<User[]> {
     return await this.groupMembersService.findAllGroupUsers(groupId);
   }
 
@@ -80,17 +78,17 @@ export class GroupController {
     return await this.groupMembersService.findAllGroupManagers(groupId);
   }
 
-  @Post('/:groupId/add/:userId')
+  @Post('/:id/add/:userId')
   async addUserToGroup(
-    @Param('groupId') groupId: string,
+    @Param('id') groupId: string,
     @Param('userId') userId: string,
   ): Promise<GroupMember> {
     return await this.groupMembersService.addUserToGroup(groupId, userId);
   }
 
-  @Delete('/:groupId/remove/:userId')
+  @Delete('/:id/remove/:userId')
   async removeMemeberFromGroup(
-    @Param('groupId') groupId: string,
+    @Param('id') groupId: string,
     @Param('userId') userId: string,
   ): Promise<void> {
     return await this.groupMembersService.removeMemeberFromGroup(

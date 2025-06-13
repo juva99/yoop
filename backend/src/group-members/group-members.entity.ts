@@ -18,7 +18,7 @@ export class GroupMember {
   })
   group: Group;
 
-  @ManyToMany(() => User, (user) => user.groupMemberIn, {
+  @ManyToOne(() => User, (user) => user.groupMemberIn, {
     onDelete: 'CASCADE',
   })
   user: User;
