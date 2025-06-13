@@ -4,6 +4,8 @@ import { Repository } from 'typeorm';
 import { Group } from './groups.entity';
 import { GroupMembersService } from 'src/group-members/group-members.service';
 import { UsersService } from 'src/users/users.service';
+import { CreateGroupDto } from './dto/create-group.dto';
+import { UpdateGroupDto } from './dto/update-group.dto';
 
 @Injectable()
 export class GroupsService {
@@ -30,13 +32,53 @@ export class GroupsService {
     return await this.groupRepository.find();
   }
 
-  //DTO
-  async createGroup() {}
+  async createGroup(
+    creatorId: string,
+    createGroupDto: CreateGroupDto,
+  ): Promise<Group> {
+    const { groupName, groupPicture, gameTypes, userIds } = createGroupDto;
 
-  //DTO
-  async updateGroup() {}
+    const group = await this.groupRepository.create({
+      groupName: groupName,
+      groupPicture: groupPicture,
+      gameTypes: gameTypes,
+    });
 
-  async deleteGroup(groupId: string) {
+    const savedGroup = await this.groupRepository.save(group);
+
+    for (const uid of userIds) {
+      await this.groupMemberService.addUserToGroup(savedGroup.groupId, uid);
+      if (uid === creatorId) {
+        await this.groupMemberService.setManagerStatus(
+          savedGroup.groupId,
+          uid,
+          true,
+        );
+      }
+    }
+
+    return savedGroup;
+  }
+
+  async updateGroup(updateGroupDto: UpdateGroupDto): Promise<Group> {
+    const { groupId, groupName, groupPicture, gameTypes } = updateGroupDto;
+
+    const group = await this.findGroupById(groupId);
+
+    if (groupName !== undefined) {
+      group.groupName = groupName;
+    }
+    if (groupPicture !== undefined) {
+      group.groupPicture = groupPicture;
+    }
+    if (gameTypes !== undefined) {
+      group.gameTypes = [...gameTypes];
+    }
+
+    return await this.groupRepository.save(group);
+  }
+
+  async deleteGroup(groupId: string): Promise<void> {
     const group = await this.findGroupById(groupId);
 
     await this.groupRepository.remove(group);
