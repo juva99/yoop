@@ -1,3 +1,4 @@
+import { IsOptional } from 'class-validator';
 import { GameType } from 'src/enums/game-type.enum';
 import { GroupMember } from 'src/group-members/group-members.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
@@ -11,7 +12,7 @@ export class Group {
   groupName: string;
 
   @Column()
-  groupPicture: string;
+  groupPicture?: string;
 
   @Column('enum', { enum: GameType })
   gameTypes: GameType[];
