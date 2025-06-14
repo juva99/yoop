@@ -1,12 +1,6 @@
 import { Group } from 'src/groups/groups.entity';
 import { User } from 'src/users/users.entity';
-import {
-  Column,
-  Entity,
-  ManyToMany,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('group_member')
 export class GroupMember {

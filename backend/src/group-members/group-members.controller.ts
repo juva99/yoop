@@ -14,7 +14,14 @@ import { GroupMember } from './group-members.entity';
 export class GroupMembersController {
   constructor(private readonly groupMembersService: GroupMembersService) {}
 
-  // executed by manager check is needed?
+  @Get('/:groupId/:userId')
+  async getGroupMember(
+    @Param('groupId') groupId: string,
+    @Param('userId') userId: string,
+  ): Promise<GroupMember> {
+    return await this.groupMembersService.findGroupMember(groupId, userId);
+  }
+
   @Patch('/:groupId/setManager/:userId')
   async setManagerStatus(
     @Param('groupId') groupId: string,

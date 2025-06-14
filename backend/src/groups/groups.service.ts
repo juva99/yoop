@@ -18,6 +18,7 @@ export class GroupsService {
   async findGroupById(groupId: string): Promise<Group> {
     const group = await this.groupRepository.findOne({
       where: { groupId: groupId },
+      relations: ['groupMembers', 'groupMembers.user'],
     });
 
     if (!group) {
@@ -28,7 +29,9 @@ export class GroupsService {
   }
 
   async findAllGroups(): Promise<Group[]> {
-    return await this.groupRepository.find();
+    return await this.groupRepository.find({
+      relations: ['groupMembers', 'groupMembers.user'],
+    });
   }
 
   async createGroup(

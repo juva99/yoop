@@ -35,14 +35,15 @@ export class GroupMembersService {
 
     return groupMember;
   }
-
   async findMyGroups(user: User): Promise<Group[]> {
+    // async findMyGroups(user: User): Promise<GroupMember[]> {
     const groupMembers = await this.groupMemberRepository.find({
       where: { user: { uid: user.uid } },
-      relations: ['group'],
+      relations: ['group', 'group.groupMembers', 'group.groupMembers.user'],
     });
 
     return groupMembers.map((gm) => gm.group);
+    // return groupMembers;
   }
 
   async findAllGroupMembers(groupId: string): Promise<GroupMember[]> {
@@ -50,7 +51,7 @@ export class GroupMembersService {
       where: {
         group: { groupId: groupId },
       },
-      relations: ['user', 'group'],
+      relations: ['user'],
     });
 
     return groupMembers;
@@ -68,7 +69,7 @@ export class GroupMembersService {
         group: { groupId: groupId },
         isManager: true,
       },
-      relations: ['user', 'group'],
+      relations: ['user'],
     });
   }
 
