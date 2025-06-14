@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Group } from 'src/groups/groups.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { GroupMember } from './group-members.entity';
 import { UsersService } from 'src/users/users.service';
 import { User } from 'src/users/users.entity';
@@ -72,7 +72,10 @@ export class GroupMembersService {
     });
   }
 
-  async addUserToGroup(groupId: string, userId: string): Promise<GroupMember> {
+  async addUsersToGroup(
+    groupId: string,
+    userIds: string[],
+  ): Promise<GroupMember[]> {
     const group = await this.groupRepository.findOne({
       where: {
         groupId: groupId,
@@ -83,26 +86,34 @@ export class GroupMembersService {
       throw new NotFoundException('אין קבוצה כזאת!');
     }
 
-    const existingMembership = await this.groupMemberRepository.findOne({
+    const existingMembers = await this.groupMemberRepository.find({
       where: {
         group: { groupId: groupId },
-        user: { uid: userId },
+        user: { uid: In(userIds) },
       },
+      relations: ['user'],
     });
 
-    if (existingMembership) {
-      throw new ConflictException('המשתמש כבר נמצא בקבוצה');
+    const existingMembersIds = existingMembers.map((gm) => gm.user.uid);
+    const newUserIds = userIds.filter(
+      (uid) => !existingMembersIds.includes(uid),
+    );
+
+    if (newUserIds.length === 0) {
+      throw new ConflictException('כל המשתמשים כבר בקבוצה!');
     }
 
-    const user = await this.userService.findById(userId);
+    const newUsers = await this.userService.findByIds(newUserIds);
 
-    const newMember = await this.groupMemberRepository.create({
-      group: group,
-      user: user,
-      isManager: false,
-    });
+    const newMembers = newUsers.map((user) =>
+      this.groupMemberRepository.create({
+        group: group,
+        user: user,
+        isManager: false,
+      }),
+    );
 
-    return await this.groupMemberRepository.save(newMember);
+    return await this.groupMemberRepository.save(newMembers);
   }
 
   async removeMemeberFromGroup(groupId: string, userId: string): Promise<void> {
