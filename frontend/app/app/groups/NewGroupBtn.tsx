@@ -6,12 +6,13 @@ import { AiOutlineUsergroupAdd } from "react-icons/ai";
 const NewGroupBtn: React.FC = () => {
   return (
     <div
-      className="absolute left-3"
+      className="text-title flex items-center gap-2 font-bold"
       onClick={() => {
         redirect("/groups/new");
       }}
     >
-      <AiOutlineUsergroupAdd size={25} />
+      <AiOutlineUsergroupAdd size={20} />
+      <p className="text-lg underline">הוסף קבוצה</p>
     </div>
   );
 };
