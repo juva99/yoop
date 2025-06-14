@@ -120,7 +120,7 @@ export class GroupMembersService {
     const groupMember = await this.findGroupMember(groupId, userId);
 
     const managers = await this.findAllGroupManagers(groupId);
-    if (managers.length === 1) {
+    if (managers.length === 1 && groupMember.isManager) {
       throw new ConflictException('לא ניתן להשאיר את הקבוצה ללא מנהל');
     }
 

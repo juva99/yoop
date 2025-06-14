@@ -25,12 +25,6 @@ export class GroupController {
     private readonly groupMembersService: GroupMembersService,
   ) {}
 
-  // get group by id
-  @Get('/:id')
-  async getGroupById(@Param('id') groupId: string) {
-    return await this.groupsService.findGroupById(groupId);
-  }
-
   @Get('/mygroups')
   async getMyGroups(@GetUser() user: User): Promise<Group[]> {
     return await this.groupMembersService.findMyGroups(user);
@@ -59,6 +53,11 @@ export class GroupController {
   @Put('/update')
   async updateGroup(@Body() updateGroupDto: UpdateGroupDto): Promise<Group> {
     return await this.groupsService.updateGroup(updateGroupDto);
+  }
+
+  @Get('/:id')
+  async getGroupById(@Param('id') groupId: string) {
+    return await this.groupsService.findGroupById(groupId);
   }
 
   @Get('/:id/members')

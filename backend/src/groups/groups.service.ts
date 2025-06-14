@@ -56,7 +56,7 @@ export class GroupsService {
       true,
     );
 
-    return savedGroup;
+    return this.findGroupById(savedGroup.groupId);
   }
 
   async updateGroup(updateGroupDto: UpdateGroupDto): Promise<Group> {

@@ -11,10 +11,10 @@ export class Group {
   @Column()
   groupName: string;
 
-  @Column()
+  @Column({ nullable: true })
   groupPicture?: string;
 
-  @Column('enum', { enum: GameType })
+  @Column('enum', { enum: GameType, array: true })
   gameTypes: GameType[];
 
   @OneToMany(() => GroupMember, (groupMember) => groupMember.group, {
