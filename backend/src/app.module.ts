@@ -12,6 +12,8 @@ import { FieldFetchApiModule } from './field-fetch-api/field-fetch-api.module';
 import { MailModule } from './mail/mail.module';
 import { ManagerSignupModule } from './manager-signup/manager-signup.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { GroupsModule } from './groups/groups.module';
+import { GroupMembersModule } from './group-members/group-members.module';
 
 @Module({
   imports: [
@@ -48,6 +50,8 @@ import { ScheduleModule } from '@nestjs/schedule';
     FriendsModule,
     MailModule,
     ManagerSignupModule,
+    GroupsModule,
+    GroupMembersModule,
   ],
   controllers: [],
 })

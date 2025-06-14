@@ -4,6 +4,7 @@ import { Game } from 'src/games/games.entity';
 import { GameParticipant } from 'src/game-participants/game-participants.entity';
 import { FriendRelation } from 'src/friends/friends.entity';
 import { Role } from 'src/enums/role.enum';
+import { GroupMember } from 'src/group-members/group-members.entity';
 
 @Entity('users')
 export class User {
@@ -69,4 +70,9 @@ export class User {
 
   @Column({ nullable: true, select: false, type: 'timestamptz' })
   passwordResetExpires?: Date;
+
+  @OneToMany(() => GroupMember, (groupMember) => groupMember.user, {
+    eager: true,
+  })
+  groupMemberIn: GroupMember[];
 }
