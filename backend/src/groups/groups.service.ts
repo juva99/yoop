@@ -13,7 +13,6 @@ export class GroupsService {
     @InjectRepository(Group)
     private groupRepository: Repository<Group>,
     private readonly groupMemberService: GroupMembersService,
-    private readonly userService: UsersService,
   ) {}
 
   async findGroupById(groupId: string): Promise<Group> {
