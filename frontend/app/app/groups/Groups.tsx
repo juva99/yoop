@@ -2,23 +2,21 @@
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useEffect, useState } from "react";
-import { getSession } from "@/lib/session";
 import { Group } from "../types/Group";
 import { GameType } from "../enums/game-type.enum";
 import GroupItem from "./GroupItem";
-import Link from "next/link";
 const groupList: Group[] = [
   {
     groupId: "g1",
     groupName: "קבוצה סבבה",
     gameTypes: [GameType.BasketBall],
-    groupMembers: ["u123"],
+    groupMembers: [],
   },
   {
     groupId: "g2",
     groupName: "קבוצה אחלה",
     gameTypes: [GameType.FootBall],
-    groupMembers: ["u123"],
+    groupMembers: [],
   },
 ];
 const Groups = () => {
@@ -50,11 +48,9 @@ const Groups = () => {
           {managedGroups.length === 0 ? (
             <p className="h-30 text-center">אתה לא מנהל אף קבוצה</p>
           ) : (
-            <div className="space-y-4 pt-4">
+            <div className="flex flex-col gap-3 pt-4">
               {managedGroups.map((group, index) => (
-                <Link key={index} href={`/groups/${group.groupId}`}>
-                  <GroupItem group={group} />
-                </Link>
+                <GroupItem key={"g" + index} group={group} />
               ))}
             </div>
           )}
@@ -64,7 +60,7 @@ const Groups = () => {
           {groups.length === 0 ? (
             <p className="h-30 text-center">אתה לא חבר באף קבוצה</p>
           ) : (
-            <div className="space-y-4 pt-4">
+            <div className="flex flex-col gap-3 pt-4">
               {groups.map((group, index) => (
                 <GroupItem key={index} group={group} />
               ))}
