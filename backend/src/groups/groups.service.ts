@@ -46,16 +46,16 @@ export class GroupsService {
 
     const savedGroup = await this.groupRepository.save(group);
 
-    for (const uid of userIds) {
-      await this.groupMemberService.addUserToGroup(savedGroup.groupId, uid);
-      if (uid === creatorId) {
-        await this.groupMemberService.setManagerStatus(
-          savedGroup.groupId,
-          uid,
-          true,
-        );
-      }
+    if (!userIds.includes(creatorId)) {
+      userIds.push(creatorId);
     }
+
+    await this.groupMemberService.addUsersToGroup(savedGroup.groupId, userIds);
+    await this.groupMemberService.setManagerStatus(
+      savedGroup.groupId,
+      creatorId,
+      true,
+    );
 
     return savedGroup;
   }

@@ -81,9 +81,9 @@ export class GroupController {
   @Post('/:id/add/:userId')
   async addUserToGroup(
     @Param('id') groupId: string,
-    @Param('userId') userId: string,
-  ): Promise<GroupMember> {
-    return await this.groupMembersService.addUserToGroup(groupId, userId);
+    @Body() userIds: string[],
+  ): Promise<GroupMember[]> {
+    return await this.groupMembersService.addUsersToGroup(groupId, userIds);
   }
 
   @Delete('/:id/remove/:userId')
