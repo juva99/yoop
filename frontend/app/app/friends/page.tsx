@@ -43,14 +43,15 @@ export default async function SearchPage({
       <Card variant="friends">
         <FriendList currentUserUid={userId} relations={friendRelations} />
       </Card>
-      <Card variant="friends">
+
+      <Card>
         <h1>הוספת חברים</h1>
         <Form action="/friends">
           <div className="input-wrapper border-title mt-5 mb-5 flex justify-between border-b-1 py-1">
             <input
               type="text"
               name="query"
-              placeholder="חפש חבר"
+              placeholder="הקלד שם"
               defaultValue={query}
               className="border-none bg-white bg-none shadow-none focus:border-none focus:ring-0 focus:outline-none"
             />
