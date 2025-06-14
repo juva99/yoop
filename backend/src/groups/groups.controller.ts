@@ -71,14 +71,12 @@ export class GroupController {
     return await this.groupMembersService.findAllGroupUsers(groupId);
   }
 
-  @Get('/:groupId/managers')
-  async getGroupManagers(
-    @Param('groupId') groupId: string,
-  ): Promise<GroupMember[]> {
+  @Get('/:id/managers')
+  async getGroupManagers(@Param('id') groupId: string): Promise<GroupMember[]> {
     return await this.groupMembersService.findAllGroupManagers(groupId);
   }
 
-  @Post('/:id/add/:userId')
+  @Post('/:id/add')
   async addUserToGroup(
     @Param('id') groupId: string,
     @Body() userIds: string[],
