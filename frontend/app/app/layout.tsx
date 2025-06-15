@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
-import Navbar from "@/components/navbar";
 import "./globals.css";
 import { getSession } from "@/lib/session";
-import { Toaster } from "sonner";
 
 import { Role } from "@/app/enums/role.enum";
+import SideBar from "./SideBar";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,9 +27,10 @@ export default async function RootLayout({
   return (
     <html lang="en" dir="rtl">
       <body className={`${geistSans.variable} antialiased`}>
-        <main className="pb-20">{children}</main>
-        <Navbar role={role} />
+        <main className="flex-1">{children}</main>
         <Toaster richColors position="top-center" />
+
+        <SideBar role={role} />
       </body>
     </html>
   );

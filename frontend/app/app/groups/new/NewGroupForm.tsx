@@ -20,6 +20,10 @@ import { GameType } from "@/app/enums/game-type.enum";
 import GameTypeOption from "@/components/create-field/game-type-option";
 import { formSchema, FormSchema } from "@/lib/schemas/new-group.schema";
 import { User } from "@/app/types/User";
+import { authFetch } from "@/lib/authFetch";
+import { toast } from "sonner";
+import { Group } from "@/app/types/Group";
+import { redirect } from "next/navigation";
 type Friend = {
   id: string;
   firstName: string;
@@ -60,14 +64,29 @@ const NewGroupForm: React.FC<Props> = ({ relations, userId }) => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       groupName: "",
-      gameType: [],
-      members: [],
+      gameTypes: [],
+      userIds: [],
+      groupPicture: undefined,
     },
   });
 
-  const onSubmit = (data: FormSchema) => {
+  const onSubmit = async (data: FormSchema) => {
     console.log("Submitted:", data);
-    // שלח לשרת וכו'
+    const res = await authFetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/groups/create`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      },
+    );
+    if (res.ok) {
+      toast.success("הקבוצה נוצרה בהצלחה");
+      const group: Group = await res.json();
+      redirect(`/groups/${group.groupId}`);
+    } else {
+      toast.error("אירעה תקלה, נסה שוב מאוחר יותר");
+    }
   };
 
   return (
@@ -92,7 +111,7 @@ const NewGroupForm: React.FC<Props> = ({ relations, userId }) => {
 
         <FormField
           control={form.control}
-          name="gameType"
+          name="gameTypes"
           render={({ field }) => (
             <FormItem>
               <FormLabel>איזה סוג משחקים תשחקו?</FormLabel>
@@ -129,7 +148,7 @@ const NewGroupForm: React.FC<Props> = ({ relations, userId }) => {
 
         <FormField
           control={form.control}
-          name="members"
+          name="userIds"
           render={({ field }) => (
             <FormItem>
               <FormLabel>חברים בקבוצה</FormLabel>
@@ -139,6 +158,20 @@ const NewGroupForm: React.FC<Props> = ({ relations, userId }) => {
                   selectedIds={field.value ?? []}
                   onChange={field.onChange}
                 />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="groupPicture"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>תמונה (אופציונלי)</FormLabel>
+              <FormControl>
+                <Input id="picture" type="file" onChange={field.onChange} />
               </FormControl>
               <FormMessage />
             </FormItem>
