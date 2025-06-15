@@ -20,7 +20,7 @@ type Props = {
 const GroupItem: React.FC<Props> = ({ group, userId }) => {
   const players = group.groupMembers.map((groupMember) => groupMember.user);
 
-  const deleteHandler = async () => {
+  const removeHandler = async () => {
     const response = await authFetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/groups/${group.groupId}/remove/${userId}`,
       {
@@ -55,7 +55,7 @@ const GroupItem: React.FC<Props> = ({ group, userId }) => {
       <div>
         <AlertPopup
           message={`בחרת לצאת מ${group.groupName}`}
-          onClick={deleteHandler}
+          onClick={removeHandler}
         >
           <TiDelete size={20} />
         </AlertPopup>

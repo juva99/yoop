@@ -44,100 +44,103 @@ type SidebarProps = {
 const SideBar: React.FC<SidebarProps> = ({ role }) => {
   const pathname = usePathname();
   if (HIDDEN_PATHS.includes(pathname)) return null;
+  switch (role) {
+    case Role.USER:
+      return (
+        <SidebarProvider>
+          <SidebarTrigger className="fixed top-0 right-0 z-50 h-10 w-10 rounded-bl-3xl bg-white shadow" />
+          <div dir="rtl" className="relative flex min-h-screen w-full bg-white">
+            <Sidebar side="right" className="border-l bg-gray-100 shadow-md">
+              <div className="p-4">
+                <h2 className="mb-6 text-right text-lg font-bold">תפריט</h2>
+                <nav className="space-y-2 text-right">
+                  <SidebarLink prefetch={true} href="/">
+                    דף הבית
+                  </SidebarLink>
+                  <SidebarLink prefetch={true} href="/mygames">
+                    המשחקים שלי{" "}
+                  </SidebarLink>
+                  <SidebarLink prefetch={true} href="/game/create">
+                    יצירת משחק{" "}
+                  </SidebarLink>
+                  <SidebarLink prefetch={true} href="/friends">
+                    חברים{" "}
+                  </SidebarLink>
+                  <SidebarLink prefetch={true} href="/groups">
+                    קבוצות{" "}
+                  </SidebarLink>
+                  <SidebarLink prefetch={true} href="/profile">
+                    פרופיל אישי{" "}
+                  </SidebarLink>
 
-  if (role === Role.USER) {
-    return (
-      <SidebarProvider>
-        <SidebarTrigger className="fixed top-0 right-0 z-50 h-10 w-10 rounded-bl-3xl bg-white shadow" />
-        <div dir="rtl" className="relative flex min-h-screen w-full bg-white">
-          <Sidebar side="right" className="border-l bg-gray-100 shadow-md">
-            <div className="p-4">
-              <h2 className="mb-6 text-right text-lg font-bold">תפריט</h2>
-              <nav className="space-y-2 text-right">
-                <SidebarLink prefetch={true} href="/">
-                  דף הבית
-                </SidebarLink>
-                <SidebarLink prefetch={true} href="/mygames">
-                  המשחקים שלי{" "}
-                </SidebarLink>
-                <SidebarLink prefetch={true} href="/game/create">
-                  יצירת משחק{" "}
-                </SidebarLink>
-                <SidebarLink prefetch={true} href="/friends">
-                  חברים{" "}
-                </SidebarLink>
-                <SidebarLink prefetch={true} href="/groups">
-                  קבוצות{" "}
-                </SidebarLink>
-                <SidebarLink prefetch={true} href="/profile">
-                  פרופיל אישי{" "}
-                </SidebarLink>
+                  <SidebarLink prefetch={false} href="/api/auth/signout">
+                    התנתק
+                  </SidebarLink>
+                </nav>
+              </div>
+            </Sidebar>
+          </div>
+        </SidebarProvider>
+      );
 
-                <SidebarLink prefetch={false} href="/api/auth/signout">
-                  התנתק
-                </SidebarLink>
-              </nav>
-            </div>
-          </Sidebar>
-        </div>
-      </SidebarProvider>
-    );
-  }
-  if (role === Role.FIELD_MANAGER) {
-    return (
-      <SidebarProvider>
-        <SidebarTrigger className="fixed top-0 right-0 z-50 h-10 w-10 rounded-none rounded-bl-3xl bg-white shadow" />
-        <div dir="rtl" className="relative flex min-h-screen w-full bg-white">
-          <Sidebar side="right" className="border-l bg-gray-100 shadow-md">
-            <div className="p-4">
-              <h2 className="mb-6 text-right text-lg font-bold">תפריט</h2>
-              <nav className="space-y-2 text-right">
-                <SidebarLink prefetch={true} href="/field-manager">
-                  דף הבית
-                </SidebarLink>
-                <SidebarLink prefetch={true} href="/field-manager/fields">
-                  המגרשים שלי{" "}
-                </SidebarLink>
-                <SidebarLink prefetch={true} href="/field-manager/field/create">
-                  הוספת מגרש
-                </SidebarLink>
-                <SidebarLink prefetch={false} href="/api/auth/signout">
-                  התנתק
-                </SidebarLink>
-              </nav>
-            </div>
-          </Sidebar>
-        </div>
-      </SidebarProvider>
-    );
-  }
-  if (role === Role.ADMIN) {
-    return (
-      <SidebarProvider>
-        <SidebarTrigger className="fixed top-0 right-0 z-50 h-10 w-10 rounded-none rounded-bl-3xl bg-white shadow" />
-        <div dir="rtl" className="relative flex min-h-screen w-full bg-white">
-          <Sidebar side="right" className="border-l bg-gray-100 shadow-md">
-            <div className="p-4">
-              <h2 className="mb-6 text-right text-lg font-bold">תפריט</h2>
-              <nav className="space-y-2 text-right">
-                <SidebarLink prefetch={true} href="/admin">
-                  דף הבית
-                </SidebarLink>
-                <SidebarLink prefetch={true} href="/admin/requests">
-                  בקשות מנהלי מגרשים
-                </SidebarLink>
-                <SidebarLink prefetch={true} href="/admin/users">
-                  ניהול משתמשים
-                </SidebarLink>
-                <SidebarLink prefetch={false} href="/api/auth/signout">
-                  התנתק
-                </SidebarLink>
-              </nav>
-            </div>
-          </Sidebar>
-        </div>
-      </SidebarProvider>
-    );
+    case Role.FIELD_MANAGER:
+      return (
+        <SidebarProvider>
+          <SidebarTrigger className="fixed top-0 right-0 z-50 h-10 w-10 rounded-none rounded-bl-3xl bg-white shadow" />
+          <div dir="rtl" className="relative flex min-h-screen w-full bg-white">
+            <Sidebar side="right" className="border-l bg-gray-100 shadow-md">
+              <div className="p-4">
+                <h2 className="mb-6 text-right text-lg font-bold">תפריט</h2>
+                <nav className="space-y-2 text-right">
+                  <SidebarLink prefetch={true} href="/field-manager">
+                    דף הבית
+                  </SidebarLink>
+                  <SidebarLink prefetch={true} href="/field-manager/fields">
+                    המגרשים שלי{" "}
+                  </SidebarLink>
+                  <SidebarLink
+                    prefetch={true}
+                    href="/field-manager/field/create"
+                  >
+                    הוספת מגרש
+                  </SidebarLink>
+                  <SidebarLink prefetch={false} href="/api/auth/signout">
+                    התנתק
+                  </SidebarLink>
+                </nav>
+              </div>
+            </Sidebar>
+          </div>
+        </SidebarProvider>
+      );
+
+    case Role.ADMIN:
+      return (
+        <SidebarProvider>
+          <SidebarTrigger className="fixed top-0 right-0 z-50 h-10 w-10 rounded-none rounded-bl-3xl bg-white shadow" />
+          <div dir="rtl" className="relative flex min-h-screen w-full bg-white">
+            <Sidebar side="right" className="border-l bg-gray-100 shadow-md">
+              <div className="p-4">
+                <h2 className="mb-6 text-right text-lg font-bold">תפריט</h2>
+                <nav className="space-y-2 text-right">
+                  <SidebarLink prefetch={true} href="/admin">
+                    דף הבית
+                  </SidebarLink>
+                  <SidebarLink prefetch={true} href="/admin/requests">
+                    בקשות מנהלי מגרשים
+                  </SidebarLink>
+                  <SidebarLink prefetch={true} href="/admin/users">
+                    ניהול משתמשים
+                  </SidebarLink>
+                  <SidebarLink prefetch={false} href="/api/auth/signout">
+                    התנתק
+                  </SidebarLink>
+                </nav>
+              </div>
+            </Sidebar>
+          </div>
+        </SidebarProvider>
+      );
   }
   return null;
 };

@@ -1,7 +1,5 @@
-"use client";
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useEffect, useState } from "react";
 import { Group } from "../types/Group";
 import GroupItem from "./GroupItem";
 import { authFetch } from "@/lib/authFetch";
@@ -22,20 +20,15 @@ const getMyGroups = async (): Promise<Group[]> => {
   return groups;
 };
 
-const Groups = () => {
-  const [managedGroups, setManagedGroups] = useState<Group[]>([]);
-  const [groups, setdGroups] = useState<Group[]>([]);
-  const [userId, setUserId] = useState<string>("");
-  useEffect(() => {
-    const initialFetch = async () => {
-      const session = await getSession();
-      setUserId(session!.user.uid);
-      const groupList = await getMyGroups();
-      setdGroups(groupList);
-    };
-
-    initialFetch();
-  }, []);
+const Groups = async () => {
+  const session = await getSession();
+  const userId = session!.user.uid;
+  const groups = await getMyGroups();
+  const managedGroups = groups.filter((group) =>
+    group.groupMembers.some(
+      (member) => member.user.uid === userId && member.isManager,
+    ),
+  );
 
   return (
     <div>
