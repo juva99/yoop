@@ -7,31 +7,43 @@ import Link from "next/link";
 import { GameType } from "../enums/game-type.enum";
 import AlertPopup from "@/components/AlertPopup";
 import AvatarGroup from "@/components/AvatarGroup";
+import { authFetch } from "@/lib/authFetch";
+import { getSession } from "@/lib/session";
 
 type Props = {
   group: Group;
+  userId: string;
 };
 
-const GroupItem: React.FC<Props> = ({ group }) => {
+const GroupItem: React.FC<Props> = async ({ group, userId }) => {
   const players = group.groupMembers.map((groupMember) => groupMember.user);
-  const deleteHandler = () => {
-    console.log("deleted");
+  const deleteHandler = async () => {
+    const response = await authFetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/groups/${group.groupId}/remove/${userId}`,
+    );
+
+    if (!response.ok) {
+      console.error("Failed to fetch my groups:", response.statusText);
+      return [];
+    }
   };
   return (
-    <Link href={`/groups/${group.groupId}`}>
+    <>
       <div className="flex items-center justify-between">
-        <div>
-          <p className="text-title flex items-center gap-2 text-lg font-bold">
-            {group.gameTypes.map((t, index) =>
-              t === GameType.BasketBall ? (
-                <PiSoccerBall key={"icon" + index} />
-              ) : (
-                <PiBasketball key={"icon" + index} />
-              ),
-            )}
-            {group.groupName}
-          </p>
-          <AvatarGroup players={players} />
+        <div className="w-[90%]">
+          <Link href={`/groups/${group.groupId}`}>
+            <p className="text-title flex items-center gap-2 text-lg font-bold">
+              {group.gameTypes.map((t, index) =>
+                t === GameType.BasketBall ? (
+                  <PiSoccerBall key={"icon" + index} />
+                ) : (
+                  <PiBasketball key={"icon" + index} />
+                ),
+              )}
+              {group.groupName}
+            </p>
+            <AvatarGroup players={players} />
+          </Link>
         </div>
         <div>
           <AlertPopup
@@ -42,7 +54,7 @@ const GroupItem: React.FC<Props> = ({ group }) => {
           </AlertPopup>
         </div>
       </div>
-    </Link>
+    </>
   );
 };
 

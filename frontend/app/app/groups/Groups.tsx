@@ -3,38 +3,36 @@ import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useEffect, useState } from "react";
 import { Group } from "../types/Group";
-import { GameType } from "../enums/game-type.enum";
 import GroupItem from "./GroupItem";
-const groupList: Group[] = [
-  {
-    groupId: "g1",
-    groupName: "קבוצה סבבה",
-    gameTypes: [GameType.BasketBall],
-    groupMembers: [],
-  },
-  {
-    groupId: "g2",
-    groupName: "קבוצה אחלה",
-    gameTypes: [GameType.FootBall],
-    groupMembers: [],
-  },
-];
+import { authFetch } from "@/lib/authFetch";
+
+const getMyGroups = async (): Promise<Group[]> => {
+  const response = await authFetch(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/groups/mygroups`,
+  );
+
+  if (!response.ok) {
+    console.error("Failed to fetch my groups:", response.statusText);
+    return [];
+  }
+
+  const groups = await response.json();
+
+  return groups;
+};
+
 const Groups = () => {
-  const [managedGroups, setManagedGroups] = useState<Group[]>(groupList);
-  const [groups, setdGroups] = useState<Group[]>(groupList);
+  const [managedGroups, setManagedGroups] = useState<Group[]>([]);
+  const [groups, setdGroups] = useState<Group[]>([]);
 
-  //   useEffect(() => {
-  //     (async () => {
-  //       const session = await getSession();
+  useEffect(() => {
+    const fetchGroups = async () => {
+      const groupList = await getMyGroups();
+      setdGroups(groupList);
+    };
 
-  //       const currUserUID = session!.user.uid;
-  //       //const groups =
-
-  //       setManagedGroup(
-  //         groups.filter((group) => game.creator.uid === currUserUID),
-  //       );
-  //     })();
-  //   }, []);
+    fetchGroups();
+  }, []);
 
   return (
     <div>

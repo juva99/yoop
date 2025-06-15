@@ -63,7 +63,7 @@ const NewGroupForm: React.FC<Props> = ({ relations, userId }) => {
     defaultValues: {
       groupName: "",
       gameTypes: [],
-      groupMembers: [],
+      userIds: [],
       groupPicture: undefined,
     },
   });
@@ -71,7 +71,7 @@ const NewGroupForm: React.FC<Props> = ({ relations, userId }) => {
   const onSubmit = async (data: FormSchema) => {
     console.log("Submitted:", data);
     const res = await authFetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/fields`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/groups/create`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -79,6 +79,7 @@ const NewGroupForm: React.FC<Props> = ({ relations, userId }) => {
       },
     );
     if (res.ok) {
+      console.log("ok");
       toast.success("הקבוצה נוצרה בהצלחה");
     } else {
       toast.error("אירעה תקלה, נסה שוב מאוחר יותר");
@@ -144,7 +145,7 @@ const NewGroupForm: React.FC<Props> = ({ relations, userId }) => {
 
         <FormField
           control={form.control}
-          name="groupMembers"
+          name="userIds"
           render={({ field }) => (
             <FormItem>
               <FormLabel>חברים בקבוצה</FormLabel>
