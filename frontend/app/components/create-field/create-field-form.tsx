@@ -103,7 +103,10 @@ const CreateFieldForm = () => {
     if (failed.length > 0) {
       toast.error(`נכשלו ${failed.length} מתוך ${allResponses.length} מגרשים`);
     } else {
-      toast.success("כל המגרשים נוצרו בהצלחה");
+      if (data.hasMultipleFields) toast.success("כל המגרשים נוצרו בהצלחה");
+      else {
+        toast.success("המגרש נוצר בהצלחה!");
+      }
     }
   };
   // Update map center when selectedCity changes

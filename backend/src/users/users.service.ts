@@ -7,7 +7,7 @@ import {
 import { User } from './users.entity';
 import { CreateUserDto } from './dto/create-users.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, ILike, MoreThan } from 'typeorm';
+import { Repository, ILike, MoreThan, In } from 'typeorm';
 import { FriendRelation } from 'src/friends/friends.entity';
 import * as crypto from 'crypto';
 import * as bcrypt from 'bcrypt';
@@ -59,6 +59,16 @@ export class UsersService {
       throw new NotFoundException(`User with id ${uid} not found`);
     }
     return user;
+  }
+
+  async findByIds(uids: string[]): Promise<User[]> {
+    const users = await this.userRepository.find({
+      where: { uid: In(uids) },
+    });
+    if (!users) {
+      throw new NotFoundException(`אף משתמש לא נמצא`);
+    }
+    return users;
   }
 
   async findByEmail(email: string): Promise<User | null> {
