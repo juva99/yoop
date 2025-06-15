@@ -22,6 +22,8 @@ import { formSchema, FormSchema } from "@/lib/schemas/new-group.schema";
 import { User } from "@/app/types/User";
 import { authFetch } from "@/lib/authFetch";
 import { toast } from "sonner";
+import { Group } from "@/app/types/Group";
+import { redirect } from "next/navigation";
 type Friend = {
   id: string;
   firstName: string;
@@ -79,8 +81,9 @@ const NewGroupForm: React.FC<Props> = ({ relations, userId }) => {
       },
     );
     if (res.ok) {
-      console.log("ok");
       toast.success("הקבוצה נוצרה בהצלחה");
+      const group: Group = await res.json();
+      redirect(`/groups/${group.groupId}`);
     } else {
       toast.error("אירעה תקלה, נסה שוב מאוחר יותר");
     }

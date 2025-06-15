@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Group } from "../types/Group";
 import GroupItem from "./GroupItem";
 import { authFetch } from "@/lib/authFetch";
+import { getSession } from "@/lib/session";
 
 const getMyGroups = async (): Promise<Group[]> => {
   const response = await authFetch(
@@ -24,14 +25,16 @@ const getMyGroups = async (): Promise<Group[]> => {
 const Groups = () => {
   const [managedGroups, setManagedGroups] = useState<Group[]>([]);
   const [groups, setdGroups] = useState<Group[]>([]);
-
+  const [userId, setUserId] = useState<string>("");
   useEffect(() => {
-    const fetchGroups = async () => {
+    const initialFetch = async () => {
+      const session = await getSession();
+      setUserId(session!.user.uid);
       const groupList = await getMyGroups();
       setdGroups(groupList);
     };
 
-    fetchGroups();
+    initialFetch();
   }, []);
 
   return (
@@ -48,7 +51,7 @@ const Groups = () => {
           ) : (
             <div className="flex flex-col gap-3 pt-4">
               {managedGroups.map((group, index) => (
-                <GroupItem key={"g" + index} group={group} />
+                <GroupItem key={"g" + index} group={group} userId={userId} />
               ))}
             </div>
           )}
@@ -60,7 +63,7 @@ const Groups = () => {
           ) : (
             <div className="flex flex-col gap-3 pt-4">
               {groups.map((group, index) => (
-                <GroupItem key={index} group={group} />
+                <GroupItem key={index} group={group} userId={userId} />
               ))}
             </div>
           )}
