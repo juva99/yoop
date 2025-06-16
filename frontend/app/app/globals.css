@@ -165,7 +165,7 @@ h2 {
 }
 
 h3 {
-  @apply mb-3 font-semibold;
+  @apply font-semibold;
 }
 
 .primary-btn {

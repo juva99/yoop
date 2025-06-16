@@ -20,6 +20,8 @@ import { authFetch } from "@/lib/authFetch";
 import CalendarLink from "@/components/ui/calendar-link";
 import Share from "@/components/ui/share";
 import { GameStatus } from "@/app/enums/game-status.enum";
+import InviteFriends from "./InviteFriends";
+import { getMyFriends, getMyGroups } from "@/lib/actions";
 
 async function getGame(gameId: string): Promise<Game | null> {
   try {
@@ -67,11 +69,12 @@ export default async function Page({
     gameParticipants,
     creator,
     field,
-    price, // Use optional price from fetched data
+    price,
     weatherTemp,
     weatherIcon,
   } = game;
-
+  const friends = await getMyFriends();
+  const groups = await getMyGroups();
   // Ensure dates are Date objects if they aren't already (TypeORM might return strings)
   const start = new Date(startDate);
   const end = new Date(endDate);
@@ -174,7 +177,17 @@ export default async function Page({
           <h3>
             משתתפים ({approvedCount}/{maxParticipants})
           </h3>
-          <Share />
+          <div className="flex items-center justify-between">
+            <Share />
+            {isCreator && (
+              <InviteFriends
+                gameId={gameId}
+                friends={friends}
+                groups={groups}
+                userId={currUserUID}
+              />
+            )}
+          </div>
         </div>
         <PlayersList
           gameId={gameId}
@@ -186,7 +199,19 @@ export default async function Page({
         />
       </div>
       <div>
-        <h3>רשימת המתנה</h3>
+        <div className="flex items-center justify-between">
+          <h3>רשימת המתנה</h3>
+
+          {isJoined && !isCreator && (
+            <InviteFriends
+              gameId={gameId}
+              friends={friends}
+              groups={groups}
+              userId={currUserUID}
+            />
+          )}
+        </div>
+
         <PlayersList
           gameId={gameId}
           creatorUID={creator.uid}

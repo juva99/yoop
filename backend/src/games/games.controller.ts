@@ -89,16 +89,16 @@ export class GamesController {
     );
   }
 
-  @Post('/:gameId/invite/:userId')
-  async inviteFriendToGame(
+  @Post('/:gameId/invite')
+  async inviteFriendsToGame(
     @Param('gameId') gameId: string,
-    @Body('invited') invited: User,
+    @Body('inviteds') inviteds: User[],
     @GetUser() inviter: User,
-  ): Promise<GameParticipant> {
-    return await this.gameParticipantService.inviteFriendToGame(
+  ): Promise<void> {
+    return await this.gameParticipantService.inviteFriendsToGame(
       gameId,
       inviter,
-      invited,
+      inviteds,
     );
   }
 
