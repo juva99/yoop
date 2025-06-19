@@ -4,7 +4,7 @@ name: Trigger auto deployment for yoop-backend-app
 on:
   # Automatically trigger it when detected changes in repo
   push:
-    branches: [main, deployment]
+    branches: [main]
     paths:
       - "frontend/**"
       - ".github/workflows/yoop-frontend-app-AutoDeployTrigger.yml"
