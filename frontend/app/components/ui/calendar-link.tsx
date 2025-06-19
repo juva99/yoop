@@ -1,3 +1,5 @@
+"use client";
+
 import { GameType } from "@/app/enums/game-type.enum";
 import { Game } from "@/app/types/Game";
 import { CalendarEvent, ics } from "calendar-link";
@@ -25,8 +27,7 @@ const CalendarLink: React.FC<Props> = ({ game }) => {
     title: `משחק ${gameType === GameType.FootBall ? "כדורגל" : "כדורסל"} ב-${field.fieldName}`,
     start: startDate,
     end: endDate,
-    description: `לעוד פרטים על המשחק, לחץ כאן:
-${process.env.NEXT_PUBLIC_FRONTEND_URL}/game/${gameId}`,
+    description: `לעוד פרטים על המשחק, לחץ כאן: ${window.location.href}`,
     location: field.fieldAddress,
   };
 

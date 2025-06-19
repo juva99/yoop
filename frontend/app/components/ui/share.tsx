@@ -15,13 +15,13 @@ const Share = () => {
     };
 
 
-    try {
+      if (navigator.canShare && navigator.canShare(shareData)) {
         await navigator.share(shareData);
-    } catch (error) {
-      // If share fails, try to copy to clipboard
-      await handleCopyToClipboard(shareData);
-    }
-  };
+      }
+      else {
+        await handleCopyToClipboard(shareData);
+      }
+    };
 
   const handleCopyToClipboard = async (shareData: { title: string; text: string; url: string; }) => {
     const shareText = `${shareData.text}\n${shareData.url}`;
