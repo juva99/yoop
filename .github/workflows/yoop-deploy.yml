@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
-      contents: read 
+      contents: read
 
     steps:
       - name: Checkout to the branch
@@ -29,7 +29,7 @@ jobs:
           client-id: ${{ secrets.YOOPBACKENDAPP_AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.YOOPBACKENDAPP_AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.YOOPBACKENDAPP_AZURE_SUBSCRIPTION_ID }}
-      
+
       - name: Build and push frontend container image to registry
         uses: azure/container-apps-deploy-action@v2
         with:
@@ -48,9 +48,8 @@ jobs:
           environmentVariables: |
             "SESSION_SECRET_KEY=${{ secrets.SESSION_SECRET_KEY }}"
 
-
       - name: Build and push backend container image to registry
-              uses: azure/container-apps-deploy-action@v2
+        uses: azure/container-apps-deploy-action@v2
         with:
           appSourcePath: ${{ github.workspace }}/backend
           _dockerfilePathKey_: Dockerfile
@@ -78,4 +77,3 @@ jobs:
             "MAIL_FROM=yoopsportsapp@gmail.com"
             "MAIL_FROM_NAME=Your Favourite Sports App"
             "FRONTEND_URL=${{secrets.FRONTEND_URL}}"
-
