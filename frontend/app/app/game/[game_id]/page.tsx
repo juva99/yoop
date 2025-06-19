@@ -24,7 +24,7 @@ import { GameStatus } from "@/app/enums/game-status.enum";
 async function getGame(gameId: string): Promise<Game | null> {
   try {
     const res = await authFetch(
-      `${process.env.BACKEND_URL}/games/byid/${gameId}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/byid/${gameId}`,
       {},
     );
     if (!res.ok) {

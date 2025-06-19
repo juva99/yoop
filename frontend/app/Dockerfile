@@ -29,6 +29,10 @@ COPY . .
 # Uncomment the following line in case you want to disable telemetry during the build.
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# hard coding the backend URL for the Next.js app (compiled at build time)
+ARG BACKEND_URL
+ENV NEXT_PUBLIC_BACKEND_URL=$BACKEND_URL
+
 RUN \
   if [ -f yarn.lock ]; then yarn run build; \
   elif [ -f package-lock.json ]; then npm run build; \
