@@ -35,7 +35,7 @@ jobs:
       - name: Build and push container image to registry
         uses: azure/container-apps-deploy-action@v2
         with:
-          appSourcePath: ${{ github.workspace }}/frontend/**
+          appSourcePath: ${{ github.workspace }}/frontend/app
           _dockerfilePathKey_: Dockerfile
           registryUrl: yoopacr.azurecr.io
           registryUsername: ${{ secrets.YOOPBACKENDAPP_REGISTRY_USERNAME }}
