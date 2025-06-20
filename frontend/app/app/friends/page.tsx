@@ -39,7 +39,7 @@ export default async function SearchPage({
   const friendRelations = await friendsResponse.json();
 
   return (
-    <div className="flex min-h-[100vh] flex-col gap-5 bg-[url('/search-friends-background.png')] bg-top bg-no-repeat p-5">
+    <div className="flex flex-col gap-5 px-5">
       <Card variant="friends">
         <FriendList currentUserUid={userId} relations={friendRelations} />
       </Card>
@@ -63,13 +63,13 @@ export default async function SearchPage({
         </Form>
 
         <div className="scrollbar-none overflow-y-scroll">
-          {friends.length ? (
+          {friends.length > 0 ? (
             friends.map((friend: User) => (
               <Friend key={friend.uid} friend={friend} action="add" />
             ))
-          ) : (
+          ) : query ? (
             <p>אין תוצאות</p>
-          )}
+          ) : null}
         </div>
       </Card>
     </div>

@@ -106,7 +106,7 @@ export default async function Page({
   );
 
   return (
-    <div className="flex h-full flex-col gap-6 p-6">
+    <div className="flex h-full flex-col gap-6 px-6">
       {" "}
       <div className="text-title flex items-center gap-3 text-2xl font-bold">
         <span>

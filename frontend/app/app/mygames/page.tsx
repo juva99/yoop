@@ -51,7 +51,7 @@ export default function MyGames() {
   }, []);
 
   return (
-    <div className="mx-auto max-w-3xl px-4 pt-6">
+    <div className="mx-auto max-w-3xl px-4">
       <Tabs defaultValue="approved" className="w-full" dir="rtl">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="approved">המשחקים שלי</TabsTrigger>
