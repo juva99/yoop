@@ -41,16 +41,22 @@ export class AzureStorageService {
     await blobClient.deleteIfExists();
   }
 
-  // async downloadFile(containerName: string, blobName: string): Promise<Buffer> {
-  //   const containerClient = this.blobServiceClient.getContainerClient(containerName);
-  //   const blobClient = containerClient.getBlobClient(blobName);
-  //   const downloadBlockBlobResponse = await blobClient.download();
-  //   const chunks = [];
+  async downloadFile(containerName: string, blobName: string): Promise<Buffer> {
+    const containerClient =
+      this.blobServiceClient.getContainerClient(containerName);
+    const blobClient = containerClient.getBlobClient(blobName);
+    const downloadBlockBlobResponse = await blobClient.download();
+    const chunks: Buffer[] = [];
 
-  //   // for await (const chunk of downloadBlockBlobResponse.readableStreamBody) {
-  //   //   chunks.push(chunk);
-  //   // }
-  //   console.log(downloadBlockBlobResponse);
-  //   return Buffer.concat(chunks);
-  // }
+    const stream = downloadBlockBlobResponse.readableStreamBody;
+    if (!stream) {
+      throw new Error('No stream returned from blob download');
+    }
+
+    return new Promise<Buffer>((resolve, reject) => {
+      stream.on('data', (chunk) => chunks.push(chunk));
+      stream.on('end', () => resolve(Buffer.concat(chunks)));
+      stream.on('error', (err) => reject(err));
+    });
+  }
 }

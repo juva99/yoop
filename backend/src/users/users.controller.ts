@@ -12,12 +12,13 @@ import {
   ParseFilePipe,
   MaxFileSizeValidator,
   FileTypeValidator,
+  Res,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-users.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsePipes, ValidationPipe } from '@nestjs/common';
-import { Express } from 'express';
+import { Express, Response } from 'express';
 import { User } from './users.entity';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { Public } from 'src/auth/decorators/public.decorator';
@@ -115,5 +116,22 @@ export class UsersController {
     const container = 'pictures';
     await this.azureStorageService.deleteFile(container, blobName);
     return { message: `Deleted ${blobName}` };
+  }
+
+  @Public()
+  @Get('/download/:blobName')
+  async getFile(@Param('blobName') blobName: string, @Res() res: Response) {
+    const container = 'pictures';
+    const fileBuffer = await this.azureStorageService.downloadFile(
+      container,
+      blobName,
+    );
+
+    res.set({
+      'Content-Type': 'application/octet-stream',
+      'Content-Disposition': `attachment; filename="${blobName}"`,
+    });
+
+    res.send(fileBuffer);
   }
 }
