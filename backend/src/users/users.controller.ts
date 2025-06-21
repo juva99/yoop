@@ -101,41 +101,19 @@ export class UsersController {
     file: Express.Multer.File,
   ) {
     console.log(file);
-    this.azureStorageService.uploadFile('pictures', 'filename', file.buffer);
+    const fileName = `${Date.now()}-${file.originalname.split('.')[0]}`;
+    this.azureStorageService.uploadFile(
+      'pictures',
+      `${fileName}.${file.mimetype.split('/')[1]}`,
+      file.buffer,
+    );
   }
 
-  // @Public()
-  // @Post('upload-profile')
-  // @UseInterceptors(FileInterceptor('profilePic', {
-  //   storage: multer.memoryStorage(), // Store in memory so we can write it ourselves
-  //   limits: { fileSize: 0.8 * 1024 * 1024 }, // Max 5MB
-  // }))
-  // async uploadProfile(@UploadedFile() file: Express.Multer.File) {
-  //   if (!file) {
-  //     throw new BadRequestException('File is required');
-  //   }
-
-  //   if (!file.mimetype.match(/^image\/(jpeg|png|jpg)$/)) {
-  //     throw new BadRequestException('Only image files are allowed');
-  //   }
-
-  //   // Ensure upload directory exists
-  //   const uploadPath = path.join(__dirname, '..', '..', 'uploads', 'profile-pics');
-  //   if (!fs.existsSync(uploadPath)) {
-  //     fs.mkdirSync(uploadPath, { recursive: true });
-  //   }
-
-  //   // Generate a unique file name
-  //   const fileName = `${Date.now()}-${file.originalname}`;
-  //   const filePath = path.join(uploadPath, fileName);
-
-  //   // Save file manually
-  //   fs.writeFileSync(filePath, file.buffer);
-
-  //   // Return relative URL
-  //   return {
-  //     message: 'File uploaded successfully!',
-  //     url: `/uploads/profile-pics/${fileName}`,
-  //   };
-  // }
+  @Public()
+  @Delete('/delete-profile/:blobName')
+  async deleteFile(@Param('blobName') blobName: string) {
+    const container = 'pictures';
+    await this.azureStorageService.deleteFile(container, blobName);
+    return { message: `Deleted ${blobName}` };
+  }
 }
