@@ -20,6 +20,8 @@ import { authFetch } from "@/lib/authFetch";
 import CalendarLink from "@/components/ui/calendar-link";
 import Share from "@/components/ui/share";
 import { GameStatus } from "@/app/enums/game-status.enum";
+import { getMyFriends, getMyGroups } from "@/lib/actions";
+import InviteDialog from "@/components/InviteDialog";
 
 async function getGame(gameId: string): Promise<Game | null> {
   try {
@@ -67,11 +69,12 @@ export default async function Page({
     gameParticipants,
     creator,
     field,
-    price, // Use optional price from fetched data
+    price,
     weatherTemp,
     weatherIcon,
   } = game;
-
+  const friends = await getMyFriends();
+  const groups = await getMyGroups();
   // Ensure dates are Date objects if they aren't already (TypeORM might return strings)
   const start = new Date(startDate);
   const end = new Date(endDate);
@@ -104,6 +107,10 @@ export default async function Page({
     (gp) =>
       gp.user.uid === currUserUID && gp.status !== ParticipationStatus.REJECTED,
   );
+
+  const playersInGame = gameParticipants
+    .filter((gp) => gp.status === ParticipationStatus.APPROVED)
+    .map((gp) => gp.user.uid);
 
   return (
     <div className="flex h-full flex-col gap-6 px-6">
@@ -174,7 +181,17 @@ export default async function Page({
           <h3>
             משתתפים ({approvedCount}/{maxParticipants})
           </h3>
-          <Share />
+          <div className="flex items-center gap-2">
+            {isCreator && (
+              <InviteDialog
+                gameId={gameId}
+                friends={friends}
+                groups={groups}
+                playersInGame={playersInGame}
+              />
+            )}
+            <Share />
+          </div>
         </div>
         <PlayersList
           gameId={gameId}
@@ -186,7 +203,10 @@ export default async function Page({
         />
       </div>
       <div>
-        <h3>רשימת המתנה</h3>
+        <div className="flex items-center justify-between">
+          <h3>רשימת המתנה</h3>
+        </div>
+
         <PlayersList
           gameId={gameId}
           creatorUID={creator.uid}

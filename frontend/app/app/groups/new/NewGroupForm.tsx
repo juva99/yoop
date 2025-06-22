@@ -24,42 +24,17 @@ import { authFetch } from "@/lib/authFetch";
 import { toast } from "sonner";
 import { Group } from "@/app/types/Group";
 import { redirect } from "next/navigation";
-type Friend = {
-  id: string;
-  firstName: string;
-  lastName: string;
-};
-type FriendRelation = {
+
+export type FriendRelation = {
   id: string;
   user1: User;
   user2: User;
 };
 type Props = {
-  relations: FriendRelation[];
-  userId: string;
+  friends: User[];
 };
 
-const NewGroupForm: React.FC<Props> = ({ relations, userId }) => {
-  const [friends, setFriends] = useState<Friend[]>([]);
-
-  useEffect(() => {
-    const friendList: Friend[] = relations.map((rel) =>
-      rel.user1.uid === userId
-        ? {
-            id: rel.user2.uid,
-            firstName: rel.user2.firstName,
-            lastName: rel.user2.lastName,
-          }
-        : {
-            id: rel.user1.uid,
-            firstName: rel.user1.firstName,
-            lastName: rel.user1.lastName,
-          },
-    );
-
-    setFriends(friendList);
-  }, [relations, userId]);
-
+const NewGroupForm: React.FC<Props> = ({ friends }) => {
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -71,7 +46,6 @@ const NewGroupForm: React.FC<Props> = ({ relations, userId }) => {
   });
 
   const onSubmit = async (data: FormSchema) => {
-    console.log("Submitted:", data);
     const res = await authFetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/groups/create`,
       {
@@ -154,7 +128,7 @@ const NewGroupForm: React.FC<Props> = ({ relations, userId }) => {
               <FormLabel>חברים בקבוצה</FormLabel>
               <FormControl>
                 <FriendsCombobox
-                  members={friends}
+                  friends={friends}
                   selectedIds={field.value ?? []}
                   onChange={field.onChange}
                 />

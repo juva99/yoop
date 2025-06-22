@@ -100,7 +100,7 @@ const PlayersList: React.FC<Props> = ({
                   )
                 )}
               </div>
-              <div className="flex items-center gap-2 pl-4">
+              <div className="flex items-center gap-2">
                 {isCreator && deleteEnable && player.uid !== currUserUID && (
                   <ChangeParticipationButton
                     gameId={gameId}
