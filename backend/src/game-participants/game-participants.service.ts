@@ -42,7 +42,7 @@ export class GameParticipantsService {
     });
 
     if (existingParticipation) {
-      throw new ConflictException('User is already participating in this game');
+      return existingParticipation;
     }
 
     const newParticipation = this.gameParticipantRepository.create({

@@ -20,7 +20,6 @@ import { authFetch } from "@/lib/authFetch";
 import CalendarLink from "@/components/ui/calendar-link";
 import Share from "@/components/ui/share";
 import { GameStatus } from "@/app/enums/game-status.enum";
-import InviteFriends from "./InviteFriends";
 import { getMyFriends, getMyGroups } from "@/lib/actions";
 
 async function getGame(gameId: string): Promise<Game | null> {
@@ -179,14 +178,6 @@ export default async function Page({
           </h3>
           <div className="flex items-center justify-between">
             <Share />
-            {isCreator && (
-              <InviteFriends
-                gameId={gameId}
-                friends={friends}
-                groups={groups}
-                userId={currUserUID}
-              />
-            )}
           </div>
         </div>
         <PlayersList
@@ -201,15 +192,6 @@ export default async function Page({
       <div>
         <div className="flex items-center justify-between">
           <h3>רשימת המתנה</h3>
-
-          {isJoined && !isCreator && (
-            <InviteFriends
-              gameId={gameId}
-              friends={friends}
-              groups={groups}
-              userId={currUserUID}
-            />
-          )}
         </div>
 
         <PlayersList
