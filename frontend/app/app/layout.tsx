@@ -24,11 +24,11 @@ export default async function RootLayout({
 }>) {
   const session = await getSession();
   const role: Role = session?.user?.role ?? ("USER" as Role);
-
+  const name: string = session?.user?.name ?? "";
   return (
     <html lang="en" dir="rtl">
       <body className={`${geistSans.variable} antialiased`}>
-        <Header />
+        <Header role={role} name={name} />
         <main className="flex-1">{children}</main>
         <Toaster richColors position="top-center" />
         <SideBar role={role} />
