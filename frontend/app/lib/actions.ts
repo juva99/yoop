@@ -144,3 +144,71 @@ export async function fetchUserById(id: string): Promise<User> {
   if (!res.ok) throw new Error(`לא ניתן להביא את המשתמש עם מזהה ${id}`);
   return res.json();
 }
+
+export const inviteFriendsToGame = async (gameId: string, friendIds: string[]) => {
+  const friends = await Promise.all(friendIds.map(id => fetchUserById(id)));
+  
+  const response = await authFetch(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/${gameId}/invite`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        inviteds: friends,
+      }),
+    },
+  );
+
+  if (!response.ok) {
+    let errorMessage = "Failed to invite friends";
+    try {
+      const errorData = await response.json();
+      errorMessage = errorData.message || errorMessage;
+    } catch (e) {
+      console.error("Failed to parse error JSON:", e);
+    }
+    return { ok: false, message: errorMessage };
+  }
+
+  return { ok: true, message: "החברים הוזמנו בהצלחה!" };
+};
+
+export const inviteGroupToGame = async (gameId: string, groupId: string) => {
+  // Get group users first
+  const groupUsersResponse = await authFetch(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/groups/${groupId}/users`,
+  );
+  if (!groupUsersResponse.ok) {
+    return { ok: false, message: "Failed to get group members" };
+  }
+  
+  const groupUsers = await groupUsersResponse.json();
+  
+  // Invite all group users
+  const response = await authFetch(
+    `${BACKEND_URL}/games/${gameId}/invite`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        inviteds: groupUsers,
+      }),
+    },
+  );
+  if (!response.ok) {
+    let errorMessage = "Failed to invite group";
+    try {
+      const errorData = await response.json();
+      errorMessage = errorData.message || errorMessage;
+    } catch (e) {
+      console.error("Failed to parse error JSON:", e);
+    }
+    return { ok: false, message: errorMessage };
+  }
+
+  return { ok: true, message: "הקבוצה הוזמנה בהצלחה!" };
+};

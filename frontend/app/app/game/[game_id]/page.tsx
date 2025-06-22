@@ -21,6 +21,7 @@ import CalendarLink from "@/components/ui/calendar-link";
 import Share from "@/components/ui/share";
 import { GameStatus } from "@/app/enums/game-status.enum";
 import { getMyFriends, getMyGroups } from "@/lib/actions";
+import InviteDialog from "@/components/InviteDialog";
 
 async function getGame(gameId: string): Promise<Game | null> {
   try {
@@ -107,6 +108,10 @@ export default async function Page({
       gp.user.uid === currUserUID && gp.status !== ParticipationStatus.REJECTED,
   );
 
+  const playersInGame = gameParticipants
+    .filter((gp) => gp.status === ParticipationStatus.APPROVED)
+    .map((gp) => gp.user.uid);
+
   return (
     <div className="flex h-full flex-col gap-6 px-6">
       {" "}
@@ -176,7 +181,15 @@ export default async function Page({
           <h3>
             משתתפים ({approvedCount}/{maxParticipants})
           </h3>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            {isCreator && (
+              <InviteDialog
+                gameId={gameId}
+                friends={friends}
+                groups={groups}
+                playersInGame={playersInGame}
+              />
+            )}
             <Share />
           </div>
         </div>
