@@ -4,6 +4,7 @@ import { ParticipationStatus } from "@/app/enums/participation-status.enum";
 import { Game } from "@/app/types/Game";
 import { authFetch } from "./authFetch";
 import { BACKEND_URL } from "./constants";
+import { FriendRelation } from "./type";
 
 type ProtectedResponse = {
   message: string;
@@ -111,4 +112,23 @@ export const setGameCreator = async (gameId: string, userId: string) => {
   }
 
   return { ok: true, message: "המנהל שונה בהצלחה" };
+};
+
+export const fetchFriendsFromRelations = async (
+  relations: FriendRelation[],
+  userId: string,
+) => {
+  return relations.map((rel) =>
+    rel.user1.uid === userId
+      ? {
+          id: rel.user2.uid,
+          firstName: rel.user2.firstName,
+          lastName: rel.user2.lastName,
+        }
+      : {
+          id: rel.user1.uid,
+          firstName: rel.user1.firstName,
+          lastName: rel.user1.lastName,
+        },
+  );
 };

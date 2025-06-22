@@ -83,14 +83,24 @@ export class GroupController {
     return await this.groupMembersService.addUsersToGroup(groupId, userIds);
   }
 
+  @Delete('/:id/leave/:userId')
+  async leaveGroup(
+    @Param('id') groupId: string,
+    @Param('userId') userId: string,
+  ): Promise<void> {
+    return await this.groupMembersService.leaveGroup(groupId, userId);
+  }
+
   @Delete('/:id/remove/:userId')
   async removeMemeberFromGroup(
+    @GetUser() manager: User,
     @Param('id') groupId: string,
     @Param('userId') userId: string,
   ): Promise<void> {
     return await this.groupMembersService.removeMemeberFromGroup(
       groupId,
       userId,
+      manager.uid,
     );
   }
 }

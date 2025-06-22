@@ -19,47 +19,30 @@ import { FriendsCombobox } from "./FriendsCombobox";
 import { GameType } from "@/app/enums/game-type.enum";
 import GameTypeOption from "@/components/create-field/game-type-option";
 import { formSchema, FormSchema } from "@/lib/schemas/new-group.schema";
-import { User } from "@/app/types/User";
 import { authFetch } from "@/lib/authFetch";
 import { toast } from "sonner";
 import { Group } from "@/app/types/Group";
 import { redirect } from "next/navigation";
-type Friend = {
+
+export type Friend = {
   id: string;
   firstName: string;
   lastName: string;
 };
-type FriendRelation = {
-  id: string;
-  user1: User;
-  user2: User;
-};
+
 type Props = {
-  relations: FriendRelation[];
-  userId: string;
+  friends: Friend[];
+  groupId?: string;
+  groupValues?: {
+    groupName?: string;
+    gameTypes?: GameType[];
+    userIds?: string[];
+    groupPicture?: string | undefined;
+  };
 };
 
-const NewGroupForm: React.FC<Props> = ({ relations, userId }) => {
-  const [friends, setFriends] = useState<Friend[]>([]);
-
-  useEffect(() => {
-    const friendList: Friend[] = relations.map((rel) =>
-      rel.user1.uid === userId
-        ? {
-            id: rel.user2.uid,
-            firstName: rel.user2.firstName,
-            lastName: rel.user2.lastName,
-          }
-        : {
-            id: rel.user1.uid,
-            firstName: rel.user1.firstName,
-            lastName: rel.user1.lastName,
-          },
-    );
-
-    setFriends(friendList);
-  }, [relations, userId]);
-
+const NewGroupForm: React.FC<Props> = ({ friends, groupValues, groupId }) => {
+  const [submitClicked, setSubmitClicked] = useState(false);
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -70,25 +53,44 @@ const NewGroupForm: React.FC<Props> = ({ relations, userId }) => {
     },
   });
 
+  useEffect(() => {
+    if (groupValues) {
+      form.reset(groupValues);
+    }
+  }, [groupValues, form]);
   const onSubmit = async (data: FormSchema) => {
-    console.log("Submitted:", data);
-    const res = await authFetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/groups/create`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      },
-    );
+    console.log("Form data submitted:", data);
+
+    setSubmitClicked(true);
+    const isEdit = !!groupValues;
+
+    const url =
+      isEdit && groupId
+        ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/groups/update`
+        : `${process.env.NEXT_PUBLIC_BACKEND_URL}/groups/create`;
+
+    const res = await authFetch(url, {
+      method: isEdit ? "PUT" : "POST",
+      headers: { "Content-Type": "application/json" },
+      body: groupId
+        ? JSON.stringify({ ...data, groupId })
+        : JSON.stringify(data),
+    });
+
     if (res.ok) {
-      toast.success("הקבוצה נוצרה בהצלחה");
+      toast.success(isEdit ? "הקבוצה עודכנה בהצלחה" : "הקבוצה נוצרה בהצלחה");
       const group: Group = await res.json();
       redirect(`/groups/${group.groupId}`);
     } else {
+      const errorData = await res.json().catch(() => null);
+      console.log("Error response data:", errorData.message || errorData);
+
       toast.error("אירעה תקלה, נסה שוב מאוחר יותר");
+      setSubmitClicked(false);
     }
   };
 
+  const buttonText = groupValues ? "עדכן קבוצה" : "צור קבוצה";
   return (
     <Form {...form}>
       <form
@@ -178,8 +180,12 @@ const NewGroupForm: React.FC<Props> = ({ relations, userId }) => {
           )}
         />
 
-        <Button type="submit" className="w-full">
-          צור קבוצה
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={!form.formState.isValid || submitClicked}
+        >
+          {buttonText}
         </Button>
       </form>
     </Form>

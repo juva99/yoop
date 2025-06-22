@@ -1,4 +1,5 @@
 import { Role } from "@/app/enums/role.enum";
+import { User } from "@/app/types/User";
 import { z } from "zod";
 
 export type FormState =
@@ -84,3 +85,9 @@ export const LoginFormSchema = z.object({
     .trim()
     .min(8, { message: "הסיסמא חייבת להכיל לפחות 8 תווים " }),
 });
+
+export type FriendRelation = {
+  id: string;
+  user1: User;
+  user2: User;
+};

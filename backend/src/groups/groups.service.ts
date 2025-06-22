@@ -6,6 +6,7 @@ import { GroupMembersService } from 'src/group-members/group-members.service';
 import { UsersService } from 'src/users/users.service';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
+import { log } from 'console';
 
 @Injectable()
 export class GroupsService {
@@ -63,7 +64,8 @@ export class GroupsService {
   }
 
   async updateGroup(updateGroupDto: UpdateGroupDto): Promise<Group> {
-    const { groupId, groupName, groupPicture, gameTypes } = updateGroupDto;
+    const { groupId, groupName, groupPicture, gameTypes, userIds } =
+      updateGroupDto;
 
     const group = await this.findGroupById(groupId);
 
@@ -76,13 +78,14 @@ export class GroupsService {
     if (gameTypes !== undefined) {
       group.gameTypes = [...gameTypes];
     }
-
+    if (userIds !== undefined) {
+      await this.groupMemberService.addUsersToGroup(groupId, userIds);
+    }
     return await this.groupRepository.save(group);
   }
 
   async deleteGroup(groupId: string): Promise<void> {
     const group = await this.findGroupById(groupId);
-
     await this.groupRepository.remove(group);
   }
 }
