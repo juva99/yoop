@@ -150,7 +150,7 @@ const CreateFieldForm = () => {
 
   return (
     <div className="mx-auto max-w-2xl p-4">
-      <h1>הוספת מגרש</h1>
+      <h1 className="text-center">הוספת מגרש</h1>
       <h3 className="text-center">הוסף את פרטי המגרש שלך למטה</h3>
 
       <Form {...form}>

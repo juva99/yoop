@@ -113,7 +113,7 @@ const ProfileInfo: React.FC<Props> = ({ user, role }) => {
         <p className="mb-2 font-semibold text-red-600">{errorMessage}</p>
       )}
       {!showForm && (
-        <div className="max-w-md space-y-5">
+        <div className="text-md max-w-md space-y-6">
           <p>
             <strong>שם פרטי:</strong> {user.firstName}
           </p>
