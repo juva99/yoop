@@ -26,7 +26,7 @@ import { getMyFriends, getMyGroups } from "@/lib/actions";
 async function getGame(gameId: string): Promise<Game | null> {
   try {
     const res = await authFetch(
-      `${process.env.BACKEND_URL}/games/byid/${gameId}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/byid/${gameId}`,
       {},
     );
     if (!res.ok) {
@@ -109,7 +109,7 @@ export default async function Page({
   );
 
   return (
-    <div className="flex h-full flex-col gap-6 p-6">
+    <div className="flex h-full flex-col gap-6 px-6">
       {" "}
       <div className="text-title flex items-center gap-3 text-2xl font-bold">
         <span>

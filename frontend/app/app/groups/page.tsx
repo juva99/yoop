@@ -8,7 +8,7 @@ import Groups from "./Groups";
 const page: React.FC = () => {
   const groups = [];
   return (
-    <div className="flex min-h-[100vh] flex-col gap-5 p-3">
+    <div className="flex flex-col gap-5 px-3">
       <Groups />
       <NewGroupBtn />
     </div>

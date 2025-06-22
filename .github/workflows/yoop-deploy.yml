@@ -1,0 +1,62 @@
+name: Auto deployment for Yoop App
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches: [main]
+    paths:
+      - "**"
+      - ".github/workflows/yoop-frontend-app-AutoDeployTrigger.yml"
+
+  # Allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.YOOPBACKENDAPP_AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.YOOPBACKENDAPP_AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.YOOPBACKENDAPP_AZURE_SUBSCRIPTION_ID }}
+
+      - name: Build and push frontend container image to registry
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          appSourcePath: ${{ github.workspace }}/frontend/app
+          _dockerfilePathKey_: Dockerfile
+          registryUrl: yoopacr.azurecr.io
+          registryUsername: ${{ secrets.YOOPBACKENDAPP_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.YOOPBACKENDAPP_REGISTRY_PASSWORD }}
+          containerAppName: yoop-frontend-app
+          resourceGroup: Yoop
+          imageToBuild: yoopacr.azurecr.io/yoop-frontend-app:${{ github.sha }}
+          _buildArgumentsKey_: |
+            _buildArgumentsValues_
+          buildArguments: "BACKEND_URL=${{ secrets.BACKEND_URL }}"
+          environmentVariables: "SESSION_SECRET_KEY=${{ secrets.SESSION_SECRET_KEY }}"
+
+      - name: Build and push backend container image to registry
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          appSourcePath: ${{ github.workspace }}/backend
+          _dockerfilePathKey_: Dockerfile
+          registryUrl: yoopacr.azurecr.io
+          registryUsername: ${{ secrets.YOOPBACKENDAPP_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.YOOPBACKENDAPP_REGISTRY_PASSWORD }}
+          containerAppName: yoop-backend-app
+          resourceGroup: Yoop
+          imageToBuild: yoopacr.azurecr.io/yoop-backend-app:${{ github.sha }}
+          _buildArgumentsKey_: |
+            _buildArgumentsValues_
+          environmentVariables: 'DB_HOST=${{ secrets.DB_HOST }} DB_USERNAME=${{ secrets.DB_USERNAME }} DB_PASSWORD=${{ secrets.DB_PASSWORD }} DB_NAME=${{ secrets.DB_NAME }} JWT_SECRET=${{ secrets.JWT_SECRET }} JWT_EXPIRES_IN=${{ secrets.JWT_EXPIRES_IN }} REFRESH_JWT_SECRET=${{ secrets.REFRESH_JWT_SECRET }} REFRESH_JWT_EXPIRES_IN=${{ secrets.REFRESH_JWT_EXPIRES_IN }} SSL=${{ secrets.SSL }} WEATHER_KEY=${{ secrets.WEATHER_KEY }} MJ_APIKEY_PUBLIC=${{ secrets.MJ_APIKEY_PUBLIC }} MJ_APIKEY_PRIVATE=${{ secrets.MJ_APIKEY_PRIVATE }} MAIL_FROM=yoopsportsapp@gmail.com MAIL_FROM_NAME="Your Favourite Sports App" FRONTEND_URL=${{secrets.FRONTEND_URL}}'

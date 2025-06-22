@@ -24,6 +24,7 @@ const page: React.FC = async () => {
   );
   return (
     <div className="mx-auto max-w-3xl px-4 pt-6">
+      <h2 className="text-center">ניהול משתמשים</h2>
       <Tabs defaultValue="players" className="w-full" dir="rtl">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="players">שחקנים ({players.length})</TabsTrigger>

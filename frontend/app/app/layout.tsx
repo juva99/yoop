@@ -6,6 +6,7 @@ import { getSession } from "@/lib/session";
 import { Role } from "@/app/enums/role.enum";
 import SideBar from "./SideBar";
 import { Toaster } from "sonner";
+import Header from "./Header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,13 +24,13 @@ export default async function RootLayout({
 }>) {
   const session = await getSession();
   const role: Role = session?.user?.role ?? ("USER" as Role);
-
+  const name: string = session?.user?.name ?? "";
   return (
     <html lang="en" dir="rtl">
       <body className={`${geistSans.variable} antialiased`}>
+        <Header role={role} name={name} />
         <main className="flex-1">{children}</main>
         <Toaster richColors position="top-center" />
-
         <SideBar role={role} />
       </body>
     </html>
