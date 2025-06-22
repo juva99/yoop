@@ -24,7 +24,10 @@ const Groups = async () => {
   const session = await getSession();
   const userId = session!.user.uid;
   const groups = await getMyGroups();
-  const managedGroups = groups.filter((group) =>
+
+  const validGroups = groups.filter((group) => group && group.groupMembers);
+
+  const managedGroups = validGroups.filter((group) =>
     group.groupMembers.some(
       (member) => member.user.uid === userId && member.isManager,
     ),
@@ -51,11 +54,11 @@ const Groups = async () => {
         </TabsContent>
 
         <TabsContent value="groups">
-          {groups.length === 0 ? (
+          {validGroups.length === 0 ? (
             <p className="h-30 text-center">אתה לא חבר באף קבוצה</p>
           ) : (
             <div className="flex flex-col gap-3 pt-4">
-              {groups.map((group, index) => (
+              {validGroups.map((group, index) => (
                 <GroupItem key={index} group={group} userId={userId} />
               ))}
             </div>
