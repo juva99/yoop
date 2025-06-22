@@ -13,6 +13,7 @@ import {
   MaxFileSizeValidator,
   FileTypeValidator,
   Res,
+  NotFoundException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-users.dto';
@@ -87,10 +88,10 @@ export class UsersController {
     return this.userService.changePassword(token, body.password);
   }
 
-  @Public()
-  @Post('/upload')
+  @Post('/profile-picture/upload')
   @UseInterceptors(FileInterceptor('profilePic'))
-  uploadFile(
+  async uploadFile(
+    @GetUser() user: User,
     @UploadedFile(
       new ParseFilePipe({
         validators: [
@@ -101,34 +102,56 @@ export class UsersController {
     )
     file: Express.Multer.File,
   ) {
-    console.log(file);
-    const fileName = `${Date.now()}-${file.originalname.split('.')[0]}`;
-    this.azureStorageService.uploadFile(
+    // file.originalname.split('.')[0]
+    const fetchedUser = await this.userService.findById(user.uid);
+    const fileName = `${Date.now()}-${user.uid}`;
+    const fileWithExt = `${fileName}.${file.mimetype.split('/')[1]}`;
+    const uploadedFile = await this.azureStorageService.uploadFile(
       'pictures',
-      `${fileName}.${file.mimetype.split('/')[1]}`,
+      fileWithExt,
       file.buffer,
     );
+    if (fetchedUser.profilePic != undefined) {
+      await this.deleteFile(user);
+    }
+
+    await this.userService.updateProfilePicture(user.uid, fileWithExt);
   }
 
-  @Public()
-  @Delete('/delete-profile/:blobName')
-  async deleteFile(@Param('blobName') blobName: string) {
+  @Delete('/profile-picture/delete')
+  async deleteFile(@GetUser() user: User) {
+    const fetchedUser = await this.userService.findById(user.uid);
+    let blobName;
+    if (fetchedUser.profilePic != undefined) {
+      blobName = fetchedUser.profilePic;
+    } else
+      throw new NotFoundException(
+        `no existing profile picture for user: ${user.uid}`,
+      );
     const container = 'pictures';
     await this.azureStorageService.deleteFile(container, blobName);
+    await this.userService.updateProfilePicture(user.uid, undefined);
     return { message: `Deleted ${blobName}` };
   }
 
-  @Public()
-  @Get('/download/:blobName')
-  async getFile(@Param('blobName') blobName: string, @Res() res: Response) {
+  @Get('/profile-picture/download')
+  async getFile(@GetUser() user: User, @Res() res: Response) {
+    const fetchedUser = await this.userService.findById(user.uid);
+    let blobName;
+    if (fetchedUser.profilePic != undefined) {
+      blobName = fetchedUser.profilePic;
+    } else
+      throw new NotFoundException(
+        `no existing profile picture for user: ${user.uid}`,
+      );
     const container = 'pictures';
     const fileBuffer = await this.azureStorageService.downloadFile(
       container,
       blobName,
     );
-
+    const extension = path.extname(blobName);
     res.set({
-      'Content-Type': 'application/octet-stream',
+      'Content-Type': `image/${extension.slice(1)}`,
       'Content-Disposition': `attachment; filename="${blobName}"`,
     });
 

@@ -195,4 +195,18 @@ export class UsersService {
       role: Role.FIELD_MANAGER,
     });
   }
+
+  async updateProfilePicture(
+    uid: string,
+    profilePic: string | undefined,
+  ): Promise<any> {
+    const results = await this.userRepository.update(
+      { uid },
+      { profilePic: profilePic === undefined ? null : profilePic },
+    );
+    if (results.affected === 0) {
+      throw new NotFoundException(`user with id ${uid} not found`);
+    }
+    return results.affected;
+  }
 }
