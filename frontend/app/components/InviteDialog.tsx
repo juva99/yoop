@@ -115,7 +115,7 @@ const InviteDialog: React.FC<InviteDialogProps> = ({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" className="flex items-center gap-2">
+        <Button variant="ghost" className="flex items-center has-[>svg]:px-0">
           <FaUserPlus />
         </Button>
       </DialogTrigger>

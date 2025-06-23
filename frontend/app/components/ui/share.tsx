@@ -4,28 +4,28 @@ import { Button } from "./button";
 import { Share2 } from "lucide-react";
 import { toast } from "sonner";
 
-
 const Share = () => {
-
   const handleShare = async () => {
     const shareData = {
-        title: "Yoop Sports",
-        text: "הצטרפו למשחק שלי ב-Yoop Sports!",
-        url: window.location.href,
+      title: "Yoop Sports",
+      text: "הצטרפו למשחק שלי ב-Yoop Sports!",
+      url: window.location.href,
     };
 
+    if (navigator.canShare && navigator.canShare(shareData)) {
+      await navigator.share(shareData);
+    } else {
+      await handleCopyToClipboard(shareData);
+    }
+  };
 
-      if (navigator.canShare && navigator.canShare(shareData)) {
-        await navigator.share(shareData);
-      }
-      else {
-        await handleCopyToClipboard(shareData);
-      }
-    };
-
-  const handleCopyToClipboard = async (shareData: { title: string; text: string; url: string; }) => {
+  const handleCopyToClipboard = async (shareData: {
+    title: string;
+    text: string;
+    url: string;
+  }) => {
     const shareText = `${shareData.text}\n${shareData.url}`;
-    
+
     try {
       // Check if clipboard API is available
       if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -52,10 +52,10 @@ const Share = () => {
       document.body.appendChild(textArea);
       textArea.focus();
       textArea.select();
-      
-      const successful = document.execCommand('copy');
+
+      const successful = document.execCommand("copy");
       document.body.removeChild(textArea);
-      
+
       if (successful) {
         toast.success("הקישור הועתק ללוח");
       } else {
@@ -72,12 +72,12 @@ const Share = () => {
       <Button
         onClick={handleShare}
         variant={"ghost"}
-        className="relative"
+        className="relative has-[>svg]:px-0"
       >
-        <Share2 className="w-4 h-4" />
+        <Share2 className="h-4 w-4" />
       </Button>
     </div>
   );
 };
 
-export default Share
+export default Share;

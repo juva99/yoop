@@ -19,9 +19,18 @@ import LeaveGameButton from "@/components/LeaveGameButton";
 import { authFetch } from "@/lib/authFetch";
 import CalendarLink from "@/components/ui/calendar-link";
 import Share from "@/components/ui/share";
-import { GameStatus } from "@/app/enums/game-status.enum";
 import { getMyFriends, getMyGroups } from "@/lib/actions";
 import InviteDialog from "@/components/InviteDialog";
+import { GameStatus } from "@/app/enums/game-status.enum";
+import { is } from "date-fns/locale";
+import RegStatus from "@/components/games/RegStatus";
+
+enum Status {
+  PENDING = "PENDING",
+  APPROVED = "APPROVED",
+  FINISHED = "FINISHED",
+  STARTED = "STARTED",
+}
 
 async function getGame(gameId: string): Promise<Game | null> {
   try {
@@ -46,6 +55,18 @@ async function getGame(gameId: string): Promise<Game | null> {
     return null;
   }
 }
+
+const isFinished = (game: Game): boolean => {
+  const now = new Date();
+  const endDate = new Date(game.endDate);
+  return endDate < now;
+};
+
+const isStarted = (game: Game): boolean => {
+  const now = new Date();
+  const startDate = new Date(game.startDate);
+  return startDate <= now && !isFinished(game);
+};
 
 export default async function Page({
   params,
@@ -112,6 +133,16 @@ export default async function Page({
     .filter((gp) => gp.status === ParticipationStatus.APPROVED)
     .map((gp) => gp.user.uid);
 
+  const regStatus: Status = isStarted(game)
+    ? Status.STARTED
+    : isFinished(game)
+      ? Status.FINISHED
+      : status === GameStatus.APPROVED
+        ? Status.APPROVED
+        : Status.PENDING;
+
+  const showActions =
+    regStatus === Status.APPROVED || regStatus === Status.PENDING;
   return (
     <div className="flex h-full flex-col gap-6 px-6">
       {" "}
@@ -159,19 +190,18 @@ export default async function Page({
             <p>{price === null ? "חינם" : `${price} ₪`}</p>{" "}
           </div>
         )}
-        <span>
-          {status === GameStatus.APPROVED ? (
-            <div className="flex items-center gap-2">
-              <span>🟢</span>
-              <span>פתוח להרשמה</span>
-            </div>
-          ) : (
-            <div className="flex items-center gap-2">
-              <span>🟠</span>
-              <span>בהמתנה לאישור מנהל המגרש</span>
-            </div>
-          )}
-        </span>
+        {regStatus === Status.PENDING && (
+          <RegStatus text="הרשמה עדייו לא נפתחה" icon={<span>🟠</span>} />
+        )}
+        {regStatus === Status.APPROVED && (
+          <RegStatus text="פתוח להרשמה" icon={<span>🟢</span>} />
+        )}
+        {regStatus === Status.STARTED && (
+          <RegStatus text="ההרשמה סגורה" icon={<span>🔴</span>} />
+        )}
+        {regStatus === Status.FINISHED && (
+          <RegStatus text="המשחק הסתיים" icon={<span>🔴</span>} />
+        )}
         <div className="flex items-center gap-2">
           <CalendarLink game={game} />
         </div>
@@ -181,17 +211,19 @@ export default async function Page({
           <h3>
             משתתפים ({approvedCount}/{maxParticipants})
           </h3>
-          <div className="flex items-center gap-2">
-            {isCreator && (
-              <InviteDialog
-                gameId={gameId}
-                friends={friends}
-                groups={groups}
-                playersInGame={playersInGame}
-              />
-            )}
-            <Share />
-          </div>
+          {regStatus === Status.APPROVED && (
+            <div className="flex items-center gap-4">
+              {isCreator && (
+                <InviteDialog
+                  gameId={gameId}
+                  friends={friends}
+                  groups={groups}
+                  playersInGame={playersInGame}
+                />
+              )}
+              <Share />
+            </div>
+          )}
         </div>
         <PlayersList
           gameId={gameId}
@@ -223,11 +255,12 @@ export default async function Page({
           games={[game]}
         />
       </div>
-      {!isJoined ? (
+      {!isJoined && showActions && (
         <div className="mt-4 flex justify-center gap-4">
           <JoinGameButton gameId={gameId} />
         </div>
-      ) : (
+      )}
+      {isJoined && showActions && (
         <div className="mt-4 flex justify-center gap-4">
           <LeaveGameButton
             gameId={gameId}
