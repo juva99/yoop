@@ -25,11 +25,6 @@ interface GameInfoStepProps {
   form: UseFormReturn;
 }
 
-// const gameTypeOptions = Object.entries(GameType).map(([_, value]) => ({
-//   label: gameTypeDict[value],
-//   value: value,
-// }));
-
 const cityOptions = Object.entries(City).map(([label, value]) => ({
   label: value,
   value: value,
