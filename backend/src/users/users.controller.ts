@@ -95,7 +95,7 @@ export class UsersController {
     @UploadedFile(
       new ParseFilePipe({
         validators: [
-          new MaxFileSizeValidator({ maxSize: 3 * 1024 * 1024 }), // 3MB
+          new MaxFileSizeValidator({ maxSize: 2 * 1024 * 1024 }), // 2MB
           new FileTypeValidator({ fileType: /jpeg|png|jpg/ }), //images
         ],
       }),
@@ -143,6 +143,30 @@ export class UsersController {
     } else
       throw new NotFoundException(
         `no existing profile picture for user: ${user.uid}`,
+      );
+    const container = 'pictures';
+    const fileBuffer = await this.azureStorageService.downloadFile(
+      container,
+      blobName,
+    );
+    const extension = path.extname(blobName);
+    res.set({
+      'Content-Type': `image/${extension.slice(1)}`,
+      'Content-Disposition': `attachment; filename="${blobName}"`,
+    });
+
+    res.send(fileBuffer);
+  }
+
+  @Get('/profile-picture/download/:id')
+  async getFileById(@Param('id') uid: string, @Res() res: Response) {
+    const fetchedUser = await this.userService.findById(uid);
+    let blobName;
+    if (fetchedUser.profilePic != undefined) {
+      blobName = fetchedUser.profilePic;
+    } else
+      throw new NotFoundException(
+        `no existing profile picture for user: ${uid}`,
       );
     const container = 'pictures';
     const fileBuffer = await this.azureStorageService.downloadFile(
