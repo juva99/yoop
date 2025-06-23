@@ -7,6 +7,7 @@ import {
   Sidebar,
   SidebarProvider,
   SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -25,17 +26,22 @@ const SidebarLink = ({
   href: string;
   children: React.ReactNode;
   prefetch: boolean;
-}) => (
-  <Link
-    href={href}
-    prefetch={prefetch}
-    className={cn(
-      "block w-full rounded-md px-3 py-2 text-sm font-medium transition hover:bg-gray-200",
-    )}
-  >
-    {children}
-  </Link>
-);
+}) => {
+  const { setOpenMobile } = useSidebar();
+
+  return (
+    <Link
+      href={href}
+      prefetch={prefetch}
+      onClick={() => setOpenMobile(false)}
+      className={cn(
+        "block w-full rounded-md px-3 py-2 text-sm font-medium transition hover:bg-gray-200",
+      )}
+    >
+      {children}
+    </Link>
+  );
+};
 
 type SidebarProps = {
   role: Role;
