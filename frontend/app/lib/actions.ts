@@ -6,7 +6,7 @@ import { authFetch } from "./authFetch";
 import { BACKEND_URL } from "./constants";
 import { User } from "@/app/types/User";
 import { getSession } from "./session";
-import { FriendRelation } from "@/app/groups/new/NewGroupForm";
+import { FriendRelation } from "@/app/groups/new/GroupForm";
 import { Group } from "@/app/types/Group";
 
 type ProtectedResponse = {

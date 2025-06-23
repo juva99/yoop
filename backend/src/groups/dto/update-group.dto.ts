@@ -13,8 +13,4 @@ export class UpdateGroupDto {
 
   @IsEnum(GameType, { each: true })
   gameTypes: GameType[];
-
-  @IsArray()
-  @IsUUID('4', { each: true })
-  userIds: string[];
 }

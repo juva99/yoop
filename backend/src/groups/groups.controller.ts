@@ -44,10 +44,12 @@ export class GroupController {
     return await this.groupsService.createGroup(user.uid, createGroupDto);
   }
 
-  @Roles(Role.ADMIN)
   @Delete('/delete/:id')
-  async deleteGroup(@Param('id') groupId: string): Promise<void> {
-    return await this.groupsService.deleteGroup(groupId);
+  async deleteGroup(
+    @Param('id') groupId: string,
+    @GetUser() user: User,
+  ): Promise<void> {
+    return await this.groupsService.deleteGroup(groupId, user);
   }
 
   @Put('/update')

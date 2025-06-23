@@ -11,27 +11,33 @@ import AlertPopup from "@/components/AlertPopup";
 import AvatarGroup from "@/components/AvatarGroup";
 import { authFetch } from "@/lib/authFetch";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 type Props = {
   group: Group;
   userId: string;
+  isManager?: boolean;
 };
 
-const GroupItem: React.FC<Props> = ({ group, userId }) => {
+const GroupItem: React.FC<Props> = ({ group, isManager }) => {
+  const router = useRouter();
   const players = group.groupMembers.map((groupMember) => groupMember.user);
 
-  const removeHandler = async () => {
+  const deleteHandler = async () => {
     const response = await authFetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/groups/${group.groupId}/remove/${userId}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/groups/delete/${group.groupId}`,
       {
         method: "DELETE",
       },
     );
 
     if (!response.ok) {
-      toast.error(response.statusText);
+      const data = await response.json().catch(() => null);
+      const message = data?.message || "שגיאה במחיקת הקבוצה";
+      toast.error(message);
     } else {
-      toast.success("יצאת מהקבוצה בהצלחה");
+      toast.success("מחקת את הקבוצה בהצלחה");
+      router.refresh();
     }
   };
 
@@ -52,14 +58,16 @@ const GroupItem: React.FC<Props> = ({ group, userId }) => {
           <AvatarGroup players={players} />
         </Link>
       </div>
-      <div>
-        <AlertPopup
-          message={`בחרת לצאת מ${group.groupName}`}
-          onClick={removeHandler}
-        >
-          <TiDelete size={20} />
-        </AlertPopup>
-      </div>
+      {isManager && (
+        <div>
+          <AlertPopup
+            message={`בחרת למחוק את ${group.groupName}`}
+            onClick={deleteHandler}
+          >
+            <TiDelete size={20} />
+          </AlertPopup>
+        </div>
+      )}
     </div>
   );
 };

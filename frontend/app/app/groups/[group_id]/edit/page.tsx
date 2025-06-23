@@ -1,10 +1,11 @@
 import React from "react";
 import { authFetch } from "@/lib/authFetch";
 import { getSession } from "@/lib/session";
-import { fetchFriendsFromRelations } from "@/lib/actions";
+import { getMyFriends } from "@/lib/actions";
 import { redirect } from "next/navigation";
-import NewGroupForm, { Friend } from "../../new/NewGroupForm";
 import { Group } from "@/app/types/Group";
+import { User } from "@/app/types/User";
+import GroupForm from "../../new/GroupForm";
 
 type Props = {
   params: {
@@ -13,7 +14,6 @@ type Props = {
 };
 
 const EditGroupPage: React.FC<Props> = async ({ params }) => {
-  const session = await getSession();
   const groupId = params.group_id || undefined;
 
   const groupResponse = await authFetch(
@@ -26,20 +26,12 @@ const EditGroupPage: React.FC<Props> = async ({ params }) => {
     redirect("/groups");
   }
   const group: Group = await groupResponse.json();
-
-  const friendsResponse = await authFetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/friends/getAll`,
-  );
-  const friendRelations = await friendsResponse.json();
-  const friends: Friend[] = await fetchFriendsFromRelations(
-    friendRelations,
-    session!.user.uid,
-  );
+  const friends: User[] = await getMyFriends();
 
   return (
     <div className="py-10">
-      <h1>עריכת קבוצה</h1>
-      <NewGroupForm
+      <h1 className="text-center">עריכת קבוצה</h1>
+      <GroupForm
         friends={friends}
         groupId={groupId}
         groupValues={{
