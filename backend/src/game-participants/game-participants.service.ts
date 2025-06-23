@@ -42,7 +42,7 @@ export class GameParticipantsService {
     });
 
     if (existingParticipation) {
-      throw new ConflictException('User is already participating in this game');
+      return existingParticipation;
     }
 
     const newParticipation = this.gameParticipantRepository.create({
@@ -141,7 +141,7 @@ export class GameParticipantsService {
     }
   }
 
-  async inviteFriendToGame(gameId: string, inviter: User, invited: User) {
+  async inviteFriendsToGame(gameId: string, inviter: User, inviteds: User[]) {
     let status = ParticipationStatus.PENDING;
     const game = await this.gameRepository.findOne({
       where: { gameId },
@@ -155,9 +155,9 @@ export class GameParticipantsService {
     if (inviter.uid === game.creator.uid) {
       status = ParticipationStatus.APPROVED;
     }
-    const newParticipation = await this.joinGame(game.gameId, invited, status);
-
-    return newParticipation;
+    await Promise.all(
+      inviteds.map((invited) => this.joinGame(game.gameId, invited, status)),
+    );
   }
 
   async findGameParticipant(

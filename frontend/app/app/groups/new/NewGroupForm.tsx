@@ -156,7 +156,7 @@ const NewGroupForm: React.FC<Props> = ({ friends, groupValues, groupId }) => {
               <FormLabel>חברים בקבוצה</FormLabel>
               <FormControl>
                 <FriendsCombobox
-                  members={friends}
+                  friends={friends}
                   selectedIds={field.value ?? []}
                   onChange={field.onChange}
                 />
