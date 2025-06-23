@@ -203,7 +203,7 @@ export default async function Page({
           <RegStatus text="המשחק הסתיים" icon={<span>🔴</span>} />
         )}
         <div className="flex items-center gap-2">
-          <CalendarLink game={game} />
+          {showActions && <CalendarLink game={game} />}
         </div>
       </div>
       <div>
