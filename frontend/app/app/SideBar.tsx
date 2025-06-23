@@ -27,13 +27,13 @@ const SidebarLink = ({
   children: React.ReactNode;
   prefetch: boolean;
 }) => {
-  const { setOpenMobile } = useSidebar();
+  const { toggleSidebar } = useSidebar();
 
   return (
     <Link
       href={href}
       prefetch={prefetch}
-      onClick={() => setOpenMobile(false)}
+      onClick={toggleSidebar}
       className={cn(
         "block w-full rounded-md px-3 py-2 text-sm font-medium transition hover:bg-gray-200",
       )}
