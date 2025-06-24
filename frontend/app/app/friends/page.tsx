@@ -69,7 +69,7 @@ export default async function SearchPage({
                 key={friend.uid}
                 friend={friend}
                 action="add"
-                userId={friend.uid}
+                userId={userId}
               />
             ))
           ) : query ? (
