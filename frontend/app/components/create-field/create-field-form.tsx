@@ -21,7 +21,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { useState, useEffect } from "react"; // Import useEffect
-import GameTypeOption from "./game-type-option";
+import GameTypeOption from "../game-type-option";
 import { Combobox } from "../ui/combobox";
 import { Map, Marker } from "pigeon-maps";
 import { Switch } from "../ui/switch";
