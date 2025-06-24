@@ -6,21 +6,36 @@ import {
   Delete,
   Param,
   Put,
+  UseInterceptors,
+  UploadedFile,
+  BadRequestException,
+  ParseFilePipe,
+  MaxFileSizeValidator,
+  FileTypeValidator,
+  Res,
+  NotFoundException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-users.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsePipes, ValidationPipe } from '@nestjs/common';
-
+import { Express, Response } from 'express';
 import { User } from './users.entity';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { Public } from 'src/auth/decorators/public.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/enums/role.enum';
+import { FileInterceptor } from '@nestjs/platform-express';
+import * as multer from 'multer';
+import * as path from 'path';
+import { AzureStorageService } from 'src/azure-storage/azure-storage.service';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly userService: UsersService) {}
+  constructor(
+    private readonly userService: UsersService,
+    private readonly azureStorageService: AzureStorageService,
+  ) {}
 
   @Get()
   async getAll(): Promise<User[]> {
@@ -70,5 +85,89 @@ export class UsersController {
   @Post(`reset-password/:token`)
   async resetPass(@Param('token') token: string, @Body() body) {
     return this.userService.changePassword(token, body.password);
+  }
+
+  @Post('/profile-picture/upload')
+  @UseInterceptors(FileInterceptor('profilePic'))
+  async uploadFile(
+    @GetUser() user: User,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 2 * 1024 * 1024 }), // 2MB
+          new FileTypeValidator({ fileType: /jpeg|png|jpg/ }), //images
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+  ) {
+    const fetchedUser = await this.userService.findById(user.uid);
+    const fileName = `${Date.now()}-${user.uid}`;
+    const fileWithExt = `${fileName}.${file.mimetype.split('/')[1]}`;
+    const uploadedFile = await this.azureStorageService.uploadFile(
+      'pictures',
+      fileWithExt,
+      file.buffer,
+    );
+    if (fetchedUser.profilePic != undefined) {
+      await this.deleteFile(user);
+    }
+
+    await this.userService.updateProfilePicture(user.uid, fileWithExt);
+  }
+
+  @Delete('/profile-picture/delete')
+  async deleteFile(@GetUser() user: User) {
+    const fetchedUser = await this.userService.findById(user.uid);
+    let blobName;
+    if (fetchedUser.profilePic != undefined) {
+      blobName = fetchedUser.profilePic;
+    } else
+      throw new NotFoundException(
+        `no existing profile picture for user: ${user.uid}`,
+      );
+    const container = 'pictures';
+    await this.azureStorageService.deleteFile(container, blobName);
+    await this.userService.updateProfilePicture(user.uid, undefined);
+    return { message: `Deleted ${blobName}` };
+  }
+
+  @Get('/profile-picture/download')
+  async getFile(@GetUser() user: User, @Res() res: Response): Promise<void> {
+    await this.downloadProfilePicture(user.uid, res);
+  }
+
+  @Get('/profile-picture/download/:id')
+  async getFileById(
+    @Param('id') uid: string,
+    @Res() res: Response,
+  ): Promise<void> {
+    await this.downloadProfilePicture(uid, res);
+  }
+
+  async downloadProfilePicture(
+    uid: string,
+    @Res() res: Response,
+  ): Promise<void> {
+    const fetchedUser = await this.userService.findById(uid);
+    let blobName;
+    if (fetchedUser.profilePic != undefined) {
+      blobName = fetchedUser.profilePic;
+    } else
+      throw new NotFoundException(
+        `no existing profile picture for user: ${uid}`,
+      );
+    const container = 'pictures';
+    const fileBuffer = await this.azureStorageService.downloadFile(
+      container,
+      blobName,
+    );
+    const extension = path.extname(blobName);
+    res.set({
+      'Content-Type': `image/${extension.slice(1)}`,
+      'Content-Disposition': `attachment; filename="${blobName}"`,
+    });
+
+    res.send(fileBuffer);
   }
 }

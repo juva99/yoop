@@ -14,6 +14,7 @@ import { ManagerSignupModule } from './manager-signup/manager-signup.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { GroupsModule } from './groups/groups.module';
 import { GroupMembersModule } from './group-members/group-members.module';
+import { AzureStorageModule } from './azure-storage/azure-storage.module';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { GroupMembersModule } from './group-members/group-members.module';
     ManagerSignupModule,
     GroupsModule,
     GroupMembersModule,
+    AzureStorageModule,
   ],
   controllers: [],
 })
