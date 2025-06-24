@@ -1,9 +1,8 @@
 import FutureGames from "@/components/FutureGames";
 import Search from "@/components/searchComponents/search-games";
-import NotificationsButton from "@/components/ui/Notifications";
 import { getMyGames } from "@/lib/actions";
-import { getSession } from "@/lib/session";
 import { Card } from "@/components/ui/card";
+
 export default async function Home() {
   const data = await getMyGames();
 

@@ -7,14 +7,14 @@ import { Group } from "@/app/types/Group";
 import { User } from "@/app/types/User";
 import GroupForm from "../../new/GroupForm";
 
-type Props = {
-  params: {
-    group_id: string;
-  };
-};
+interface Props {
+  params: Promise<{ group_id: string }>;
+}
 
-const EditGroupPage: React.FC<Props> = async ({ params }) => {
-  const groupId = params.group_id || undefined;
+export default async function EditGroupPage({ params }: Props) {
+  const { group_id } = await params;
+
+  const groupId = group_id || undefined;
 
   const groupResponse = await authFetch(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/groups/${groupId}`,
@@ -42,6 +42,4 @@ const EditGroupPage: React.FC<Props> = async ({ params }) => {
       />
     </div>
   );
-};
-
-export default EditGroupPage;
+}
