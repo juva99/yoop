@@ -19,15 +19,11 @@ import { cn } from "@/lib/utils";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { he } from "date-fns/locale";
+import GameTypeOption from "../game-type-option";
 
 interface GameInfoStepProps {
   form: UseFormReturn;
 }
-
-const gameTypeOptions = Object.entries(GameType).map(([_, value]) => ({
-  label: gameTypeDict[value],
-  value: value,
-}));
 
 const cityOptions = Object.entries(City).map(([label, value]) => ({
   label: value,
@@ -87,14 +83,16 @@ export default function GameInfoStep({ form }: GameInfoStepProps) {
           <FormItem>
             <FormLabel>סוג משחק</FormLabel>
             <FormControl>
-              <Combobox
-                options={gameTypeOptions}
-                value={field.value}
-                onSelect={field.onChange}
-                placeholder="בחר סוג משחק"
-                searchPlaceholder="חפש סוג משחק..."
-                notFoundText="לא נמצא סוג משחק"
-              />
+              <div className="grid grid-cols-2 gap-4">
+                {Object.values(GameType).map((type) => (
+                  <GameTypeOption
+                    key={type}
+                    value={type}
+                    selected={field.value?.includes(type)}
+                    onSelect={() => field.onChange(type)}
+                  />
+                ))}
+              </div>
             </FormControl>
             <FormMessage />
           </FormItem>

@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { FriendsCombobox } from "./FriendsCombobox";
 import { GameType } from "@/app/enums/game-type.enum";
-import GameTypeOption from "@/components/create-field/game-type-option";
+import GameTypeOption from "@/components/game-type-option";
 import { formSchema, FormSchema } from "@/lib/schemas/new-group.schema";
 import { User } from "@/app/types/User";
 import { authFetch } from "@/lib/authFetch";
