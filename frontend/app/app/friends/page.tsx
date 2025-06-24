@@ -65,7 +65,12 @@ export default async function SearchPage({
         <div className="scrollbar-none overflow-y-scroll">
           {friends.length > 0 ? (
             friends.map((friend: User) => (
-              <Friend key={friend.uid} friend={friend} action="add" />
+              <Friend
+                key={friend.uid}
+                friend={friend}
+                action="add"
+                userId={userId}
+              />
             ))
           ) : query ? (
             <p>אין תוצאות</p>

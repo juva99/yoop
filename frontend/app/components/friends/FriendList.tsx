@@ -4,12 +4,7 @@ import { User } from "@/app/types/User";
 import React, { useState } from "react";
 import Friend from "./Friend";
 import { authFetch } from "@/lib/authFetch";
-
-type FriendRelation = {
-  id: string;
-  user1: User;
-  user2: User;
-};
+import { FriendRelation } from "@/app/types/friend-relation";
 
 type Props = {
   currentUserUid: string;
