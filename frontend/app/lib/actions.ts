@@ -6,7 +6,7 @@ import { authFetch } from "./authFetch";
 import { BACKEND_URL } from "./constants";
 import { User } from "@/app/types/User";
 import { getSession } from "./session";
-import { FriendRelation } from "@/app/groups/new/NewGroupForm";
+import { FriendRelation } from "@/app/groups/new/GroupForm";
 import { Group } from "@/app/types/Group";
 
 type ProtectedResponse = {
@@ -145,9 +145,12 @@ export async function fetchUserById(id: string): Promise<User> {
   return res.json();
 }
 
-export const inviteFriendsToGame = async (gameId: string, friendIds: string[]) => {
-  const friends = await Promise.all(friendIds.map(id => fetchUserById(id)));
-  
+export const inviteFriendsToGame = async (
+  gameId: string,
+  friendIds: string[],
+) => {
+  const friends = await Promise.all(friendIds.map((id) => fetchUserById(id)));
+
   const response = await authFetch(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/${gameId}/invite`,
     {
@@ -183,22 +186,19 @@ export const inviteGroupToGame = async (gameId: string, groupId: string) => {
   if (!groupUsersResponse.ok) {
     return { ok: false, message: "Failed to get group members" };
   }
-  
+
   const groupUsers = await groupUsersResponse.json();
-  
+
   // Invite all group users
-  const response = await authFetch(
-    `${BACKEND_URL}/games/${gameId}/invite`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        inviteds: groupUsers,
-      }),
+  const response = await authFetch(`${BACKEND_URL}/games/${gameId}/invite`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
     },
-  );
+    body: JSON.stringify({
+      inviteds: groupUsers,
+    }),
+  });
   if (!response.ok) {
     let errorMessage = "Failed to invite group";
     try {

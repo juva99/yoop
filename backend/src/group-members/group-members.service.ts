@@ -36,14 +36,12 @@ export class GroupMembersService {
     return groupMember;
   }
   async findMyGroups(user: User): Promise<Group[]> {
-    // async findMyGroups(user: User): Promise<GroupMember[]> {
     const groupMembers = await this.groupMemberRepository.find({
       where: { user: { uid: user.uid } },
       relations: ['group', 'group.groupMembers', 'group.groupMembers.user'],
     });
 
     return groupMembers.map((gm) => gm.group);
-    // return groupMembers;
   }
 
   async findAllGroupMembers(groupId: string): Promise<GroupMember[]> {
@@ -101,7 +99,8 @@ export class GroupMembersService {
     );
 
     if (newUserIds.length === 0) {
-      throw new ConflictException('כל המשתמשים כבר בקבוצה!');
+      // no new users to add
+      return existingMembers;
     }
 
     const newUsers = await this.userService.findByIds(newUserIds);
@@ -113,24 +112,43 @@ export class GroupMembersService {
         isManager: false,
       }),
     );
-
     return await this.groupMemberRepository.save(newMembers);
   }
 
-  async removeMemeberFromGroup(groupId: string, userId: string): Promise<void> {
+  async removeMemeberFromGroup(
+    groupId: string,
+    userId: string,
+    managerId: string,
+  ): Promise<void> {
     const groupMember = await this.findGroupMember(groupId, userId);
+    const remover = await this.findGroupMember(groupId, managerId);
+    if (!remover.isManager) {
+      throw new ConflictException('רק מנהל יכול להסיר חברים מהקבוצה');
+    }
 
+    if (groupMember.isManager) {
+      throw new ConflictException('לא ניתן להסיר מנהל מהקבוצה');
+    }
+    await this.groupMemberRepository.delete(groupMember);
+  }
+
+  async leaveGroup(groupId: string, userId: string): Promise<void> {
+    const groupMember = await this.findGroupMember(groupId, userId);
     const managers = await this.findAllGroupManagers(groupId);
-    if (managers.length === 1 && groupMember.isManager) {
-      throw new ConflictException('לא ניתן להשאיר את הקבוצה ללא מנהל');
+
+    if (groupMember.isManager && managers.length === 1) {
+      const members = await this.findAllGroupMembers(groupId);
+      if (members.length === 1) {
+        throw new ConflictException(
+          'אין אפשרות לצאת מהקבוצה. אם בכוונתך למחוק אותה עשה זאת מעמוד הקבוצות',
+        );
+      } else {
+        throw new ConflictException('לא ניתן להשאיר את הקבוצה ללא מנהל');
+      }
     }
 
     await this.groupMemberRepository.delete(groupMember);
   }
-
-  // currently not necessary
-  // async joinGroup() {}
-  // async leaveGroup() {}
 
   async setManagerStatus(
     groupId: string,

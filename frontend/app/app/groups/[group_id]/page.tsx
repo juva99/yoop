@@ -1,9 +1,14 @@
-import { GameType } from "@/app/enums/game-type.enum";
 import { Group } from "@/app/types/Group";
+import GroupMembers from "@/components/groups/GroupMembers";
+import GroupTitle from "@/components/groups/GroupTypes";
+import Link from "next/link";
+import LeaveButton from "@/components/groups/LeaveButton";
 import { authFetch } from "@/lib/authFetch";
+import { getSession } from "@/lib/session";
 import { redirect } from "next/navigation";
+import { FiEdit } from "react-icons/fi";
+
 import React from "react";
-import { PiBasketball, PiSoccerBall } from "react-icons/pi";
 
 type Props = {
   params: Promise<{
@@ -12,6 +17,8 @@ type Props = {
 };
 
 const page: React.FC<Props> = async ({ params }) => {
+  const session = await getSession();
+  const user_id = session!.user.uid;
   const { group_id } = await params;
 
   const groupResponse = await authFetch(
@@ -23,20 +30,29 @@ const page: React.FC<Props> = async ({ params }) => {
   if (!groupResponse.ok) {
     redirect("/groups");
   }
+
   const group: Group = await groupResponse.json();
-  // need to add all relevant details about the group and add edit button with navigate to edit (version of create form)
+  const isMember: boolean = group.groupMembers.some(
+    (member) => member.user.uid === user_id,
+  );
+  const isManager: boolean = group.groupMembers.some(
+    (member) => member.user.uid === user_id && member.isManager,
+  );
+
   return (
-    <div className="px-5 py-10">
-      <span>
-        {group.groupName}
-        {group.gameTypes.map((t, index) =>
-          t === GameType.BasketBall ? (
-            <PiSoccerBall key={"icon" + index} />
-          ) : (
-            <PiBasketball key={"icon" + index} />
-          ),
+    <div className="flex min-h-[calc(100vh-100px)] flex-col gap-4 p-5">
+      <div className="flex w-full items-center justify-between">
+        <GroupTitle gameTypes={group.gameTypes} groupName={group.groupName} />{" "}
+        {isManager && (
+          <Link href={`/groups/${group_id}/edit`}>
+            <FiEdit size={20} color="gray" />
+          </Link>
         )}
-      </span>
+      </div>
+      <GroupMembers userId={user_id} group={group} isManager={isManager} />
+      {isMember && group.groupMembers.length > 1 && (
+        <LeaveButton userId={user_id} groupId={group_id} />
+      )}
     </div>
   );
 };

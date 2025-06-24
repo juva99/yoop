@@ -41,8 +41,6 @@ const FriendList: React.FC<Props> = ({ currentUserUid, relations }) => {
       if (!response.ok) {
         throw new Error("Failed to remove friend");
       }
-
-      // הסרה מה-state לאחר הצלחה
       setFriendRelations((prev) => prev.filter((rel) => rel.id !== relationId));
     } catch (error) {
       console.error("Error removing friend request:", error);
@@ -60,6 +58,7 @@ const FriendList: React.FC<Props> = ({ currentUserUid, relations }) => {
             <React.Fragment key={relationId}>
               <li className="flex items-center justify-between">
                 <Friend
+                  userId={currentUserUid}
                   action="remove"
                   friend={friend}
                   relationId={relationId}

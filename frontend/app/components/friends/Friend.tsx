@@ -9,13 +9,14 @@ import React, { useState } from "react";
 import { authFetch } from "@/lib/authFetch";
 
 type Props = {
+  userId: string;
   friend: User;
   relationId?: string;
-  action: "remove" | "add";
+  action?: "remove" | "add";
   onClick?: () => void;
 };
 
-const Friend: React.FC<Props> = ({ friend, action, onClick }) => {
+const Friend: React.FC<Props> = ({ userId, friend, action, onClick }) => {
   const [sentRequest, setSentRequest] = useState<boolean>(false);
 
   const sendFriendRequest = async (friendId: string) => {
@@ -61,9 +62,9 @@ const Friend: React.FC<Props> = ({ friend, action, onClick }) => {
             <IoPersonAddOutline size="17px" />
           ))}
       </div>
-      {action === "remove" && (
+      {userId !== friend.uid && action === "remove" && (
         <div onClick={onClick}>
-          <FaUserXmark size="20px" />
+          <FaUserXmark color="gray" size="17px" />
         </div>
       )}
     </div>

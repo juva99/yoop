@@ -55,7 +55,7 @@ const SideBar: React.FC<SidebarProps> = ({ role }) => {
       return (
         <SidebarProvider>
           <SidebarTrigger />
-          <Sidebar side="right" className="border-l bg-gray-100 shadow-md">
+          <Sidebar side="right">
             <div className="p-4">
               <h2 className="mb-6 text-right text-lg font-bold">תפריט</h2>
               <nav className="space-y-2 text-right">

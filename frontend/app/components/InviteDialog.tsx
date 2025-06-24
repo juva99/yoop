@@ -115,7 +115,7 @@ const InviteDialog: React.FC<InviteDialogProps> = ({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" className="flex items-center gap-2">
+        <Button variant="ghost" className="flex items-center has-[>svg]:px-0">
           <FaUserPlus />
         </Button>
       </DialogTrigger>
@@ -140,7 +140,12 @@ const InviteDialog: React.FC<InviteDialogProps> = ({
                     className="flex cursor-pointer items-center justify-between rounded border p-2 transition-colors hover:bg-gray-50"
                     onClick={() => handleFriendToggle(friend.uid)}
                   >
-                    <div className="flex items-center gap-2">
+                    <div
+                      className="flex items-center gap-2"
+                      onClick={() => {
+                        selectedFriends.includes(friend.uid);
+                      }}
+                    >
                       <Avatar className="h-8 w-8">
                         <AvatarImage src={friend.profilePic} />
                         <AvatarFallback>
@@ -177,8 +182,15 @@ const InviteDialog: React.FC<InviteDialogProps> = ({
                 groups.map((group) => (
                   <div
                     key={group.groupId}
-                    className="flex items-center justify-between rounded border p-2"
+                    className="flex items-center gap-2 rounded border p-2"
+                    onClick={() => {
+                      handleGroupToggle(group.groupId);
+                    }}
                   >
+                    <Checkbox
+                      checked={selectedGroups.includes(group.groupId)}
+                      onCheckedChange={() => handleGroupToggle(group.groupId)}
+                    />
                     <div className="flex items-center gap-2">
                       <div className="flex">
                         {group.gameTypes.map((type, index) =>
@@ -194,10 +206,6 @@ const InviteDialog: React.FC<InviteDialogProps> = ({
                         ({group.groupMembers.length} חברים)
                       </span>
                     </div>
-                    <Checkbox
-                      checked={selectedGroups.includes(group.groupId)}
-                      onCheckedChange={() => handleGroupToggle(group.groupId)}
-                    />
                   </div>
                 ))
               )}

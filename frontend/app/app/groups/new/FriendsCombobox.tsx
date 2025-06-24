@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import {
   Popover,
   PopoverContent,
@@ -29,27 +29,21 @@ export const FriendsCombobox: React.FC<Props> = ({
   selectedIds,
   onChange,
 }) => {
-  const [open, setOpen] = useState(false);
-
-  const toggleFriend = (id: string) => {
+  const toggleMember = (id: string) => {
     if (selectedIds.includes(id)) {
-      onChange(selectedIds.filter((uid) => uid !== id));
+      onChange(selectedIds.filter((m) => m !== id));
     } else {
       onChange([...selectedIds, id]);
     }
   };
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          type="button"
-          className="w-full justify-start"
-        >
+        <Button variant="outline" className="w-full justify-start">
           {selectedIds.length > 0
             ? `נבחרו ${selectedIds.length} חברים`
-            : "בחר חברים"}
+            : "בחר חברים להצטרפות"}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[300px] p-0">
@@ -57,23 +51,15 @@ export const FriendsCombobox: React.FC<Props> = ({
           <CommandInput placeholder="חפש חבר..." />
           <CommandEmpty>לא נמצאו חברים</CommandEmpty>
           <CommandGroup>
-            <ScrollArea className="h-28">
+            <ScrollArea className="h-48">
               {friends.map((friend) => (
                 <CommandItem
                   key={friend.uid}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    toggleFriend(friend.uid);
-                  }}
-                  className="flex cursor-pointer justify-between"
+                  onSelect={() => toggleMember(friend.uid)}
+                  className="flex justify-between"
                 >
-                  <span>
-                    {friend.firstName} {friend.lastName}
-                  </span>
-                  <Checkbox
-                    checked={selectedIds.includes(friend.uid)}
-                    onChange={() => {}} // למניעת אזהרות
-                  />
+                  {friend.firstName} {friend.lastName}
+                  <Checkbox checked={selectedIds.includes(friend.uid)} />
                 </CommandItem>
               ))}
             </ScrollArea>

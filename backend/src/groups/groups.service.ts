@@ -3,9 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Group } from './groups.entity';
 import { GroupMembersService } from 'src/group-members/group-members.service';
-import { UsersService } from 'src/users/users.service';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
+import { User } from 'src/users/users.entity';
+import { Role } from 'src/enums/role.enum';
 
 @Injectable()
 export class GroupsService {
@@ -80,8 +81,15 @@ export class GroupsService {
     return await this.groupRepository.save(group);
   }
 
-  async deleteGroup(groupId: string): Promise<void> {
+  async deleteGroup(groupId: string, user: User): Promise<void> {
     const group = await this.findGroupById(groupId);
+    const isManager = group.groupMembers.some(
+      (member) => member.user.uid === user.uid && member.isManager,
+    );
+
+    if (!isManager && user.role !== Role.ADMIN) {
+      throw new NotFoundException('אין לך הרשאות למחוק קבוצה זו');
+    }
 
     await this.groupRepository.remove(group);
   }

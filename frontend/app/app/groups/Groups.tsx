@@ -43,11 +43,18 @@ const Groups = async () => {
 
         <TabsContent value="managed">
           {managedGroups.length === 0 ? (
-            <p className="h-30 text-center">אתה לא מנהל אף קבוצה</p>
+            <p className="py-2 text-center">אתה לא מנהל אף קבוצה</p>
           ) : (
-            <div className="flex flex-col gap-3 pt-4">
+            <div className="scrollbar-none flex max-h-[calc(100vh-200px)] flex-col gap-3 overflow-y-auto pt-4">
               {managedGroups.map((group, index) => (
-                <GroupItem key={"g" + index} group={group} userId={userId} />
+                <GroupItem
+                  key={"g" + index}
+                  group={group}
+                  userId={userId}
+                  isManager={group.groupMembers.some(
+                    (member) => member.user.uid === userId && member.isManager,
+                  )}
+                />
               ))}
             </div>
           )}
@@ -55,11 +62,18 @@ const Groups = async () => {
 
         <TabsContent value="groups">
           {validGroups.length === 0 ? (
-            <p className="h-30 text-center">אתה לא חבר באף קבוצה</p>
+            <p className="py-2 text-center">אתה לא חבר באף קבוצה</p>
           ) : (
-            <div className="flex flex-col gap-3 pt-4">
+            <div className="scrollbar-none flex max-h-[calc(100vh-200px)] flex-col gap-3 overflow-y-auto pt-4">
               {validGroups.map((group, index) => (
-                <GroupItem key={index} group={group} userId={userId} />
+                <GroupItem
+                  key={index}
+                  group={group}
+                  userId={userId}
+                  isManager={group.groupMembers.some(
+                    (member) => member.user.uid === userId && member.isManager,
+                  )}
+                />
               ))}
             </div>
           )}
