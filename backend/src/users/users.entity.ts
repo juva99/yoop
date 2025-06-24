@@ -32,8 +32,8 @@ export class User {
   @Column({ nullable: true })
   address?: string;
 
-  @Column({ nullable: true })
-  profilePic?: string;
+  @Column({ nullable: true, type: 'varchar' })
+  profilePic?: string | null;
 
   @Column({ nullable: true })
   phoneNum?: string;

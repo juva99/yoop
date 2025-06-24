@@ -2,10 +2,18 @@ import {
   Body,
   Controller,
   Delete,
+  FileTypeValidator,
   Get,
+  MaxFileSizeValidator,
+  NotFoundException,
   Param,
+  ParseFilePipe,
   Post,
   Put,
+  Res,
+  UnauthorizedException,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { GroupMembersService } from 'src/group-members/group-members.service';
 import { GroupsService } from './groups.service';
@@ -17,12 +25,18 @@ import { Role } from 'src/enums/role.enum';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import * as multer from 'multer';
+import * as path from 'path';
+import { AzureStorageService } from 'src/azure-storage/azure-storage.service';
+import { Response } from 'express';
 
 @Controller('groups')
 export class GroupController {
   constructor(
     private readonly groupsService: GroupsService,
     private readonly groupMembersService: GroupMembersService,
+    private readonly azureStorageService: AzureStorageService,
   ) {}
 
   @Get('/mygroups')
@@ -104,5 +118,94 @@ export class GroupController {
       userId,
       manager.uid,
     );
+  }
+
+  @Post('/profile-picture/upload/:id')
+  @UseInterceptors(FileInterceptor('profilePic'))
+  async uploadFile(
+    @Param('id') groupId: string,
+    @GetUser() user: User,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 2 * 1024 * 1024 }), // 2MB
+          new FileTypeValidator({ fileType: /jpeg|png|jpg/ }), //images
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+  ) {
+    const fetchedGroup = await this.groupsService.findGroupById(groupId);
+    const fetchedUser = await this.groupMembersService.findGroupMember(
+      groupId,
+      user.uid,
+    );
+    if (!fetchedUser.isManager)
+      throw new UnauthorizedException(
+        'only group manager can update group profile',
+      );
+    const fileName = `${Date.now()}-${groupId}`;
+    const fileWithExt = `${fileName}.${file.mimetype.split('/')[1]}`;
+    const uploadedFile = await this.azureStorageService.uploadFile(
+      'pictures',
+      fileWithExt,
+      file.buffer,
+    );
+    if (fetchedGroup.groupPicture != undefined) {
+      await this.deleteFile(groupId, user);
+    }
+
+    await this.groupsService.updateGroupPicture(groupId, fileWithExt);
+  }
+
+  @Delete('/profile-picture/delete/:id')
+  async deleteFile(@Param('id') groupId: string, @GetUser() user: User) {
+    const fetchedGroup = await this.groupsService.findGroupById(groupId);
+    const fetchedUser = await this.groupMembersService.findGroupMember(
+      groupId,
+      user.uid,
+    );
+    if (!fetchedUser.isManager)
+      throw new UnauthorizedException(
+        'only group manager can update group profile',
+      );
+    let blobName;
+    if (fetchedGroup.groupPicture != undefined) {
+      blobName = fetchedGroup.groupPicture;
+    } else
+      throw new NotFoundException(
+        `no existing profile picture for group: ${groupId}`,
+      );
+    const container = 'pictures';
+    await this.azureStorageService.deleteFile(container, blobName);
+    await this.groupsService.updateGroupPicture(groupId, undefined);
+    return { message: `Deleted ${blobName}` };
+  }
+
+  @Get('/profile-picture/download/:id')
+  async downloadProfilePicture(
+    groupId: string,
+    @Res() res: Response,
+  ): Promise<void> {
+    const fetchedGroup = await this.groupsService.findGroupById(groupId);
+    let blobName;
+    if (fetchedGroup.groupPicture != undefined) {
+      blobName = fetchedGroup.groupPicture;
+    } else
+      throw new NotFoundException(
+        `no existing profile picture for group: ${groupId}`,
+      );
+    const container = 'pictures';
+    const fileBuffer = await this.azureStorageService.downloadFile(
+      container,
+      blobName,
+    );
+    const extension = path.extname(blobName);
+    res.set({
+      'Content-Type': `image/${extension.slice(1)}`,
+      'Content-Disposition': `attachment; filename="${blobName}"`,
+    });
+
+    res.send(fileBuffer);
   }
 }
