@@ -36,14 +36,12 @@ export class GroupMembersService {
     return groupMember;
   }
   async findMyGroups(user: User): Promise<Group[]> {
-    // async findMyGroups(user: User): Promise<GroupMember[]> {
     const groupMembers = await this.groupMemberRepository.find({
       where: { user: { uid: user.uid } },
       relations: ['group', 'group.groupMembers', 'group.groupMembers.user'],
     });
 
     return groupMembers.map((gm) => gm.group);
-    // return groupMembers;
   }
 
   async findAllGroupMembers(groupId: string): Promise<GroupMember[]> {
@@ -114,8 +112,6 @@ export class GroupMembersService {
         isManager: false,
       }),
     );
-    console.log(newMembers);
-
     return await this.groupMemberRepository.save(newMembers);
   }
 
