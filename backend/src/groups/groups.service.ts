@@ -85,4 +85,18 @@ export class GroupsService {
 
     await this.groupRepository.remove(group);
   }
+
+  async updateGroupPicture(
+    groupId: string,
+    groupPicture: string | undefined,
+  ): Promise<any> {
+    const results = await this.groupRepository.update(
+      { groupId },
+      { groupPicture: groupPicture === undefined ? null : groupPicture },
+    );
+    if (results.affected === 0) {
+      throw new NotFoundException(`Group with id ${groupId} not found`);
+    }
+    return results.affected;
+  }
 }

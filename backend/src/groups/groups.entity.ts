@@ -11,8 +11,8 @@ export class Group {
   @Column()
   groupName: string;
 
-  @Column({ nullable: true })
-  groupPicture?: string;
+  @Column({ nullable: true, type: 'varchar' })
+  groupPicture?: string | null;
 
   @Column('enum', { enum: GameType, array: true })
   gameTypes: GameType[];

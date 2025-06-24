@@ -27,7 +27,6 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/enums/role.enum';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as multer from 'multer';
-import * as fs from 'fs';
 import * as path from 'path';
 import { AzureStorageService } from 'src/azure-storage/azure-storage.service';
 
@@ -102,7 +101,6 @@ export class UsersController {
     )
     file: Express.Multer.File,
   ) {
-    // file.originalname.split('.')[0]
     const fetchedUser = await this.userService.findById(user.uid);
     const fileName = `${Date.now()}-${user.uid}`;
     const fileWithExt = `${fileName}.${file.mimetype.split('/')[1]}`;
@@ -135,31 +133,22 @@ export class UsersController {
   }
 
   @Get('/profile-picture/download')
-  async getFile(@GetUser() user: User, @Res() res: Response) {
-    const fetchedUser = await this.userService.findById(user.uid);
-    let blobName;
-    if (fetchedUser.profilePic != undefined) {
-      blobName = fetchedUser.profilePic;
-    } else
-      throw new NotFoundException(
-        `no existing profile picture for user: ${user.uid}`,
-      );
-    const container = 'pictures';
-    const fileBuffer = await this.azureStorageService.downloadFile(
-      container,
-      blobName,
-    );
-    const extension = path.extname(blobName);
-    res.set({
-      'Content-Type': `image/${extension.slice(1)}`,
-      'Content-Disposition': `attachment; filename="${blobName}"`,
-    });
-
-    res.send(fileBuffer);
+  async getFile(@GetUser() user: User, @Res() res: Response): Promise<void> {
+    await this.downloadProfilePicture(user.uid, res);
   }
 
   @Get('/profile-picture/download/:id')
-  async getFileById(@Param('id') uid: string, @Res() res: Response) {
+  async getFileById(
+    @Param('id') uid: string,
+    @Res() res: Response,
+  ): Promise<void> {
+    await this.downloadProfilePicture(uid, res);
+  }
+
+  async downloadProfilePicture(
+    uid: string,
+    @Res() res: Response,
+  ): Promise<void> {
     const fetchedUser = await this.userService.findById(uid);
     let blobName;
     if (fetchedUser.profilePic != undefined) {
