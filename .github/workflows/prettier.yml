@@ -36,6 +36,10 @@ jobs:
         working-directory: frontend/app
         run: npm run format:check
 
+      - name: Run type check for frontend
+        working-directory: frontend/app
+        run: npm run type-check
+
       - name: Build frontend
         working-directory: frontend/app
         run: npm run build

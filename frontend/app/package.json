@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "format:check": "prettier --check \"**/*.tsx\"",
-    "format:fix": "prettier --write \"**/*.tsx\""
+    "format:fix": "prettier --write \"**/*.tsx\"",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
