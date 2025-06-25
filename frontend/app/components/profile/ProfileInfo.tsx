@@ -89,7 +89,11 @@ const ProfileInfo: React.FC<Props> = ({ user, role }) => {
   return (
     <>
       <div className="mb-4 flex items-center justify-center">
-        <ProfileImg userId={user.uid} />
+        <ProfileImg
+          userId={user.uid}
+          firstName={user.firstName}
+          lastName={user.lastName}
+        />
       </div>
       <div className="mb-3 flex items-center">
         <span className="text-lg font-semibold text-[#002366]">

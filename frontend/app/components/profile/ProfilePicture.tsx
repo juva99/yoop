@@ -1,73 +1,44 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { authFetch } from "@/lib/authFetch";
 import { toast } from "sonner";
 import PictureBtn, { Action } from "./PictureBtn";
 
 type Props = {
   userId: string;
+  firstName: string;
+  lastName: string;
 };
 
-const ProfilePic: React.FC<Props> = ({ userId }) => {
-  const [picture, setPicture] = useState<string>("/defaultProfilePic.png");
-  const [hasCustomPic, setHasCustomPic] = useState<boolean>(false);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
+const ProfilePic: React.FC<Props> = ({ userId, firstName, lastName }) => {
   const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  useEffect(() => {
-    const fetchPic = async () => {
-      try {
-        const response = await authFetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/profile-picture/download`,
-        );
-        if (!response.ok) {
-          if (response.status === 404) {
-            setHasCustomPic(false);
-            setPicture("/defaultProfilePic.png");
-          } else {
-            toast.error("שגיאה בטעינת תמונה");
-          }
-          return;
-        }
-
-        const blob = await response.blob();
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setPicture(reader.result as string);
-          setHasCustomPic(true);
-        };
-        reader.readAsDataURL(blob);
-      } catch (error) {
-        console.error("Failed to fetch picture", error);
-        setHasCustomPic(false);
-        setPicture("/defaultProfilePic.png");
-      }
-    };
-
-    fetchPic();
-  }, [userId, hasCustomPic]);
-
-  const handleButtonClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleFileChange = async (
+  const handleFileUpload = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setPicture(reader.result as string);
-      setHasCustomPic(true);
-    };
-    reader.readAsDataURL(file);
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      toast.error("נא לבחור קובץ תמונה בלבד");
+      return;
+    }
+
+    // Validate file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("גודל הקובץ לא יכול לעלות על 5MB");
+      return;
+    }
+
+    setIsUploading(true);
 
     try {
-      setIsUploading(true);
       const formData = new FormData();
       formData.append("profilePic", file);
+
       const response = await authFetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/profile-picture/upload`,
         {
@@ -77,43 +48,44 @@ const ProfilePic: React.FC<Props> = ({ userId }) => {
       );
 
       if (!response.ok) {
-        toast.error("שגיאה בהעלאת התמונה");
-        console.error("Upload failed:", response.statusText);
-        setHasCustomPic(false);
-        setPicture("/defaultProfilePic.png");
-        return;
-      } else {
-        setHasCustomPic(true);
-        toast.success("התמונה עודכנה בהצלחה");
+        throw new Error(`Upload failed: ${response.statusText}`);
       }
+
+      toast.success("התמונה עודכנה בהצלחה");
+
+      // Refresh the page to show the updated image
+      window.location.reload();
     } catch (error) {
       console.error("Upload error:", error);
-      setHasCustomPic(false);
-      setPicture("/defaultProfilePic.png");
+      toast.error("שגיאה בהעלאת התמונה");
     } finally {
       setIsUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     }
   };
 
-  return (
-    <div className="relative h-30 w-30 rounded-full">
-      <img
-        src={picture}
-        alt="Profile"
-        className="h-full w-full rounded-[50%]"
-      />
+  const handleButtonClick = () => {
+    fileInputRef.current?.click();
+  };
 
-      <PictureBtn
-        onClick={handleButtonClick}
-        disabled={isUploading}
-        action={hasCustomPic ? Action.EDIT : Action.ADD}
-      />
+  const picture = `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/profile-picture/download/${userId}`;
+  const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`;
+  return (
+    <div className="relative">
+      <Avatar className="h-30 w-30">
+        <AvatarImage src={picture} alt="Profile picture" />
+        <AvatarFallback className="text-5xl">{initials}</AvatarFallback>
+      </Avatar>
+
+      <PictureBtn onClick={handleButtonClick} disabled={isUploading} />
 
       <Input
         type="file"
         accept="image/*"
         ref={fileInputRef}
-        onChange={handleFileChange}
+        onChange={handleFileUpload}
         className="hidden"
       />
     </div>
