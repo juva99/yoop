@@ -1,7 +1,6 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import React from "react";
 import { FaWhatsapp } from "react-icons/fa";
 import { CiCircleRemove } from "react-icons/ci";
 import { CiCircleCheck } from "react-icons/ci";
@@ -9,7 +8,6 @@ import { PiCrownSimpleBold } from "react-icons/pi";
 import { useRouter } from "next/navigation";
 import { ParticipationStatus } from "@/app/enums/participation-status.enum";
 import { GameParticipant } from "@/app/types/GameParticipant";
-
 import ChangeParticipationButton from "./changeParticipationButton";
 import ChangeCreatorDialog from "@/app/game/[game_id]/ChangeCreatorDialog";
 import { authFetch } from "@/lib/authFetch";
@@ -84,7 +82,10 @@ const PlayersList: React.FC<Props> = ({
             >
               <div className="flex items-center gap-2">
                 <Avatar className="h-8 w-8 rounded-full border-2 border-white">
-                  <AvatarImage src={player.profilePic} alt={player.firstName} />
+                  <AvatarImage
+                    src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/profile-picture/download/${player.uid}`}
+                    alt={player.firstName}
+                  />
                   <AvatarFallback>{player.firstName.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <span>{player.firstName + " " + player.lastName}</span>

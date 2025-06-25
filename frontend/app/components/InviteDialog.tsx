@@ -17,7 +17,6 @@ import { Group } from "@/app/types/Group";
 import { inviteFriendsToGame, inviteGroupToGame } from "@/lib/actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { PiUserPlus } from "react-icons/pi";
 import { PiBasketball, PiSoccerBall } from "react-icons/pi";
 import { GameType } from "@/app/enums/game-type.enum";
 
@@ -147,7 +146,10 @@ const InviteDialog: React.FC<InviteDialogProps> = ({
                       }}
                     >
                       <Avatar className="h-8 w-8">
-                        <AvatarImage src={friend.profilePic} />
+                        <AvatarImage
+                          src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/profile-picture/download/${friend.uid}`}
+                          alt={friend.firstName}
+                        />
                         <AvatarFallback>
                           {friend.firstName.charAt(0)}
                         </AvatarFallback>

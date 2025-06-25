@@ -18,7 +18,6 @@ type Props = {
 
 const Friend: React.FC<Props> = ({ userId, friend, action, onClick }) => {
   const [sentRequest, setSentRequest] = useState<boolean>(false);
-
   const sendFriendRequest = async (friendId: string) => {
     try {
       const response = await authFetch(
@@ -43,7 +42,10 @@ const Friend: React.FC<Props> = ({ userId, friend, action, onClick }) => {
     <div className="flex w-full items-center justify-between py-2">
       <div className="flex items-center gap-2">
         <Avatar className="flex h-7 w-7 rounded-full text-center font-bold text-white">
-          <AvatarImage src={friend.profilePic} alt={friend.firstName} />
+          <AvatarImage
+            src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/profile-picture/download/${friend.uid}`}
+            alt={friend.firstName}
+          />
           <AvatarFallback>
             {friend.firstName.charAt(0)}
             {friend.lastName.charAt(0)}
