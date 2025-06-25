@@ -1,0 +1,165 @@
+name: Frontend PR Preview Deployment
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    paths:
+      - "frontend/**"
+      - ".github/workflows/frontend-pr-preview.yml"
+
+jobs:
+  deploy-preview:
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.YOOPBACKENDAPP_AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.YOOPBACKENDAPP_AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.YOOPBACKENDAPP_AZURE_SUBSCRIPTION_ID }}
+
+      - name: Set environment variables
+        run: |
+          echo "PR_NUMBER=${{ github.event.number }}" >> $GITHUB_ENV
+          echo "CONTAINER_APP_NAME=yoop-frontend-pr-${{ github.event.number }}" >> $GITHUB_ENV
+          echo "IMAGE_NAME=yoopacr.azurecr.io/yoop-frontend-pr-${{ github.event.number }}:${{ github.sha }}" >> $GITHUB_ENV
+
+      - name: Build and push container image
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          appSourcePath: ${{ github.workspace }}/frontend/app
+          dockerfilePath: Dockerfile
+          registryUrl: yoopacr.azurecr.io
+          registryUsername: ${{ secrets.YOOPBACKENDAPP_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.YOOPBACKENDAPP_REGISTRY_PASSWORD }}
+          containerAppName: ${{ env.CONTAINER_APP_NAME }}
+          resourceGroup: Yoop
+          imageToBuild: ${{ env.IMAGE_NAME }}
+          buildArguments: "BACKEND_URL=${{ secrets.BACKEND_URL }}"
+          environmentVariables: "SESSION_SECRET_KEY=${{ secrets.SESSION_SECRET_KEY }}"
+          targetPort: 3000
+          ingress: external
+
+      - name: Get Container App URL
+        id: get-url
+        run: |
+          APP_URL=$(az containerapp show \
+            --name ${{ env.CONTAINER_APP_NAME }} \
+            --resource-group Yoop \
+            --query "properties.configuration.ingress.fqdn" \
+            --output tsv)
+          echo "app-url=https://$APP_URL" >> $GITHUB_OUTPUT
+
+      - name: Comment PR with preview URL
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.find(comment => 
+              comment.user.type === 'Bot' && 
+              comment.body.includes('🚀 Frontend Preview Deployment')
+            );
+
+            const commentBody = `🚀 **Frontend Preview Deployment**
+
+Your frontend changes have been deployed to a preview environment:
+
+**Preview URL:** ${{ steps.get-url.outputs.app-url }}
+
+This preview will be automatically deleted when the PR is closed or merged.
+
+---
+*Preview for commit: ${{ github.sha }}*`;
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: commentBody
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: commentBody
+              });
+            }
+
+  cleanup-preview:
+    if: github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.YOOPBACKENDAPP_AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.YOOPBACKENDAPP_AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.YOOPBACKENDAPP_AZURE_SUBSCRIPTION_ID }}
+
+      - name: Set environment variables
+        run: |
+          echo "CONTAINER_APP_NAME=yoop-frontend-pr-${{ github.event.number }}" >> $GITHUB_ENV
+
+      - name: Delete preview container app
+        run: |
+          if az containerapp show --name ${{ env.CONTAINER_APP_NAME }} --resource-group Yoop >/dev/null 2>&1; then
+            echo "Deleting container app: ${{ env.CONTAINER_APP_NAME }}"
+            az containerapp delete \
+              --name ${{ env.CONTAINER_APP_NAME }} \
+              --resource-group Yoop \
+              --yes
+            echo "Container app deleted successfully"
+          else
+            echo "Container app ${{ env.CONTAINER_APP_NAME }} not found, skipping deletion"
+          fi
+
+      - name: Delete container images
+        run: |
+          IMAGE_TAG="yoop-frontend-pr-${{ github.event.number }}"
+          if az acr repository show --name yoopacr --repository $IMAGE_TAG >/dev/null 2>&1; then
+            echo "Deleting container images for: $IMAGE_TAG"
+            az acr repository delete \
+              --name yoopacr \
+              --repository $IMAGE_TAG \
+              --yes
+            echo "Container images deleted successfully"
+          else
+            echo "No container images found for $IMAGE_TAG, skipping deletion"
+          fi
+
+      - name: Comment PR about cleanup
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `🧹 **Preview Environment Cleaned Up**
+
+The preview environment for this PR has been successfully deleted.
+
+---
+*Cleanup completed for PR #${{ github.event.number }}*`
+            });
