@@ -1,10 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
-import AddImgBtn from "./AddPictureBtn";
-
 import { Input } from "@/components/ui/input";
 import { authFetch } from "@/lib/authFetch";
-import EditImgBtn from "./EditPictureBtn";
 import { toast } from "sonner";
+import PictureBtn, { Action } from "./PictureBtn";
 
 type Props = {
   userId: string;
@@ -104,11 +102,13 @@ const ProfilePic: React.FC<Props> = ({ userId }) => {
         alt="Profile"
         style={{ width: "100%", height: "100%", borderRadius: "50%" }}
       />
-      {hasCustomPic ? (
-        <EditImgBtn onClick={handleButtonClick} disabled={isUploading} />
-      ) : (
-        <AddImgBtn onClick={handleButtonClick} disabled={isUploading} />
-      )}
+
+      <PictureBtn
+        onClick={handleButtonClick}
+        disabled={isUploading}
+        action={hasCustomPic ? Action.EDIT : Action.ADD}
+      />
+
       <Input
         type="file"
         accept="image/*"
