@@ -138,16 +138,18 @@ export class UsersController {
   }
 
   @Get('/profile-picture/download/:id')
+  @Public()
   async getFileById(
     @Param('id') uid: string,
     @Res() res: Response,
   ): Promise<void> {
-    await this.downloadProfilePicture(uid, res);
+    await this.downloadProfilePicture(uid, res, true);
   }
 
   async downloadProfilePicture(
     uid: string,
     @Res() res: Response,
+    inline: boolean = false,
   ): Promise<void> {
     const fetchedUser = await this.userService.findById(uid);
     let blobName;
@@ -165,7 +167,9 @@ export class UsersController {
     const extension = path.extname(blobName);
     res.set({
       'Content-Type': `image/${extension.slice(1)}`,
-      'Content-Disposition': `attachment; filename="${blobName}"`,
+      'Content-Disposition': inline
+        ? `inline; filename="${blobName}"`
+        : `attachment; filename="${blobName}"`,
     });
 
     res.send(fileBuffer);
