@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { authFetch } from "@/lib/authFetch";
 import { toast } from "sonner";
-import PictureBtn, { Action } from "./PictureBtn";
+import PictureBtn from "./PictureBtn";
 
 type Props = {
   userId: string;
