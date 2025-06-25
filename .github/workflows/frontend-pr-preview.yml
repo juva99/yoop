@@ -15,7 +15,7 @@ jobs:
       id-token: write
       contents: read
       pull-requests: write
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -76,14 +76,14 @@ jobs:
 
             const commentBody = `🚀 **Frontend Preview Deployment**
 
-Your frontend changes have been deployed to a preview environment:
+                  Your frontend changes have been deployed to a preview environment:
 
-**Preview URL:** ${{ steps.get-url.outputs.app-url }}
+                  **Preview URL:** ${{ steps.get-url.outputs.app-url }}
 
-This preview will be automatically deleted when the PR is closed or merged.
+                  This preview will be automatically deleted when the PR is closed or merged.
 
----
-*Preview for commit: ${{ github.sha }}*`;
+                  ---
+                  *Preview for commit: ${{ github.sha }}*`;
 
             if (botComment) {
               await github.rest.issues.updateComment({
@@ -158,8 +158,8 @@ This preview will be automatically deleted when the PR is closed or merged.
               issue_number: context.issue.number,
               body: `🧹 **Preview Environment Cleaned Up**
 
-The preview environment for this PR has been successfully deleted.
+                  The preview environment for this PR has been successfully deleted.
 
----
-*Cleanup completed for PR #${{ github.event.number }}*`
-            });
+                  ---
+                  *Cleanup completed for PR #${{ github.event.number }}*`
+                              });
