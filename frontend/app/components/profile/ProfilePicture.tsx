@@ -100,7 +100,7 @@ const ProfilePic: React.FC<Props> = ({ userId }) => {
       <img
         src={picture}
         alt="Profile"
-        style={{ width: "100%", height: "100%", borderRadius: "50%" }}
+        className="h-full w-full rounded-[50%]"
       />
 
       <PictureBtn
