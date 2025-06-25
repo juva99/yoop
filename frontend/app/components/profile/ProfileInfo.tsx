@@ -32,6 +32,7 @@ import { cn } from "@/lib/utils";
 import { he } from "date-fns/locale";
 import { Combobox } from "../ui/combobox";
 import { Role } from "@/app/enums/role.enum";
+import ProfileImg from "./ProfilePicture";
 
 const cityOptions = Object.entries(City).map(([label, value]) => ({
   label: value,
@@ -87,6 +88,13 @@ const ProfileInfo: React.FC<Props> = ({ user, role }) => {
 
   return (
     <>
+      <div className="mb-4 flex items-center justify-center">
+        <ProfileImg
+          userId={user.uid}
+          firstName={user.firstName}
+          lastName={user.lastName}
+        />
+      </div>
       <div className="mb-3 flex items-center">
         <span className="text-lg font-semibold text-[#002366]">
           פרטים אישיים

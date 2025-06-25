@@ -21,7 +21,6 @@ const ProfilePage = async () => {
   return (
     <div className="px-3">
       <div className="rounded-xl bg-white p-6">
-        <h1>הפרופיל שלי </h1>
         <ProfileInfo user={user} role={role} />
       </div>
     </div>
