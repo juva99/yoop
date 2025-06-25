@@ -137,8 +137,8 @@ export class UsersController {
     await this.downloadProfilePicture(user.uid, res);
   }
 
-  @Get('/profile-picture/download/:id')
   @Public()
+  @Get('/profile-picture/download/:id')
   async getFileById(
     @Param('id') uid: string,
     @Res() res: Response,
@@ -170,6 +170,7 @@ export class UsersController {
       'Content-Disposition': inline
         ? `inline; filename="${blobName}"`
         : `attachment; filename="${blobName}"`,
+      'Cross-Origin-Resource-Policy': 'cross-origin',
     });
 
     res.send(fileBuffer);
