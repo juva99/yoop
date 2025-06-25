@@ -1,7 +1,7 @@
 import React from "react";
 import { MdEdit } from "react-icons/md";
 import { Button } from "../ui/button";
-
+import { SpinnerCircular } from "spinners-react";
 type Props = {
   onClick?: () => void;
   disabled?: boolean;
@@ -16,7 +16,8 @@ const EditImgBtn: React.FC<Props> = ({ onClick, disabled }) => {
       aria-label="Edit profile picture"
       title="ערוך תמונת פרופיל"
     >
-      <MdEdit size={20} color="#0088ed" />
+      {!disabled && <MdEdit size={20} color="#0088ed" />}
+      {disabled && <SpinnerCircular size={20} color="#0088ed" />}
     </Button>
   );
 };

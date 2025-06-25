@@ -1,6 +1,8 @@
 import React from "react";
 import { IoAddCircleSharp } from "react-icons/io5";
 import { Button } from "../ui/button";
+import { Loader } from "lucide-react";
+import { SpinnerCircular } from "spinners-react";
 
 type Props = {
   onClick?: () => void;
@@ -14,7 +16,8 @@ const AddImgBtn: React.FC<Props> = ({ onClick, disabled }) => {
       disabled={disabled}
       className="absolute right-3 bottom-3 z-10 h-7 w-7 rounded-full bg-white p-0 shadow-md hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
     >
-      <IoAddCircleSharp color="#0088ed" />
+      {!disabled && <IoAddCircleSharp color="#0088ed" />}{" "}
+      {disabled && <SpinnerCircular size={20} color="#0088ed" />}
     </Button>
   );
 };

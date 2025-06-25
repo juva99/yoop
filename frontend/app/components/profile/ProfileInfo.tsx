@@ -32,7 +32,7 @@ import { cn } from "@/lib/utils";
 import { he } from "date-fns/locale";
 import { Combobox } from "../ui/combobox";
 import { Role } from "@/app/enums/role.enum";
-import ProfileImg from "./ProfileImg";
+import ProfileImg from "./ProfilePicture";
 
 const cityOptions = Object.entries(City).map(([label, value]) => ({
   label: value,

@@ -1,48 +1,53 @@
 import React, { useEffect, useState, useRef } from "react";
-import AddImgBtn from "./AddImgBtn";
+import AddImgBtn from "./AddPictureBtn";
 
 import { Input } from "@/components/ui/input";
 import { authFetch } from "@/lib/authFetch";
-import EditImgBtn from "./EditImgBtn";
+import EditImgBtn from "./EditPictureBtn";
+import { toast } from "sonner";
 
 type Props = {
   userId: string;
 };
 
-const ProfileImg: React.FC<Props> = ({ userId }) => {
-  const [image, setImage] = useState<string>("/defaultProfileImg.png");
-  const [hasCustomImage, setHasCustomImage] = useState<boolean>(false);
+const ProfilePic: React.FC<Props> = ({ userId }) => {
+  const [picture, setPicture] = useState<string>("/defaultProfilePic.png");
+  const [hasCustomPic, setHasCustomPic] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
-    const fetchImage = async () => {
+    const fetchPic = async () => {
       try {
         const response = await authFetch(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/profile-picture/download`,
         );
         if (!response.ok) {
-          setHasCustomImage(false);
-          setImage("/defaultProfileImg.png");
+          if (response.status === 404) {
+            setHasCustomPic(false);
+            setPicture("/defaultProfilePic.png");
+          } else {
+            toast.error("שגיאה בטעינת תמונה");
+          }
           return;
         }
 
         const blob = await response.blob();
         const reader = new FileReader();
         reader.onloadend = () => {
-          setImage(reader.result as string);
-          setHasCustomImage(true);
+          setPicture(reader.result as string);
+          setHasCustomPic(true);
         };
         reader.readAsDataURL(blob);
       } catch (error) {
-        console.error("Failed to fetch image", error);
-        setHasCustomImage(false);
-        setImage("/defaultProfileImg.png");
+        console.error("Failed to fetch picture", error);
+        setHasCustomPic(false);
+        setPicture("/defaultProfilePic.png");
       }
     };
 
-    fetchImage();
-  }, [userId]);
+    fetchPic();
+  }, [userId, hasCustomPic]);
 
   const handleButtonClick = () => {
     fileInputRef.current?.click();
@@ -54,21 +59,17 @@ const ProfileImg: React.FC<Props> = ({ userId }) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // הצגת תמונה מקומית מידית
     const reader = new FileReader();
     reader.onloadend = () => {
-      setImage(reader.result as string);
-      setHasCustomImage(true);
+      setPicture(reader.result as string);
+      setHasCustomPic(true);
     };
     reader.readAsDataURL(file);
 
-    // העלאת קובץ לשרת עם authFetch
     try {
       setIsUploading(true);
-
       const formData = new FormData();
       formData.append("profilePic", file);
-
       const response = await authFetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/profile-picture/upload`,
         {
@@ -78,19 +79,19 @@ const ProfileImg: React.FC<Props> = ({ userId }) => {
       );
 
       if (!response.ok) {
-        // כאן אפשר להוסיף הודעת שגיאה למשתמש אם רוצים
-        console.error("Failed to upload image");
-        setHasCustomImage(false);
-        setImage("/defaultProfileImg.png");
+        toast.error("שגיאה בהעלאת התמונה");
+        console.error("Upload failed:", response.statusText);
+        setHasCustomPic(false);
+        setPicture("/defaultProfilePic.png");
         return;
+      } else {
+        setHasCustomPic(true);
+        toast.success("התמונה עודכנה בהצלחה");
       }
-
-      // אפשר לקרוא מחדש את התמונה מהשרת אם רוצים דיוק
-      // או להשאיר את התמונה שהוצגה כבר
     } catch (error) {
       console.error("Upload error:", error);
-      setHasCustomImage(false);
-      setImage("/defaultProfileImg.png");
+      setHasCustomPic(false);
+      setPicture("/defaultProfilePic.png");
     } finally {
       setIsUploading(false);
     }
@@ -99,12 +100,11 @@ const ProfileImg: React.FC<Props> = ({ userId }) => {
   return (
     <div className="relative h-30 w-30 rounded-full">
       <img
-        src={image}
+        src={picture}
         alt="Profile"
         style={{ width: "100%", height: "100%", borderRadius: "50%" }}
       />
-      {/* אם יש תמונה, הכפתור יהיה Edit, אחרת Add */}
-      {hasCustomImage ? (
+      {hasCustomPic ? (
         <EditImgBtn onClick={handleButtonClick} disabled={isUploading} />
       ) : (
         <AddImgBtn onClick={handleButtonClick} disabled={isUploading} />
@@ -120,4 +120,4 @@ const ProfileImg: React.FC<Props> = ({ userId }) => {
   );
 };
 
-export default ProfileImg;
+export default ProfilePic;
