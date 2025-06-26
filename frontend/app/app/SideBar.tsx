@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Role } from "@/app/enums/role.enum";
 import {
   Sidebar,
@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+
 const HIDDEN_PATHS = [
   "/auth/login",
   "/auth/signup",
@@ -40,6 +41,41 @@ const SidebarLink = ({
     >
       {children}
     </Link>
+  );
+};
+
+const SignOutButton = () => {
+  const { toggleSidebar } = useSidebar();
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    toggleSidebar();
+
+    if (typeof window !== "undefined") {
+      localStorage.clear();
+      sessionStorage.clear();
+    }
+
+    // clear cookies
+    const response = await fetch("/api/auth/signout", {
+      method: "GET",
+      cache: "no-store",
+    });
+
+    // refreshing the page to ensure the session is cleared
+    router.push("/auth/login");
+    router.refresh();
+  };
+
+  return (
+    <button
+      onClick={handleSignOut}
+      className={cn(
+        "block w-full rounded-md px-3 py-2 text-right text-sm font-medium transition hover:bg-gray-200",
+      )}
+    >
+      התנתק
+    </button>
   );
 };
 
@@ -78,9 +114,7 @@ const SideBar: React.FC<SidebarProps> = ({ role }) => {
                   פרופיל אישי{" "}
                 </SidebarLink>
 
-                <SidebarLink prefetch={false} href="/api/auth/signout">
-                  התנתק
-                </SidebarLink>
+                <SignOutButton />
               </nav>
             </div>
           </Sidebar>
@@ -104,9 +138,7 @@ const SideBar: React.FC<SidebarProps> = ({ role }) => {
                 <SidebarLink prefetch={true} href="/field-manager/field/create">
                   הוספת מגרש
                 </SidebarLink>
-                <SidebarLink prefetch={false} href="/api/auth/signout">
-                  התנתק
-                </SidebarLink>
+                <SignOutButton />
               </nav>
             </div>
           </Sidebar>
@@ -130,9 +162,7 @@ const SideBar: React.FC<SidebarProps> = ({ role }) => {
                 <SidebarLink prefetch={true} href="/admin/users">
                   ניהול משתמשים
                 </SidebarLink>
-                <SidebarLink prefetch={false} href="/api/auth/signout">
-                  התנתק
-                </SidebarLink>
+                <SignOutButton />
               </nav>
             </div>
           </Sidebar>
