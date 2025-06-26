@@ -40,19 +40,48 @@ const page: React.FC<Props> = async ({ params }) => {
   );
 
   return (
-    <div className="flex min-h-[calc(100vh-100px)] flex-col gap-4 p-5">
-      <div className="flex w-full items-center justify-between">
-        <GroupTitle gameTypes={group.gameTypes} groupName={group.groupName} />{" "}
-        {isManager && (
-          <Link href={`/groups/${group_id}/edit`}>
-            <FiEdit size={20} color="gray" />
-          </Link>
+    <div className="min-h-screen bg-gray-50">
+      <div className="mx-auto max-w-4xl px-4 py-8">
+        {/* Header Card */}
+        <div className="mb-6 rounded-lg bg-white p-6 shadow-sm">
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <GroupTitle
+                gameTypes={group.gameTypes}
+                groupName={group.groupName}
+              />
+              <p className="mt-2 text-sm text-gray-600">
+                {group.groupMembers.length} חברים בקבוצה
+              </p>
+            </div>
+            {isManager && (
+              <Link
+                href={`/groups/${group_id}/edit`}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 transition-colors hover:bg-gray-200"
+              >
+                <FiEdit size={20} className="text-gray-600" />
+              </Link>
+            )}
+          </div>
+        </div>
+
+        {/* Members Card */}
+        <div className="mb-6 rounded-lg bg-white p-6 shadow-sm">
+          <h2 className="mb-4 text-lg font-semibold text-gray-900">
+            חברי הקבוצה
+          </h2>
+          <GroupMembers userId={user_id} group={group} isManager={isManager} />
+        </div>
+
+        {/* Leave Group Action */}
+        {isMember && group.groupMembers.length > 1 && (
+          <div className="rounded-lg bg-white p-6 shadow-sm">
+            <div className="flex justify-center">
+              <LeaveButton userId={user_id} groupId={group_id} />
+            </div>
+          </div>
         )}
       </div>
-      <GroupMembers userId={user_id} group={group} isManager={isManager} />
-      {isMember && group.groupMembers.length > 1 && (
-        <LeaveButton userId={user_id} groupId={group_id} />
-      )}
     </div>
   );
 };

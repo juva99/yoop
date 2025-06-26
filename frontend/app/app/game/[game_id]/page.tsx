@@ -22,7 +22,6 @@ import Share from "@/components/ui/share";
 import { getMyFriends, getMyGroups } from "@/lib/actions";
 import InviteDialog from "@/components/InviteDialog";
 import { GameStatus } from "@/app/enums/game-status.enum";
-import { is } from "date-fns/locale";
 import RegStatus from "@/components/games/RegStatus";
 
 enum Status {
@@ -124,10 +123,16 @@ export default async function Page({
     (gp) => gp.status === ParticipationStatus.APPROVED,
   ).length;
 
-  const isJoined = gameParticipants.some(
-    (gp) =>
-      gp.user.uid === currUserUID && gp.status !== ParticipationStatus.REJECTED,
-  );
+  let isJoined = false;
+  let isApproved = false;
+
+  for (const gp of gameParticipants) {
+    if (gp.user.uid === currUserUID) {
+      if (gp.status !== ParticipationStatus.REJECTED) isJoined = true;
+      if (gp.status === ParticipationStatus.APPROVED) isApproved = true;
+      break; // No need to check further
+    }
+  }
 
   const playersInGame = gameParticipants
     .filter((gp) => gp.status === ParticipationStatus.APPROVED)
@@ -144,135 +149,158 @@ export default async function Page({
   const showActions =
     regStatus === Status.APPROVED || regStatus === Status.PENDING;
   return (
-    <div className="flex h-full flex-col gap-6 px-6">
-      {" "}
-      <div className="text-title flex items-center gap-3 text-2xl font-bold">
-        <span>
-          {" "}
-          {gameType === GameType.BasketBall ? (
-            <PiBasketball />
-          ) : gameType === GameType.FootBall ? (
-            <PiSoccerBall />
-          ) : null}
-        </span>
-        <span>{`משחק ${gameType === GameType.BasketBall ? "כדורסל" : "כדורגל"} `}</span>{" "}
-      </div>
-      <div className="flex flex-col gap-2">
-        {" "}
-        <div className="flex items-center gap-2">
-          <IoMdPin className="text-gray-600" />
-          <p>
-            {field.fieldName}, {field.city}
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <PiCalendarDots className="text-gray-600" />
-          <p>{formattedDate}</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <PiClock className="text-gray-600" />
-          <p>
-            {formattedTime}-{formattedEndTime}
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <TiWeatherPartlySunny />
-          {weatherTemp && (
-            <div className="flex items-center gap-0">
-              <p>{weatherTemp}°</p>
-              <img src={weatherIcon} alt="Weather Icon" className="h-6 w-6" />
+    <div className="min-h-screen justify-center bg-gray-50 pb-8">
+      <div className="mx-auto max-w-4xl px-4 py-6">
+        {/* Header Card */}
+        <div className="mb-6 rounded-lg bg-white p-6 shadow-sm">
+          <div className="mb-4 flex items-center gap-3">
+            <div className="rounded-ful flex h-12 w-12 items-center justify-center">
+              {gameType === GameType.BasketBall ? (
+                <PiBasketball className="h-10 w-10" />
+              ) : gameType === GameType.FootBall ? (
+                <PiSoccerBall className="h-10 w-10" />
+              ) : null}
             </div>
-          )}
-        </div>
-        {price !== undefined && (
-          <div className="flex items-center gap-2">
-            <PiCoins className="text-gray-600" />
-            <p>{price === null ? "חינם" : `${price} ₪`}</p>{" "}
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">
+                משחק {gameType === GameType.BasketBall ? "כדורסל" : "כדורגל"}
+              </h1>
+              <p className="text-sm text-gray-600">
+                נוצר על ידי {creator.firstName} {creator.lastName}
+              </p>
+            </div>
           </div>
-        )}
-        {regStatus === Status.PENDING && (
-          <RegStatus text="הרשמה עדייו לא נפתחה" icon={<span>🟠</span>} />
-        )}
-        {regStatus === Status.APPROVED && (
-          <RegStatus text="פתוח להרשמה" icon={<span>🟢</span>} />
-        )}
-        {regStatus === Status.STARTED && (
-          <RegStatus text="ההרשמה סגורה" icon={<span>🔴</span>} />
-        )}
-        {regStatus === Status.FINISHED && (
-          <RegStatus text="המשחק הסתיים" icon={<span>🔴</span>} />
-        )}
-        <div className="flex items-center gap-2">
-          {showActions && <CalendarLink game={game} />}
-        </div>
-      </div>
-      <div>
-        <div className="flex items-center justify-between">
-          <h3>
-            משתתפים ({approvedCount}/{maxParticipants})
-          </h3>
-          {regStatus === Status.APPROVED && (
-            <div className="flex items-center gap-4">
-              {isCreator && (
-                <InviteDialog
-                  gameId={gameId}
-                  friends={friends}
-                  groups={groups}
-                  playersInGame={playersInGame}
-                />
-              )}
-              <Share />
+
+          {/* Status Badge */}
+          <div className="mb-4">
+            {regStatus === Status.PENDING && (
+              <RegStatus text="הרשמה עדיין לא נפתחה" icon={<span>🟠</span>} />
+            )}
+            {regStatus === Status.APPROVED && (
+              <RegStatus text="פתוח להרשמה" icon={<span>🟢</span>} />
+            )}
+            {regStatus === Status.STARTED && (
+              <RegStatus text="ההרשמה סגורה" icon={<span>🔴</span>} />
+            )}
+            {regStatus === Status.FINISHED && (
+              <RegStatus text="המשחק הסתיים" icon={<span>🔴</span>} />
+            )}
+          </div>
+
+          {/* Game Details Grid */}
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="flex items-center gap-3 rounded-lg bg-gray-50 p-3">
+              <IoMdPin className="h-5 w-5 text-gray-600" />
+              <div>
+                <p className="font-medium text-gray-900">{field.fieldName}</p>
+                <p className="text-sm text-gray-600">{field.city}</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 rounded-lg bg-gray-50 p-3">
+              <PiCalendarDots className="h-5 w-5 text-gray-600" />
+              <div>
+                <p className="font-medium text-gray-900">{formattedDate}</p>
+                <p className="text-sm text-gray-600">
+                  {formattedTime} - {formattedEndTime}
+                </p>
+              </div>
+            </div>
+
+            {weatherTemp && (
+              <div className="flex items-center gap-3 rounded-lg bg-gray-50 p-3">
+                <TiWeatherPartlySunny className="h-5 w-5 text-gray-600" />
+                <div className="flex items-center gap-2">
+                  <p className="font-medium text-gray-900">{weatherTemp}°</p>
+                  <img
+                    src={weatherIcon}
+                    alt="Weather Icon"
+                    className="h-6 w-6"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Action Buttons */}
+          {showActions && (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {isApproved && <CalendarLink game={game} />}
+              {regStatus === Status.APPROVED && <Share />}
             </div>
           )}
-        </div>
-        <PlayersList
-          gameId={gameId}
-          creatorUID={creator.uid}
-          currUserUID={currUserUID}
-          gameParticipants={gameParticipants}
-          status={ParticipationStatus.APPROVED}
-          deleteEnable={true}
-        />
-      </div>
-      <div>
-        <div className="flex items-center justify-between">
-          <h3>רשימת המתנה</h3>
         </div>
 
-        <PlayersList
-          gameId={gameId}
-          creatorUID={creator.uid}
-          currUserUID={currUserUID}
-          gameParticipants={gameParticipants}
-          status={ParticipationStatus.PENDING}
-          deleteEnable={true}
-        />
-      </div>
-      <div>
-        <h3>מיקום</h3>
-        <MapView
-          defaultLocation={{ lng: field.fieldLng, lat: field.fieldLat }}
-          games={[game]}
-        />
-      </div>
-      {!isJoined && showActions && (
-        <div className="mt-4 flex justify-center gap-4">
-          <JoinGameButton gameId={gameId} />
-        </div>
-      )}
-      {isJoined && showActions && (
-        <div className="mt-4 flex justify-center gap-4">
-          <LeaveGameButton
+        {/* Participants Section */}
+        <div className="mb-6 rounded-lg bg-white p-6 shadow-sm">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-gray-900">
+              משתתפים ({approvedCount}/{maxParticipants})
+            </h2>
+            {regStatus === Status.APPROVED && isCreator && (
+              <InviteDialog
+                gameId={gameId}
+                friends={friends}
+                groups={groups}
+                playersInGame={playersInGame}
+              />
+            )}
+          </div>
+          <PlayersList
             gameId={gameId}
-            text={
-              isCreator && game.gameParticipants.length === 1
-                ? "מחק משחק"
-                : "עזוב משחק"
-            }
-            isCreator={isCreator}
+            creatorUID={creator.uid}
+            currUserUID={currUserUID}
+            gameParticipants={gameParticipants}
+            status={ParticipationStatus.APPROVED}
+            deleteEnable={true}
           />
         </div>
-      )}
+
+        {/* Waiting List Section */}
+        <div className="mb-6 rounded-lg bg-white p-6 shadow-sm">
+          <h2 className="mb-4 text-lg font-semibold text-gray-900">
+            רשימת המתנה
+          </h2>
+          <PlayersList
+            gameId={gameId}
+            creatorUID={creator.uid}
+            currUserUID={currUserUID}
+            gameParticipants={gameParticipants}
+            status={ParticipationStatus.PENDING}
+            deleteEnable={true}
+          />
+        </div>
+
+        {/* Map Section */}
+        <div className="mb-6 rounded-lg bg-white p-6 shadow-sm">
+          <h2 className="mb-4 text-lg font-semibold text-gray-900">מיקום</h2>
+          <div className="overflow-hidden rounded-lg">
+            <MapView
+              defaultLocation={{ lng: field.fieldLng, lat: field.fieldLat }}
+              games={[game]}
+            />
+          </div>
+        </div>
+
+        {/* Join/Leave Game Actions */}
+        {showActions && (
+          <div className="sticky bottom-4 mx-auto flex w-50 rounded-lg">
+            {!isJoined ? (
+              <JoinGameButton gameId={gameId} />
+            ) : (
+              <LeaveGameButton
+                gameId={gameId}
+                text={
+                  isCreator && game.gameParticipants.length === 1
+                    ? "מחק משחק"
+                    : "עזוב משחק"
+                }
+                isCreator={isCreator}
+              />
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
