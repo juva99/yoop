@@ -97,11 +97,7 @@ export class GroupController {
     @GetUser() user: User,
     @Body() userIds: string[],
   ): Promise<GroupMember[]> {
-    return await this.groupMembersService.addUsersToGroup(
-      user.uid,
-      groupId,
-      userIds,
-    );
+    return await this.groupMembersService.addUsersToGroup(groupId, userIds);
   }
 
   @Delete('/:id/leave/:userId')

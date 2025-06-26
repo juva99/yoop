@@ -72,7 +72,6 @@ export class GroupMembersService {
   }
 
   async addUsersToGroup(
-    managerId: string,
     groupId: string,
     userIds: string[],
   ): Promise<GroupMember[]> {
@@ -84,11 +83,6 @@ export class GroupMembersService {
 
     if (!group) {
       throw new NotFoundException('אין קבוצה כזאת!');
-    }
-
-    const manager = await this.findGroupMember(groupId, managerId);
-    if (!manager.isManager) {
-      throw new ConflictException('רק מנהל יכול להוסיף חברים לקבוצה');
     }
 
     const existingMembers = await this.groupMemberRepository.find({
@@ -119,6 +113,26 @@ export class GroupMembersService {
       }),
     );
     return await this.groupMemberRepository.save(newMembers);
+  }
+
+  async addUsersToExistingGroup(
+    groupId: string,
+    userIds: string[],
+    managerId: string,
+  ): Promise<GroupMember[]> {
+    const group = await this.groupRepository.findOne({
+      where: { groupId: groupId },
+      relations: ['groupMembers', 'groupMembers.user'],
+    });
+
+    if (!group) {
+      throw new NotFoundException('אין קבוצה כזאת');
+    }
+    const manager = await this.findGroupMember(groupId, managerId);
+    if (!manager.isManager) {
+      throw new ConflictException('רק מנהל יכול להוסיף חברים לקבוצה');
+    }
+    return await this.addUsersToGroup(groupId, userIds);
   }
 
   async removeMemeberFromGroup(

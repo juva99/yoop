@@ -43,10 +43,10 @@ export class GroupMembersController {
     @GetUser() user: User,
     @Body('userIds') userIds: string[],
   ): Promise<GroupMember[]> {
-    return await this.groupMembersService.addUsersToGroup(
-      user.uid,
+    return await this.groupMembersService.addUsersToExistingGroup(
       groupId,
       userIds,
+      user.uid,
     );
   }
 }

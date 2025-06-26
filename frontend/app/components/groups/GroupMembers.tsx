@@ -47,7 +47,7 @@ const GroupMembers: React.FC<Props> = ({ userId, group, isManager }) => {
     <ul className="max-h-[400px] overflow-y-auto">
       <div className="flex items-center gap-2">
         <span className="text-gray font-bold">חברים</span>
-        <AddFriendsDialog group={group} />
+        {isManager && <AddFriendsDialog group={group} />}{" "}
       </div>
       {group.groupMembers.map((member, idx) => (
         <li key={"m" + idx} className="flex items-center justify-between">
