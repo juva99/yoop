@@ -35,7 +35,7 @@ const FutureGames: React.FC<Props> = ({ games }) => {
   });
 
   const downHandler = () => {
-    if (currentGame == games.length - 1) {
+    if (currentGame == futureGames.length - 1) {
       setCurrentGame(0);
     } else {
       setCurrentGame((prev) => prev + 1);
@@ -44,7 +44,7 @@ const FutureGames: React.FC<Props> = ({ games }) => {
 
   const upHandler = () => {
     if (currentGame == 0) {
-      setCurrentGame(games.length - 1);
+      setCurrentGame(futureGames.length - 1);
     } else {
       setCurrentGame((prev) => prev - 1);
     }
