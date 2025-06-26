@@ -41,7 +41,10 @@ export default async function SearchPage({
   return (
     <div className="flex flex-col gap-5 px-5">
       <Card variant="friends">
-        <FriendList currentUserUid={userId} relations={friendRelations} />
+        <h1>החברים שלי</h1>
+        <div className="scrollbar-none overflow-y-scroll">
+          <FriendList currentUserUid={userId} relations={friendRelations} />
+        </div>
       </Card>
 
       <Card>
