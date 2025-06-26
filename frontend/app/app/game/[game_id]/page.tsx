@@ -1,16 +1,10 @@
-import {
-  PiBasketball,
-  PiSoccerBall,
-  PiCoins,
-  PiCalendarDots,
-  PiClock,
-} from "react-icons/pi";
+import { PiBasketball, PiSoccerBall, PiCalendarDots } from "react-icons/pi";
 import { TiWeatherPartlySunny } from "react-icons/ti";
 import { IoMdPin } from "react-icons/io";
 import { Game } from "@/app/types/Game";
 import PlayersList from "@/components/PlayersList";
 import MapView from "@/components/MapView";
-import { notFound } from "next/navigation"; // Import notFound
+import { notFound } from "next/navigation";
 import { GameType } from "@/app/enums/game-type.enum";
 import { getSession } from "@/lib/session";
 import JoinGameButton from "@/components/JoinGameButton";
