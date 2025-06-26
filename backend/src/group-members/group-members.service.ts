@@ -72,6 +72,7 @@ export class GroupMembersService {
   }
 
   async addUsersToGroup(
+    managerId: string,
     groupId: string,
     userIds: string[],
   ): Promise<GroupMember[]> {
@@ -83,6 +84,11 @@ export class GroupMembersService {
 
     if (!group) {
       throw new NotFoundException('אין קבוצה כזאת!');
+    }
+
+    const manager = await this.findGroupMember(groupId, managerId);
+    if (!manager.isManager) {
+      throw new ConflictException('רק מנהל יכול להוסיף חברים לקבוצה');
     }
 
     const existingMembers = await this.groupMemberRepository.find({

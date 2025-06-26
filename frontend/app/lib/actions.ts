@@ -212,3 +212,24 @@ export const inviteGroupToGame = async (gameId: string, groupId: string) => {
 
   return { ok: true, message: "הקבוצה הוזמנה בהצלחה!" };
 };
+
+export const addFriendsToGroup = async (friends: string[], groupId: string) => {
+  // Get group users first
+  const groupUsersResponse = await authFetch(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/group-members/${groupId}/add`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userIds: friends,
+      }),
+    },
+  );
+  if (!groupUsersResponse.ok) {
+    return { ok: false, message: "Failed to add group members" };
+  }
+  const groupUsers = await groupUsersResponse.json();
+  return { ok: true, message: "החברים נוספו בהצלחה!" };
+};

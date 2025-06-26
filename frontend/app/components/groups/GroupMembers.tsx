@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Group } from "@/app/types/Group";
 import { User } from "@/app/types/User";
 import { useRouter } from "next/navigation";
+import AddFriendsDialog from "./AddFriendsDialog";
 
 type Props = {
   userId: string;
@@ -44,7 +45,10 @@ const GroupMembers: React.FC<Props> = ({ userId, group, isManager }) => {
 
   return (
     <ul className="max-h-[400px] overflow-y-auto">
-      <span className="text-gray font-bold">חברים</span>
+      <div className="flex items-center gap-2">
+        <span className="text-gray font-bold">חברים</span>
+        <AddFriendsDialog group={group} />
+      </div>
       {group.groupMembers.map((member, idx) => (
         <li key={"m" + idx} className="flex items-center justify-between">
           <Friend
