@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import Friend from "./Friend";
 import { authFetch } from "@/lib/authFetch";
 import { FriendRelation } from "@/app/types/friend-relation";
+import { toast } from "sonner";
 
 type Props = {
   currentUserUid: string;
@@ -34,8 +35,10 @@ const FriendList: React.FC<Props> = ({ currentUserUid, relations }) => {
       );
 
       if (!response.ok) {
+        toast.error("שגיאה בביטול החברות");
         throw new Error("Failed to remove friend");
       }
+      toast.success("ביטלת את החברות בהצלחה");
       setFriendRelations((prev) => prev.filter((rel) => rel.id !== relationId));
     } catch (error) {
       console.error("Error removing friend request:", error);

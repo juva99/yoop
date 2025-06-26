@@ -18,7 +18,7 @@ export default function JoinGameButton({ gameId }: Props) {
       toast.error(res.message || "אירעה שגיאה");
       return;
     }
-    toast.success("הצטרפת למשחק בהצלחה");
+    toast.success("הצטרפת לרשימת ההמתנה בהצלחה");
     router.refresh();
   }
 
