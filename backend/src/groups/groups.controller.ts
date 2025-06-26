@@ -94,6 +94,7 @@ export class GroupController {
   @Post('/:id/add')
   async addUserToGroup(
     @Param('id') groupId: string,
+    @GetUser() user: User,
     @Body() userIds: string[],
   ): Promise<GroupMember[]> {
     return await this.groupMembersService.addUsersToGroup(groupId, userIds);

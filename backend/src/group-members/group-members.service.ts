@@ -115,6 +115,26 @@ export class GroupMembersService {
     return await this.groupMemberRepository.save(newMembers);
   }
 
+  async addUsersToExistingGroup(
+    groupId: string,
+    userIds: string[],
+    managerId: string,
+  ): Promise<GroupMember[]> {
+    const group = await this.groupRepository.findOne({
+      where: { groupId: groupId },
+      relations: ['groupMembers', 'groupMembers.user'],
+    });
+
+    if (!group) {
+      throw new NotFoundException('אין קבוצה כזאת');
+    }
+    const manager = await this.findGroupMember(groupId, managerId);
+    if (!manager.isManager) {
+      throw new ConflictException('רק מנהל יכול להוסיף חברים לקבוצה');
+    }
+    return await this.addUsersToGroup(groupId, userIds);
+  }
+
   async removeMemeberFromGroup(
     groupId: string,
     userId: string,

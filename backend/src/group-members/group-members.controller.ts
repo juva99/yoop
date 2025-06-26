@@ -9,6 +9,8 @@ import {
 } from '@nestjs/common';
 import { GroupMembersService } from './group-members.service';
 import { GroupMember } from './group-members.entity';
+import { GetUser } from 'src/auth/decorators/get-user.decorator';
+import { User } from 'src/users/users.entity';
 
 @Controller('group-members')
 export class GroupMembersController {
@@ -32,6 +34,19 @@ export class GroupMembersController {
       groupId,
       userId,
       status,
+    );
+  }
+
+  @Post('/:groupId/add')
+  async addMembers(
+    @Param('groupId') groupId: string,
+    @GetUser() user: User,
+    @Body('userIds') userIds: string[],
+  ): Promise<GroupMember[]> {
+    return await this.groupMembersService.addUsersToExistingGroup(
+      groupId,
+      userIds,
+      user.uid,
     );
   }
 }
