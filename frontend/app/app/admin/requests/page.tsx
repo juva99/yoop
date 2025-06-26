@@ -34,28 +34,47 @@ const page = async () => {
   const requests = await getContactRequests();
 
   return (
-    <div className="px-5 py-12">
-      <h1 className="text-center">בקשות מנהלי מגרשים</h1>{" "}
-      <Card className="scrollbar-none max-h-full overflow-y-scroll p-4">
-        <div className="">
-          {requests.length === 0 ? (
-            <p className="text-center">אין בקשות להצגה.</p>
-          ) : (
-            requests.map((req, idx) => (
-              <div
+    <div className="min-h-screen bg-gray-50">
+      <div className="mx-auto max-w-4xl px-4 py-8">
+        {/* Header */}
+        <div className="mb-8 text-center">
+          <h1 className="text-3xl font-bold text-gray-900">
+            בקשות מנהלי מגרשים
+          </h1>
+          <p className="mt-2 text-gray-600">
+            סקור ואשר בקשות להצטרפות כמנהלי מגרשים
+          </p>
+          <div className="mt-4 inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800">
+            {requests.length} בקשות ממתינות
+          </div>
+        </div>
+
+        {/* Requests List */}
+        {requests.length === 0 ? (
+          <Card className="p-12 text-center">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+              <span className="text-2xl">📋</span>
+            </div>
+            <h3 className="mb-2 text-lg font-medium text-gray-900">
+              אין בקשות להצגה
+            </h3>
+            <p className="text-gray-600">
+              כל הבקשות עובדו או שאין בקשות חדשות כרגע
+            </p>
+          </Card>
+        ) : (
+          <div className="space-y-4">
+            {requests.map((req) => (
+              <Card
                 key={req.id}
-                className={
-                  idx < requests.length - 1
-                    ? "mb-4 border-b border-gray-200 pb-4"
-                    : ""
-                }
+                className="p-6 transition-shadow hover:shadow-md"
               >
                 <ContactRequest {...req} />
-              </div>
-            ))
-          )}
-        </div>
-      </Card>
+              </Card>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
