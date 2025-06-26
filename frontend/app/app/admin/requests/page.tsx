@@ -38,7 +38,9 @@ const page = async () => {
       <div className="mx-auto max-w-4xl px-4 py-8">
         {/* Header */}
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-gray-900">בקשות מנהלי מגרשים</h1>
+          <h1 className="text-3xl font-bold text-gray-900">
+            בקשות מנהלי מגרשים
+          </h1>
           <p className="mt-2 text-gray-600">
             סקור ואשר בקשות להצטרפות כמנהלי מגרשים
           </p>
@@ -50,10 +52,10 @@ const page = async () => {
         {/* Requests List */}
         {requests.length === 0 ? (
           <Card className="p-12 text-center">
-            <div className="mx-auto mb-4 h-16 w-16 rounded-full bg-gray-100 flex items-center justify-center">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
               <span className="text-2xl">📋</span>
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+            <h3 className="mb-2 text-lg font-medium text-gray-900">
               אין בקשות להצגה
             </h3>
             <p className="text-gray-600">
@@ -63,7 +65,10 @@ const page = async () => {
         ) : (
           <div className="space-y-4">
             {requests.map((req) => (
-              <Card key={req.id} className="p-6 transition-shadow hover:shadow-md">
+              <Card
+                key={req.id}
+                className="p-6 transition-shadow hover:shadow-md"
+              >
                 <ContactRequest {...req} />
               </Card>
             ))}
