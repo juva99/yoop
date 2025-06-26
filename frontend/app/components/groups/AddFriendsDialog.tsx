@@ -22,7 +22,6 @@ interface InviteDialogProps {
 
 const InviteDialog: React.FC<InviteDialogProps> = ({ group }) => {
   const [selectedFriends, setSelectedFriends] = useState<string[]>([]);
-  const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [friends, setFriends] = useState<User[]>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -49,7 +48,6 @@ const InviteDialog: React.FC<InviteDialogProps> = ({ group }) => {
       toast.error("אנא בחר חברים להזמנה");
       return;
     }
-    console.log("Inviting friends:", selectedFriends);
 
     setIsLoading(true);
     try {
@@ -69,7 +67,7 @@ const InviteDialog: React.FC<InviteDialogProps> = ({ group }) => {
     }
   };
 
-  // Filter out friends who are already in the game
+  // Filter out friends who are already in the group
   const playersInGroup = group.groupMembers.map((member) => member.user.uid);
   const availableFriends = friends.filter(
     (friend) => !playersInGroup.includes(friend.uid),
@@ -84,7 +82,7 @@ const InviteDialog: React.FC<InviteDialogProps> = ({ group }) => {
       </DialogTrigger>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle> הוסף חברים לקבוצה</DialogTitle>
+          <DialogTitle>הוסף חברים לקבוצה</DialogTitle>
         </DialogHeader>
 
         <div className="max-h-64 space-y-2 overflow-y-auto">
