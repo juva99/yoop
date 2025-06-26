@@ -1,9 +1,7 @@
 import {
-  IsBoolean,
   IsDateString,
   IsEmail,
   IsEmpty,
-  IsOptional,
   IsString,
   Length,
   Matches,
@@ -33,23 +31,12 @@ export class CreateUserDto {
   @IsEmail()
   userEmail: string;
 
-  @IsOptional()
   @IsDateString()
   birthDay?: string;
 
-  @IsOptional()
-  @IsBoolean()
-  isMale?: boolean;
-
-  @IsOptional()
   @IsString()
   address?: string;
 
-  @IsOptional()
-  @IsString()
-  profilePic?: string;
-
-  @IsOptional()
   @IsString()
   @Matches(/^(\+972|0)5\d(-?\d{7})$/, {
     message: 'is not valid phone number',
