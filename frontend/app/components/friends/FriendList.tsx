@@ -1,12 +1,10 @@
 "use client";
 
-import { User } from "@/app/types/User";
 import React, { useState } from "react";
 import Friend from "./Friend";
 import { authFetch } from "@/lib/authFetch";
 import { FriendRelation } from "@/app/types/friend-relation";
 import { toast } from "sonner";
-import { Badge } from "@/components/ui/badge";
 import { Users } from "lucide-react";
 
 type Props = {
@@ -63,21 +61,11 @@ const FriendList: React.FC<Props> = ({ currentUserUid, relations }) => {
         </div>
       ) : (
         <div className="space-y-2">
-          <div className="mb-4 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Users className="h-5 w-5 text-blue-600" />
-              <span className="font-medium text-gray-900">רשימת החברים</span>
-            </div>
-            <Badge variant="secondary" className="bg-blue-100 text-blue-700">
-              {friendsWithRelation.length} חברים
-            </Badge>
-          </div>
-
-          <div className="scrollbar-none grid max-h-96 gap-3 overflow-y-auto">
+          <div className="scrollbar-none grid max-h-80 gap-2 overflow-y-auto sm:max-h-96 sm:gap-3">
             {friendsWithRelation.map(({ friend, relationId }) => (
               <div
                 key={relationId}
-                className="rounded-xl border border-gray-100 bg-white p-4 shadow-sm transition-all duration-200 hover:border-blue-200 hover:shadow-md"
+                className="rounded-lg border border-gray-100 bg-white p-2 shadow-sm transition-all duration-200 hover:border-blue-200 hover:shadow-md sm:rounded-xl sm:p-4"
               >
                 <div className="flex items-center justify-between">
                   <Friend
