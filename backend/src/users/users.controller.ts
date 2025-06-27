@@ -26,7 +26,6 @@ import { Public } from 'src/auth/decorators/public.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/enums/role.enum';
 import { FileInterceptor } from '@nestjs/platform-express';
-import * as multer from 'multer';
 import * as path from 'path';
 import { AzureStorageService } from 'src/azure-storage/azure-storage.service';
 
