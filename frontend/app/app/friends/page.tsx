@@ -36,9 +36,9 @@ export default async function FriendsPage({
 
   return (
     <div className="min-h-screen p-2 sm:p-4">
-      <div className="mx-auto max-w-md space-y-4 sm:max-w-2xl sm:space-y-6">
+      <div className="mx-auto max-w-md space-y-4 px-2 sm:max-w-2xl sm:space-y-6 sm:px-0">
         {/* Header */}
-        <div className="px-2 text-center">
+        <div className="text-center">
           <h1 className="bg-gradient-to-r from-blue-500 to-blue-900 bg-clip-text text-2xl font-bold text-transparent sm:text-3xl">
             חברים
           </h1>
@@ -48,7 +48,7 @@ export default async function FriendsPage({
         </div>
 
         {/* My Friends */}
-        <Card className="mx-2 border-0 bg-white/70 shadow-lg backdrop-blur-sm sm:mx-0">
+        <Card className="border-0 bg-white/70 shadow-lg backdrop-blur-sm">
           <CardContent className="p-3 sm:p-6">
             <CardHeader className="p-0 pb-3 sm:pb-4">
               <div className="flex items-center gap-2">
@@ -63,7 +63,7 @@ export default async function FriendsPage({
         </Card>
 
         {/* Search Friends */}
-        <Card className="mx-2 border-0 bg-white/70 shadow-lg backdrop-blur-sm sm:mx-0">
+        <Card className="border-0 bg-white/70 shadow-lg backdrop-blur-sm">
           <CardContent className="p-3 sm:p-6">
             <Form action="/friends" scroll={false}>
               <div className="input-wrapper border-title mt-5 mb-5 flex justify-between border-b-1 py-1">
