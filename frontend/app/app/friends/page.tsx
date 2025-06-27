@@ -1,13 +1,12 @@
-import Friend from "@/components/friends/Friend";
-import Form from "next/form";
 import { authFetch } from "@/lib/authFetch";
 import { User } from "@/app/types/User";
-import { PiMagnifyingGlassThin } from "react-icons/pi";
 import { getSession } from "@/lib/session";
 import FriendList from "@/components/friends/FriendList";
-import { Card } from "@/components/ui/card";
+import SearchFriends from "@/components/friends/SearchFriends";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Users, UserPlus } from "lucide-react";
 
-export default async function SearchPage({
+export default async function FriendsPage({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -39,47 +38,36 @@ export default async function SearchPage({
   const friendRelations = await friendsResponse.json();
 
   return (
-    <div className="flex flex-col gap-5 px-5">
-      <Card variant="friends">
-        <h1>החברים שלי</h1>
-        <div className="scrollbar-none overflow-y-scroll">
-          <FriendList currentUserUid={userId} relations={friendRelations} />
+    <div className="min-h-screen p-4">
+      <div className="mx-auto max-w-4xl space-y-6">
+        {/* Header */}
+        <div className="text-center">
+          <h1 className="bg-gradient-to-r from-blue-500 to-blue-900 bg-clip-text text-3xl font-bold text-transparent">
+            חברים
+          </h1>
+          <p className="mt-2 text-gray-600">
+            נהל את החברים שלך וחפש חברים חדשים
+          </p>
         </div>
-      </Card>
 
-      <Card>
-        <h1>הוספת חברים</h1>
-        <Form action="/friends">
-          <div className="input-wrapper border-title mt-5 mb-5 flex justify-between border-b-1 py-1">
-            <input
-              type="text"
-              name="query"
-              placeholder="הקלד שם"
-              defaultValue={query}
-              className="border-none bg-white bg-none shadow-none focus:border-none focus:ring-0 focus:outline-none"
+        {/* My Friends */}
+        <Card className="border-0 bg-white/70 shadow-lg backdrop-blur-sm">
+          <CardContent className="p-6">
+            <FriendList currentUserUid={userId} relations={friendRelations} />
+          </CardContent>
+        </Card>
+
+        {/* Search Friends */}
+        <Card className="border-0 bg-white/70 shadow-lg backdrop-blur-sm">
+          <CardContent className="p-6">
+            <SearchFriends
+              friends={friends}
+              userId={userId}
+              initialQuery={query as string}
             />
-
-            <button type="submit">
-              <PiMagnifyingGlassThin />
-            </button>
-          </div>
-        </Form>
-
-        <div className="scrollbar-none overflow-y-scroll">
-          {friends.length > 0 ? (
-            friends.map((friend: User) => (
-              <Friend
-                key={friend.uid}
-                friend={friend}
-                action="add"
-                userId={userId}
-              />
-            ))
-          ) : query ? (
-            <p>אין תוצאות</p>
-          ) : null}
-        </div>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
