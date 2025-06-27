@@ -147,22 +147,39 @@ export default async function Page({
       <div className="mx-auto max-w-4xl px-4 py-6">
         {/* Header Card */}
         <div className="mb-6 rounded-lg bg-white p-6 shadow-sm">
-          <div className="mb-4 flex items-center gap-3">
-            <div className="rounded-ful flex h-12 w-12 items-center justify-center">
-              {gameType === GameType.BasketBall ? (
-                <PiBasketball className="h-10 w-10" />
-              ) : gameType === GameType.FootBall ? (
-                <PiSoccerBall className="h-10 w-10" />
-              ) : null}
+          <div className="mb-4 flex items-start justify-between">
+            <div className="flex-1">
+              <div className="flex items-center gap-3">
+                <div className="rounded-ful flex h-12 w-12 items-center justify-center">
+                  {gameType === GameType.BasketBall ? (
+                    <PiBasketball className="h-10 w-10" />
+                  ) : gameType === GameType.FootBall ? (
+                    <PiSoccerBall className="h-10 w-10" />
+                  ) : null}
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-900">
+                    משחק{" "}
+                    {gameType === GameType.BasketBall ? "כדורסל" : "כדורגל"}
+                  </h1>
+                  <p className="text-sm text-gray-600">
+                    נוצר על ידי {creator.firstName} {creator.lastName}
+                  </p>
+                </div>
+              </div>
             </div>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">
-                משחק {gameType === GameType.BasketBall ? "כדורסל" : "כדורגל"}
-              </h1>
-              <p className="text-sm text-gray-600">
-                נוצר על ידי {creator.firstName} {creator.lastName}
-              </p>
-            </div>
+            {regStatus === Status.APPROVED && (
+              <div className="flex flex-shrink-0 flex-col items-center gap-2">
+                <div className="scale-110">
+                  <Share />
+                </div>
+                {isApproved && (
+                  <div className="scale-110">
+                    <CalendarLink game={game} />
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Status Badge */}
@@ -214,15 +231,24 @@ export default async function Page({
                 </div>
               </div>
             )}
+            {showActions && (
+              <div className="bottom-4 mx-auto flex w-50 rounded-lg">
+                {!isJoined ? (
+                  <JoinGameButton gameId={gameId} />
+                ) : (
+                  <LeaveGameButton
+                    gameId={gameId}
+                    text={
+                      isCreator && game.gameParticipants.length === 1
+                        ? "מחק משחק"
+                        : "עזוב משחק"
+                    }
+                    isCreator={isCreator}
+                  />
+                )}
+              </div>
+            )}
           </div>
-
-          {/* Action Buttons */}
-          {showActions && (
-            <div className="mt-4 flex flex-wrap gap-2">
-              {isApproved && <CalendarLink game={game} />}
-              {regStatus === Status.APPROVED && <Share />}
-            </div>
-          )}
         </div>
 
         {/* Participants Section */}
@@ -275,25 +301,6 @@ export default async function Page({
             />
           </div>
         </div>
-
-        {/* Join/Leave Game Actions */}
-        {showActions && (
-          <div className="sticky bottom-4 mx-auto flex w-50 rounded-lg">
-            {!isJoined ? (
-              <JoinGameButton gameId={gameId} />
-            ) : (
-              <LeaveGameButton
-                gameId={gameId}
-                text={
-                  isCreator && game.gameParticipants.length === 1
-                    ? "מחק משחק"
-                    : "עזוב משחק"
-                }
-                isCreator={isCreator}
-              />
-            )}
-          </div>
-        )}
       </div>
     </div>
   );
