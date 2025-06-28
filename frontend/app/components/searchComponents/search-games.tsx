@@ -123,47 +123,49 @@ const SearchGames = () => {
     <div className="search-game">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-          <FormField
-            control={form.control}
-            name="city"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>עיר</FormLabel>
-                <FormControl>
-                  <Combobox
-                    options={cityOptions}
-                    value={field.value}
-                    onSelect={field.onChange}
-                    placeholder="בחר עיר..."
-                    searchPlaceholder="חפש עיר..."
-                    notFoundText="לא נמצאה עיר."
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="grid grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="city"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>עיר</FormLabel>
+                  <FormControl>
+                    <Combobox
+                      options={cityOptions}
+                      value={field.value}
+                      onSelect={field.onChange}
+                      placeholder="בחר עיר..."
+                      searchPlaceholder="חפש עיר..."
+                      notFoundText="לא נמצאה עיר."
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="gameType"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>סוג משחק</FormLabel>
-                <FormControl>
-                  <Combobox
-                    options={gameTypeOptions}
-                    value={field.value}
-                    onSelect={field.onChange}
-                    placeholder="בחר סוג משחק..."
-                    searchPlaceholder="חפש סוג משחק..."
-                    notFoundText="לא נמצא סוג משחק."
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="gameType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>סוג משחק</FormLabel>
+                  <FormControl>
+                    <Combobox
+                      options={gameTypeOptions}
+                      value={field.value}
+                      onSelect={field.onChange}
+                      placeholder="בחר סוג משחק..."
+                      searchPlaceholder="חפש סוג משחק..."
+                      notFoundText="לא נמצא סוג משחק."
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
           <FormField
             control={form.control}

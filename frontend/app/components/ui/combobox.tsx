@@ -1,13 +1,23 @@
 "use client";
 
 import * as React from "react";
-import { X } from "lucide-react";
+import { Check, ChevronsUpDown } from "lucide-react";
+
 import { cn } from "@/lib/utils";
-import { Combobox as ComboboxRoot } from "./combobox/combobox";
-import { ComboboxInput } from "./combobox/combobox-input";
-import { ComboboxContent } from "./combobox/combobox-content";
-import { ComboboxItem } from "./combobox/combobox-item";
-import { ComboboxEmpty } from "./combobox/combobox-empty";
+import { Button } from "@/components/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { ScrollArea } from "./scroll-area";
 
 interface ComboboxProps {
   options: { value: string; label: string }[];
@@ -32,46 +42,60 @@ export function Combobox({
   disabled = false,
   name,
 }: ComboboxProps) {
-  const handleClear = () => {
-    onSelect?.("");
-  };
+  const [open, setOpen] = React.useState(false);
 
   return (
-    <div className={cn("w-full", containerClassName)}>
-      <ComboboxRoot
-        value={value || null}
-        onValueChange={(newValue) => onSelect?.(newValue || "")}
-      >
-        <div className="relative">
-          <ComboboxInput
-            placeholder={placeholder}
+    <div className={cn("flex flex-col", containerClassName)}>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            className="w-full justify-between text-right"
             disabled={disabled}
             name={name}
-            className="cursor-pointer pr-16 text-right"
-          />
-          {value && (
-            <button
-              type="button"
-              onClick={handleClear}
-              className="absolute top-1/2 right-2 -translate-y-1/2 rounded-sm p-1 hover:bg-gray-100"
-              disabled={disabled}
-            >
-              <X className="h-4 w-4 text-gray-500" />
-            </button>
-          )}
-        </div>
-        <ComboboxContent>
-          {options.map((option) => (
-            <ComboboxItem
-              key={option.value}
-              value={option.value}
-              label={option.label}
-              className="w-full justify-end text-right"
-            />
-          ))}
-          <ComboboxEmpty className="text-right">{notFoundText}</ComboboxEmpty>
-        </ComboboxContent>
-      </ComboboxRoot>
+          >
+            {value
+              ? options.find((option) => option.value === value)?.label
+              : placeholder}
+            <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent
+          className="z-20 w-auto p-0"
+          align="start"
+          sideOffset={5}
+        >
+          <Command>
+            <CommandInput placeholder={searchPlaceholder} />
+            <CommandEmpty>{notFoundText}</CommandEmpty>
+            <CommandGroup>
+              <ScrollArea className="h-48">
+                {options.map((option) => (
+                  <CommandItem
+                    value={option.label}
+                    className="flex justify-end text-right"
+                    key={option.value}
+                    onSelect={() => {
+                      onSelect?.(option.value);
+                      setOpen(false);
+                    }}
+                  >
+                    <Check
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        option.value === value ? "opacity-100" : "opacity-0",
+                      )}
+                    />
+                    {option.label}
+                  </CommandItem>
+                ))}
+              </ScrollArea>
+            </CommandGroup>
+          </Command>
+        </PopoverContent>
+      </Popover>
     </div>
   );
 }
