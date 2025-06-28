@@ -27,6 +27,7 @@ import { Map, Marker } from "pigeon-maps";
 import { Switch } from "../ui/switch";
 import { authFetch } from "@/lib/authFetch";
 import { toast } from "sonner";
+import { redirect, useRouter } from "next/navigation";
 
 const cityOptions = Object.entries(City).map(([label, value]) => ({
   label: value,
@@ -34,6 +35,7 @@ const cityOptions = Object.entries(City).map(([label, value]) => ({
 }));
 
 const CreateFieldForm = () => {
+  const router = useRouter();
   const form = useForm<FormSchema>({
     mode: "all",
     resolver: zodResolver(formSchema),
@@ -103,9 +105,12 @@ const CreateFieldForm = () => {
     if (failed.length > 0) {
       toast.error(`נכשלו ${failed.length} מתוך ${allResponses.length} מגרשים`);
     } else {
-      if (data.hasMultipleFields) toast.success("כל המגרשים נוצרו בהצלחה");
-      else {
+      if (data.hasMultipleFields) {
+        toast.success("כל המגרשים נוצרו בהצלחה");
+        router.push("/field-manager/fields");
+      } else {
         toast.success("המגרש נוצר בהצלחה!");
+        router.push("/field-manager/fields");
       }
     }
   };

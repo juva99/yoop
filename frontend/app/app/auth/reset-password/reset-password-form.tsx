@@ -10,11 +10,10 @@ import {
   ResetPasswordSchema,
   ResetPasswordFormValues,
 } from "@/lib/schemas/reset_password_schema";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { TbEyeOff } from "react-icons/tb";
 import { TbEyeCheck } from "react-icons/tb";
-
 import {
   Form,
   FormField,
@@ -25,6 +24,7 @@ import {
 } from "@/components/ui/form";
 
 const ResetPasswordForm = () => {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const resetToken = searchParams.get("resetToken");
   const [showPassword, setShowPassword] = useState(false);
@@ -48,6 +48,7 @@ const ResetPasswordForm = () => {
         toast.error(result.message || "שגיאה באיפוס הסיסמה");
       } else {
         toast.success("הסיסמה אופסה בהצלחה");
+        router.push("/auth/login");
       }
     } catch (error) {
       toast.error("שגיאה באיפוס הסיסמה");
