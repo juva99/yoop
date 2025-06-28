@@ -1,11 +1,11 @@
 "use client";
 
-import { User } from "@/app/types/User";
 import React, { useState } from "react";
 import Friend from "./Friend";
 import { authFetch } from "@/lib/authFetch";
 import { FriendRelation } from "@/app/types/friend-relation";
 import { toast } from "sonner";
+import { Users } from "lucide-react";
 
 type Props = {
   currentUserUid: string;
@@ -46,31 +46,42 @@ const FriendList: React.FC<Props> = ({ currentUserUid, relations }) => {
   };
 
   return (
-    <section className="h-[220px]">
-      <h1>החברים שלי</h1>
+    <div className="space-y-4">
       {friendsWithRelation.length === 0 ? (
-        <p className="text-sm text-gray-500">אין חברים להצגה</p>
+        <div className="py-8 text-center">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+            <Users className="h-8 w-8 text-gray-400" />
+          </div>
+          <h3 className="mb-2 text-lg font-semibold text-gray-900">
+            אין חברים עדיין
+          </h3>
+          <p className="text-gray-600">
+            התחל לחפש חברים חדשים והוסף אותם לרשימה שלך
+          </p>
+        </div>
       ) : (
-        <ul className="text-sm text-gray-700">
-          {friendsWithRelation.map(({ friend, relationId }, index) => (
-            <React.Fragment key={relationId}>
-              <li className="flex items-center justify-between">
-                <Friend
-                  userId={currentUserUid}
-                  action="remove"
-                  friend={friend}
-                  relationId={relationId}
-                  onClick={() => removeFriend(relationId)}
-                />
-              </li>
-              {index < friendsWithRelation.length - 1 && (
-                <div className="my-1 h-px bg-gray-200" />
-              )}
-            </React.Fragment>
-          ))}
-        </ul>
+        <div className="space-y-2">
+          <div className="scrollbar-none grid max-h-80 gap-2 overflow-y-auto sm:max-h-96 sm:gap-3">
+            {friendsWithRelation.map(({ friend, relationId }) => (
+              <div
+                key={relationId}
+                className="rounded-lg border border-gray-100 bg-white p-2 shadow-sm transition-all duration-200 hover:border-blue-200 hover:shadow-md sm:rounded-xl sm:p-4"
+              >
+                <div className="flex items-center justify-between">
+                  <Friend
+                    userId={currentUserUid}
+                    action="remove"
+                    friend={friend}
+                    relationId={relationId}
+                    onClick={() => removeFriend(relationId)}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       )}
-    </section>
+    </div>
   );
 };
 

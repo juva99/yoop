@@ -29,7 +29,9 @@ export default async function RootLayout({
     <html lang="en" dir="rtl">
       <body className={`${geistSans.variable} antialiased`}>
         <Header role={role} name={name} />
-        <main className="flex-1">{children}</main>
+        <main className="min-h-screen flex-1 bg-gradient-to-br from-white to-blue-50">
+          {children}
+        </main>
         <Toaster richColors position="top-center" />
         <SideBar role={role} />
       </body>

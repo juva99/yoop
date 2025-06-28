@@ -5,6 +5,7 @@ import { Game } from "@/app/types/Game";
 import { CalendarEvent, ics } from "calendar-link";
 import { FaRegCalendarPlus } from "react-icons/fa6";
 import { useEffect, useState } from "react";
+import { Button } from "./button";
 
 type Props = {
   game: Game;
@@ -24,19 +25,14 @@ const CalendarLink: React.FC<Props> = ({ game }) => {
     };
     setHref(ics(calendarEvent));
   }, [game]);
-
   return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="flex items-center text-sm text-blue-500"
-    >
-      <>
-        <FaRegCalendarPlus className="ml-2" />
-        הוסף ליומן
-      </>
-    </a>
+    <div>
+      <Button asChild variant={"ghost"} className="relative has-[>svg]:px-0">
+        <a href={href} target="_blank" rel="noopener noreferrer">
+          <FaRegCalendarPlus className="h-4 w-4" />
+        </a>
+      </Button>
+    </div>
   );
 };
 

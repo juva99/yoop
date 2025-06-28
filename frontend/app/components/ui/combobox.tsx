@@ -85,9 +85,7 @@ export function Combobox({
                     <Check
                       className={cn(
                         "mr-2 h-4 w-4",
-                        option.value === value
-                          ? "opacity-100"
-                          : "opacity-0",
+                        option.value === value ? "opacity-100" : "opacity-0",
                       )}
                     />
                     {option.label}
