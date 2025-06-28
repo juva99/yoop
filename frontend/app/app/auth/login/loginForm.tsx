@@ -32,11 +32,17 @@ const LoginForm = () => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = async (values: LoginFormValues) => {
-    const result = await login(values.userEmail, values.pass);
-    if (result?.error) {
-      toast.error(result.message || "שגיאה בהתחברות");
+    setIsLoading(true);
+    try {
+      const result = await login(values.userEmail, values.pass);
+      if (result?.error) {
+        toast.error(result.message || "שגיאה בהתחברות");
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -91,8 +97,15 @@ const LoginForm = () => {
         </div>
 
         <div className="flex justify-center">
-          <Button type="submit" variant={"submit"}>
-            התחבר
+          <Button type="submit" variant={"submit"} disabled={isLoading}>
+            {isLoading ? (
+              <div className="flex items-center gap-2">
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                מתחבר...
+              </div>
+            ) : (
+              "התחבר"
+            )}
           </Button>
         </div>
       </form>

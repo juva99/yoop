@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all duration-200 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
   {
     variants: {
       variant: {
@@ -20,7 +20,8 @@ const buttonVariants = cva(
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
-        submit: "bg-title my-5 h-10  w-full rounded-full text-sm text-white",
+        submit:
+          "bg-title my-5 h-10 w-full rounded-full text-sm text-white font-semibold shadow-lg hover:shadow-xl hover:bg-title/90 active:scale-[0.98] active:shadow-md focus-visible:ring-2 focus-visible:ring-title/50 focus-visible:ring-offset-2 disabled:shadow-none disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-200 ease-in-out touch-manipulation select-none md:hover:scale-[1.02] md:active:scale-[0.97]",
         actions:
           "bg-primary text-primary-foreground shadow-xs w-12 rounded-2xl  hover:bg-primary/90",
       },

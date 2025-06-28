@@ -57,12 +57,18 @@ const SignupForm = () => {
     },
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = async (values: SignupFormValues) => {
-    const result = await signup(values);
+    setIsLoading(true);
+    try {
+      const result = await signup(values);
 
-    if (result?.error) {
-      toast.error(result.message || "שגיאה בהרשמה");
+      if (result?.error) {
+        toast.error(result.message || "שגיאה בהרשמה");
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -243,8 +249,15 @@ const SignupForm = () => {
         />
 
         <div className="flex justify-center">
-          <Button type="submit" variant={"submit"}>
-            הירשם
+          <Button type="submit" variant={"submit"} disabled={isLoading}>
+            {isLoading ? (
+              <div className="flex items-center gap-2">
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                נרשם...
+              </div>
+            ) : (
+              "הירשם"
+            )}
           </Button>
         </div>
       </form>
