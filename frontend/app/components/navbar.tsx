@@ -12,6 +12,8 @@ import { Role } from "@/app/enums/role.enum";
 const HIDDEN_PATHS = [
   "/auth/login",
   "/auth/signup",
+  "/auth/forgot",
+  "/auth/reset-password",
   "/menu",
   "/field-manager/contact",
 ];
