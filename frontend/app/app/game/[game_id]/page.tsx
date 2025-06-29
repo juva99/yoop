@@ -97,18 +97,21 @@ export default async function Page({
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
+    timeZone: "Asia/Jerusalem",
   });
 
   const formattedStartTime = start.toLocaleTimeString("he-IL", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
+    timeZone: "Asia/Jerusalem",
   });
 
   const formattedEndTime = end.toLocaleTimeString("he-IL", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
+    timeZone: "Asia/Jerusalem",
   });
 
   const session = await getSession();
