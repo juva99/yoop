@@ -39,7 +39,7 @@ const LeaveButton: React.FC<Props> = ({ userId, groupId }) => {
   const router = useRouter();
 
   return (
-    <div className="absolute bottom-10 left-1/2 -translate-x-1/2">
+    <div>
       <Button
         type="button"
         onClick={() => leaveHandler(userId, groupId, router)}
