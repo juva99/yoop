@@ -98,7 +98,8 @@ export default async function Page({
     month: "2-digit",
     year: "numeric",
   });
-  const formattedTime = start.toLocaleTimeString("he-IL", {
+
+  const formattedStartTime = start.toLocaleTimeString("he-IL", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -213,7 +214,7 @@ export default async function Page({
               <div>
                 <p className="font-medium text-gray-900">{formattedDate}</p>
                 <p className="text-sm text-gray-600">
-                  {formattedTime} - {formattedEndTime}
+                  {formattedStartTime} - {formattedEndTime}
                 </p>
               </div>
             </div>
