@@ -232,7 +232,7 @@ export default async function Page({
               </div>
             )}
             {showActions && (
-              <div className="bottom-4 mx-auto flex w-50 rounded-lg">
+              <div className="bottom-4 mx-auto flex w-40 rounded-lg">
                 {!isJoined ? (
                   <JoinGameButton gameId={gameId} />
                 ) : (
