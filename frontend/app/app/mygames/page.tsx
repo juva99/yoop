@@ -9,7 +9,7 @@ import { ParticipationStatus } from "../enums/participation-status.enum";
 import { useEffect, useState } from "react";
 import { Game } from "../types/Game";
 import { Card } from "@/components/ui/card";
-import GameCard from "@/components/GameCard";
+import GameCard from "@/components/games/GameCard";
 
 export default function MyGames() {
   const [managedGames, setManagedGames] = useState<Game[]>([]);

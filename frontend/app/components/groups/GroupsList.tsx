@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { User } from "@/app/types/User";
-import AvatarGroup from "./AvatarGroup";
+import AvatarGroup from "../friends/AvatarGroup";
 import {
   Carousel,
   CarouselContent,

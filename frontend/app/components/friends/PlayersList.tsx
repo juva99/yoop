@@ -8,8 +8,8 @@ import { PiCrownSimpleBold } from "react-icons/pi";
 import { useRouter } from "next/navigation";
 import { ParticipationStatus } from "@/app/enums/participation-status.enum";
 import { GameParticipant } from "@/app/types/GameParticipant";
-import ChangeParticipationButton from "./changeParticipationButton";
-import ChangeCreatorDialog from "@/app/game/[game_id]/ChangeCreatorDialog";
+import ChangeParticipationButton from "../games/changeParticipationButton";
+import ChangeCreatorDialog from "@/components/games/ChangeCreatorDialog";
 import { authFetch } from "@/lib/authFetch";
 import { toast } from "sonner";
 

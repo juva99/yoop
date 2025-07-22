@@ -1,7 +1,7 @@
 import React from "react";
-import SignupForm from "./signupForm";
+import SignupForm from "../../../components/auth/signupForm";
 import Link from "next/link";
-import AuthWrapper from "../authWrapper";
+import AuthWrapper from "../../../components/auth/authWrapper";
 
 const SignUp = () => {
   return (

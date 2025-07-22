@@ -2,8 +2,8 @@
 
 import { UseFormReturn } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { Spinner } from "../ui/spinner";
-import { Combobox } from "../ui/combobox";
+import { Spinner } from "../../ui/spinner";
+import { Combobox } from "../../ui/combobox";
 import { authFetch } from "@/lib/authFetch";
 import {
   FormControl,

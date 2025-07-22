@@ -2,7 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { authFetch } from "@/lib/authFetch";
 import { User } from "@/app/types/User";
-import UserItem from "./UserItem";
+import UserItem from "../../../components/admin/UserItem";
 import { Role } from "@/app/enums/role.enum";
 
 const page: React.FC = async () => {

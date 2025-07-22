@@ -1,7 +1,7 @@
 import React from "react";
-import LoginForm from "./forgot-form";
+import LoginForm from "../../../components/auth/forgot-form";
 import Link from "next/link";
-import AuthWrapper from "../authWrapper";
+import AuthWrapper from "../../../components/auth/authWrapper";
 
 const ForgotPassword = () => {
   return (

@@ -1,5 +1,5 @@
 import React from "react";
-import ContactRequest from "./ContactRequest";
+import ContactRequest from "../../../components/admin/ContactRequest";
 import { authFetch } from "@/lib/authFetch";
 import { Card } from "@/components/ui/card";
 

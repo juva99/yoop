@@ -1,7 +1,7 @@
 "use client";
 import NotificationsButton from "@/components/ui/Notifications";
 import React from "react";
-import { Role } from "./enums/role.enum";
+import { Role } from "../../app/enums/role.enum";
 import { usePathname } from "next/navigation";
 
 const getGreeting = (name: string): string => {

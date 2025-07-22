@@ -11,11 +11,10 @@ import FieldInfoStep from "./FieldInfoStep";
 import StartTimeStep from "./StartTimeStep";
 import EndTimeStep from "./EndTimeStep";
 import { useRouter } from "next/navigation";
-import { Form } from "../ui/form";
+import { Form } from "../../ui/form";
 import { authFetch } from "@/lib/authFetch";
-import { set } from "date-fns";
-import { Card } from "../ui/card";
-import { Button } from "../ui/button";
+import { Card } from "../../ui/card";
+import { Button } from "../../ui/button";
 
 export type Inputs = z.infer<typeof FormDataSchema>;
 const steps = [

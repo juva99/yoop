@@ -1,13 +1,13 @@
 "use client";
 
 import React from "react";
-import { Group } from "../types/Group";
+import { Group } from "../../app/types/Group";
 import { PiBasketball, PiSoccerBall } from "react-icons/pi";
 import { TiDelete } from "react-icons/ti";
 import Link from "next/link";
-import { GameType } from "../enums/game-type.enum";
-import AlertPopup from "@/components/AlertPopup";
-import AvatarGroup from "@/components/AvatarGroup";
+import { GameType } from "../../app/enums/game-type.enum";
+import AlertPopup from "@/components/ui/AlertPopup";
+import AvatarGroup from "@/components/friends/AvatarGroup";
 import { authFetch } from "@/lib/authFetch";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";

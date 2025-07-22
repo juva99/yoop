@@ -6,7 +6,7 @@ import { getSession } from "@/lib/session";
 import { Role } from "@/app/enums/role.enum";
 import SideBar from "./SideBar";
 import { Toaster } from "sonner";
-import Header from "./Header";
+import Header from "../components/ui/Header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

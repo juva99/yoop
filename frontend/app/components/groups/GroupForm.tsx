@@ -15,9 +15,9 @@ import {
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { FriendsCombobox } from "./FriendsCombobox";
+import { FriendsCombobox } from "../friends/FriendsCombobox";
 import { GameType } from "@/app/enums/game-type.enum";
-import GameTypeOption from "@/components/game-type-option";
+import GameTypeOption from "@/components/games/game-type-option";
 import { formSchema, FormSchema } from "@/lib/schemas/new-group.schema";
 import { authFetch } from "@/lib/authFetch";
 import { toast } from "sonner";
