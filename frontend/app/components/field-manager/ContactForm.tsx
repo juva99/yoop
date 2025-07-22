@@ -19,7 +19,7 @@ import React from "react";
 import { formSchema } from "@/lib/schemas/manager_signup_schema";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import AuthWrapper from "@/app/auth/authWrapper";
+import AuthWrapper from "@/components/auth/authWrapper";
 import Link from "next/link";
 
 type Props = {};

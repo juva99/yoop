@@ -5,7 +5,7 @@ import { getMyFriends } from "@/lib/actions";
 import { redirect } from "next/navigation";
 import { Group } from "@/app/types/Group";
 import { User } from "@/app/types/User";
-import GroupForm from "../../new/GroupForm";
+import GroupForm from "../../../../components/groups/GroupForm";
 
 interface Props {
   params: Promise<{ group_id: string }>;

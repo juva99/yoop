@@ -1,5 +1,5 @@
 import { Field } from "@/app/types/Field";
-import Fields from "@/components/fieldManager/Fields";
+import Fields from "@/components/field-manager/Fields";
 import { authFetch } from "@/lib/authFetch";
 import { getSession } from "@/lib/session";
 

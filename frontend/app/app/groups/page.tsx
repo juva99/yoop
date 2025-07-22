@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import React from "react";
-import NewGroupBtn from "./NewGroupBtn";
-import Groups from "./Groups";
+import NewGroupBtn from "../../components/groups/NewGroupBtn";
+import Groups from "../../components/groups/Groups";
 
 const page: React.FC = () => {
   return (

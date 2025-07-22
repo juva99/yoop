@@ -1,7 +1,7 @@
 import React from "react";
 import { PiBasketball, PiSoccerBall } from "react-icons/pi";
 import { Game } from "@/app/types/Game";
-import AvatarGroup from "./AvatarGroup";
+import AvatarGroup from "../friends/AvatarGroup";
 import { ParticipationStatus } from "@/app/enums/participation-status.enum";
 import { GameType } from "@/app/enums/game-type.enum";
 import { GameStatus } from "@/app/enums/game-status.enum";

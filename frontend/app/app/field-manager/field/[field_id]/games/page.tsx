@@ -1,6 +1,6 @@
 import { authFetch } from "@/lib/authFetch";
 import { Field } from "@/app/types/Field";
-import FieldGameList from "@/components/gameManager/futureGames/FieldGameList";
+import FieldGameList from "@/components/field-manager/future-games/FieldGameList";
 import { Game } from "@/app/types/Game";
 
 type Props = {

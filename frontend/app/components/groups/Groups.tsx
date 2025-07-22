@@ -1,6 +1,6 @@
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Group } from "../types/Group";
+import { Group } from "../../app/types/Group";
 import GroupItem from "./GroupItem";
 import { authFetch } from "@/lib/authFetch";
 import { getSession } from "@/lib/session";

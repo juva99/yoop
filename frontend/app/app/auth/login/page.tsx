@@ -1,7 +1,7 @@
 import React from "react";
-import LoginForm from "./loginForm";
+import LoginForm from "../../../components/auth/loginForm";
 import Link from "next/link";
-import AuthWrapper from "../authWrapper";
+import AuthWrapper from "../../../components/auth/authWrapper";
 
 const Login = () => {
   return (

@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { BACKEND_URL } from "./constants";
 import { createSession, updateTokens, updateSessionUser } from "./session";
-import { SignupFormValues } from "@/app/auth/signup/signupForm";
+import { SignupFormValues } from "@/components/auth/signupForm";
 import { ProfileUpdateFormValues } from "./schemas/profile_update_schema";
 import { authFetch } from "./authFetch";
 

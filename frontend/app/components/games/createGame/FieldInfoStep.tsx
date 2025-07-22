@@ -3,8 +3,8 @@
 import { UseFormReturn } from "react-hook-form";
 import { City } from "@/app/enums/city.enum";
 import { useEffect, useState } from "react";
-import { Spinner } from "../ui/spinner";
-import { Combobox } from "../ui/combobox";
+import { Spinner } from "../../ui/spinner";
+import { Combobox } from "../../ui/combobox";
 import { authFetch } from "@/lib/authFetch";
 import {
   FormControl,

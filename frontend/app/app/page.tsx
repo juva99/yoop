@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import FutureGames from "@/components/FutureGames";
+import FutureGames from "@/components/games/FutureGames";
 import Search from "@/components/searchComponents/search-games";
 import { getMyGames } from "@/lib/actions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

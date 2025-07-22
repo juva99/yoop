@@ -2,21 +2,21 @@ import { PiBasketball, PiSoccerBall, PiCalendarDots } from "react-icons/pi";
 import { TiWeatherPartlySunny } from "react-icons/ti";
 import { IoMdPin } from "react-icons/io";
 import { Game } from "@/app/types/Game";
-import PlayersList from "@/components/PlayersList";
-import MapView from "@/components/MapView";
+import PlayersList from "@/components/friends/PlayersList";
+import MapView from "@/components/games/MapView";
 import { notFound } from "next/navigation";
 import { GameType } from "@/app/enums/game-type.enum";
 import { getSession } from "@/lib/session";
-import JoinGameButton from "@/components/JoinGameButton";
 import { ParticipationStatus } from "@/app/enums/participation-status.enum";
-import LeaveGameButton from "@/components/LeaveGameButton";
+import LeaveGameButton from "@/components/games/LeaveGameButton";
 import { authFetch } from "@/lib/authFetch";
 import CalendarLink from "@/components/ui/calendar-link";
 import Share from "@/components/ui/share";
 import { getMyFriends, getMyGroups } from "@/lib/actions";
-import InviteDialog from "@/components/InviteDialog";
+import InviteDialog from "@/components/friends/InviteDialog";
 import { GameStatus } from "@/app/enums/game-status.enum";
 import RegStatus from "@/components/games/RegStatus";
+import JoinGameButton from "@/components/games/JoinGameButton";
 
 enum Status {
   PENDING = "PENDING",

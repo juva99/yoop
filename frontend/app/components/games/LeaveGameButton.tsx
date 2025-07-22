@@ -2,7 +2,7 @@
 
 import { leaveGame } from "@/lib/actions";
 import { redirect, useRouter } from "next/navigation";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { toast } from "sonner";
 
 interface Props {

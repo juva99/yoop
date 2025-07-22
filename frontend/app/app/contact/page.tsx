@@ -1,5 +1,5 @@
 import React from "react";
-import ContactForm from "./ContactForm";
+import ContactForm from "../../components/field-manager/ContactForm";
 
 const Page: React.FC = () => {
   return (

@@ -1,4 +1,4 @@
-import CreateGameForm from "@/components/createGameComponents/create-game";
+import CreateGameForm from "@/components/games/createGame/create-game";
 
 const createGamePage = () => {
   return (

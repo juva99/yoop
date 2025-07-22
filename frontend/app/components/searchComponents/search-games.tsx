@@ -28,7 +28,7 @@ import {
   formSchema,
 } from "@/lib/schemas/searchForm";
 import FilteredGames from "./filtered-games";
-import MapView from "../MapView";
+import MapView from "../games/MapView";
 import { Game } from "@/app/types/Game";
 import { authFetch } from "@/lib/authFetch";
 import { GameStatus } from "@/app/enums/game-status.enum";

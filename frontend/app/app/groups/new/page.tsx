@@ -1,5 +1,5 @@
 import React from "react";
-import NewGroupPage from "./NewGroupPage";
+import NewGroupPage from "../../../components/groups/NewGroupPage";
 
 const page: React.FC = () => {
   return <NewGroupPage />;

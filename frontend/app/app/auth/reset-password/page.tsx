@@ -1,6 +1,6 @@
-import ResetPasswordForm from "@/app/auth/reset-password/reset-password-form";
+import ResetPasswordForm from "@/components/auth/reset-password-form";
 import Link from "next/link";
-import AuthWrapper from "../authWrapper";
+import AuthWrapper from "../../../components/auth/authWrapper";
 
 const ResetPassword = () => {
   return (
