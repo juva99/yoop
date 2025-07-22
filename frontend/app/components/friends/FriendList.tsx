@@ -4,12 +4,8 @@ import { User } from "@/app/types/User";
 import React, { useState } from "react";
 import Friend from "./Friend";
 import { authFetch } from "@/lib/authFetch";
-
-type FriendRelation = {
-  id: string;
-  user1: User;
-  user2: User;
-};
+import { FriendRelation } from "@/app/types/friend-relation";
+import { toast } from "sonner";
 
 type Props = {
   currentUserUid: string;
@@ -17,17 +13,14 @@ type Props = {
 };
 
 const FriendList: React.FC<Props> = ({ currentUserUid, relations }) => {
-  // state עם כל הקשרים
   const [friendRelations, setFriendRelations] =
     useState<FriendRelation[]>(relations);
-
-  // נבנה את הרשימה רק מה-state
+  //filter the relevant user from each relation
   const friendsWithRelation = friendRelations.map((rel) => ({
     friend: rel.user1.uid === currentUserUid ? rel.user2 : rel.user1,
     relationId: rel.id,
   }));
 
-  // פעולת מחיקה גם מהשרת וגם מה-state
   const removeFriend = async (relationId: string) => {
     try {
       const response = await authFetch(
@@ -42,10 +35,10 @@ const FriendList: React.FC<Props> = ({ currentUserUid, relations }) => {
       );
 
       if (!response.ok) {
+        toast.error("שגיאה בביטול החברות");
         throw new Error("Failed to remove friend");
       }
-
-      // הסרה מה-state לאחר הצלחה
+      toast.success("ביטלת את החברות בהצלחה");
       setFriendRelations((prev) => prev.filter((rel) => rel.id !== relationId));
     } catch (error) {
       console.error("Error removing friend request:", error);
@@ -60,9 +53,10 @@ const FriendList: React.FC<Props> = ({ currentUserUid, relations }) => {
       ) : (
         <ul className="text-sm text-gray-700">
           {friendsWithRelation.map(({ friend, relationId }, index) => (
-            <React.Fragment key={friend.uid}>
+            <React.Fragment key={relationId}>
               <li className="flex items-center justify-between">
                 <Friend
+                  userId={currentUserUid}
                   action="remove"
                   friend={friend}
                   relationId={relationId}

@@ -89,20 +89,19 @@ export class GamesController {
     );
   }
 
-  @Post('/:gameId/invite/:userId')
-  async inviteFriendToGame(
+  @Post('/:gameId/invite')
+  async inviteFriendsToGame(
     @Param('gameId') gameId: string,
-    @Body('invited') invited: User,
+    @Body('inviteds') inviteds: User[],
     @GetUser() inviter: User,
-  ): Promise<GameParticipant> {
-    return await this.gameParticipantService.inviteFriendToGame(
+  ): Promise<void> {
+    return await this.gameParticipantService.inviteFriendsToGame(
       gameId,
       inviter,
-      invited,
+      inviteds,
     );
   }
 
-  //join game by id and add user to pending list
   @Delete('/:gameId/leave')
   async leaveGame(
     @Param('gameId') gameId: string,
@@ -149,5 +148,18 @@ export class GamesController {
   @Delete('/:gameId/delete')
   async deleteGame(@Param('gameId') gameId: string): Promise<void> {
     await this.gameService.deleteOne(gameId);
+  }
+
+  @Patch('/:gameId/setGameCreator/:userId')
+  async setGameCreator(
+    @Param('gameId') gameId: string,
+    @Param('userId') userId: string,
+    @GetUser() requestingUser: User,
+  ): Promise<Game> {
+    return await this.gameService.setGameCreator(
+      gameId,
+      userId,
+      requestingUser,
+    );
   }
 }

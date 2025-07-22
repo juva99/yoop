@@ -57,8 +57,6 @@ export const SignupFormSchema = z
       .refine((val) => !isNaN(Date.parse(val)), {
         message: "בבקשה הכנס תאריך תקין",
       }),
-
-    role: z.literal(Role.USER),
   })
   .refine((data) => data.pass === data.passConfirm, {
     message: "הסיסמאות אינן מתאימות",

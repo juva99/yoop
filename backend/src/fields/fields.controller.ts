@@ -13,6 +13,8 @@ import { Field } from './fields.entity';
 import { CreateFieldDto } from './dto/create-field.dto';
 import { Role } from 'src/enums/role.enum';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { GetUser } from 'src/auth/decorators/get-user.decorator';
+import { User } from 'src/users/users.entity';
 
 @Controller('fields')
 export class FieldsController {
@@ -35,8 +37,11 @@ export class FieldsController {
 
   @Roles(Role.ADMIN, Role.FIELD_MANAGER)
   @Post()
-  async create(@Body() createFieldDto: CreateFieldDto): Promise<Field> {
-    return await this.fieldService.create(createFieldDto);
+  async create(
+    @Body() createFieldDto: CreateFieldDto,
+    @GetUser() fieldManager: User,
+  ): Promise<Field> {
+    return await this.fieldService.create(createFieldDto, fieldManager);
   }
 
   @Roles(Role.ADMIN, Role.FIELD_MANAGER)

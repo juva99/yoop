@@ -77,7 +77,7 @@ const NotificationsButton: React.FC<Props> = () => {
     <div className="relative" ref={buttonRef}>
       <div
         onClick={() => setIsOpen(!isOpen)}
-        className="bg-title relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-full"
+        className="bg-title relative flex h-9 w-9 cursor-pointer items-center justify-center rounded-full"
       >
         <IoIosNotifications color="white" size={24} />
 

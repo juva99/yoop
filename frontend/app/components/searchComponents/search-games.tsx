@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Combobox } from "../ui/combobox";
 import { Button } from "@/components/ui/button";
 import { City, cityCoordinates } from "@/app/enums/city.enum";
@@ -31,7 +31,7 @@ import FilteredGames from "./filtered-games";
 import MapView from "../MapView";
 import { Game } from "@/app/types/Game";
 import { authFetch } from "@/lib/authFetch";
-import { Card } from "../ui/card";
+import { GameStatus } from "@/app/enums/game-status.enum";
 
 const cityOptions = Object.values(City).map((city) => ({
   label: city,
@@ -53,6 +53,8 @@ const getDateWithTime = (baseDate: Date, hourDecimal: number): Date => {
 
 const SearchGames = () => {
   const [filteredGames, setFilteredGames] = useState<Game[]>([]);
+  const [searchClicked, setSearchClicked] = useState<boolean>(false);
+  const [availablesCount, setAvailablesCount] = useState<number>(0);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -80,7 +82,6 @@ const SearchGames = () => {
         params.set("startDate", startDate.toISOString());
         params.set("endDate", endDate.toISOString());
       }
-
       const response = await authFetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/query?${params.toString()}`,
         {
@@ -89,7 +90,16 @@ const SearchGames = () => {
       );
 
       if (response.ok) {
+        setSearchClicked(true);
         const data = await response.json();
+        data.forEach((game: Game) => {
+          let availables = 0;
+          if (game.maxParticipants > game.gameParticipants.length) {
+            console.log("test");
+            availables++;
+          }
+          setAvailablesCount(availables);
+        });
         setFilteredGames(data);
       }
     } catch (error) {
@@ -110,151 +120,152 @@ const SearchGames = () => {
       : [31.78, 35.21]; // Default to center of Israel
 
   return (
-    <Card>
-      <div className="p-5">
-        <div className="search-game">
-          <h2>חיפוש משחק</h2>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="city"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>עיר</FormLabel>
-                      <FormControl>
-                        <Combobox
-                          options={cityOptions}
-                          value={field.value}
-                          onSelect={field.onChange}
-                          placeholder="בחר עיר..."
-                          searchPlaceholder="חפש עיר..."
-                          notFoundText="לא נמצאה עיר."
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="gameType"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>סוג משחק</FormLabel>
-                      <FormControl>
-                        <Combobox
-                          options={gameTypeOptions}
-                          value={field.value}
-                          onSelect={field.onChange}
-                          placeholder="בחר סוג משחק..."
-                          searchPlaceholder="חפש סוג משחק..."
-                          notFoundText="לא נמצא סוג משחק."
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <FormField
-                control={form.control}
-                name="date"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>תאריך</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "flex w-full justify-start pl-3 font-normal",
-                              !field.value && "text-muted-foreground",
-                            )}
-                          >
-                            <CalendarIcon className="h-4 w-4 opacity-50" />
-                            {field.value ? (
-                              format(field.value, "dd/MM/yyyy")
-                            ) : (
-                              <span>בחר תאריך</span>
-                            )}
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          locale={he}
-                          disabled={(date) =>
-                            date < new Date(new Date().toDateString()) ||
-                            date < new Date("1900-01-01")
-                          }
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="timeRange"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      טווח שעות:{" "}
-                      {field.value ? formatTime(field.value[0]) : "00:00"} -{" "}
-                      {field.value ? formatTime(field.value[1]) : "00:00"}
-                    </FormLabel>
-                    <FormControl>
-                      <div className="px-3">
-                        <Slider
-                          min={0}
-                          max={24}
-                          step={0.5}
-                          value={field.value}
-                          onValueChange={field.onChange}
-                          className="w-full"
-                        />
-                        <div className="mt-1 flex justify-between text-sm text-gray-500">
-                          <span>00:00</span>
-                          <span>24:00</span>
-                        </div>
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <Button type="submit" className="bg-title my-5 w-[100%]">
-                חפש
-              </Button>
-            </form>
-          </Form>
-
-          {filteredGames.length ? (
-            <MapView
-              defaultLocation={{
-                lat: coords[0],
-                lng: coords[1],
-              }}
-              games={filteredGames}
+    <div className="search-game">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+          <div className="grid grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="city"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>עיר</FormLabel>
+                  <FormControl>
+                    <Combobox
+                      options={cityOptions}
+                      value={field.value}
+                      onSelect={field.onChange}
+                      placeholder="בחר עיר..."
+                      searchPlaceholder="חפש עיר..."
+                      notFoundText="לא נמצאה עיר."
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          ) : (
-            ""
-          )}
-          <FilteredGames games={filteredGames} />
-        </div>
-      </div>
-    </Card>
+
+            <FormField
+              control={form.control}
+              name="gameType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>סוג משחק</FormLabel>
+                  <FormControl>
+                    <Combobox
+                      options={gameTypeOptions}
+                      value={field.value}
+                      onSelect={field.onChange}
+                      placeholder="בחר סוג משחק..."
+                      searchPlaceholder="חפש סוג משחק..."
+                      notFoundText="לא נמצא סוג משחק."
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <FormField
+            control={form.control}
+            name="date"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>תאריך</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "flex w-full justify-start pl-3 font-normal",
+                          !field.value && "text-muted-foreground",
+                        )}
+                      >
+                        <CalendarIcon className="h-4 w-4 opacity-50" />
+                        {field.value ? (
+                          format(field.value, "dd/MM/yyyy")
+                        ) : (
+                          <span>בחר תאריך</span>
+                        )}
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      locale={he}
+                      disabled={(date) =>
+                        date < new Date(new Date().toDateString()) ||
+                        date < new Date("1900-01-01")
+                      }
+                    />
+                  </PopoverContent>
+                </Popover>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="timeRange"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  טווח שעות:{" "}
+                  {field.value ? formatTime(field.value[1]) : "00:00"} -{" "}
+                  {field.value ? formatTime(field.value[0]) : "00:00"}
+                </FormLabel>
+                <FormControl>
+                  <div className="px-3">
+                    <Slider
+                      min={0}
+                      max={24}
+                      step={0.5}
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      className="w-full"
+                    />
+                    <div className="mt-1 flex justify-between text-sm text-gray-500">
+                      <span>24:00</span>
+                      <span>00:00</span>
+                    </div>
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <Button type="submit" variant={"submit"}>
+            חפש
+          </Button>
+        </form>
+      </Form>
+
+      {filteredGames.length ? (
+        <MapView
+          defaultLocation={{
+            lat: coords[0],
+            lng: coords[1],
+          }}
+          games={filteredGames}
+        />
+      ) : (
+        ""
+      )}
+      {searchClicked && (
+        <p className="text-sm font-semibold">
+          <span className="text-title">{filteredGames.length} נמצאו</span>{" "}
+          <span className="text-subtitle">{availablesCount} פנוים להרשמה</span>
+        </p>
+      )}
+      <FilteredGames games={filteredGames} />
+    </div>
   );
 };
 

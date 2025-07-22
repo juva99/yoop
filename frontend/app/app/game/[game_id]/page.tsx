@@ -5,6 +5,7 @@ import {
   PiCalendarDots,
   PiClock,
 } from "react-icons/pi";
+import { TiWeatherPartlySunny } from "react-icons/ti";
 import { IoMdPin } from "react-icons/io";
 import { Game } from "@/app/types/Game";
 import PlayersList from "@/components/PlayersList";
@@ -12,17 +13,28 @@ import MapView from "@/components/MapView";
 import { notFound } from "next/navigation"; // Import notFound
 import { GameType } from "@/app/enums/game-type.enum";
 import { getSession } from "@/lib/session";
-import { redirect } from "next/navigation";
-import { joinGame } from "@/lib/actions";
 import JoinGameButton from "@/components/JoinGameButton";
 import { ParticipationStatus } from "@/app/enums/participation-status.enum";
 import LeaveGameButton from "@/components/LeaveGameButton";
 import { authFetch } from "@/lib/authFetch";
+import CalendarLink from "@/components/ui/calendar-link";
+import Share from "@/components/ui/share";
+import { getMyFriends, getMyGroups } from "@/lib/actions";
+import InviteDialog from "@/components/InviteDialog";
+import { GameStatus } from "@/app/enums/game-status.enum";
+import RegStatus from "@/components/games/RegStatus";
+
+enum Status {
+  PENDING = "PENDING",
+  APPROVED = "APPROVED",
+  FINISHED = "FINISHED",
+  STARTED = "STARTED",
+}
 
 async function getGame(gameId: string): Promise<Game | null> {
   try {
     const res = await authFetch(
-      `${process.env.BACKEND_URL}/games/byid/${gameId}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/games/byid/${gameId}`,
       {},
     );
     if (!res.ok) {
@@ -42,6 +54,18 @@ async function getGame(gameId: string): Promise<Game | null> {
     return null;
   }
 }
+
+const isFinished = (game: Game): boolean => {
+  const now = new Date();
+  const endDate = new Date(game.endDate);
+  return endDate < now;
+};
+
+const isStarted = (game: Game): boolean => {
+  const now = new Date();
+  const startDate = new Date(game.startDate);
+  return startDate <= now && !isFinished(game);
+};
 
 export default async function Page({
   params,
@@ -65,9 +89,12 @@ export default async function Page({
     gameParticipants,
     creator,
     field,
-    price, // Use optional price from fetched data
+    price,
+    weatherTemp,
+    weatherIcon,
   } = game;
-
+  const friends = await getMyFriends();
+  const groups = await getMyGroups();
   // Ensure dates are Date objects if they aren't already (TypeORM might return strings)
   const start = new Date(startDate);
   const end = new Date(endDate);
@@ -90,100 +117,190 @@ export default async function Page({
   });
 
   const session = await getSession();
-  if (!session?.user?.uid) {
-    console.error("Invalid session or user credentials");
-    redirect("/auth/login");
-  }
-
-  const currUserUID = session.user.uid;
-
+  const currUserUID = session!.user.uid;
+  const isCreator = currUserUID === game.creator.uid;
   const approvedCount = gameParticipants.filter(
     (gp) => gp.status === ParticipationStatus.APPROVED,
   ).length;
 
-  const isJoined = gameParticipants.some(
-    (gp) =>
-      gp.user.uid === currUserUID && gp.status !== ParticipationStatus.REJECTED,
-  );
+  let isJoined = false;
+  let isApproved = false;
+
+  for (const gp of gameParticipants) {
+    if (gp.user.uid === currUserUID) {
+      if (gp.status !== ParticipationStatus.REJECTED) isJoined = true;
+      if (gp.status === ParticipationStatus.APPROVED) isApproved = true;
+      break; // No need to check further
+    }
+  }
+
+  const playersInGame = gameParticipants
+    .filter((gp) => gp.status === ParticipationStatus.APPROVED)
+    .map((gp) => gp.user.uid);
+
+  const regStatus: Status = isStarted(game)
+    ? Status.STARTED
+    : isFinished(game)
+      ? Status.FINISHED
+      : status === GameStatus.APPROVED
+        ? Status.APPROVED
+        : Status.PENDING;
+
+  const showActions =
+    regStatus === Status.APPROVED || regStatus === Status.PENDING;
   return (
-    <div className="container mx-auto flex flex-col gap-6 p-8">
-      {" "}
-      <div className="text-title flex items-center gap-3 text-2xl font-bold">
-        <span>
-          {" "}
-          {gameType === GameType.BasketBall ? (
-            <PiBasketball />
-          ) : gameType === GameType.FootBall ? (
-            <PiSoccerBall />
-          ) : null}
-        </span>
-        <span>{`משחק ${gameType === GameType.BasketBall ? "כדורסל" : "כדורגל"} `}</span>{" "}
-      </div>
-      <div className="flex flex-col gap-2">
-        {" "}
-        <div className="flex items-center gap-2">
-          <IoMdPin className="text-gray-600" />
-          <p>
-            {field.fieldName}, {field.fieldAddress ?? "כתובת לא זמינה"}
-          </p>
+    <div className="min-h-screen justify-center bg-gray-50 pb-8">
+      <div className="mx-auto max-w-4xl px-4 py-6">
+        {/* Header Card */}
+        <div className="mb-6 rounded-lg bg-white p-6 shadow-sm">
+          <div className="mb-4 flex items-center gap-3">
+            <div className="rounded-ful flex h-12 w-12 items-center justify-center">
+              {gameType === GameType.BasketBall ? (
+                <PiBasketball className="h-10 w-10" />
+              ) : gameType === GameType.FootBall ? (
+                <PiSoccerBall className="h-10 w-10" />
+              ) : null}
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">
+                משחק {gameType === GameType.BasketBall ? "כדורסל" : "כדורגל"}
+              </h1>
+              <p className="text-sm text-gray-600">
+                נוצר על ידי {creator.firstName} {creator.lastName}
+              </p>
+            </div>
+          </div>
+
+          {/* Status Badge */}
+          <div className="mb-4">
+            {regStatus === Status.PENDING && (
+              <RegStatus text="הרשמה עדיין לא נפתחה" icon={<span>🟠</span>} />
+            )}
+            {regStatus === Status.APPROVED && (
+              <RegStatus text="פתוח להרשמה" icon={<span>🟢</span>} />
+            )}
+            {regStatus === Status.STARTED && (
+              <RegStatus text="ההרשמה סגורה" icon={<span>🔴</span>} />
+            )}
+            {regStatus === Status.FINISHED && (
+              <RegStatus text="המשחק הסתיים" icon={<span>🔴</span>} />
+            )}
+          </div>
+
+          {/* Game Details Grid */}
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="flex items-center gap-3 rounded-lg bg-gray-50 p-3">
+              <IoMdPin className="h-5 w-5 text-gray-600" />
+              <div>
+                <p className="font-medium text-gray-900">{field.fieldName}</p>
+                <p className="text-sm text-gray-600">{field.city}</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 rounded-lg bg-gray-50 p-3">
+              <PiCalendarDots className="h-5 w-5 text-gray-600" />
+              <div>
+                <p className="font-medium text-gray-900">{formattedDate}</p>
+                <p className="text-sm text-gray-600">
+                  {formattedTime} - {formattedEndTime}
+                </p>
+              </div>
+            </div>
+
+            {weatherTemp && (
+              <div className="flex items-center gap-3 rounded-lg bg-gray-50 p-3">
+                <TiWeatherPartlySunny className="h-5 w-5 text-gray-600" />
+                <div className="flex items-center gap-2">
+                  <p className="font-medium text-gray-900">{weatherTemp}°</p>
+                  <img
+                    src={weatherIcon}
+                    alt="Weather Icon"
+                    className="h-6 w-6"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Action Buttons */}
+          {showActions && (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {isApproved && <CalendarLink game={game} />}
+              {regStatus === Status.APPROVED && <Share />}
+            </div>
+          )}
         </div>
-        <div className="flex items-center gap-2">
-          <PiCalendarDots className="text-gray-600" />
-          <p>{formattedDate}</p>
+
+        {/* Participants Section */}
+        <div className="mb-6 rounded-lg bg-white p-6 shadow-sm">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-gray-900">
+              משתתפים ({approvedCount}/{maxParticipants})
+            </h2>
+            {regStatus === Status.APPROVED && isCreator && (
+              <InviteDialog
+                gameId={gameId}
+                friends={friends}
+                groups={groups}
+                playersInGame={playersInGame}
+              />
+            )}
+          </div>
+          <PlayersList
+            gameId={gameId}
+            creatorUID={creator.uid}
+            currUserUID={currUserUID}
+            gameParticipants={gameParticipants}
+            status={ParticipationStatus.APPROVED}
+            deleteEnable={true}
+          />
         </div>
-        <div className="flex items-center gap-2">
-          <PiClock className="text-gray-600" />
-          <p>
-            {formattedTime}-{formattedEndTime}
-          </p>
+
+        {/* Waiting List Section */}
+        <div className="mb-6 rounded-lg bg-white p-6 shadow-sm">
+          <h2 className="mb-4 text-lg font-semibold text-gray-900">
+            רשימת המתנה
+          </h2>
+          <PlayersList
+            gameId={gameId}
+            creatorUID={creator.uid}
+            currUserUID={currUserUID}
+            gameParticipants={gameParticipants}
+            status={ParticipationStatus.PENDING}
+            deleteEnable={true}
+          />
         </div>
-        {price !== undefined && (
-          <div className="flex items-center gap-2">
-            <PiCoins className="text-gray-600" />
-            <p>{price === null ? "חינם" : `${price} ₪`}</p>{" "}
+
+        {/* Map Section */}
+        <div className="mb-6 rounded-lg bg-white p-6 shadow-sm">
+          <h2 className="mb-4 text-lg font-semibold text-gray-900">מיקום</h2>
+          <div className="overflow-hidden rounded-lg">
+            <MapView
+              defaultLocation={{ lng: field.fieldLng, lat: field.fieldLat }}
+              games={[game]}
+            />
+          </div>
+        </div>
+
+        {/* Join/Leave Game Actions */}
+        {showActions && (
+          <div className="sticky bottom-4 mx-auto flex w-50 rounded-lg">
+            {!isJoined ? (
+              <JoinGameButton gameId={gameId} />
+            ) : (
+              <LeaveGameButton
+                gameId={gameId}
+                text={
+                  isCreator && game.gameParticipants.length === 1
+                    ? "מחק משחק"
+                    : "עזוב משחק"
+                }
+                isCreator={isCreator}
+              />
+            )}
           </div>
         )}
       </div>
-      <div>
-        <h2>
-          משתתפים ({approvedCount}/{maxParticipants})
-        </h2>
-        <PlayersList
-          gameId={gameId}
-          creatorUID={creator.uid}
-          currUserUID={currUserUID}
-          gameParticipants={gameParticipants}
-          status={ParticipationStatus.APPROVED}
-          deleteEnable={true}
-        />
-      </div>
-      <div>
-        <h2>רשימת המתנה</h2>
-        <PlayersList
-          gameId={gameId}
-          creatorUID={creator.uid}
-          currUserUID={currUserUID}
-          gameParticipants={gameParticipants}
-          status={ParticipationStatus.PENDING}
-          deleteEnable={true}
-        />
-      </div>
-      <div>
-        <h2>מיקום</h2>
-        <MapView
-          defaultLocation={{ lng: field.fieldLng, lat: field.fieldLat }}
-          games={[game]}
-        />
-      </div>
-      {!isJoined ? (
-        <div className="mt-4 flex justify-center gap-4">
-          <JoinGameButton gameId={gameId} />
-        </div>
-      ) : (
-        <div className="mt-4 flex justify-center gap-4">
-          <LeaveGameButton gameId={gameId} />
-        </div>
-      )}
     </div>
   );
 }

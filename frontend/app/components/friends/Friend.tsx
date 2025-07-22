@@ -1,7 +1,7 @@
 "use client";
 
 import { User } from "@/app/types/User";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { IoPersonAddOutline } from "react-icons/io5";
 import { BsSendCheckFill } from "react-icons/bs";
 import { FaUserXmark } from "react-icons/fa6";
@@ -9,15 +9,15 @@ import React, { useState } from "react";
 import { authFetch } from "@/lib/authFetch";
 
 type Props = {
+  userId: string;
   friend: User;
   relationId?: string;
-  action: "remove" | "add";
+  action?: "remove" | "add";
   onClick?: () => void;
 };
 
-const Friend: React.FC<Props> = ({ friend, action, onClick }) => {
+const Friend: React.FC<Props> = ({ userId, friend, action, onClick }) => {
   const [sentRequest, setSentRequest] = useState<boolean>(false);
-
   const sendFriendRequest = async (friendId: string) => {
     try {
       const response = await authFetch(
@@ -39,15 +39,16 @@ const Friend: React.FC<Props> = ({ friend, action, onClick }) => {
   };
 
   return (
-    <div className="flex w-full items-center justify-between py-2 hover:bg-gray-100">
+    <div className="flex w-full items-center justify-between py-2">
       <div className="flex items-center gap-2">
-        <Avatar className="border-gray h-8 w-8 rounded-full border-2 text-center">
-          <AvatarImage src={friend.profilePic} alt={friend.firstName} />
-          <AvatarFallback className="flex items-center justify-center text-sm font-medium">
-            <span>
-              {friend.firstName.charAt(0)}
-              {friend.lastName.charAt(0)}
-            </span>
+        <Avatar className="flex h-7 w-7 rounded-full text-center font-bold text-white">
+          <AvatarImage
+            src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/profile-picture/download/${friend.uid}`}
+            alt={friend.firstName}
+          />
+          <AvatarFallback>
+            {friend.firstName.charAt(0)}
+            {friend.lastName.charAt(0)}
           </AvatarFallback>
         </Avatar>
         <span>
@@ -63,9 +64,9 @@ const Friend: React.FC<Props> = ({ friend, action, onClick }) => {
             <IoPersonAddOutline size="17px" />
           ))}
       </div>
-      {action === "remove" && (
-        <div>
-          <FaUserXmark size="20px" />
+      {userId !== friend.uid && action === "remove" && (
+        <div onClick={onClick}>
+          <FaUserXmark color="gray" size="17px" />
         </div>
       )}
     </div>

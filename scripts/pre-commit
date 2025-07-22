@@ -1,0 +1,21 @@
+#!/bin/sh
+
+echo "Running pre-commit checks..."
+
+# Format frontend and backend code with Prettier
+echo "Formatting frontend code..."
+cd frontend
+cd app
+npm run format:fix
+
+cd ../..
+cd backend
+echo "$PWD"
+echo "Formatting backend code..."
+npm run format
+
+# Add formatted files back to staging
+git add .
+
+echo "Pre-commit checks passed!"
+exit 0

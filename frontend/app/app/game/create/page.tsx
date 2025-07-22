@@ -2,7 +2,7 @@ import CreateGameForm from "@/components/createGameComponents/create-game";
 
 const createGamePage = () => {
   return (
-    <div className="h-[calc(100vh-60px)] p-10">
+    <div className="px-5">
       <CreateGameForm />
     </div>
   );

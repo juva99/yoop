@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { GameStatus } from "@/app/enums/game-status.enum";
 type Props = {
   onFilterChange: (
     available: boolean,

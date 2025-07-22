@@ -13,7 +13,10 @@ export class GameParticipant {
   })
   game: Game;
 
-  @ManyToOne(() => User, (user) => user.gameParticipations, { eager: true })
+  @ManyToOne(() => User, (user) => user.gameParticipations, {
+    onDelete: 'CASCADE',
+    eager: true,
+  })
   user: User;
 
   @Column('enum', {

@@ -30,8 +30,16 @@ jobs:
 
       - name: Run prettier for backend
         working-directory: backend
-        run: npx run format-check
+        run: npm run format:check
 
       - name: Run prettier for frontend
         working-directory: frontend/app
-        run: npx prettier --check "**/*.tsx"
+        run: npm run format:check
+
+      - name: Run type check for frontend
+        working-directory: frontend/app
+        run: npm run type-check
+
+      - name: Build frontend
+        working-directory: frontend/app
+        run: npm run build

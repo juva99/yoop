@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import ExpandableGameCard from "@/components/ExpandableGameCard";
 import { getMyGames } from "@/lib/actions";
 import { getSession } from "@/lib/session";
 import { redirect } from "next/navigation";
@@ -52,7 +51,7 @@ export default function MyGames() {
   }, []);
 
   return (
-    <div className="mx-auto max-w-3xl px-4 pt-6">
+    <div className="mx-auto max-w-3xl px-4">
       <Tabs defaultValue="approved" className="w-full" dir="rtl">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="approved">המשחקים שלי</TabsTrigger>

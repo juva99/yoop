@@ -8,12 +8,13 @@ import { MdAssignmentAdd } from "react-icons/md";
 import { usePathname } from "next/navigation";
 import { TbLayoutGridAdd } from "react-icons/tb";
 import { Role } from "@/app/enums/role.enum";
-import { GiSoccerField } from "react-icons/gi";
-import { RiFunctionAddFill } from "react-icons/ri";
-import { VscSignOut } from "react-icons/vsc";
-import { CgProfile } from "react-icons/cg";
 
-const HIDDEN_PATHS = ["/auth/login", "/auth/signup", "/menu"];
+const HIDDEN_PATHS = [
+  "/auth/login",
+  "/auth/signup",
+  "/menu",
+  "/field-manager/contact",
+];
 
 type NavbarProps = {
   role: Role;
@@ -47,7 +48,7 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
           />
         </Link>
         <Link href={"/game/create"}>
-          <div className="-mt-10 flex size-[80px] items-center justify-center rounded-[25%] border-2 border-blue-500 bg-[radial-gradient(80.49%_80.3%_at_47.16%_59.68%,#0D2A84_0%,#116AAC_100%)] shadow-md ring-2 ring-blue-100 transition-all">
+          <div className="-mt-10 flex size-[70px] items-center justify-center rounded-[25%] border-2 border-blue-500 bg-[radial-gradient(80.49%_80.3%_at_47.16%_59.68%,#0D2A84_0%,#116AAC_100%)] shadow-md ring-2 ring-blue-100 transition-all">
             <MdAssignmentAdd className="size-[48px] text-white drop-shadow" />
           </div>
         </Link>
@@ -55,35 +56,6 @@ const Navbar: React.FC<NavbarProps> = ({ role }) => {
     );
   }
 
-  if (role === Role.FIELD_MANAGER || role === Role.ADMIN) {
-    return (
-      <nav className="fixed bottom-0 z-50 flex h-15 w-full items-center justify-around border-t-1 border-[#6b6b6b] bg-gray-100">
-        <Link href={"/profile"}>
-          <CgProfile
-            className={`size-[25px] ${pathname === "/profile" ? "text-neutral-900" : "text-elements"}`}
-          />
-        </Link>
-
-        <Link href={"/field-manager/fields"}>
-          <GiSoccerField
-            className={`size-[25px] ${pathname === "/field-manager/fields" ? "text-neutral-900" : "text-elements"}`}
-          />
-        </Link>
-
-        <Link href={"/field-manager/field/games"}>
-          <RiFunctionAddFill
-            className={`size-[25px] ${pathname === "/field-manager/field/games" ? "text-neutral-900" : "text-elements"}`}
-          />
-        </Link>
-
-        <a href={"/api/auth/signout"}>
-          <VscSignOut
-            className={`size-[25px] ${pathname === "/api/auth/signout" ? "text-neutral-900" : "text-elements"}`}
-          />
-        </a>
-      </nav>
-    );
-  }
   return null;
 };
 

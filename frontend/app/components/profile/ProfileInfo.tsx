@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { User } from "@/app/types/User";
-import { authFetch } from "@/lib/authFetch";
+import { updateProfile } from "@/lib/auth";
 
 import {
   ProfileUpdateSchema,
@@ -32,6 +32,7 @@ import { cn } from "@/lib/utils";
 import { he } from "date-fns/locale";
 import { Combobox } from "../ui/combobox";
 import { Role } from "@/app/enums/role.enum";
+import ProfileImg from "./ProfilePicture";
 
 const cityOptions = Object.entries(City).map(([label, value]) => ({
   label: value,
@@ -46,7 +47,6 @@ type Props = {
 const ProfileInfo: React.FC<Props> = ({ user, role }) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [citySuggestions, setCitySuggestions] = useState<string[]>([]);
   const [showForm, setShowForm] = useState(false);
 
   const isAdmin = role === Role.ADMIN || role === Role.FIELD_MANAGER;
@@ -68,27 +68,18 @@ const ProfileInfo: React.FC<Props> = ({ user, role }) => {
   });
   const onSubmit = async (values: ProfileUpdateFormValues) => {
     try {
-      const res = await authFetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/update/${user.uid}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(values),
-        },
-      );
+      const result = await updateProfile(user.uid, values);
 
-      if (!res.ok) throw new Error("Failed to update");
-
-      const dataFromServer = await res.json();
-
-      setSuccessMessage("הפרטים עודכנו בהצלחה");
-      setErrorMessage("");
-      // המתן רגע לפני רענון (כדי לראות את ההודעה לשבריר שנייה)
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
+      if (result?.error) {
+        setErrorMessage(result.message || "שגיאה בעדכון הפרטים");
+        setSuccessMessage("");
+      } else {
+        setSuccessMessage("הפרטים עודכנו בהצלחה");
+        setErrorMessage("");
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      }
     } catch (err) {
       setErrorMessage("שגיאה בעדכון הפרטים");
       setSuccessMessage("");
@@ -97,8 +88,17 @@ const ProfileInfo: React.FC<Props> = ({ user, role }) => {
 
   return (
     <>
+      <div className="mb-4 flex items-center justify-center">
+        <ProfileImg
+          userId={user.uid}
+          firstName={user.firstName}
+          lastName={user.lastName}
+        />
+      </div>
       <div className="mb-3 flex items-center">
-        <h2 className="text-lg font-semibold text-[#002366]">פרטים אישיים</h2>
+        <span className="text-lg font-semibold text-[#002366]">
+          פרטים אישיים
+        </span>
         <Button
           type="button"
           variant="ghost"
@@ -121,7 +121,7 @@ const ProfileInfo: React.FC<Props> = ({ user, role }) => {
         <p className="mb-2 font-semibold text-red-600">{errorMessage}</p>
       )}
       {!showForm && (
-        <div className="max-w-md space-y-4">
+        <div className="text-md max-w-md space-y-6">
           <p>
             <strong>שם פרטי:</strong> {user.firstName}
           </p>
@@ -287,7 +287,9 @@ const ProfileInfo: React.FC<Props> = ({ user, role }) => {
               </>
             )}
 
-            <Button type="submit">שמור שינויים</Button>
+            <Button type="submit" variant={"submit"}>
+              שמור שינויים
+            </Button>
           </form>
         </Form>
       )}

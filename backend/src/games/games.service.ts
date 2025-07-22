@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -71,35 +72,57 @@ export class GamesService {
       dt,
       hour,
     };
-    const weatherData = await this.weatherApiService.getWeather(getWeatherDto);
 
     const status: GameStatus = fieldd.isManaged
       ? GameStatus.PENDING
       : GameStatus.APPROVED;
+    try {
+      const weatherData =
+        await this.weatherApiService.getWeather(getWeatherDto);
 
-    const game = this.gameRepository.create({
-      gameType,
-      startDate,
-      endDate,
-      maxParticipants,
-      creator: user,
-      field: fieldd,
-      status: status,
-      gameParticipants: [],
-      weatherTemp: parseInt(weatherData.temp_c),
-      weatherCondition: weatherData.condition.text,
-      weatherIcon: weatherData.condition.icon,
-    });
+      const game = this.gameRepository.create({
+        gameType,
+        startDate,
+        endDate,
+        maxParticipants,
+        creator: user,
+        field: fieldd,
+        status: status,
+        gameParticipants: [],
+        weatherTemp: parseInt(weatherData.temp_c),
+        weatherCondition: weatherData.condition.text,
+        weatherIcon: weatherData.condition.icon,
+      });
+      const savedGame = await this.gameRepository.save(game);
+      //create game participant for the creator
+      await this.gameParticipantService.joinGame(
+        savedGame.gameId,
+        user,
+        ParticipationStatus.APPROVED,
+      );
 
-    const savedGame = await this.gameRepository.save(game);
-    //create game participant for the creator
-    await this.gameParticipantService.joinGame(
-      savedGame.gameId,
-      user,
-      ParticipationStatus.APPROVED,
-    );
+      return savedGame;
+    } catch {
+      const game = this.gameRepository.create({
+        gameType,
+        startDate,
+        endDate,
+        maxParticipants,
+        creator: user,
+        field: fieldd,
+        status: status,
+        gameParticipants: [],
+      });
+      const savedGame = await this.gameRepository.save(game);
+      //create game participant for the creator
+      await this.gameParticipantService.joinGame(
+        savedGame.gameId,
+        user,
+        ParticipationStatus.APPROVED,
+      );
 
-    return savedGame;
+      return savedGame;
+    }
   }
 
   async queryGames(queryDto: QueryGameDto): Promise<Game[]> {
@@ -309,5 +332,24 @@ export class GamesService {
     }
 
     await this.gameRepository.remove(game);
+  }
+
+  async setGameCreator(
+    gameId: string,
+    userId: string,
+    requestingUser: User,
+  ): Promise<Game> {
+    const game = await this.findById(gameId);
+
+    if (game.creator.uid !== requestingUser.uid) {
+      throw new ForbiddenException('אינך רשאי לערוך מנהל משחק');
+    }
+    const newCreator = (
+      await this.gameParticipantService.findGameParticipant(gameId, userId)
+    ).user;
+
+    game.creator = newCreator;
+
+    return await this.gameRepository.save(game);
   }
 }

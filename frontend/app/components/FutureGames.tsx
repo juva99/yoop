@@ -1,14 +1,10 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useMemo } from "react";
 import { useState } from "react";
-import GameCard from "./GameCard";
 import { useSwipeable } from "react-swipeable";
-import { getSession } from "@/lib/session";
-import { redirect } from "next/navigation";
-import { authFetch } from "@/lib/authFetch";
 import { Game } from "@/app/types/Game";
 import GameCardContent from "./GameCardContent";
-
+import Link from "next/link";
 type Props = {
   games: Game[];
 };
@@ -16,11 +12,21 @@ type Props = {
 const FutureGames: React.FC<Props> = ({ games }) => {
   const [currentGame, setCurrentGame] = useState(0);
 
+  const futureGames = useMemo(() => {
+    const now = new Date();
+    return games
+      .filter((game) => new Date(game.startDate) > now)
+      .sort(
+        (a, b) =>
+          new Date(a.startDate).getTime() - new Date(b.startDate).getTime(),
+      );
+  }, [games]);
+
   const handlers = useSwipeable({
-    onSwipedDown: (eventData) => {
+    onSwipedDown: () => {
       upHandler();
     },
-    onSwipedUp: (eventData) => {
+    onSwipedUp: () => {
       downHandler();
     },
     preventScrollOnSwipe: true,
@@ -29,7 +35,7 @@ const FutureGames: React.FC<Props> = ({ games }) => {
   });
 
   const downHandler = () => {
-    if (currentGame == games.length - 1) {
+    if (currentGame == futureGames.length - 1) {
       setCurrentGame(0);
     } else {
       setCurrentGame((prev) => prev + 1);
@@ -38,7 +44,7 @@ const FutureGames: React.FC<Props> = ({ games }) => {
 
   const upHandler = () => {
     if (currentGame == 0) {
-      setCurrentGame(games.length - 1);
+      setCurrentGame(futureGames.length - 1);
     } else {
       setCurrentGame((prev) => prev - 1);
     }
@@ -47,26 +53,28 @@ const FutureGames: React.FC<Props> = ({ games }) => {
   return (
     <div
       {...handlers}
-      className="relative flex max-h-[110px] w-full justify-between overflow-hidden"
+      className="relative flex max-h-[100px] w-full justify-between overflow-hidden"
     >
-      {games.length === 0 ? (
-        <span className="flex text-center">אין משחקים עתידיים</span>
+      {futureGames.length === 0 ? (
+        <span className="flex text-center">אין משחקים לתצוגה</span>
       ) : (
         <>
           {" "}
           <div
             className="transition-transform duration-300"
-            style={{ transform: `translateY(-${currentGame * 110}px)` }}
+            style={{ transform: `translateY(-${currentGame * 100}px)` }}
           >
-            {games.slice(0, 5).map((game, i) => (
-              <div key={i} className="flex h-[110px] w-full items-center">
-                <GameCardContent game={game} />
+            {futureGames.slice(0, 5).map((game, i) => (
+              <div key={i} className="flex h-[100px] w-full items-center">
+                <Link href={`/game/${game.gameId}`}>
+                  <GameCardContent game={game} />
+                </Link>
               </div>
             ))}
           </div>
-          <div className="bullets-container left-0 flex h-[110px] items-center pl-5">
+          <div className="bullets-container left-0 flex h-[100px] items-center">
             <ul className="space-y-2">
-              {games.slice(0, 5).map((game, i) => (
+              {futureGames.slice(0, 5).map((game, i) => (
                 <li key={i}>
                   <div
                     className={`h-3 w-3 cursor-pointer rounded-full ${currentGame == i ? "bg-black" : "bg-gray-200"}`}

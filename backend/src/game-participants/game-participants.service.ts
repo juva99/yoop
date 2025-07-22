@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -35,10 +34,6 @@ export class GameParticipantsService {
       throw new NotFoundException(`Game with id ${gameId} not found`);
     }
 
-    if (game.gameParticipants.length >= game.maxParticipants) {
-      throw new BadRequestException('Game is already full');
-    }
-
     const existingParticipation = await this.gameParticipantRepository.findOne({
       where: {
         game: { gameId: gameId },
@@ -47,7 +42,7 @@ export class GameParticipantsService {
     });
 
     if (existingParticipation) {
-      throw new ConflictException('User is already participating in this game');
+      return existingParticipation;
     }
 
     const newParticipation = this.gameParticipantRepository.create({
@@ -61,21 +56,38 @@ export class GameParticipantsService {
 
   async setStatus(setStatusDto: SetStatusDto): Promise<GameParticipant> {
     const { uid, gameId, newStatus } = setStatusDto;
+
+    const game = await this.gameRepository.findOne({
+      where: { gameId },
+      relations: ['gameParticipants', 'gameParticipants.user'],
+    });
+    if (!game) {
+      throw new NotFoundException(`Game with ID ${gameId} not found`);
+    }
+
+    if (
+      newStatus === ParticipationStatus.APPROVED &&
+      game.gameParticipants.filter(
+        (gm) => gm.status === ParticipationStatus.APPROVED,
+      ).length >= game.maxParticipants
+    ) {
+      throw new ConflictException('המשחק מלא!');
+    }
+
     let participant = await this.gameParticipantRepository.findOne({
       where: { user: { uid }, game: { gameId } },
       relations: ['user', 'game'],
     });
 
     if (!participant) {
-      const game = await this.gameRepository.findOne({ where: { gameId } });
       const user = await this.userService.findById(uid);
-      if (user && game) {
+      if (user) {
         participant = this.gameParticipantRepository.create({
           user: user,
           game: game,
           status: newStatus,
         });
-      } else throw new NotFoundException('no user or game with id found');
+      } else throw new NotFoundException(`User with ID ${uid} not found`);
     } else {
       participant.status = newStatus;
     }
@@ -119,13 +131,17 @@ export class GameParticipantsService {
     }
 
     if (game.creator.uid === user.uid) {
-      throw new ConflictException('המנהל אינו יכול לעזוב את המשחק');
+      if (game.gameParticipants.length === 1) {
+        this.gameRepository.delete(gameId);
+      } else {
+        throw new ConflictException('המנהל אינו יכול לעזוב את המשחק');
+      }
+    } else {
+      await this.gameParticipantRepository.delete(existingParticipation.id);
     }
-
-    await this.gameParticipantRepository.delete(existingParticipation.id);
   }
 
-  async inviteFriendToGame(gameId: string, inviter: User, invited: User) {
+  async inviteFriendsToGame(gameId: string, inviter: User, inviteds: User[]) {
     let status = ParticipationStatus.PENDING;
     const game = await this.gameRepository.findOne({
       where: { gameId },
@@ -139,8 +155,26 @@ export class GameParticipantsService {
     if (inviter.uid === game.creator.uid) {
       status = ParticipationStatus.APPROVED;
     }
-    const newParticipation = await this.joinGame(game.gameId, invited, status);
+    await Promise.all(
+      inviteds.map((invited) => this.joinGame(game.gameId, invited, status)),
+    );
+  }
 
-    return newParticipation;
+  async findGameParticipant(
+    gameId: string,
+    userId: string,
+  ): Promise<GameParticipant> {
+    const gameParticipant = await this.gameParticipantRepository.findOne({
+      where: {
+        game: { gameId: gameId },
+        user: { uid: userId },
+      },
+    });
+
+    if (!gameParticipant) {
+      throw new NotFoundException('השחקן אינו משתתף במשחק הזה');
+    }
+
+    return gameParticipant;
   }
 }

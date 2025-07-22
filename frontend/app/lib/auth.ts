@@ -1,45 +1,26 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { BACKEND_URL, FRONTEND_URL } from "./constants";
-import { FormState, LoginFormSchema, SignupFormSchema } from "./type";
-import { createSession, updateTokens } from "./session";
-import { Role } from "@/app/enums/role.enum";
-import { cookies } from "next/headers";
+import { BACKEND_URL } from "./constants";
+import { createSession, updateTokens, updateSessionUser } from "./session";
+import { SignupFormValues } from "@/app/auth/signup/signupForm";
+import { ProfileUpdateFormValues } from "./schemas/profile_update_schema";
+import { authFetch } from "./authFetch";
 
-export async function signup(
-  state: FormState,
-  formData: FormData,
-): Promise<FormState> {
-  const validationFields = SignupFormSchema.safeParse({
-    firstName: formData.get("firstName"),
-    lastName: formData.get("lastName"),
-    userEmail: formData.get("userEmail"),
-    pass: formData.get("pass"),
-    passConfirm: formData.get("passConfirm"),
-    phoneNum: formData.get("phoneNum"),
-    birthDay: formData.get("birthDay"),
-    address: formData.get("address"),
-    role: Role.USER,
-  });
-
-  if (!validationFields.success) {
-    return {
-      error: validationFields.error.flatten().fieldErrors,
-    };
-  }
+export async function signup(formData: SignupFormValues): Promise<any> {
   const response = await fetch(`${BACKEND_URL}/auth/signup`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(validationFields.data),
+    body: JSON.stringify(formData),
   });
-
+  console.log(response);
   if (response.ok) {
-    await login(state, formData);
+    await login(formData.userEmail, formData.pass);
   } else {
     return {
+      error: true,
       message:
         response.status === 409
           ? "קיים משתמש עם כתובת האימייל שבחרת"
@@ -48,27 +29,18 @@ export async function signup(
   }
 }
 
-export async function login(
-  state: FormState,
-  formData: FormData,
-): Promise<FormState> {
-  const validationFields = LoginFormSchema.safeParse({
-    userEmail: formData.get("userEmail"),
-    pass: formData.get("pass"),
-  });
-
-  if (!validationFields.success) {
-    return {
-      error: validationFields.error.flatten().fieldErrors,
-    };
-  }
+export async function login(userMail: string, pass: string): Promise<any> {
+  const loginData = {
+    userEmail: userMail,
+    pass: pass,
+  };
 
   const response = await fetch(`${BACKEND_URL}/auth/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(validationFields.data),
+    body: JSON.stringify(loginData),
   });
 
   if (response.ok) {
@@ -85,14 +57,15 @@ export async function login(
 
     const roleRedirectMap: Record<string, string> = {
       user: "/",
-      field_manager: "/field-manager/fields",
-      admin: "/field-manager/fields", //כרגע זה מנהל המערכת נשנה את זה אחרכך
+      field_manager: "/field-manager",
+      admin: "/admin",
     };
 
     const redirectPath = roleRedirectMap[result.role] ?? "/";
     redirect(redirectPath);
   } else {
     return {
+      error: true,
       message:
         response.status === 401 ? "הפרטים לא נכונים" : response.statusText,
     };
@@ -127,3 +100,88 @@ export const refreshToken = async (
     return null;
   }
 };
+
+export const forgotPassword = async (email: string) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/forgot-password`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: email }),
+      },
+    );
+
+    if (!response.ok) {
+      const data = await response.json();
+      return {
+        error: true,
+        message: data.message || "שגיאה בשליחת בקשת איפוס סיסמה",
+      };
+    }
+
+    return { success: true };
+  } catch (error) {
+    return { error: true, message: "שגיאה בחיבור לשרת" };
+  }
+};
+
+export const resetPassword = async (token: string, password: string) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/reset-password/${token}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ password }),
+      },
+    );
+
+    if (!response.ok) {
+      const data = await response.json();
+      return {
+        error: true,
+        message: data.message || "שגיאה באיפוס סיסמה",
+      };
+    }
+
+    return { success: true };
+  } catch (error) {
+    return { error: true, message: "שגיאה בחיבור לשרת" };
+  }
+};
+
+export async function updateProfile(
+  userId: string,
+  formData: ProfileUpdateFormValues,
+): Promise<any> {
+  try {
+    const response = await authFetch(`${BACKEND_URL}/users/update/${userId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+
+    if (!response.ok) {
+      const data = await response.json();
+      return {
+        error: true,
+        message: data.message || "שגיאה בעדכון הפרטים",
+      };
+    }
+
+    // Update session with new user name
+    const fullName = `${formData.firstName} ${formData.lastName}`;
+    await updateSessionUser({ name: fullName });
+
+    return { success: true };
+  } catch (error) {
+    return { error: true, message: "שגיאה בחיבור לשרת" };
+  }
+}

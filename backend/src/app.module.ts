@@ -11,6 +11,10 @@ import { FriendsModule } from './friends/friends.module';
 import { FieldFetchApiModule } from './field-fetch-api/field-fetch-api.module';
 import { MailModule } from './mail/mail.module';
 import { ManagerSignupModule } from './manager-signup/manager-signup.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { GroupsModule } from './groups/groups.module';
+import { GroupMembersModule } from './group-members/group-members.module';
+import { AzureStorageModule } from './azure-storage/azure-storage.module';
 
 @Module({
   imports: [
@@ -19,7 +23,7 @@ import { ManagerSignupModule } from './manager-signup/manager-signup.module';
       isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
+      imports: [ConfigModule, ScheduleModule.forRoot()],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
         const sslOptions = configService.get<boolean>('SSL', false);
@@ -47,6 +51,9 @@ import { ManagerSignupModule } from './manager-signup/manager-signup.module';
     FriendsModule,
     MailModule,
     ManagerSignupModule,
+    GroupsModule,
+    GroupMembersModule,
+    AzureStorageModule,
   ],
   controllers: [],
 })

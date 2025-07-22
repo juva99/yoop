@@ -1,40 +1,41 @@
 "use client";
 
 import { leaveGame } from "@/lib/actions";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { redirect, useRouter } from "next/navigation";
 import { Button } from "./ui/button";
+import { toast } from "sonner";
 
 interface Props {
   gameId: string;
+  text: string;
+  isCreator: boolean;
 }
 
-export default function LeaveGameButton({ gameId }: Props) {
+export default function LeaveGameButton({ gameId, text, isCreator }: Props) {
   const router = useRouter();
-  const [error, setError] = useState("");
 
   async function clickedLeave(gameId: string) {
-    try {
-      await leaveGame(gameId);
-    } catch (error) {
-      setError((error as Error).message);
+    let res = await leaveGame(gameId);
+    if (!res.ok) {
+      toast.error(res.message || "אירעה שגיאה");
       return;
+    }
+    toast.success("יצאת מהמשחק בהצלחה");
+    if (isCreator) {
+      redirect("/");
     }
     router.refresh();
   }
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex w-full flex-col items-center">
       <Button
         variant="submit"
         onClick={() => clickedLeave(gameId)}
-        className="bg-red-500"
+        className="w-40 bg-red-400"
       >
-        עזוב משחק
+        {text}
       </Button>
-      {error && (
-        <p className="mt-2 text-center text-sm text-red-500">{error}</p>
-      )}
     </div>
   );
 }

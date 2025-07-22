@@ -15,10 +15,15 @@ const AvatarGroup: React.FC<Props> = ({ players }) => {
             key={index}
             className="h-6 w-6 rounded-full border-2 border-white"
           >
-            <AvatarImage src={player.profilePic} alt={player.firstName} />
+            <AvatarImage
+              src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/profile-picture/download/${player.uid}`}
+              alt={player.firstName}
+            />
             <AvatarFallback>
-              {player.firstName.charAt(0)}
-              {player.lastName.charAt(0)}
+              <span className="text-[10px]">
+                {player.firstName.charAt(0)}
+                {player.lastName.charAt(0)}
+              </span>
             </AvatarFallback>
           </Avatar>
         ))}

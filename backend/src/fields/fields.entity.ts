@@ -40,7 +40,10 @@ export class Field {
   city: City;
 
   //field manager
-  @ManyToOne(() => User, (manager) => manager.fieldsManage, { nullable: true })
+  @ManyToOne(() => User, (manager) => manager.fieldsManage, {
+    nullable: true,
+    onDelete: 'CASCADE',
+  })
   manager: User | null;
 
   //games played in this field

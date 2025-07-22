@@ -17,8 +17,10 @@ import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { he } from "date-fns/locale";
 import { cn } from "@/lib/utils";
-import { FaRegEye } from "react-icons/fa";
-import { LuEyeClosed } from "react-icons/lu";
+
+import { TbEyeOff } from "react-icons/tb";
+import { TbEyeCheck } from "react-icons/tb";
+import { toast } from "sonner";
 
 import {
   Form,
@@ -32,9 +34,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { City } from "@/app/enums/city.enum";
-import { Role } from "@/app/enums/role.enum";
 
-type SignupFormValues = z.infer<typeof SignupFormSchema>;
+export type SignupFormValues = z.infer<typeof SignupFormSchema>;
 
 const cityOptions = Object.values(City).map((value) => ({
   label: value,
@@ -53,41 +54,21 @@ const SignupForm = () => {
       phoneNum: "",
       birthDay: "",
       address: "" as City,
-      role: Role.USER,
     },
   });
   const [showPassword, setShowPassword] = useState(false);
 
-  const [formError, setFormError] = useState("");
-
   const onSubmit = async (values: SignupFormValues) => {
-    const formData = new FormData();
-
-    Object.entries(values).forEach(([key, val]) => {
-      formData.append(key, val);
-    });
-
-    formData.set("role", Role.USER);
-
-    const result = await signup(undefined, formData);
+    const result = await signup(values);
 
     if (result?.error) {
-      Object.entries(result.error).forEach(([field, messages]) => {
-        if (Array.isArray(messages)) {
-          form.setError(field as keyof SignupFormValues, {
-            message: messages[0],
-          });
-        }
-      });
-      setFormError(result.message || "שגיאה בהרשמה");
+      toast.error(result.message || "שגיאה בהרשמה");
     }
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        {formError && <p className="text-sm text-red-500">{formError}</p>}
-
         <FormField
           control={form.control}
           name="firstName"
@@ -148,7 +129,7 @@ const SignupForm = () => {
                     onClick={() => setShowPassword((prev) => !prev)}
                     className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-500"
                   >
-                    {showPassword ? <FaRegEye /> : <LuEyeClosed />}
+                    {showPassword ? <TbEyeCheck /> : <TbEyeOff />}
                   </button>
                 </div>
               </FormControl>
@@ -262,7 +243,7 @@ const SignupForm = () => {
         />
 
         <div className="flex justify-center">
-          <Button type="submit" className="w-1/2 bg-blue-500 py-2 text-white">
+          <Button type="submit" variant={"submit"}>
             הירשם
           </Button>
         </div>

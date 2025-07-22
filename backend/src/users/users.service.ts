@@ -7,8 +7,8 @@ import {
 import { User } from './users.entity';
 import { CreateUserDto } from './dto/create-users.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, ILike, MoreThan } from 'typeorm';
-import { FriendRelation } from '../friends/friends.entity';
+import { Repository, ILike, MoreThan, In } from 'typeorm';
+import { FriendRelation } from 'src/friends/friends.entity';
 import * as crypto from 'crypto';
 import * as bcrypt from 'bcrypt';
 import { CreateManagerDto } from './dto/create-manager.dto';
@@ -59,6 +59,16 @@ export class UsersService {
       throw new NotFoundException(`User with id ${uid} not found`);
     }
     return user;
+  }
+
+  async findByIds(uids: string[]): Promise<User[]> {
+    const users = await this.userRepository.find({
+      where: { uid: In(uids) },
+    });
+    if (!users) {
+      throw new NotFoundException(`אף משתמש לא נמצא`);
+    }
+    return users;
   }
 
   async findByEmail(email: string): Promise<User | null> {
@@ -184,5 +194,19 @@ export class UsersService {
       ...user,
       role: Role.FIELD_MANAGER,
     });
+  }
+
+  async updateProfilePicture(
+    uid: string,
+    profilePic: string | undefined,
+  ): Promise<any> {
+    const results = await this.userRepository.update(
+      { uid },
+      { profilePic: profilePic === undefined ? null : profilePic },
+    );
+    if (results.affected === 0) {
+      throw new NotFoundException(`user with id ${uid} not found`);
+    }
+    return results.affected;
   }
 }

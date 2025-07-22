@@ -33,6 +33,7 @@ export class AuthService {
   ) {}
 
   async registerUser(createUserDto: CreateUserDto): Promise<User> {
+    createUserDto.userEmail = createUserDto.userEmail.toLowerCase();
     const existingUser = await this.usersService.findByEmail(
       createUserDto.userEmail,
     );
@@ -47,9 +48,10 @@ export class AuthService {
   }
 
   async validateLocalUser(
-    email,
-    password,
+    email: string,
+    password: string,
   ): Promise<{ uid: string; name: string; role: Role }> {
+    email = email.toLowerCase();
     try {
       const user = await this.usersService.findByEmail(email);
 
@@ -141,6 +143,7 @@ export class AuthService {
       refreshToken,
       user.hashedRefreshToken,
     );
+
     if (!refreshTokenMatched) {
       throw new UnauthorizedException('Invalid Refresh Token!');
     }
@@ -177,7 +180,8 @@ export class AuthService {
 
   async forgotPassword(email: string): Promise<any> {
     // get user based on posted email
-    const user = await this.usersService.findByEmail(email);
+
+    const user = await this.usersService.findByEmail(email.toLowerCase());
     if (!user) {
       throw new NotFoundException(`user with email address${email} not found`);
     }

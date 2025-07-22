@@ -1,9 +1,10 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { Field } from '../fields/fields.entity';
-import { Game } from '../games/games.entity';
-import { GameParticipant } from '../game-participants/game-participants.entity';
-import { FriendRelation } from '../friends/friends.entity';
-import { Role } from '../enums/role.enum';
+import { Field } from 'src/fields/fields.entity';
+import { Game } from 'src/games/games.entity';
+import { GameParticipant } from 'src/game-participants/game-participants.entity';
+import { FriendRelation } from 'src/friends/friends.entity';
+import { Role } from 'src/enums/role.enum';
+import { GroupMember } from 'src/group-members/group-members.entity';
 
 @Entity('users')
 export class User {
@@ -31,8 +32,8 @@ export class User {
   @Column({ nullable: true })
   address?: string;
 
-  @Column({ nullable: true })
-  profilePic?: string;
+  @Column({ nullable: true, type: 'varchar' })
+  profilePic?: string | null;
 
   @Column({ nullable: true })
   phoneNum?: string;
@@ -69,4 +70,9 @@ export class User {
 
   @Column({ nullable: true, select: false, type: 'timestamptz' })
   passwordResetExpires?: Date;
+
+  @OneToMany(() => GroupMember, (groupMember) => groupMember.user, {
+    eager: true,
+  })
+  groupMemberIn: GroupMember[];
 }

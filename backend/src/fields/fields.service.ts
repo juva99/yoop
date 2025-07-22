@@ -4,8 +4,9 @@ import { Repository } from 'typeorm';
 import { Field } from './fields.entity';
 import { NotFoundException } from '@nestjs/common';
 import { CreateFieldDto } from './dto/create-field.dto';
-import { City } from '../enums/city.enum';
-import { UsersService } from '../users/users.service';
+import { City } from 'src/enums/city.enum';
+import { User } from 'src/users/users.entity';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class FieldsService {
@@ -44,14 +45,45 @@ export class FieldsService {
     }
   }
 
-  async create(createFieldDto: CreateFieldDto): Promise<Field> {
+  async create(
+    createFieldDto: CreateFieldDto,
+    fieldManager: User,
+  ): Promise<Field> {
     const field = this.fieldRepository.create(createFieldDto);
+
+    field.manager = fieldManager;
+    field.isManaged = true;
+
     return await this.fieldRepository.save(field);
   }
 
   async createMany(createFieldDtos: CreateFieldDto[]): Promise<Field[]> {
     const fields = this.fieldRepository.create(createFieldDtos);
     return await this.fieldRepository.save(fields);
+  }
+
+  async upsertMany(createFieldDtos: CreateFieldDto[]): Promise<Field[]> {
+    const savedFields: Field[] = [];
+
+    for (const dto of createFieldDtos) {
+      let field = await this.fieldRepository.findOneBy({
+        fieldName: dto.fieldName,
+        fieldLat: dto.fieldLat,
+        fieldLng: dto.fieldLng,
+      });
+
+      if (field) {
+        // Update the existing field
+        field = this.fieldRepository.merge(field, dto);
+      } else {
+        // Create a new field
+        field = this.fieldRepository.create(dto);
+      }
+
+      savedFields.push(await this.fieldRepository.save(field));
+    }
+
+    return savedFields;
   }
 
   async setManagerToField(fieldId: string, userId: string): Promise<Field> {

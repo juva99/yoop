@@ -64,7 +64,6 @@ async function fetchAvailableSlots(
   field: string,
   date: Date,
 ): Promise<string[]> {
-  console.log("Fetching available slots for field:", field, "on date:", date);
   const date_fixed = new Date(date);
   date_fixed.setHours(
     date_fixed.getHours() - date_fixed.getTimezoneOffset() / 60,
