@@ -87,7 +87,6 @@ export class AuthService {
   ): Promise<authenticatedUser> {
     const { accessToken, refreshToken } = await this.generateTokens(userId);
 
-    //change
     const salt = await bcrypt.genSalt(10);
     const hashedRefreshToken = await bcrypt.hash(refreshToken, salt);
     await this.usersService.updateRefreshToken(userId, hashedRefreshToken);
