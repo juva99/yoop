@@ -196,7 +196,7 @@ export class GroupMembersService {
     return this.groupMemberRepository.save(groupMember);
   }
 
-  async isManager(groupId: string, userId: string): Promise<Boolean> {
+  async isManager(groupId: string, userId: string): Promise<boolean> {
     const groupMember = await this.findGroupMember(groupId, userId);
 
     return groupMember.isManager;
