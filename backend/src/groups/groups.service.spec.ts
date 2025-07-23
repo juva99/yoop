@@ -8,6 +8,7 @@ import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
 import { User } from 'src/users/users.entity';
 import { Role } from 'src/enums/role.enum';
+import { NotFoundException } from '@nestjs/common';
 
 //mock repository
 const mockGroupRepository = () => ({
@@ -75,6 +76,57 @@ describe('GroupsService', () => {
       await expect(service.findGroupById('124')).rejects.toThrow(
         'אין קבוצה כזאת',
       );
+    });
+  });
+
+  describe('deleteGroup', () => {
+    const groupId = 'group-123';
+    const adminUser = { uid: 'admin', role: Role.ADMIN } as User;
+    const managerUser = { uid: 'manager', role: Role.USER } as User;
+    const regularUser = { uid: 'regular', role: Role.USER } as User;
+
+    const groupWithManager = {
+      groupId,
+      groupMembers: [
+        {
+          user: { uid: 'manager' },
+          isManager: true,
+        },
+        {
+          user: { uid: 'regular' },
+          isManager: false,
+        },
+      ],
+    } as unknown as Group;
+
+    it('should delete group if user is manager', async () => {
+      groupRepository.findOne.mockResolvedValue(groupWithManager);
+      groupRepository.remove.mockResolvedValue(groupWithManager);
+
+      await expect(
+        service.deleteGroup(groupId, managerUser),
+      ).resolves.toBeUndefined();
+      expect(groupRepository.remove).toHaveBeenCalledWith(groupWithManager);
+    });
+
+    it('should delete group if user is admin', async () => {
+      groupRepository.findOne.mockResolvedValue(groupWithManager);
+      groupRepository.remove.mockResolvedValue(groupWithManager);
+
+      await expect(
+        service.deleteGroup(groupId, adminUser),
+      ).resolves.toBeUndefined();
+      expect(groupRepository.remove).toHaveBeenCalledWith(groupWithManager);
+    });
+
+    it('should throw if user is not manager or admin', async () => {
+      groupRepository.findOne.mockResolvedValue(groupWithManager);
+
+      await expect(service.deleteGroup(groupId, regularUser)).rejects.toThrow(
+        new NotFoundException('אין לך הרשאות למחוק קבוצה זו'),
+      );
+
+      expect(groupRepository.remove).not.toHaveBeenCalled();
     });
   });
 });
