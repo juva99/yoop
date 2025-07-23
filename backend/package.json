@@ -46,7 +46,6 @@
     "passport-local": "^1.0.0",
     "pg": "^8.14.1",
     "proj4": "^2.15.0",
-    "react-is": "^19.1.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.22"
@@ -96,9 +95,6 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node",
-      "moduleNameMapper": {
-    "^src/(.*)$": "<rootDir>/$1"
-  }
+    "testEnvironment": "node"
   }
 }
