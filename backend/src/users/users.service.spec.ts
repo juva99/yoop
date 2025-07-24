@@ -104,7 +104,7 @@ describe('UsersService', () => {
   describe('findAll', () => {
     it('should return an array of users', async () => {
       const users = [mockUser];
-      jest.spyOn(repository, 'find').mockResolvedValue(users);
+      (repository.find as jest.Mock).mockResolvedValue(users);
 
       const result = await service.findAll();
 
@@ -113,7 +113,7 @@ describe('UsersService', () => {
     });
 
     it('should return empty array when no users exist', async () => {
-      jest.spyOn(repository, 'find').mockResolvedValue([]);
+      (repository.find as jest.Mock).mockResolvedValue([]);
 
       const result = await service.findAll();
 
@@ -130,8 +130,8 @@ describe('UsersService', () => {
 
     it('should create a new user successfully', async () => {
       const createdUser = { ...mockCreateUserDto };
-      jest.spyOn(repository, 'create').mockReturnValue(createdUser as any);
-      jest.spyOn(repository, 'save').mockResolvedValue(mockUser);
+      (repository.create as jest.Mock).mockReturnValue(createdUser as any);
+      (repository.save as jest.Mock).mockResolvedValue(mockUser);
 
       const result = await service.create(mockCreateUserDto);
 
@@ -163,12 +163,12 @@ describe('UsersService', () => {
     });
 
     it('should throw error when repository save fails', async () => {
-      jest
-        .spyOn(repository, 'create')
-        .mockReturnValue(mockCreateUserDto as any);
-      jest
-        .spyOn(repository, 'save')
-        .mockRejectedValue(new Error('Database error'));
+      (repository.create as jest.Mock).mockReturnValue(
+        mockCreateUserDto as any,
+      );
+      (repository.save as jest.Mock).mockRejectedValue(
+        new Error('Database error'),
+      );
 
       await expect(service.create(mockCreateUserDto)).rejects.toThrow(
         'Database error',
@@ -178,9 +178,10 @@ describe('UsersService', () => {
 
   describe('deleteOne', () => {
     it('should delete user successfully', async () => {
-      jest
-        .spyOn(repository, 'delete')
-        .mockResolvedValue({ affected: 1, raw: {} });
+      (repository.delete as jest.Mock).mockResolvedValue({
+        affected: 1,
+        raw: {},
+      });
 
       await service.deleteOne('test-uid');
 
@@ -188,9 +189,10 @@ describe('UsersService', () => {
     });
 
     it('should throw NotFoundException when user not found', async () => {
-      jest
-        .spyOn(repository, 'delete')
-        .mockResolvedValue({ affected: 0, raw: {} });
+      (repository.delete as jest.Mock).mockResolvedValue({
+        affected: 0,
+        raw: {},
+      });
 
       await expect(service.deleteOne('non-existent-uid')).rejects.toThrow(
         new NotFoundException('user with id non-existent-uid not found'),
@@ -200,7 +202,7 @@ describe('UsersService', () => {
 
   describe('findById', () => {
     it('should return user when found', async () => {
-      jest.spyOn(repository, 'findOne').mockResolvedValue(mockUser);
+      (repository.findOne as jest.Mock).mockResolvedValue(mockUser);
 
       const result = await service.findById('test-uid');
 
@@ -211,7 +213,7 @@ describe('UsersService', () => {
     });
 
     it('should throw NotFoundException when user not found', async () => {
-      jest.spyOn(repository, 'findOne').mockResolvedValue(null);
+      (repository.findOne as jest.Mock).mockResolvedValue(null);
 
       await expect(service.findById('non-existent-uid')).rejects.toThrow(
         new NotFoundException('User with id non-existent-uid not found'),
@@ -223,7 +225,7 @@ describe('UsersService', () => {
     it('should return users when found', async () => {
       const users = [mockUser];
       const uids = ['test-uid'];
-      jest.spyOn(repository, 'find').mockResolvedValue(users);
+      (repository.find as jest.Mock).mockResolvedValue(users);
 
       const result = await service.findByIds(uids);
 
@@ -234,7 +236,7 @@ describe('UsersService', () => {
     });
 
     it('should throw NotFoundException when no users found', async () => {
-      jest.spyOn(repository, 'find').mockResolvedValue(undefined as any);
+      (repository.find as jest.Mock).mockResolvedValue(undefined as any);
 
       await expect(service.findByIds(['non-existent-uid'])).rejects.toThrow(
         new NotFoundException('אף משתמש לא נמצא'),
@@ -250,9 +252,9 @@ describe('UsersService', () => {
         getOne: jest.fn().mockResolvedValue(mockUser),
       };
 
-      jest
-        .spyOn(repository, 'createQueryBuilder')
-        .mockReturnValue(mockQueryBuilder as any);
+      (repository.createQueryBuilder as jest.Mock).mockReturnValue(
+        mockQueryBuilder as any,
+      );
 
       const result = await service.findByEmail('yossi.cohen@example.com');
 
@@ -276,9 +278,9 @@ describe('UsersService', () => {
         getOne: jest.fn().mockResolvedValue(null),
       };
 
-      jest
-        .spyOn(repository, 'createQueryBuilder')
-        .mockReturnValue(mockQueryBuilder as any);
+      (repository.createQueryBuilder as jest.Mock).mockReturnValue(
+        mockQueryBuilder as any,
+      );
 
       const result = await service.findByEmail('non-existent@example.com');
 
@@ -288,9 +290,11 @@ describe('UsersService', () => {
 
   describe('updateRefreshToken', () => {
     it('should update refresh token successfully', async () => {
-      jest
-        .spyOn(repository, 'update')
-        .mockResolvedValue({ affected: 1, raw: {}, generatedMaps: [] });
+      (repository.update as jest.Mock).mockResolvedValue({
+        affected: 1,
+        raw: {},
+        generatedMaps: [],
+      });
 
       await service.updateRefreshToken('test-uid', 'hashed-refresh-token');
 
@@ -306,8 +310,8 @@ describe('UsersService', () => {
       const updatedFields = { firstName: 'משה' };
       const updatedUser = { ...mockUser, ...updatedFields };
 
-      jest.spyOn(repository, 'findOneBy').mockResolvedValue(mockUser);
-      jest.spyOn(repository, 'save').mockResolvedValue(updatedUser);
+      (repository.findOneBy as jest.Mock).mockResolvedValue(mockUser);
+      (repository.save as jest.Mock).mockResolvedValue(updatedUser);
 
       const result = await service.updateUser('test-uid', updatedFields);
 
@@ -320,7 +324,7 @@ describe('UsersService', () => {
     });
 
     it('should throw error when user not found', async () => {
-      jest.spyOn(repository, 'findOneBy').mockResolvedValue(null);
+      (repository.findOneBy as jest.Mock).mockResolvedValue(null);
 
       await expect(
         service.updateUser('non-existent-uid', { firstName: 'רחל' }),
@@ -341,9 +345,11 @@ describe('UsersService', () => {
     });
 
     it('should create password reset token successfully', async () => {
-      jest
-        .spyOn(repository, 'update')
-        .mockResolvedValue({ affected: 1, raw: {}, generatedMaps: [] });
+      (repository.update as jest.Mock).mockResolvedValue({
+        affected: 1,
+        raw: {},
+        generatedMaps: [],
+      });
 
       const result = await service.createPasswordResetToken('test-uid', 24);
 
@@ -378,10 +384,12 @@ describe('UsersService', () => {
         passwordResetExpires: new Date(Date.now() + 3600000),
       };
 
-      jest.spyOn(repository, 'findOne').mockResolvedValue(userWithResetToken);
-      jest
-        .spyOn(repository, 'update')
-        .mockResolvedValue({ affected: 1, raw: {}, generatedMaps: [] });
+      (repository.findOne as jest.Mock).mockResolvedValue(userWithResetToken);
+      (repository.update as jest.Mock).mockResolvedValue({
+        affected: 1,
+        raw: {},
+        generatedMaps: [],
+      });
 
       await service.changePassword('reset-token', 'NewPassword123!');
 
@@ -401,7 +409,7 @@ describe('UsersService', () => {
     });
 
     it('should throw NotFoundException with invalid token', async () => {
-      jest.spyOn(repository, 'findOne').mockResolvedValue(null);
+      (repository.findOne as jest.Mock).mockResolvedValue(null);
 
       await expect(
         service.changePassword('invalid-token', 'NewPassword123!'),
@@ -426,10 +434,10 @@ describe('UsersService', () => {
     it('should create manager with random password', async () => {
       const managerUser = { ...mockUser, role: Role.FIELD_MANAGER };
 
-      jest
-        .spyOn(repository, 'create')
-        .mockReturnValue(mockCreateManagerDto as any);
-      jest.spyOn(repository, 'save').mockResolvedValue(managerUser);
+      (repository.create as jest.Mock).mockReturnValue(
+        mockCreateManagerDto as any,
+      );
+      (repository.save as jest.Mock).mockResolvedValue(managerUser);
 
       const result = await service.createManager(mockCreateManagerDto);
 
@@ -447,9 +455,11 @@ describe('UsersService', () => {
 
   describe('updateProfilePicture', () => {
     it('should update profile picture successfully', async () => {
-      jest
-        .spyOn(repository, 'update')
-        .mockResolvedValue({ affected: 1, raw: {}, generatedMaps: [] });
+      (repository.update as jest.Mock).mockResolvedValue({
+        affected: 1,
+        raw: {},
+        generatedMaps: [],
+      });
 
       const result = await service.updateProfilePicture(
         'test-uid',
@@ -464,9 +474,11 @@ describe('UsersService', () => {
     });
 
     it('should set profile picture to null when undefined provided', async () => {
-      jest
-        .spyOn(repository, 'update')
-        .mockResolvedValue({ affected: 1, raw: {}, generatedMaps: [] });
+      (repository.update as jest.Mock).mockResolvedValue({
+        affected: 1,
+        raw: {},
+        generatedMaps: [],
+      });
 
       const result = await service.updateProfilePicture('test-uid', undefined);
 
@@ -478,9 +490,11 @@ describe('UsersService', () => {
     });
 
     it('should throw NotFoundException when user not found', async () => {
-      jest
-        .spyOn(repository, 'update')
-        .mockResolvedValue({ affected: 0, raw: {}, generatedMaps: [] });
+      (repository.update as jest.Mock).mockResolvedValue({
+        affected: 0,
+        raw: {},
+        generatedMaps: [],
+      });
 
       await expect(
         service.updateProfilePicture('non-existent-uid', 'pic-url'),
@@ -512,8 +526,7 @@ describe('UsersService', () => {
         }),
       };
 
-      jest
-        .spyOn(repository, 'createQueryBuilder')
+      (repository.createQueryBuilder as jest.Mock)
         .mockReturnValueOnce(mockQueryBuilder as any)
         .mockReturnValueOnce(mockSubQueryBuilder as any);
 
@@ -555,8 +568,7 @@ describe('UsersService', () => {
         }),
       };
 
-      jest
-        .spyOn(repository, 'createQueryBuilder')
+      (repository.createQueryBuilder as jest.Mock)
         .mockReturnValueOnce(mockQueryBuilder as any)
         .mockReturnValueOnce(mockSubQueryBuilder as any);
 
