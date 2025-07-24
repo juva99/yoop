@@ -39,7 +39,6 @@ type Props = {
     groupName?: string;
     gameTypes?: GameType[];
     userIds?: string[];
-    groupPicture?: string | undefined;
   };
 };
 
@@ -52,11 +51,12 @@ const NewGroupForm: React.FC<Props> = ({
   const [submitClicked, setSubmitClicked] = useState(false);
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
+    mode: "onChange",
+    reValidateMode: "onChange",
     defaultValues: {
       groupName: "",
       gameTypes: [],
       userIds: [],
-      groupPicture: undefined,
     },
   });
 
@@ -123,7 +123,7 @@ const NewGroupForm: React.FC<Props> = ({
           name="gameTypes"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>איזה סוג משחקים תשחקו?</FormLabel>
+              <FormLabel>איזה סוג משחקים תשחקו? (חובה)</FormLabel>
 
               <FormControl>
                 <div className="grid grid-cols-2 gap-4">
@@ -173,20 +173,6 @@ const NewGroupForm: React.FC<Props> = ({
             )}
           />
         )}
-
-        <FormField
-          control={form.control}
-          name="groupPicture"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>תמונה (אופציונלי)</FormLabel>
-              <FormControl>
-                <Input id="picture" type="file" onChange={field.onChange} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
         <Button
           type="submit"
