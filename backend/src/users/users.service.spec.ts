@@ -97,7 +97,7 @@ describe('UsersService', () => {
       const result = await service.findByName('John', currentUser);
 
       expect(mockQueryBuilder.where).toHaveBeenCalledWith(
-        "(user.firstName ILIKE :name OR user.lastName ILIKE :name OR CONCAT(user.firstName, ' ', user.lastName) ILIKE :name)",
+        "CONCAT(user.firstName, ' ', user.lastName) ILIKE :name",
         { name: '%John%' },
       );
       expect(result).toEqual([mockUser]);
@@ -109,7 +109,7 @@ describe('UsersService', () => {
       const result = await service.findByName('Doe', currentUser);
 
       expect(mockQueryBuilder.where).toHaveBeenCalledWith(
-        "(user.firstName ILIKE :name OR user.lastName ILIKE :name OR CONCAT(user.firstName, ' ', user.lastName) ILIKE :name)",
+        "CONCAT(user.firstName, ' ', user.lastName) ILIKE :name",
         { name: '%Doe%' },
       );
       expect(result).toEqual([mockUser]);
@@ -120,9 +120,9 @@ describe('UsersService', () => {
 
       const result = await service.findByName('John Doe', currentUser);
 
-      // Fixed implementation should search firstName OR lastName OR concatenated full name
+      // Simplified implementation using only concatenated full name search
       expect(mockQueryBuilder.where).toHaveBeenCalledWith(
-        "(user.firstName ILIKE :name OR user.lastName ILIKE :name OR CONCAT(user.firstName, ' ', user.lastName) ILIKE :name)",
+        "CONCAT(user.firstName, ' ', user.lastName) ILIKE :name",
         { name: '%John Doe%' },
       );
 
