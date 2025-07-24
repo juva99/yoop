@@ -79,6 +79,7 @@ describe('GroupsService', () => {
     });
   });
 
+  //tests for delete group func
   describe('deleteGroup', () => {
     const groupId = 'group-123';
     const adminUser = { uid: 'admin', role: Role.ADMIN } as User;
@@ -119,12 +120,22 @@ describe('GroupsService', () => {
       expect(groupRepository.remove).toHaveBeenCalledWith(groupWithManager);
     });
 
-    it('should throw if user is not manager or admin', async () => {
+    it('should throw if user is not group manager or admin', async () => {
       groupRepository.findOne.mockResolvedValue(groupWithManager);
 
       await expect(service.deleteGroup(groupId, regularUser)).rejects.toThrow(
         new NotFoundException('אין לך הרשאות למחוק קבוצה זו'),
       );
+
+      expect(groupRepository.remove).not.toHaveBeenCalled();
+    });
+
+    it('should throw if group does not exist', async () => {
+      groupRepository.findOne.mockResolvedValue(null);
+
+      await expect(
+        service.deleteGroup('nonexistent-group', adminUser),
+      ).rejects.toThrow(new NotFoundException('אין קבוצה כזאת'));
 
       expect(groupRepository.remove).not.toHaveBeenCalled();
     });
