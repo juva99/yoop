@@ -71,8 +71,6 @@ export class AuthService {
         role: user.role,
       };
     } catch (error) {
-      console.error('Auth error:', error);
-
       if (error instanceof UnauthorizedException) {
         throw error;
       }
