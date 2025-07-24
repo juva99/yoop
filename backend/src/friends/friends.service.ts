@@ -17,7 +17,7 @@ export class FriendsService {
   ) {}
   async setStatus(setStatusDto: FriendSetStatusDto): Promise<FriendRelation> {
     const { req_uid, status } = setStatusDto;
-    const reqStatus = await this.friendRepository.findOne({
+    let reqStatus = await this.friendRepository.findOne({
       where: { id: req_uid },
     });
     if (!reqStatus) {
@@ -55,7 +55,7 @@ export class FriendsService {
     await this.friendRepository.remove(req);
   }
 
-  async checkUser(user: User, relationId: string): Promise<boolean> {
+  async checkUser(user: User, relationId: string): Promise<Boolean> {
     const relations = await this.friendRepository.find({
       where: [
         { user1: user, id: relationId },
