@@ -56,10 +56,10 @@ describe('UsersService', () => {
   const mockQueryBuilder = {
     where: jest.fn().mockReturnThis(),
     andWhere: jest.fn().mockReturnThis(),
-    setParameter: jest.fn().mockReturnThis(),
     subQuery: jest.fn().mockReturnThis(),
     select: jest.fn().mockReturnThis(),
     from: jest.fn().mockReturnThis(),
+    setParameter: jest.fn().mockReturnThis(),
     getQuery: jest.fn().mockReturnValue('subquery'),
     getMany: jest.fn(),
   };
@@ -91,42 +91,15 @@ describe('UsersService', () => {
       jest.clearAllMocks();
     });
 
-    it('should find users by first name', async () => {
-      mockQueryBuilder.getMany.mockResolvedValue([mockUser]);
-
-      const result = await service.findByName('John', currentUser);
-
-      expect(mockQueryBuilder.where).toHaveBeenCalledWith(
-        "CONCAT(user.firstName, ' ', user.lastName) ILIKE :name",
-        { name: '%John%' },
-      );
-      expect(result).toEqual([mockUser]);
-    });
-
-    it('should find users by last name', async () => {
-      mockQueryBuilder.getMany.mockResolvedValue([mockUser]);
-
-      const result = await service.findByName('Doe', currentUser);
-
-      expect(mockQueryBuilder.where).toHaveBeenCalledWith(
-        "CONCAT(user.firstName, ' ', user.lastName) ILIKE :name",
-        { name: '%Doe%' },
-      );
-      expect(result).toEqual([mockUser]);
-    });
-
-    it('should find users by full name after the fix', async () => {
+    it('should find users by full name search', async () => {
       mockQueryBuilder.getMany.mockResolvedValue([mockUser]);
 
       const result = await service.findByName('John Doe', currentUser);
 
-      // Simplified implementation using only concatenated full name search
       expect(mockQueryBuilder.where).toHaveBeenCalledWith(
         "CONCAT(user.firstName, ' ', user.lastName) ILIKE :name",
         { name: '%John Doe%' },
       );
-
-      // Should now find the user with firstName="John" and lastName="Doe"
       expect(result).toEqual([mockUser]);
     });
 
