@@ -7,7 +7,7 @@ import {
 import { User } from './users.entity';
 import { CreateUserDto } from './dto/create-users.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, ILike, MoreThan, In } from 'typeorm';
+import { Repository, MoreThan, In } from 'typeorm';
 import { FriendRelation } from 'src/friends/friends.entity';
 import * as crypto from 'crypto';
 import * as bcrypt from 'bcrypt';
@@ -80,12 +80,12 @@ export class UsersService {
   }
 
   async findByName(name: string, currentUser: User): Promise<User[]> {
-    // look up for new friends by first and last name
+    // look up for new friends by full name
     const queryBuilder = this.userRepository.createQueryBuilder('user');
 
-    // Search by first name or last name
+    // Search by full name (concatenated first and last name)
     queryBuilder.where(
-      '(user.firstName ILIKE :name OR user.lastName ILIKE :name)',
+      "CONCAT(user.firstName, ' ', user.lastName) ILIKE :name",
       { name: `%${name}%` },
     );
 
