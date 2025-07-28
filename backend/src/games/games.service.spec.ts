@@ -528,22 +528,6 @@ describe('gamesService', () => {
         order: { startDate: 'ASC' },
       });
     });
-
-    // it('Should throw Not Found Exception', async () => {
-    //   (gameRepository.find as jest.Mock).mockResolvedValue([]);
-
-    //   await expect(
-    //     gamesService.findAllGamesByField(gameRes.field.fieldId),
-    //   ).rejects.toThrow(NotFoundException);
-
-    //   expect(gameRepository.find).toHaveBeenCalledWith({
-    //     relations: ['field'],
-    //     where: {
-    //       field: { fieldId: gameRes.field.fieldId },
-    //     },
-    //     order: { startDate: 'ASC' },
-    //   });
-    // });
   });
 
   describe('findPendingGamesByField', () => {
@@ -565,23 +549,6 @@ describe('gamesService', () => {
         order: { startDate: 'ASC' },
       });
     });
-
-    // it('Should throw Not Found Exception', async () => {
-    //   (gameRepository.find as jest.Mock).mockResolvedValue([]);
-
-    //   await expect(
-    //     gamesService.findPendingGamesByField(gameRes.field.fieldId),
-    //   ).rejects.toThrow(NotFoundException);
-
-    //   expect(gameRepository.find).toHaveBeenCalledWith({
-    //     relations: ['field'],
-    //     where: {
-    //       field: { fieldId: gameRes.field.fieldId },
-    //       status: GameStatus.PENDING,
-    //     },
-    //     order: { startDate: 'ASC' },
-    //   });
-    // });
   });
 
   describe('findApprovedGamesByField', () => {
@@ -602,23 +569,6 @@ describe('gamesService', () => {
         },
       });
     });
-
-    // it('Should throw Not Found Exception', async () => {
-    //   (gameRepository.find as jest.Mock).mockResolvedValue([]);
-
-    //   await expect(
-    //     gamesService.findApprovedGamesByField(gameRes.field.fieldId),
-    //   ).rejects.toThrow(NotFoundException);
-
-    //   expect(gameRepository.find).toHaveBeenCalledWith({
-    //     relations: ['field'],
-    //     where: {
-    //       field: { fieldId: gameRes.field.fieldId },
-    //       status: GameStatus.APPROVED,
-    //     },
-    //     order: { startDate: 'ASC' },
-    //   });
-    // });
   });
 
   describe('deleteOne', () => {
