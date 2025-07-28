@@ -281,10 +281,6 @@ export class GamesService {
       order: { startDate: 'ASC' },
     });
 
-    if (!games) {
-      throw new NotFoundException(`No games found for field: ${fieldId}`);
-    }
-
     return games;
   }
 
@@ -297,10 +293,6 @@ export class GamesService {
       },
       order: { startDate: 'ASC' },
     });
-
-    if (!games) {
-      throw new NotFoundException(`No games found for field: ${fieldId}`);
-    }
 
     return games;
   }
@@ -315,9 +307,7 @@ export class GamesService {
         status: GameStatus.APPROVED,
       },
     });
-    if (!games) {
-      throw new NotFoundException(`No games found for field: ${fieldId}`);
-    }
+
     return games;
   }
 
