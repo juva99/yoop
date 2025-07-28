@@ -12,7 +12,7 @@ import { User } from 'src/users/users.entity';
 import { Role } from 'src/enums/role.enum';
 import { Field } from 'src/fields/fields.entity';
 import { City } from 'src/enums/city.enum';
-import { NotFoundException } from '@nestjs/common';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { CreateGameDto } from './dto/create-game.dto';
 import { ParticipationStatus } from 'src/enums/participation-status.enum';
@@ -32,12 +32,16 @@ describe('gamesService', () => {
     create: jest.fn(),
     save: jest.fn(),
     createQueryBuilder: jest.fn(),
+    remove: jest.fn(),
   };
   const mockFieldsService = {
     findById: jest.fn(),
   };
 
-  const mockGameParticipantService = { joinGame: jest.fn() };
+  const mockGameParticipantService = {
+    joinGame: jest.fn(),
+    findGameParticipant: jest.fn(),
+  };
 
   const mockWeatherApiService = {
     getWeather: jest.fn(),
@@ -131,6 +135,30 @@ describe('gamesService', () => {
     passwordResetExpires: undefined,
     groupMemberIn: [],
   };
+
+  const newUser: User = {
+    uid: 'new-id',
+    firstName: 'יוחאי',
+    lastName: 'בן ימין',
+    userEmail: 'yuhai@footballers.com',
+    role: Role.USER,
+    pass: 'hashedPassword',
+    birthDay: '1990-01-01',
+    isMale: true,
+    address: undefined,
+    profilePic: null,
+    phoneNum: '+972501234568',
+    fieldsManage: [],
+    sentFriendRequests: [],
+    receivedFriendRequests: [],
+    gameParticipations: [],
+    createdGames: [],
+    passwordResetToken: null,
+    hashedRefreshToken: null,
+    passwordResetExpires: undefined,
+    groupMemberIn: [],
+  };
+
   const field: Field = {
     fieldId: 'test-id',
     fieldName: 'מגרש קהילתי בלומפילד',
@@ -460,6 +488,213 @@ describe('gamesService', () => {
         GameStatus.APPROVED,
         gameRes.field.fieldName,
       );
+    });
+  });
+
+  describe('declineGame', () => {
+    it('Should delete the game and email the creator', async () => {
+      jest.spyOn(gamesService, 'findById').mockResolvedValue(gameRes);
+      jest.spyOn(gamesService, 'deleteOne').mockResolvedValue(undefined);
+      (mailService.sendNewGameStatus as jest.Mock).mockResolvedValue(undefined);
+
+      await gamesService.declineGame(gameRes.gameId);
+
+      expect(gamesService.findById).toHaveBeenCalledWith(gameRes.gameId);
+      expect(gamesService.deleteOne).toHaveBeenCalledWith(gameRes.gameId);
+      expect(mailService.sendNewGameStatus).toHaveBeenCalledWith(
+        gameRes.creator.userEmail,
+        gameRes.creator.firstName,
+        GameStatus.DELETED,
+        gameRes.field.fieldName,
+      );
+    });
+  });
+
+  describe('findAllGamesByField', () => {
+    it('Should return a list of found games', async () => {
+      const games = [gameRes];
+      (gameRepository.find as jest.Mock).mockResolvedValue(games);
+
+      const result = await gamesService.findAllGamesByField(
+        gameRes.field.fieldId,
+      );
+
+      expect(result).toEqual(games);
+      expect(gameRepository.find).toHaveBeenCalledWith({
+        relations: ['field'],
+        where: {
+          field: { fieldId: gameRes.field.fieldId },
+        },
+        order: { startDate: 'ASC' },
+      });
+    });
+
+    // it('Should throw Not Found Exception', async () => {
+    //   (gameRepository.find as jest.Mock).mockResolvedValue([]);
+
+    //   await expect(
+    //     gamesService.findAllGamesByField(gameRes.field.fieldId),
+    //   ).rejects.toThrow(NotFoundException);
+
+    //   expect(gameRepository.find).toHaveBeenCalledWith({
+    //     relations: ['field'],
+    //     where: {
+    //       field: { fieldId: gameRes.field.fieldId },
+    //     },
+    //     order: { startDate: 'ASC' },
+    //   });
+    // });
+  });
+
+  describe('findPendingGamesByField', () => {
+    it('Should return a list of found games', async () => {
+      const games = [gameRes];
+      (gameRepository.find as jest.Mock).mockResolvedValue(games);
+
+      const result = await gamesService.findPendingGamesByField(
+        gameRes.field.fieldId,
+      );
+
+      expect(result).toEqual(games);
+      expect(gameRepository.find).toHaveBeenCalledWith({
+        relations: ['field'],
+        where: {
+          field: { fieldId: gameRes.field.fieldId },
+          status: GameStatus.PENDING,
+        },
+        order: { startDate: 'ASC' },
+      });
+    });
+
+    // it('Should throw Not Found Exception', async () => {
+    //   (gameRepository.find as jest.Mock).mockResolvedValue([]);
+
+    //   await expect(
+    //     gamesService.findPendingGamesByField(gameRes.field.fieldId),
+    //   ).rejects.toThrow(NotFoundException);
+
+    //   expect(gameRepository.find).toHaveBeenCalledWith({
+    //     relations: ['field'],
+    //     where: {
+    //       field: { fieldId: gameRes.field.fieldId },
+    //       status: GameStatus.PENDING,
+    //     },
+    //     order: { startDate: 'ASC' },
+    //   });
+    // });
+  });
+
+  describe('findApprovedGamesByField', () => {
+    it('Should return a list of found games', async () => {
+      const games = [gameRes];
+      (gameRepository.find as jest.Mock).mockResolvedValue(games);
+
+      const result = await gamesService.findApprovedGamesByField(
+        gameRes.field.fieldId,
+      );
+
+      expect(result).toEqual(games);
+      expect(gameRepository.find).toHaveBeenCalledWith({
+        relations: ['field'],
+        where: {
+          field: { fieldId: gameRes.field.fieldId },
+          status: GameStatus.APPROVED,
+        },
+      });
+    });
+
+    // it('Should throw Not Found Exception', async () => {
+    //   (gameRepository.find as jest.Mock).mockResolvedValue([]);
+
+    //   await expect(
+    //     gamesService.findApprovedGamesByField(gameRes.field.fieldId),
+    //   ).rejects.toThrow(NotFoundException);
+
+    //   expect(gameRepository.find).toHaveBeenCalledWith({
+    //     relations: ['field'],
+    //     where: {
+    //       field: { fieldId: gameRes.field.fieldId },
+    //       status: GameStatus.APPROVED,
+    //     },
+    //     order: { startDate: 'ASC' },
+    //   });
+    // });
+  });
+
+  describe('deleteOne', () => {
+    it('Should delete the requested game', async () => {
+      (gameRepository.findOne as jest.Mock).mockResolvedValue(gameRes);
+      (gameRepository.remove as jest.Mock).mockResolvedValue(undefined);
+
+      await gamesService.deleteOne(gameRes.gameId);
+
+      expect(gameRepository.findOne).toHaveBeenCalledWith({
+        where: { gameId: gameRes.gameId },
+        relations: ['gameParticipants'],
+      });
+      expect(gameRepository.remove).toHaveBeenCalledWith(gameRes);
+    });
+
+    it('Should throw Not Found Exception', async () => {
+      (gameRepository.findOne as jest.Mock).mockResolvedValue(null);
+      (gameRepository.remove as jest.Mock).mockResolvedValue(null);
+
+      expect(gamesService.deleteOne(gameRes.gameId)).rejects.toThrow(
+        NotFoundException,
+      );
+
+      expect(gameRepository.findOne).toHaveBeenCalledWith({
+        where: { gameId: gameRes.gameId },
+        relations: ['gameParticipants'],
+      });
+      expect(gameRepository.remove).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('setGameCreator', () => {
+    const gameWithNewCreator = {
+      ...gameRes,
+      creator: newUser,
+    };
+
+    it('should update the game creator and return the updated game', async () => {
+      jest.spyOn(gamesService, 'findById').mockResolvedValue(gameRes);
+      (
+        gameParticipantsService.findGameParticipant as jest.Mock
+      ).mockResolvedValue({ user: newUser });
+      (gameRepository.save as jest.Mock).mockResolvedValue(gameWithNewCreator);
+
+      const result = await gamesService.setGameCreator(
+        gameRes.gameId,
+        newUser.uid,
+        user,
+      );
+
+      expect(result).toEqual(gameWithNewCreator);
+      expect(gamesService.findById).toHaveBeenCalledWith(gameRes.gameId);
+      expect(gameParticipantsService.findGameParticipant).toHaveBeenCalledWith(
+        gameRes.gameId,
+        newUser.uid,
+      );
+      expect(gameRepository.save).toHaveBeenCalledWith(gameWithNewCreator);
+    });
+
+    it('Should throw error if game creator is not the requesting user', async () => {
+      const gameWithDifferentCreator = { ...gameRes, creator: newUser };
+
+      jest
+        .spyOn(gamesService, 'findById')
+        .mockResolvedValue(gameWithDifferentCreator);
+
+      await expect(
+        gamesService.setGameCreator(gameRes.gameId, newUser.uid, user),
+      ).rejects.toThrow(ForbiddenException);
+
+      expect(gamesService.findById).toHaveBeenCalledWith(gameRes.gameId);
+      expect(
+        gameParticipantsService.findGameParticipant,
+      ).not.toHaveBeenCalled();
+      expect(gameRepository.save).not.toHaveBeenCalled();
     });
   });
 });
