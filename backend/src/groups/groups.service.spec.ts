@@ -9,6 +9,7 @@ import { UpdateGroupDto } from './dto/update-group.dto';
 import { User } from 'src/users/users.entity';
 import { Role } from 'src/enums/role.enum';
 import { NotFoundException } from '@nestjs/common';
+import { GameType } from 'src/enums/game-type.enum';
 
 //mock repository
 const mockGroupRepository = () => ({
@@ -79,6 +80,48 @@ describe('GroupsService', () => {
     });
   });
 
+  describe('createGroup', () => {
+    it('should create a group and add members', async () => {
+      const createGroupDto: CreateGroupDto = {
+        groupName: 'Test Group',
+        groupPicture: 'url',
+        gameTypes: [GameType.FootBall],
+        userIds: ['user1'],
+      };
+      const mockGroup: Group = {
+        groupId: '1',
+        groupName: 'Test Group',
+        groupPicture: 'url',
+        gameTypes: [GameType.FootBall],
+        groupMembers: [],
+      } as Group;
+
+      groupRepository.create.mockReturnValue(mockGroup);
+      groupRepository.save.mockResolvedValue(mockGroup);
+      groupRepository.findOne.mockResolvedValue(mockGroup);
+
+      const result = await service.createGroup('creatorId', createGroupDto);
+
+      expect(groupRepository.create).toHaveBeenCalledWith({
+        groupName: 'Test Group',
+        groupPicture: 'url',
+        gameTypes: [GameType.FootBall],
+      });
+
+      expect(groupRepository.save).toHaveBeenCalled();
+      expect(groupMembersService.addUsersToGroup).toHaveBeenCalledWith(
+        '1',
+        expect.arrayContaining(['creatorId', 'user1']),
+      );
+      expect(groupMembersService.setManagerStatus).toHaveBeenCalledWith(
+        '1',
+        'creatorId',
+        true,
+      );
+      expect(result).toEqual(mockGroup);
+    });
+  });
+
   describe('deleteGroup', () => {
     const groupId = 'group-123';
     const adminUser = { uid: 'admin', role: Role.ADMIN } as User;
@@ -127,6 +170,66 @@ describe('GroupsService', () => {
       );
 
       expect(groupRepository.remove).not.toHaveBeenCalled();
+    });
+  });
+  describe('updateGroup', () => {
+    const existingGroup = {
+      groupId: 'group-1',
+      groupName: 'Old Name',
+      groupPicture: 'old.png',
+      gameTypes: [GameType.BasketBall],
+    } as Group;
+
+    beforeEach(() => {
+      groupRepository.save.mockClear();
+    });
+
+    it('should update all fields and save group', async () => {
+      const dto: UpdateGroupDto = {
+        groupId: 'group-1',
+        groupName: 'New Name',
+        groupPicture: 'new.png',
+        gameTypes: [GameType.BasketBall],
+      };
+
+      groupRepository.findOne.mockResolvedValue(existingGroup);
+      groupRepository.save.mockResolvedValue({
+        ...existingGroup,
+        ...dto,
+      });
+
+      const result = await service.updateGroup(dto);
+
+      expect(result.groupName).toBe('New Name');
+      expect(result.groupPicture).toBe('new.png');
+      expect(result.gameTypes).toEqual([GameType.BasketBall]);
+      expect(groupRepository.save).toHaveBeenCalledWith({
+        ...existingGroup,
+        ...dto,
+      });
+    });
+
+    it('should update only specified fields', async () => {
+      const dto: UpdateGroupDto = {
+        groupId: 'group-1',
+        groupName: 'Partial Update',
+        gameTypes: [GameType.BasketBall, GameType.FootBall],
+      };
+
+      groupRepository.findOne.mockResolvedValue(existingGroup);
+      groupRepository.save.mockResolvedValue({
+        ...existingGroup,
+        groupName: 'Partial Update',
+        gameTypes: [GameType.BasketBall, GameType.FootBall],
+      });
+
+      const result = await service.updateGroup(dto);
+      expect(result.groupName).toBe('Partial Update');
+      expect(result.gameTypes).toEqual([
+        GameType.BasketBall,
+        GameType.FootBall,
+      ]);
+      expect(groupRepository.save).toHaveBeenCalled();
     });
   });
 });
