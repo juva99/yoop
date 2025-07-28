@@ -11,18 +11,6 @@ export const formSchema = z.object({
     .array(z.nativeEnum(GameType))
     .min(1, "יש לבחור לפחות סוג ספורט אחד"),
   userIds: z.array(z.string()).optional(),
-  groupPicture: z.string().url().optional(),
 });
 
 export type FormSchema = z.infer<typeof formSchema>;
-
-export const newGroupSchema = z.object({
-  groupName: z.string().min(1, "שם הקבוצה הוא שדה חובה"),
-  gameTypes: z.nativeEnum(GameType, {
-    errorMap: () => ({ message: "יש לבחור סוג משחק" }),
-  }),
-  userIds: z.array(z.string()).optional(),
-  groupPicture: z.string().url().optional(),
-});
-
-export type NewGroupFormValues = z.infer<typeof newGroupSchema>;
