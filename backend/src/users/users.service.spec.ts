@@ -506,24 +506,19 @@ describe('UsersService', () => {
 
   describe('findByName', () => {
     it('should return users matching name search excluding current user and friends', async () => {
+      const mockSubQueryBuilder = {
+        subQuery: jest.fn().mockReturnThis(),
+        select: jest.fn().mockReturnThis(),
+        from: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        getQuery: jest.fn().mockReturnValue('subquery'),
+      };
+
       const mockQueryBuilder = {
         where: jest.fn().mockReturnThis(),
         andWhere: jest.fn().mockReturnThis(),
         setParameter: jest.fn().mockReturnThis(),
         getMany: jest.fn().mockResolvedValue([mockUser]),
-        subQuery: jest.fn().mockReturnThis(),
-        select: jest.fn().mockReturnThis(),
-        from: jest.fn().mockReturnThis(),
-        getQuery: jest.fn().mockReturnValue('subquery'),
-      };
-
-      const mockSubQueryBuilder = {
-        subQuery: jest.fn().mockReturnValue({
-          select: jest.fn().mockReturnThis(),
-          from: jest.fn().mockReturnThis(),
-          where: jest.fn().mockReturnThis(),
-          getQuery: jest.fn().mockReturnValue('subquery'),
-        }),
       };
 
       (repository.createQueryBuilder as jest.Mock)
@@ -531,41 +526,45 @@ describe('UsersService', () => {
         .mockReturnValueOnce(mockSubQueryBuilder as any);
 
       const currentUser = { ...mockUser, uid: 'current-user-uid' };
-      const result = await service.findByName('יוסי', currentUser);
+      const result = await service.findByName('יוסי כהן', currentUser);
 
       expect(result).toEqual([mockUser]);
       expect(repository.createQueryBuilder).toHaveBeenCalledWith('user');
       expect(mockQueryBuilder.where).toHaveBeenCalledWith(
-        '(user.firstName ILIKE :name OR user.lastName ILIKE :name)',
-        { name: '%יוסי%' },
+        "CONCAT(user.firstName, ' ', user.lastName) ILIKE :name",
+        { name: '%יוסי כהן%' },
       );
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+      expect(mockQueryBuilder.andWhere).toHaveBeenNthCalledWith(
+        1,
         'user.uid != :currentUserId',
         {
           currentUserId: 'current-user-uid',
         },
       );
+      expect(mockQueryBuilder.andWhere).toHaveBeenNthCalledWith(
+        2,
+        'user.uid NOT IN (subquery)',
+      );
+      expect(mockQueryBuilder.setParameter).toHaveBeenCalledWith(
+        'currentUserId',
+        'current-user-uid',
+      );
     });
 
-    it('should return users matching last name search', async () => {
+    it('should return users matching partial name search', async () => {
+      const mockSubQueryBuilder = {
+        subQuery: jest.fn().mockReturnThis(),
+        select: jest.fn().mockReturnThis(),
+        from: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        getQuery: jest.fn().mockReturnValue('subquery'),
+      };
+
       const mockQueryBuilder = {
         where: jest.fn().mockReturnThis(),
         andWhere: jest.fn().mockReturnThis(),
         setParameter: jest.fn().mockReturnThis(),
         getMany: jest.fn().mockResolvedValue([mockUser]),
-        subQuery: jest.fn().mockReturnThis(),
-        select: jest.fn().mockReturnThis(),
-        from: jest.fn().mockReturnThis(),
-        getQuery: jest.fn().mockReturnValue('subquery'),
-      };
-
-      const mockSubQueryBuilder = {
-        subQuery: jest.fn().mockReturnValue({
-          select: jest.fn().mockReturnThis(),
-          from: jest.fn().mockReturnThis(),
-          where: jest.fn().mockReturnThis(),
-          getQuery: jest.fn().mockReturnValue('subquery'),
-        }),
       };
 
       (repository.createQueryBuilder as jest.Mock)
@@ -582,8 +581,12 @@ describe('UsersService', () => {
 
       expect(result).toEqual([mockUser]);
       expect(mockQueryBuilder.where).toHaveBeenCalledWith(
-        '(user.firstName ILIKE :name OR user.lastName ILIKE :name)',
+        "CONCAT(user.firstName, ' ', user.lastName) ILIKE :name",
         { name: '%כהן%' },
+      );
+      expect(mockSubQueryBuilder.subQuery).toHaveBeenCalled();
+      expect(mockSubQueryBuilder.select).toHaveBeenCalledWith(
+        'CASE WHEN fr.user1Uid = :currentUserId THEN fr.user2Uid ELSE fr.user1Uid END',
       );
     });
   });
