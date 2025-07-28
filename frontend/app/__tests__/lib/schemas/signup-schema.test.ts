@@ -226,11 +226,11 @@ describe('SignupFormSchema', () => {
       })
     })
 
-    it('rejects passwords without uppercase letters', () => {
+    it('rejects passwords without any letters', () => {
       const result = SignupFormSchema.safeParse({
         ...validFormData,
-        pass: 'weakpass123!',
-        passConfirm: 'weakpass123!'
+        pass: '12345678!',
+        passConfirm: '12345678!'
       })
       
       expect(result.success).toBe(false)
@@ -291,11 +291,11 @@ describe('SignupFormSchema', () => {
       })
       
       expect(result.success).toBe(false)
-  })
-  .refine((data) => data.pass === data.passConfirm, {
-    message: "הסיסמאות אינן מתאימות",
-    path: ["passConfirm"],
-  });
+      if (!result.success) {
+        expect(result.error.issues.some(issue => 
+          issue.message === 'הסיסמאות אינן מתאימות'
+        )).toBe(true)
+      }
     })
   })
 

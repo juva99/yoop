@@ -11,6 +11,7 @@ import InviteDialog from "@/components/friends/InviteDialog";
 import { User } from "@/app/types/User";
 import { Group } from "@/app/types/Group";
 import { GameType } from "@/app/enums/game-type.enum";
+import { cleanupAsyncOperations, suppressConsoleLogs } from "@/__tests__/utils/test-utils";
 
 // Mock the dependencies
 jest.mock("@/lib/actions", () => ({
@@ -100,6 +101,7 @@ describe("InviteDialog Component", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    suppressConsoleLogs();
     mockUseRouter.mockReturnValue({
       refresh: mockRefresh,
       push: jest.fn(),
@@ -108,6 +110,10 @@ describe("InviteDialog Component", () => {
       forward: jest.fn(),
       prefetch: jest.fn(),
     } as any);
+  });
+
+  afterEach(async () => {
+    await cleanupAsyncOperations();
   });
 
   it("renders invite dialog trigger button", () => {

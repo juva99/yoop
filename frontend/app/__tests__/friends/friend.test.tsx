@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Friend from "@/components/friends/Friend";
 import { User } from "@/app/types/User";
@@ -38,6 +38,11 @@ describe("Friend Component", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+    jest.restoreAllMocks();
   });
 
   it("renders friend information correctly", () => {
@@ -197,16 +202,34 @@ describe("Friend Component", () => {
   });
 
   it("handles network errors gracefully", async () => {
+    // Mock console.error to prevent logging after test completion
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    
     mockAuthFetch.mockRejectedValueOnce(new Error("Network error"));
 
     render(<Friend userId={userId} friend={mockFriend} action="add" />);
 
     const addButton = screen.getByRole("button");
-    fireEvent.click(addButton);
+    
+    // Use act to ensure all async operations complete
+    await act(async () => {
+      fireEvent.click(addButton);
+    });
 
     await waitFor(() => {
       expect(mockToast.error).toHaveBeenCalledWith("שגיאה בשליחת בקשת חברות");
     });
+
+    // Wait for all async operations including error handling to complete
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    });
+
+    // Verify console.error was called (but mocked so it doesn't affect test output)
+    expect(consoleErrorSpy).toHaveBeenCalledWith("Error sending friend request:", expect.any(Error));
+    
+    // Restore console.error
+    consoleErrorSpy.mockRestore();
   });
 
   it("prevents multiple rapid clicks", async () => {

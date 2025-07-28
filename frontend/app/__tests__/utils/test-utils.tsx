@@ -1,5 +1,6 @@
 import { render, RenderOptions } from "@testing-library/react";
 import { ReactElement } from "react";
+import { act } from "@testing-library/react";
 
 // Custom render function that includes common providers if needed
 const customRender = (
@@ -9,6 +10,23 @@ const customRender = (
 
 export * from "@testing-library/react";
 export { customRender as render };
+
+// Helper function to wait for async operations to complete
+export const waitForAsyncOperations = async () => {
+  await act(async () => {
+    await new Promise(resolve => setTimeout(resolve, 0));
+  });
+};
+
+// Helper function to ensure all promises are settled
+export const waitForAllPromises = async () => {
+  await act(async () => {
+    // Wait multiple cycles to ensure all nested promises complete
+    for (let i = 0; i < 3; i++) {
+      await new Promise(resolve => setTimeout(resolve, 0));
+    }
+  });
+};
 
 // Common test data for forms
 export const mockFormData = {
@@ -71,4 +89,31 @@ export const expectToHaveAttribute = (
   } else {
     expect(element).toHaveAttribute(attr);
   }
+};
+
+// Helper for cleanup after async operations
+export const cleanupAsyncOperations = async () => {
+  await act(async () => {
+    // Wait for multiple event loop cycles to ensure all async operations complete
+    for (let i = 0; i < 5; i++) {
+      await new Promise(resolve => setTimeout(resolve, 0));
+    }
+  });
+};
+
+// Helper to suppress console logs during tests
+export const suppressConsoleLogs = () => {
+  const originalError = console.error;
+  const originalWarn = console.warn;
+  const originalLog = console.log;
+  
+  console.error = jest.fn();
+  console.warn = jest.fn();
+  console.log = jest.fn();
+  
+  return () => {
+    console.error = originalError;
+    console.warn = originalWarn;
+    console.log = originalLog;
+  };
 };
