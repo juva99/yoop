@@ -14,7 +14,7 @@ export { customRender as render };
 // Helper function to wait for async operations to complete
 export const waitForAsyncOperations = async () => {
   await act(async () => {
-    await new Promise(resolve => setTimeout(resolve, 0));
+    await new Promise((resolve) => setTimeout(resolve, 0));
   });
 };
 
@@ -23,7 +23,7 @@ export const waitForAllPromises = async () => {
   await act(async () => {
     // Wait multiple cycles to ensure all nested promises complete
     for (let i = 0; i < 3; i++) {
-      await new Promise(resolve => setTimeout(resolve, 0));
+      await new Promise((resolve) => setTimeout(resolve, 0));
     }
   });
 };
@@ -96,7 +96,7 @@ export const cleanupAsyncOperations = async () => {
   await act(async () => {
     // Wait for multiple event loop cycles to ensure all async operations complete
     for (let i = 0; i < 5; i++) {
-      await new Promise(resolve => setTimeout(resolve, 0));
+      await new Promise((resolve) => setTimeout(resolve, 0));
     }
   });
 };
@@ -106,11 +106,11 @@ export const suppressConsoleLogs = () => {
   const originalError = console.error;
   const originalWarn = console.warn;
   const originalLog = console.log;
-  
+
   console.error = jest.fn();
   console.warn = jest.fn();
   console.log = jest.fn();
-  
+
   return () => {
     console.error = originalError;
     console.warn = originalWarn;

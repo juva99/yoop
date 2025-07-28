@@ -1,4 +1,10 @@
-import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  act,
+} from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Friend from "@/components/friends/Friend";
 import { User } from "@/app/types/User";
@@ -203,14 +209,16 @@ describe("Friend Component", () => {
 
   it("handles network errors gracefully", async () => {
     // Mock console.error to prevent logging after test completion
-    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-    
+    const consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+
     mockAuthFetch.mockRejectedValueOnce(new Error("Network error"));
 
     render(<Friend userId={userId} friend={mockFriend} action="add" />);
 
     const addButton = screen.getByRole("button");
-    
+
     // Use act to ensure all async operations complete
     await act(async () => {
       fireEvent.click(addButton);
@@ -222,12 +230,15 @@ describe("Friend Component", () => {
 
     // Wait for all async operations including error handling to complete
     await act(async () => {
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
     });
 
     // Verify console.error was called (but mocked so it doesn't affect test output)
-    expect(consoleErrorSpy).toHaveBeenCalledWith("Error sending friend request:", expect.any(Error));
-    
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      "Error sending friend request:",
+      expect.any(Error),
+    );
+
     // Restore console.error
     consoleErrorSpy.mockRestore();
   });

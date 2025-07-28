@@ -11,7 +11,10 @@ import InviteDialog from "@/components/friends/InviteDialog";
 import { User } from "@/app/types/User";
 import { Group } from "@/app/types/Group";
 import { GameType } from "@/app/enums/game-type.enum";
-import { cleanupAsyncOperations, suppressConsoleLogs } from "@/__tests__/utils/test-utils";
+import {
+  cleanupAsyncOperations,
+  suppressConsoleLogs,
+} from "@/__tests__/utils/test-utils";
 
 // Mock the dependencies
 jest.mock("@/lib/actions", () => ({
